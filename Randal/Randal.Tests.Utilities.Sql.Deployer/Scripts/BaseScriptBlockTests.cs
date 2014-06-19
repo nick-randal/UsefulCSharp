@@ -1,0 +1,81 @@
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using Randal.Core.Testing.UnitTest;
+using Randal.Utilities.Sql.Deployer.Scripts;
+
+namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+{
+	[TestClass]
+	public sealed class BaseScriptBlockTests : BaseUnitTest<BaseScriptBlockThens>
+	{
+		[TestInitialize]
+		public override void Setup()
+		{
+			base.Setup();
+		}
+
+		[TestMethod]
+		public void ShouldHaveNonEmptyTextAfterInstantiation()
+		{
+			Given.Keyword = "\nignore\n";
+			Given.Text = "\nuse TCPLP\n";
+
+			When(Creating);
+
+			Then.Object.Should().BeAssignableTo<BaseScriptBlock>();
+			Then.Object.IsValid.Should().BeFalse();
+			Then.Object.Keyword.Should().Be("ignore");
+			Then.Object.Text.Should().Be("use TCPLP");
+		}
+
+		[TestMethod]
+		public void ShouldHaveEmptyStringsWhenCreatingGivenNullValues()
+		{
+			Given.Keyword = null;
+			Given.Text = null;
+
+			When(Creating);
+
+			Then.Object.IsValid.Should().BeFalse();
+			Then.Object.Keyword.Should().BeEmpty();
+			Then.Object.Text.Should().BeEmpty();
+		}
+
+		[TestMethod]
+		public void ShouldHaveEmptyListOfMessagesAndBeInvalidWhenParsing()
+		{
+			Given.Keyword = "invalid";
+			Given.Text = "--:: it doesn't really matter for a mock derivation";
+
+			When(Creating, Parsing);
+
+			Then.Object.IsValid.Should().BeFalse();
+			Then.Messages.Should().BeEmpty();
+		}
+
+		private void Parsing()
+		{
+			Then.Messages = Then.Object.Parse();
+		}
+
+		private void Creating()
+		{
+			Then.Object = new DerivedBaseScriptBlock(Given.Keyword, Given.Text);
+		}
+	}
+
+	public sealed class DerivedBaseScriptBlock : BaseScriptBlock
+	{
+		public DerivedBaseScriptBlock(string keyword, string text)
+			: base(keyword, text)
+		{
+		}
+	}
+
+	public sealed class BaseScriptBlockThens
+	{
+		public DerivedBaseScriptBlock Object;
+		public IReadOnlyList<string> Messages;
+	}
+}

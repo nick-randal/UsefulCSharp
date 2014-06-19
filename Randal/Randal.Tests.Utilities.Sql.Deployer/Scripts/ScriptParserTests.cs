@@ -1,0 +1,91 @@
+﻿using System;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using Randal.Core.Testing.UnitTest;
+using Randal.Utilities.Sql.Deployer.Scripts;
+
+namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+{
+	[TestClass]
+	public sealed partial class ScriptParserTests : BaseUnitTest<ScriptParserThens>
+	{
+		[TestInitialize]
+		public override void Setup()
+		{
+			base.Setup();
+			GivenParser = new ParserBuilder();
+		}
+
+		[TestMethod]
+		public void ShouldAcceptParseBlocks()
+		{
+			GivenParser.WithRule("pre", (text) => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre));
+
+			When(Creating);
+
+			Then.Parser.RegisteredKeywords().Should().HaveCount(1);
+			Then.Parser.RegisteredKeywords().First().Should().Be("pre");
+		}
+
+		[TestMethod]
+		public void ShouldCreateSourceScriptFromValidText()
+		{
+			GivenParser
+				.WithRule("pre", (text) => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre))
+				.WithRule("main", (text) => new SqlCommandBlock("main", text, SqlScriptPhase.Main))
+				.WithRule("post", (text) => new SqlCommandBlock("post", text, SqlScriptPhase.Post));
+
+			Given.Text = "--:: pre\nselect 1\n--:: main\nselect 2\n--:: post\nselect 3\nGO";
+
+			When(Creating, Parsing);
+
+			Then.SourceScript.ScriptBlocks.Should().HaveCount(3);
+			Then.SourceScript.ScriptBlocks[2].Keyword.Should().Be("post");
+			Then.SourceScript.ScriptBlocks[2].Text.Should().Be("select 3\nGO");
+			Then.SourceScript.ScriptBlocks[2].As<ISqlCommandBlock>().Phase.Should().Be(SqlScriptPhase.Post);
+		}
+
+		[TestMethod]
+		public void ShouldProcessFallbackRuleWhenProcessingUnknownKeywords()
+		{
+			GivenParser.WithFallbackRule((kw, text) => new UnexpectedBlock(kw, text));
+			Given.Text = "--:: unknown\nselect 1\nGO\n";
+
+			When(Creating, Parsing);
+
+			Then.SourceScript.ScriptBlocks.Should().HaveCount(1);
+
+			var thenFirstBlock = Then.SourceScript.ScriptBlocks.First();
+			thenFirstBlock.Keyword.Should().Be("unknown");
+			thenFirstBlock.IsValid.Should().BeFalse();
+			thenFirstBlock.Text.Should().Be("select 1\nGO");
+		}
+
+		[TestMethod, ExpectedException(typeof(InvalidOperationException))]
+		public void ShouldThrowExceptionWhenProcessingUnexpectedBlock()
+		{
+			Given.Text = "--:: unknown\nselect 1\nGO\n";
+
+			When(Creating, Parsing);
+		}
+
+		private void Creating()
+		{
+			Then.Parser = GivenParser;
+		}
+
+		private void Parsing()
+		{
+			Then.SourceScript = Then.Parser.Parse("UnitTest", Given.Text);
+		}
+
+		private ParserBuilder GivenParser { get; set; }
+	}
+
+	public sealed class ScriptParserThens
+	{
+		public SourceScript SourceScript;
+		public ScriptParser Parser;
+	}
+}

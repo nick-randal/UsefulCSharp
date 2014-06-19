@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B910A326-38AD-4DC4-999C-03B3B1CE3D77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Randal.Utilities.Sql.Deployer</RootNamespace>
+    <AssemblyName>Randal.Utilities.Sql.Deployer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\InstallerConfig.cs" />
+    <Compile Include="IO\ProjectLoader.cs" />
+    <Compile Include="Process\SqlCommandWrapper.cs" />
+    <Compile Include="Process\SqlCommandWrapperFactory.cs" />
+    <Compile Include="Process\SqlConnectionManager.cs" />
+    <Compile Include="Scripts\BaseScriptBlock.cs" />
+    <Compile Include="Scripts\CatalogBlock.cs" />
+    <Compile Include="Scripts\ConfigurationBlock.cs" />
+    <Compile Include="Scripts\CsvParameterBlock.cs" />
+    <Compile Include="Scripts\IgnoreScriptBlock.cs" />
+    <Compile Include="Scripts\NeedBlock.cs" />
+    <Compile Include="Scripts\Project.cs" />
+    <Compile Include="Scripts\ScriptParser.cs" />
+    <Compile Include="Scripts\ScriptParserFactory.cs" />
+    <Compile Include="Scripts\ScriptSettings.cs" />
+    <Compile Include="Scripts\SqlScriptPhase.cs" />
+    <Compile Include="Scripts\SourceScript.cs" />
+    <Compile Include="Scripts\SqlCommandBlock.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\UnexpectedBlock.cs" />
+    <Compile Include="Process\ScriptDeployer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
+      <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
+      <Name>Randal.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

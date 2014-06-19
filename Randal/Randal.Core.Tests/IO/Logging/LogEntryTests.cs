@@ -1,0 +1,70 @@
+﻿using System;
+using System.Fakes;
+using FluentAssertions;
+using Microsoft.QualityTools.Testing.Fakes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Randal.Core.IO.Logging;
+using Randal.Core.Testing.UnitTest;
+
+namespace Randal.Core.Core.IO.Logging
+{
+	[TestClass]
+	public sealed class LogEntryTests : BaseUnitTest<LogEntryThens>
+	{
+		[TestInitialize]
+		public override void Setup()
+		{
+			base.Setup();
+		}
+
+		[TestMethod]
+		public void ShouldHaveValidLogEntryWhenCreatingGivenDefaults()
+		{
+			Given.Message = null;
+			Given.DateTimeNow = new DateTime(2014, 6, 9);
+
+			When(Creating);
+
+			Then.Entry.Should().NotBeNull().And.BeAssignableTo<ILogEntry>();
+			Then.Entry.Message.Should().Be(string.Empty);
+			Then.Entry.Timestamp.Should().Be(new DateTime(2014, 6, 9));
+			Then.Entry.VerbosityLevel.Should().Be(Verbosity.Info);
+		}
+
+		[TestMethod]
+		public void ShouldHaveValigLogEntryWhenCreatingGivenValues()
+		{
+			Given.Message = "Hello";
+			Given.Timestamp = new DateTime(2014, 1, 31);
+			Given.Verbosity = Verbosity.Important;
+
+			When(Creating);
+
+			Then.Entry.Message.Should().Be("Hello");
+			Then.Entry.Timestamp.Should().Be(new DateTime(2014, 1, 31));
+			Then.Entry.VerbosityLevel.Should().Be(Verbosity.Important);
+		}
+
+		private void Creating()
+		{
+			if (Given.TestForMember("Timestamp") && Given.TestForMember("Verbosity"))
+				Then.Entry = new LogEntry(Given.Message, Given.Timestamp, Given.Verbosity);
+			else if (Given.TestForMember("Timestamp"))
+				Then.Entry = new LogEntry(Given.Message, Given.Timestamp);
+			else
+			{
+				using (ShimsContext.Create())
+				{
+					ShimDateTime.NowGet = () => Given.DateTimeNow;
+					Then.Entry = new LogEntry(Given.Message);
+				}
+			}
+		}
+	}
+
+	public sealed class LogEntryThens
+	{
+		public LogEntry Entry;
+		public LogEntry ClonedEntry;
+	}
+}

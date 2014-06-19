@@ -1,0 +1,5 @@
+C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core\bin\Debug\Randal.Core.dll
+C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core\bin\Debug\Randal.Core.pdb
+C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core\obj\Debug\Randal.Core.dll
+C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core\obj\Debug\Randal.Core.pdb
+C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core\obj\Debug\Randal.Core.csprojResolveAssemblyReference.cache
