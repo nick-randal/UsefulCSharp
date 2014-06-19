@@ -14,3 +14,12 @@ C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Utilities.Sql.Deployer\
 C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Utilities.Sql.Deployer\obj\Debug\Randal.Utilities.Sql.Deployer.csprojResolveAssemblyReference.cache
 C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Core.dll
 C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Core.pdb
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Utilities.Sql.Deployer.dll
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Utilities.Sql.Deployer.pdb
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Core.dll
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Randal.Core.pdb
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\obj\Debug\Randal.Utilities.Sql.Deployer.csprojResolveAssemblyReference.cache
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\obj\Debug\Randal.Utilities.Sql.Deployer.dll
+C:\Users\Nick\Documents\GitHub\UsefulCSharp\Randal\Randal.Utilities.Sql.Deployer\obj\Debug\Randal.Utilities.Sql.Deployer.pdb
