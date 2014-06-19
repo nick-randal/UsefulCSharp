@@ -1,7 +1,0 @@
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\bin\Debug\TC.Utilities.Database.Installer.dll
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\bin\Debug\TC.Utilities.Database.Installer.pdb
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\obj\Debug\TC.Utilities.Database.Installer.csprojResolveAssemblyReference.cache
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\obj\Debug\TC.Utilities.Database.Installer.dll
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\obj\Debug\TC.Utilities.Database.Installer.pdb
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\bin\Debug\Newtonsoft.Json.dll
-C:\__dev\Research\TC.Utilities.Database.Installer\TC.Utilities.Database.Installer\bin\Debug\Newtonsoft.Json.xml

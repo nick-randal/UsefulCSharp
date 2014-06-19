@@ -1,1 +1,0 @@
-C:\__dev\Research\TC.Utilities.Database.Installer\Randal.Core.Test\obj\Debug\Randal.Core.Test.csprojResolveAssemblyReference.cache

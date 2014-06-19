@@ -1,0 +1,10 @@
+Normal
+Assigned -> Near Exhaust at day 270
+new enrollment as Available waiting for RxC new enrollment
+day 365, move to Assigned
+
+Late Enrollment after day 270
+
+Assigned -> Near Exhaust
+new enrollment record in Available 
+waiting for process to check create date
