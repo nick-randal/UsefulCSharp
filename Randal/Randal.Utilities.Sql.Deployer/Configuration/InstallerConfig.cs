@@ -13,10 +13,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Randal.Utilities.Sql.Deployer.Configuration
 {
@@ -29,23 +27,16 @@ namespace Randal.Utilities.Sql.Deployer.Configuration
 
 	public sealed class ProjectConfig : IProjectConfig
 	{
-		public ProjectConfig(JObject jsonObject)
+		public ProjectConfig() : this(null, null, null)
 		{
-			if(jsonObject == null)
-				throw new ArgumentNullException("jsonObject");
 
-			var scripts = jsonObject["PriorityScripts"] ?? new JArray();
-			_priorityScripts = new List<string>(scripts.Select(s => s.Value<string>()));
-
-			Version = (string)jsonObject["Version"] ?? "01.01.01.01";
-			Project = (string)jsonObject["Project"] ?? "Unknown";
 		}
 
 		public ProjectConfig(string project, string version, IEnumerable<string> priorityScripts)
 		{
-			Project = project;
-			Version = version;
-			_priorityScripts = new List<string>(priorityScripts);
+			Project = project ?? "Unknown";
+			Version = version ?? "01.01.01.01";
+			_priorityScripts = priorityScripts == null ? new List<string>() : new List<string>(priorityScripts);
 		}
 
 		public IReadOnlyList<string> PriorityScripts
@@ -53,10 +44,13 @@ namespace Randal.Utilities.Sql.Deployer.Configuration
 			get { return _priorityScripts; }
 		}
 
+		[JsonProperty(Required = Required.Default)]
 		public string Version { get; private set; }
 
+		[JsonProperty(Required = Required.Default)]
 		public string Project { get; private set; }
 
+		[JsonProperty(Required = Required.Default)]
 		private readonly List<string> _priorityScripts;
 	}
 }

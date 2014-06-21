@@ -17,12 +17,12 @@ using System;
 
 namespace Randal.Core.IO.Logging
 {
-	public interface ILogGroupEntry : ILogEntry
+	public interface ILogGroupEntry : ILogEntry, IDisposable
 	{
 		bool IsEnd { get; }
 	}
 
-	public sealed class LogGroupEntry : LogEntry, ILogGroupEntry, IDisposable
+	public sealed class LogGroupEntry : LogEntry, ILogGroupEntry
 	{
 		public LogGroupEntry(ILogger logger, string groupName, Verbosity verbosity = Verbosity.Info) : base(groupName, DateTime.MinValue, verbosity)
 		{

@@ -44,6 +44,7 @@
     <Compile Include="Dynamic\DynamicEntityConverter.cs" />
     <Compile Include="Dynamic\MissingMemberBehavior.cs" />
     <Compile Include="Dynamic\NullConverter.cs" />
+    <Compile Include="Enums\Returned.cs" />
     <Compile Include="IO\Logging\ILogger.cs" />
     <Compile Include="IO\Logging\ExceptionEntry.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFile.cs" />

@@ -17,7 +17,18 @@ using System;
 
 namespace Randal.Core.IO.Logging
 {
-	public sealed class LoggerStringFormatDecorator : ILogger
+	public interface ILoggerStringFormatDecorator : ILogger
+	{
+		void AddEntry(string message, params object[] values);
+		void AddEntry(Verbosity verbosity, string message, params object[] values);
+		ILogGroupEntry AddGroup(string message, params object[] values);
+		ILogGroupEntry AddGroup(Verbosity verbosity, string message, params object[] values);
+		void AddEntryNoTimestamp(string message, params object[] values);
+		void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
+		void AddException(Exception ex, string message, params object[] values);
+	}
+
+	public sealed class LoggerStringFormatDecorator : ILoggerStringFormatDecorator
 	{
 		public LoggerStringFormatDecorator(ILogger logger)
 		{
@@ -36,16 +47,18 @@ namespace Randal.Core.IO.Logging
 			_logger.Add(new LogEntry(formatted, verbosity));
 		}
 
-		public void AddGroup(string message, params object[] values)
+		public ILogGroupEntry AddGroup(string message, params object[] values)
 		{
-			AddGroup(Verbosity.Info, message, values);
+			return AddGroup(Verbosity.Info, message, values);
 		}
 
-		public void AddGroup(Verbosity verbosity, string message, params object[] values)
+		public ILogGroupEntry AddGroup(Verbosity verbosity, string message, params object[] values)
 		{
 			var formatted = string.Format(message, values);
 
-			_logger.Add(new LogGroupEntry(_logger, formatted, verbosity));
+			var group = new LogGroupEntry(_logger, formatted, verbosity);
+			_logger.Add(group);
+			return group;
 		}
 
 		public void AddEntryNoTimestamp(string message, params object[] values)

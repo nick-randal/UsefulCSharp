@@ -28,7 +28,7 @@ namespace Randal.Core.IO.Logging
 	{
 		public LogEntryFormatter(string insetText = null)
 		{
-			_insetText = insetText ?? "  ";
+			_insetText = insetText ?? TextResources.LeadIn;
 
 			_prepends = new List<string>(5)
 			{
@@ -46,8 +46,9 @@ namespace Randal.Core.IO.Logging
 			if (group != null)
 				return Format(group);
 
-			return string.Format("{0} {1}{2}{3}",
+			return string.Concat(
 						entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
+						' ',
 						StepInText(),
 						entry.Message,
 						Environment.NewLine
@@ -56,20 +57,20 @@ namespace Randal.Core.IO.Logging
 
 		private string Format(ILogGroupEntry group)
 		{
-			var text = string.Format("{0} {1}{2}{3}{4}",
+			if (group.IsEnd && _insetLevel > 0)
+				_insetLevel--;
+
+			var text = string.Concat(
 							group.ShowTimestamp ? group.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
+							' ',
 							StepInText(),
 							group.IsEnd ? TextResources.GroupLeadOut : TextResources.GroupLeadIn,
 							group.Message,
-							Environment.NewLine
+							Environment.NewLine,
+							group.IsEnd ? Environment.NewLine : string.Empty
 						);
 
-			if (group.IsEnd)
-			{
-				if (_insetLevel > 0)
-					_insetLevel--;
-			}
-			else
+			if (group.IsEnd == false)
 				_insetLevel++;
 
 			return text;

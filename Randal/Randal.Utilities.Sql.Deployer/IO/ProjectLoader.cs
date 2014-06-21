@@ -13,10 +13,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Randal.Core.Enums;
+using Randal.Core.IO.Logging;
 using Randal.Utilities.Sql.Deployer.Configuration;
 using Randal.Utilities.Sql.Deployer.Scripts;
 
@@ -24,8 +27,12 @@ namespace Randal.Utilities.Sql.Deployer.IO
 {
 	public sealed class ProjectLoader
 	{
-		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser = null)
+		public ProjectLoader(string projectPath, ILogger logger = null, IScriptParserConsumer scriptParser = null)
 		{
+			logger = logger ?? new NullLogger();
+			var decorator = logger as ILoggerStringFormatDecorator;
+			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
+
 			ProjectPath = projectPath;
 			Parser = scriptParser ?? new ScriptParserFactory().CreateStandardParser();
 			_allScripts = new List<SourceScript>();
@@ -37,66 +44,92 @@ namespace Randal.Utilities.Sql.Deployer.IO
 
 		public IReadOnlyList<SourceScript> AllScripts { get { return _allScripts; } } 
 
-		public IReadOnlyList<string> Load()
+		public Returned Load()
 		{
-			var messages = new List<string>();
 			var projectDirectory = new DirectoryInfo(ProjectPath);
 
-			if (LoadConfiguration(projectDirectory, messages) == false) 
-				return messages;
-			
-			LoadAndValidateScripts(projectDirectory, messages);
+			using (_logger.AddGroup("Load configuration"))
+			{
+				if (LoadConfiguration(projectDirectory) == Returned.Failure)
+					return Returned.Failure;
 
-			return messages;
+				_logger.AddEntry("{0} : {1}", Configuration.Project, Configuration.Version);
+				_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
+			}
+
+			using (_logger.AddGroup("Validating scripts"))
+				return LoadAndValidateScripts(projectDirectory);
 		}
 
-		private void LoadAndValidateScripts(DirectoryInfo projectDirectory, List<string> messages)
+		private Returned LoadAndValidateScripts(DirectoryInfo projectDirectory)
 		{
 			var scriptFiles = projectDirectory.GetFiles("*.sql", SearchOption.AllDirectories);
+			var result = Returned.Success;
+			var errors = 0;
+
 			foreach (var file in scriptFiles)
 			{
 				using (var reader = file.OpenText())
 				{
-					var text = reader.ReadToEnd();
-
-					var script = Parser.Parse(file.Name, text);
+					var script = Parser.Parse(file.Name, reader.ReadToEnd());
 					var validationMessages = script.Validate();
 
-					if (script.IsValid == false || validationMessages.Count > 0)
-						messages.AddRange(validationMessages);
-					else
+					if (script.IsValid && validationMessages.Count == 0)
+					{
 						_allScripts.Add(script);
+						continue;
+					}
+
+					result = Returned.Failure;
+					errors++;
+					_logger.AddEntry(file.Name);
+
+					var combined = string.Join(Environment.NewLine, validationMessages);
+					_logger.AddEntryNoTimestamp(combined);
 				}
 			}
+
+			_logger.AddEntry("loadded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
+
+			return result;
 		}
 
-		private bool LoadConfiguration(DirectoryInfo projectDirectory, ICollection<string> messages)
+		private Returned LoadConfiguration(DirectoryInfo projectDirectory)
 		{
 			FileInfo configFile;
+
 			try
 			{
 				configFile = projectDirectory.GetFiles("config.json", SearchOption.TopDirectoryOnly).FirstOrDefault();
 			}
-			catch (DirectoryNotFoundException)
+			catch (DirectoryNotFoundException ex)
 			{
-				messages.Add("Project directory not found at '" + projectDirectory.FullName + "'");
-				return false;
+				_logger.AddException(ex, "Project directory not found at '" + projectDirectory.FullName + "'");
+				return Returned.Failure;
 			}
 
 			if (configFile == null)
 			{
-				messages.Add("No 'config.json' configuration file found for project.");
-				return false;
+				_logger.AddEntry(Verbosity.Vital, "No 'config.json' configuration file found for project.");
+				return Returned.Failure;
 			}
 
 			using (var reader = configFile.OpenText())
 			{
-				Configuration = new ProjectConfig(JObject.Parse(reader.ReadToEnd()));
+				try
+				{
+					Configuration = JsonConvert.DeserializeObject<ProjectConfig>(reader.ReadToEnd());
+				}
+				catch (JsonReaderException jre)
+				{
+					throw new JsonReaderException("Error loading config.json file, see inner exception details.", jre);
+				}
 			}
 
-			return true;
+			return Returned.Success;
 		}
 
+		private readonly ILoggerStringFormatDecorator _logger;
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer Parser { get; set; }
 	}

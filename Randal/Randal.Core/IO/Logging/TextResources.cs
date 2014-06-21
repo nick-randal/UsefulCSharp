@@ -21,6 +21,7 @@ namespace Randal.Core.IO.Logging
 			DashedBreak80Wide = "--------------------------------------------------------------------------------",
 			Timestamp = "yyMMdd HHmmss",
 			NoTimestamp = "             ",
+			LeadIn = "    ",
 			GroupLeadIn = "  >>>   ",
 			GroupLeadOut = "  <<<   ",
 			AttentionRepeatingLines = "ATTENTION: The previous line was repeated {0} times.",

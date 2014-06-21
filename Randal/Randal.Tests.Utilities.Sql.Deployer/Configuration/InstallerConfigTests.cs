@@ -16,9 +16,9 @@ GNU General Public License for more details.
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Randal.Core.Testing.UnitTest;
 using Randal.Utilities.Sql.Deployer.Configuration;
-using Newtonsoft.Json.Linq;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.Configuration
 {
@@ -59,8 +59,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Configuration
 
 		private void Creating()
 		{
-			var jsonObject = JObject.Parse(Given.Json);
-			Then.Object = new ProjectConfig(jsonObject);
+			Then.Object = JsonConvert.DeserializeObject<ProjectConfig>(Given.Json);
 		}
 	}
 

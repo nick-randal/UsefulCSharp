@@ -13,12 +13,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
+using Randal.Core.IO.Logging;
 using Randal.Utilities.Sql.Deployer.IO;
 using Randal.Utilities.Sql.Deployer.Scripts;
 using Randal.Core.Testing.UnitTest;
+using Randal.Core.Enums;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.IO
 {
@@ -31,6 +32,12 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 			base.Setup();
 			
 			Given.Parser = new ScriptParserFactory().CreateStandardParser();
+		}
+
+		[TestCleanup]
+		public void Teardown()
+		{
+			Then.Logger.Dispose();
 		}
 
 		[TestMethod]
@@ -46,7 +53,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 		{
 			Given.ProjectPath = @"c:\some folder";
 			When(Creating, Loading);
-			Then.Messages.Should().HaveCount(1);
+			Then.Has.Should().Be(Returned.Failure, "because the path is invalid");
 		}
 
 		[TestMethod]
@@ -54,7 +61,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 		{
 			Given.ProjectPath = @".";
 			When(Creating, Loading);
-			Then.Messages.Should().HaveCount(1);
+			Then.Has.Should().Be(Returned.Failure, "because the config file does not exist.");
 		}
 
 		[TestMethod]
@@ -64,7 +71,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 
 			When(Creating, Loading);
 
-			Then.Messages.Should().HaveCount(0, "because " + string.Join(", ", Then.Messages));
+			Then.Has.Should().Be(Returned.Success);
 			Then.Object.Configuration.Should().NotBeNull();
 			Then.Object.Configuration.Project.Should().Be("Conmigo");
 			Then.Object.Configuration.Version.Should().Be("14.06.03.01");
@@ -73,18 +80,20 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 
 		private void Creating()
 		{
-			Then.Object = new ProjectLoader(Given.ProjectPath, Given.Parser);
+			Then.Logger = new StringLogger();
+			Then.Object = new ProjectLoader(Given.ProjectPath, Then.Logger, Given.Parser);
 		}
 
 		private void Loading()
 		{
-			Then.Messages = Then.Object.Load();
+			Then.Has = Then.Object.Load();
 		}
 	}
 
 	public sealed class ProjectLoaderThens
 	{
 		public ProjectLoader Object;
-		public IReadOnlyList<string> Messages;
+		public Returned Has;
+		public StringLogger Logger;
 	}
 }
