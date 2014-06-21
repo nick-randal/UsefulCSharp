@@ -58,25 +58,6 @@ namespace Randal.Core.Core.IO.Logging
 			Then.Text.Should().Be(TextResources.NoTimestamp + ' ' + "Hello\r\n");
 		}
 
-		[TestMethod]
-		public void ShouldHaveValidTextWhenFormattingEntryGivenValidLogGroupEntry()
-		{
-			Given.Entry = new LogGroupEntry(null, "Hello");
-			When(Creating, FormattingEntry);
-			Then.Text.Should().Be(TextResources.NoTimestamp + ' ' + TextResources.GroupLeadIn + "Hello\r\n");
-		}
-
-		[TestMethod]
-		public void ShouldHaveValidTextWithInsetWhenFormattingGivenMultipleLogGroupEntries()
-		{
-			Given.Inset = "*";
-			Given.EntryCount = 6;
-			Given.Entry = new LogGroupEntry(null, "Hello");
-
-			When(Creating, FormattingEntry);
-
-			Then.Text.Should().Be(TextResources.NoTimestamp + ' ' + "*****" + TextResources.GroupLeadIn + "Hello\r\n");
-		}
 
 		private void FormattingEntry()
 		{
@@ -86,7 +67,7 @@ namespace Randal.Core.Core.IO.Logging
 
 		private void Creating()
 		{
-			Then.Formatter = new LogEntryFormatter(Given.Inset);
+			Then.Formatter = new LogEntryFormatter();
 		}
 	}
 

@@ -14,8 +14,6 @@ GNU General Public License for more details.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Randal.Core.IO.Logging
 {
@@ -26,69 +24,14 @@ namespace Randal.Core.IO.Logging
 
 	public sealed class LogEntryFormatter : ILogEntryFormatter
 	{
-		public LogEntryFormatter(string insetText = null)
-		{
-			_insetText = insetText ?? TextResources.LeadIn;
-
-			_prepends = new List<string>(5)
-			{
-				string.Empty,
-				_insetText,
-				string.Join(string.Empty, Enumerable.Repeat(_insetText, 2)),
-				string.Join(string.Empty, Enumerable.Repeat(_insetText, 3)),
-				string.Join(string.Empty, Enumerable.Repeat(_insetText, 4))
-			};
-		}
-
 		public string Format(ILogEntry entry)
 		{
-			var group = entry as ILogGroupEntry;
-			if (group != null)
-				return Format(group);
-
 			return string.Concat(
 						entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
 						' ',
-						StepInText(),
 						entry.Message,
 						Environment.NewLine
 					);
 		}
-
-		private string Format(ILogGroupEntry group)
-		{
-			if (group.IsEnd && _insetLevel > 0)
-				_insetLevel--;
-
-			var text = string.Concat(
-							group.ShowTimestamp ? group.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
-							' ',
-							StepInText(),
-							group.IsEnd ? TextResources.GroupLeadOut : TextResources.GroupLeadIn,
-							group.Message,
-							Environment.NewLine,
-							group.IsEnd ? Environment.NewLine : string.Empty
-						);
-
-			if (group.IsEnd == false)
-				_insetLevel++;
-
-			return text;
-		}
-
-		private string StepInText()
-		{
-			if (_insetLevel < _prepends.Count) 
-				return _prepends[_insetLevel];
-
-			for (var n = _prepends.Count; n <= _insetLevel; n++)
-				_prepends.Add(string.Join(string.Empty, Enumerable.Repeat(_insetText, n)));
-
-			return _prepends[_insetLevel];
-		}
-
-		private int _insetLevel;
-		private readonly string _insetText;
-		private readonly List<string> _prepends;
 	}
 }

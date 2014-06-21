@@ -72,7 +72,6 @@
     <Compile Include="IO\Logging\StringLoggerTests.cs" />
     <Compile Include="IO\Logging\OneLogTests.cs" />
     <Compile Include="IO\Logging\ExceptionEntryTests.cs" />
-    <Compile Include="IO\Logging\LogGroupEntryTests.cs" />
     <Compile Include="IO\Logging\FileLogSettingsTests.cs" />
     <Compile Include="IO\Logging\AsyncFileLoggerTests.cs" />
     <Compile Include="IO\Logging\LogStringDecoratorFormatTests.cs" />

@@ -53,14 +53,6 @@ namespace Randal.Tests.Core.IO.Logging
 		}
 
 		[TestMethod]
-		public void ShouldAddLogGroupEntryToInternalLoggerWhenAddingLogGroupEntry()
-		{
-			Given.Text = "My Group";
-			When(Creating, AddingLogGroupEntry);
-			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogGroupEntry>.Is.NotNull));
-		}
-
-		[TestMethod]
 		public void ShouldAddLogEntryToInternalLoggerWhenAddingLogEntryWithoutTimestamp()
 		{
 			Given.Text = "Hey again";
@@ -92,11 +84,6 @@ namespace Randal.Tests.Core.IO.Logging
 		private void AddingException()
 		{
 			Then.Decorator.AddException(Given.Exception, Given.Text);
-		}
-
-		private void AddingLogGroupEntry()
-		{
-			Then.Decorator.AddGroup(Given.Text);
 		}
 
 		private void AddingLogEntry()

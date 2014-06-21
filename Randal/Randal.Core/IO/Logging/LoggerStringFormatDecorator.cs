@@ -21,8 +21,7 @@ namespace Randal.Core.IO.Logging
 	{
 		void AddEntry(string message, params object[] values);
 		void AddEntry(Verbosity verbosity, string message, params object[] values);
-		ILogGroupEntry AddGroup(string message, params object[] values);
-		ILogGroupEntry AddGroup(Verbosity verbosity, string message, params object[] values);
+		void AddBlank(Verbosity verbosity = Verbosity.Info);
 		void AddEntryNoTimestamp(string message, params object[] values);
 		void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
 		void AddException(Exception ex, string message, params object[] values);
@@ -47,18 +46,9 @@ namespace Randal.Core.IO.Logging
 			_logger.Add(new LogEntry(formatted, verbosity));
 		}
 
-		public ILogGroupEntry AddGroup(string message, params object[] values)
+		public void AddBlank(Verbosity verbosity = Verbosity.Info)
 		{
-			return AddGroup(Verbosity.Info, message, values);
-		}
-
-		public ILogGroupEntry AddGroup(Verbosity verbosity, string message, params object[] values)
-		{
-			var formatted = string.Format(message, values);
-
-			var group = new LogGroupEntry(_logger, formatted, verbosity);
-			_logger.Add(group);
-			return group;
+			_logger.Add(new LogEntryNoTimestamp(string.Empty, verbosity));
 		}
 
 		public void AddEntryNoTimestamp(string message, params object[] values)

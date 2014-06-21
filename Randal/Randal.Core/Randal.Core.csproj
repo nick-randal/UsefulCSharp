@@ -55,7 +55,6 @@
     <Compile Include="IO\Logging\LogEntry.cs" />
     <Compile Include="IO\Logging\LoggerStringFormatDecorator.cs" />
     <Compile Include="IO\Logging\LogEntryFormatter.cs" />
-    <Compile Include="IO\Logging\LogGroupEntry.cs" />
     <Compile Include="IO\Logging\LogEntryNoTimestamp.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFileManager.cs" />
     <Compile Include="IO\Logging\NullLogger.cs" />

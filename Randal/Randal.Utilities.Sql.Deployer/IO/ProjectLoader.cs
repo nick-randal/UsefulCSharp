@@ -34,7 +34,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
 
 			ProjectPath = projectPath;
-			Parser = scriptParser ?? new ScriptParserFactory().CreateStandardParser();
+			ScriptParser = scriptParser ?? new ScriptParserFactory().CreateStandardParser();
 			_allScripts = new List<SourceScript>();
 		}
 
@@ -42,23 +42,23 @@ namespace Randal.Utilities.Sql.Deployer.IO
 
 		public ProjectConfig Configuration { get; private set; }
 
-		public IReadOnlyList<SourceScript> AllScripts { get { return _allScripts; } } 
+		public IReadOnlyList<SourceScript> AllScripts { get { return _allScripts; } }
 
 		public Returned Load()
 		{
 			var projectDirectory = new DirectoryInfo(ProjectPath);
 
-			using (_logger.AddGroup("Load configuration"))
-			{
-				if (LoadConfiguration(projectDirectory) == Returned.Failure)
-					return Returned.Failure;
+			_logger.AddEntry("Load configuration");
 
-				_logger.AddEntry("{0} : {1}", Configuration.Project, Configuration.Version);
-				_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
-			}
+			if (LoadConfiguration(projectDirectory) == Returned.Failure)
+				return Returned.Failure;
 
-			using (_logger.AddGroup("Validating scripts"))
-				return LoadAndValidateScripts(projectDirectory);
+			_logger.AddEntry("project '{0}' : '{1}'", Configuration.Project, Configuration.Version);
+			_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
+
+
+			_logger.AddEntry("Validating scripts");
+			return LoadAndValidateScripts(projectDirectory);
 		}
 
 		private Returned LoadAndValidateScripts(DirectoryInfo projectDirectory)
@@ -71,7 +71,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 			{
 				using (var reader = file.OpenText())
 				{
-					var script = Parser.Parse(file.Name, reader.ReadToEnd());
+					var script = ScriptParser.Parse(file.Name, reader.ReadToEnd());
 					var validationMessages = script.Validate();
 
 					if (script.IsValid && validationMessages.Count == 0)
@@ -131,6 +131,6 @@ namespace Randal.Utilities.Sql.Deployer.IO
 
 		private readonly ILoggerStringFormatDecorator _logger;
 		private readonly List<SourceScript> _allScripts;
-		private IScriptParserConsumer Parser { get; set; }
+		private IScriptParserConsumer ScriptParser { get; set; }
 	}
 }
