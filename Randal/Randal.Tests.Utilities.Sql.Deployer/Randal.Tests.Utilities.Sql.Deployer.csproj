@@ -73,6 +73,7 @@
     <Compile Include="Process\SqlCommandWrapperFactoryTests.cs" />
     <Compile Include="Process\SqlConnectionManagerTests.cs" />
     <Compile Include="Scripts\BaseScriptBlockTests.cs" />
+    <Compile Include="Scripts\ProjectBuilder.cs" />
     <Compile Include="Scripts\ScriptParserTests.Builder.cs" />
     <Compile Include="Scripts\ScriptParserTests.cs" />
     <Compile Include="Scripts\SourceScriptTests.cs" />

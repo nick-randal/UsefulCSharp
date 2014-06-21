@@ -53,7 +53,22 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public void DeployScripts()
 		{
-			
+			DeployPhase(SqlScriptPhase.Pre);
+		}
+
+		private void DeployPhase(SqlScriptPhase sqlScriptPhase)
+		{
+			string sql;
+
+			foreach (var script in _project.AllScripts)
+			{
+				sql = script.RequestSqlScriptPhase(sqlScriptPhase);
+				if (sql == null)
+					continue;
+
+				using (var command = _connectionManager.CreateCommand(sql))
+					command.Execute("master");
+			}
 		}
 
 		private void CreateProductsTable()

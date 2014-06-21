@@ -21,6 +21,8 @@ using Randal.Core.IO.Logging;
 using Randal.Utilities.Sql.Deployer.Process;
 using Randal.Utilities.Sql.Deployer.Scripts;
 using Rhino.Mocks;
+using Randal.Utilities.Sql.Deployer.Configuration;
+using Randal.Tests.Utilities.Sql.Deployer.Scripts;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.Process
 {
@@ -57,14 +59,37 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Process
 			When(Creating);
 		}
 
+		[TestMethod]
+		public void ShouldCallExecuteWhenDeployingScripts()
+		{
+			Given.Project = (Project)new ProjectBuilder()
+				.WithConfiguration("Test", "01.01.01.01")
+				.WithScript(
+					(SourceScript)new ScriptBuilder("A")
+					.WithCatalogs("master")
+					.WithMainBlock("Select 1")
+				);
+
+			When(Creating, Deploying);
+
+			Then.Manager.AssertWasCalled(x => x.CreateCommand(Arg<string>.Is.Anything, Arg<object[]>.Is.Anything));
+		}
+
 		private void Creating()
 		{
 			Then.Deployer = new ScriptDeployer(Given.Project, Given.ConnectionManager, new StringLogger());
+			Then.Manager = Given.ConnectionManager;
+		}
+
+		private void Deploying()
+		{
+			Then.Deployer.DeployScripts();
 		}
 	}
 
 	public sealed class SqlDeployerThens
 	{
 		public ScriptDeployer Deployer;
+		public ISqlConnectionManager Manager;
 	}
 }
