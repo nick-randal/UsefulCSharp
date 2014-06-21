@@ -20,6 +20,7 @@ using Randal.Utilities.Sql.Deployer.IO;
 using Randal.Utilities.Sql.Deployer.Scripts;
 using Randal.Core.Testing.UnitTest;
 using Randal.Core.Enums;
+using System;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.IO
 {
@@ -30,8 +31,20 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 		public override void Setup()
 		{
 			base.Setup();
-			
-			Given.Parser = new ScriptParserFactory().CreateStandardParser();
+
+			var parser = new ScriptParser();
+
+			parser.AddRule("catalog", txt => new CatalogBlock(txt));
+			parser.AddRule("options", txt => new OptionsBlock(txt));
+			parser.AddRule("need", txt => new NeedBlock(txt));
+			parser.AddRule("ignore", txt => new IgnoreScriptBlock(txt));
+			parser.AddRule("pre", txt => new SqlCommandBlock("pre", txt, SqlScriptPhase.Pre));
+			parser.AddRule("main", txt => new SqlCommandBlock("main", txt, SqlScriptPhase.Main));
+			parser.AddRule("post", txt => new SqlCommandBlock("post", txt, SqlScriptPhase.Post));
+
+			parser.SetFallbackRule((kw, txt) => new UnexpectedBlock(kw, txt));
+
+			Given.Parser = parser;
 		}
 
 		[TestCleanup]
@@ -81,7 +94,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.IO
 		private void Creating()
 		{
 			Then.Logger = new StringLogger();
-			Then.Object = new ProjectLoader(Given.ProjectPath, Then.Logger, Given.Parser);
+			Then.Object = new ProjectLoader(Given.ProjectPath, scriptParser: Given.Parser, logger: Then.Logger);
 		}
 
 		private void Loading()

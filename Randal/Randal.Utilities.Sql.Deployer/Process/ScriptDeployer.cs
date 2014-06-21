@@ -14,40 +14,49 @@ GNU General Public License for more details.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
 using Randal.Core.IO.Logging;
-using Randal.Utilities.Sql.Deployer.Configuration;
+using Randal.Utilities.Sql.Deployer.Scripts;
 
 namespace Randal.Utilities.Sql.Deployer.Process
 {
 	public interface IScriptDeployer
 	{
+		bool CanUpgrade();
+		void DeployScripts();
 	}
 
-	public sealed class ScriptDeployer : IScriptDeployer, IDisposable
+	public sealed class ScriptDeployer : IScriptDeployer
 	{
-		public ScriptDeployer(ISqlConnectionManager connectionManager, ILogger logger)
+		public ScriptDeployer(IProject project, ISqlConnectionManager connectionManager, ILogger logger)
 		{
+			if(project == null)
+				throw new ArgumentNullException("project");
+			if(connectionManager == null)
+				throw new ArgumentNullException("connectionManager");
+
+			_project = project;
 			_connectionManager = connectionManager;
-			_logger = new LoggerStringFormatDecorator(logger);
+			_logger = new LoggerStringFormatDecorator(logger ?? new NullLogger());
 		}
 
-		public bool CanUpgrade(IProjectConfig projectConfig)
+		public bool CanUpgrade()
 		{
 			CreateProductsTable();
 
-			var valid = IsProjectValidUpgrade(projectConfig);
+			var valid = IsProjectValidUpgrade();
 
 			if (valid)
-				AddProductVersion(projectConfig);
+				AddProductVersion();
 
 			return valid;
 		}
 
-		public void CreateProductsTable()
+		public void DeployScripts()
+		{
+			
+		}
+
+		private void CreateProductsTable()
 		{
 			_logger.AddEntry("Creating Product Version table.");
 
@@ -57,24 +66,25 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			}
 		}
 
-		public void AddProductVersion(IProjectConfig projectConfig)
+		private void AddProductVersion()
 		{
 			_logger.AddEntry("Adding this package's product and version to products table.");
 
-			var values = new object[] { projectConfig.Project, projectConfig.Version, Environment.MachineName, Environment.UserName };
+			var values = new object[] { _project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName };
 			using (var command = _connectionManager.CreateCommand(TextResources.Sql.InsertProduct, values))
 			{
 				command.Execute(TextResources.Sql.Database.Master);
 			}
 		}
 
-		public bool IsProjectValidUpgrade(IProjectConfig projectConfig)
+		private bool IsProjectValidUpgrade()
 		{
 			Version databaseVersion;
+			var config = _project.Configuration;
 
-			var projectVersion = new Version(projectConfig.Version);
+			var projectVersion = new Version(config.Version);
 
-			using (var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, projectConfig.Project, projectConfig.Version))
+			using (var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, config.Project, config.Version))
 			using (var reader = command.ExecuteReader(TextResources.Sql.Database.Master))
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))
@@ -85,8 +95,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 				databaseVersion = new Version(reader.GetString(0));
 			}
-		
-			_logger.AddEntry("Found version in database for '{0}' as '{1}'", projectConfig.Project, databaseVersion);
+
+			_logger.AddEntry("Found version in database for '{0}' as '{1}'", config.Project, databaseVersion);
 
 			if (databaseVersion >= projectVersion)
 			{
@@ -98,11 +108,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			return true;
 		}
 
-		public void Dispose()
-		{
-			_connectionManager.Dispose();
-		}
-
+		private readonly IProject _project;
 		private readonly LoggerStringFormatDecorator _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 	}

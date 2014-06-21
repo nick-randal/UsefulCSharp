@@ -50,13 +50,12 @@
     <Compile Include="Process\SqlConnectionManager.cs" />
     <Compile Include="Scripts\BaseScriptBlock.cs" />
     <Compile Include="Scripts\CatalogBlock.cs" />
-    <Compile Include="Scripts\ConfigurationBlock.cs" />
+    <Compile Include="Scripts\OptionsBlock.cs" />
     <Compile Include="Scripts\CsvParameterBlock.cs" />
     <Compile Include="Scripts\IgnoreScriptBlock.cs" />
     <Compile Include="Scripts\NeedBlock.cs" />
     <Compile Include="Scripts\Project.cs" />
     <Compile Include="Scripts\ScriptParser.cs" />
-    <Compile Include="Scripts\ScriptParserFactory.cs" />
     <Compile Include="Scripts\ScriptSettings.cs" />
     <Compile Include="Scripts\SqlScriptPhase.cs" />
     <Compile Include="Scripts\SourceScript.cs" />

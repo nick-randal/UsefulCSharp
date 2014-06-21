@@ -63,7 +63,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 				{
 					new IgnoreScriptBlock("use Coupon"),
 					new CatalogBlock("TCPLP, Coupon"),
-					new ConfigurationBlock("{ timeout: 45, useTransaction: false}"),
+					new OptionsBlock("{ timeout: 45, useTransaction: false}"),
 					new SqlCommandBlock("pre", "select 1", SqlScriptPhase.Pre),
 					new SqlCommandBlock("main", "select 2", SqlScriptPhase.Main),
 					new SqlCommandBlock("post", "select 3", SqlScriptPhase.Post)
@@ -208,7 +208,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 	public sealed class SourceScriptThens
 	{
 		public SourceScript Script;
-		public ConfigurationBlock Configuration;
+		public OptionsBlock Configuration;
 		public IReadOnlyList<string> CatalogPatterns, Messages, Needs;
 		public bool HasPhase;
 		public string Text;

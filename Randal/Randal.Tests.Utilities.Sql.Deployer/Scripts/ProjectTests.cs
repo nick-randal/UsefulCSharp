@@ -32,7 +32,19 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		{
 			base.Setup();
 
-			var loader = new ProjectLoader(@".\TestFiles\ProjectA");
+			var parser = new ScriptParser();
+
+			parser.AddRule("catalog", txt => new CatalogBlock(txt));
+			parser.AddRule("options", txt => new OptionsBlock(txt));
+			parser.AddRule("need", txt => new NeedBlock(txt));
+			parser.AddRule("ignore", txt => new IgnoreScriptBlock(txt));
+			parser.AddRule("pre", txt => new SqlCommandBlock("pre", txt, SqlScriptPhase.Pre));
+			parser.AddRule("main", txt => new SqlCommandBlock("main", txt, SqlScriptPhase.Main));
+			parser.AddRule("post", txt => new SqlCommandBlock("post", txt, SqlScriptPhase.Post));
+
+			parser.SetFallbackRule((kw, txt) => new UnexpectedBlock(kw, txt));
+
+			var loader = new ProjectLoader(@".\TestFiles\ProjectA", parser);
 			loader.Load();
 			Given.Configuration = loader.Configuration;
 			Given.Scripts = loader.AllScripts;
@@ -44,11 +56,11 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			When(Creating);
 
 			Then.Project.Should().NotBeNull();
-			Then.Project.AllScripts.Should().HaveCount(3);
+			Then.Project.AllScripts.Should().HaveCount(2);
 			Then.Project.PriorityScripts.Should().HaveCount(1);
-			Then.Project["ScriptA"].Should().NotBeNull();
-			Then.Project["ScriptB"].Should().NotBeNull();
-			Then.Project["ScriptC"].Should().NotBeNull();
+			Then.Project.TryGetScript("ScriptA").Should().NotBeNull();
+			Then.Project.TryGetScript("ScriptB").Should().NotBeNull();
+			Then.Project.TryGetScript("ScriptC").Should().NotBeNull();
 		}
 
 		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
@@ -66,7 +78,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		}
 
 		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
-		public void ShouldThrowExceptionWhenCreatingGivenMissingScriptForPriorityList()
+		public void ShouldThrowExceptionWhenCreatingInstanceGivenMissingScriptForPriorityList()
 		{
 			Given.Configuration = new ProjectConfig("Test", "14.06.08.01", new[] { "ScriptA" });
 			Given.Scripts = new List<SourceScript>();

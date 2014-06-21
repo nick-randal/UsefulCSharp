@@ -18,9 +18,9 @@ using Newtonsoft.Json;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
 {
-	public sealed class ConfigurationBlock : BaseScriptBlock
+	public sealed class OptionsBlock : BaseScriptBlock
 	{
-		public ConfigurationBlock(string json = null) : base("configuration", json)
+		public OptionsBlock(string json = null) : base("options", json)
 		{
 			if (json != null) 
 				return;

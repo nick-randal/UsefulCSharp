@@ -82,11 +82,10 @@
     <Compile Include="Scripts\CatalogBlockTests.cs" />
     <Compile Include="Scripts\IgnoreScriptBlockTests.cs" />
     <Compile Include="Scripts\NeedBlockTests.cs" />
-    <Compile Include="Scripts\ScriptParserFactoryTests.cs" />
     <Compile Include="Scripts\ProjectTests.cs" />
-    <Compile Include="Scripts\ConfigurationBlockTests.cs" />
+    <Compile Include="Scripts\OptionsBlockTests.cs" />
     <Compile Include="Scripts\ScriptSettingsTests.cs" />
-    <Compile Include="Process\SqlDeployerTests.cs" />
+    <Compile Include="Process\ScriptDeployerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

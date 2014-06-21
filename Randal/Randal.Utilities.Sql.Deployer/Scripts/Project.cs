@@ -20,9 +20,18 @@ using Randal.Utilities.Sql.Deployer.Configuration;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
 {
-	public sealed class Project
+	public interface IProject
 	{
-		public Project(IProjectConfig config, IReadOnlyList<SourceScript> scripts)
+		IProjectConfig Configuration { get; }
+		IReadOnlyList<SourceScript> AllScripts { get; }
+		IReadOnlyList<SourceScript> PriorityScripts { get; }
+
+		SourceScript TryGetScript(string scriptName);
+	}
+
+	public sealed class Project : IProject
+	{
+		public Project(IProjectConfig config, IEnumerable<SourceScript> scripts)
 		{
 			if(config == null)
 				throw new ArgumentNullException("config");
@@ -30,42 +39,39 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 				throw new ArgumentNullException("scripts");
 
 			Configuration = config;
-			AllScripts = scripts;
-			_scriptsLookup = AllScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.InvariantCultureIgnoreCase);
+			_allScripts = scripts.ToList();
 			_priorityScripts = new List<SourceScript>();
+			_scriptsLookup = AllScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.InvariantCultureIgnoreCase);
 			SetupPriorityScripts();
+		}
+
+		public IProjectConfig Configuration { get; private set; }
+		public IReadOnlyList<SourceScript> AllScripts { get { return _allScripts.ToList().AsReadOnly(); } }
+		public IReadOnlyList<SourceScript> PriorityScripts { get { return _priorityScripts; } }
+
+		public SourceScript TryGetScript(string scriptName)
+		{
+			SourceScript script;
+			_scriptsLookup.TryGetValue(scriptName, out script);
+			return script;
 		}
 
 		private void SetupPriorityScripts()
 		{
 			foreach (var priorityName in Configuration.PriorityScripts)
 			{
-				var script = this[priorityName];
+				var script = TryGetScript(priorityName);
 
 				if(script == null)
 					throw new InvalidOperationException("Script '" + priorityName + "' listed in the configuration as a priority script was not found.");
 
 				_priorityScripts.Add(script);
+				_allScripts.Remove(script);
 			}
 		}
 
-		public IProjectConfig Configuration { get; private set; }
-		public IReadOnlyList<SourceScript> AllScripts { get; private set; }
-		public IReadOnlyList<SourceScript> PriorityScripts { get { return _priorityScripts; } } 
-		
-		public SourceScript this[string keyName]
-		{
-			get
-			{
-				SourceScript script;
-
-				_scriptsLookup.TryGetValue(keyName, out script);
-
-				return script;
-			}
-		}
-		
 		private readonly Dictionary<string, SourceScript> _scriptsLookup;
 		private readonly List<SourceScript> _priorityScripts;
+		private readonly List<SourceScript> _allScripts;
 	}
 }

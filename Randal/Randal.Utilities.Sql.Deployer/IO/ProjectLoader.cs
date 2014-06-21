@@ -27,14 +27,14 @@ namespace Randal.Utilities.Sql.Deployer.IO
 {
 	public sealed class ProjectLoader
 	{
-		public ProjectLoader(string projectPath, ILogger logger = null, IScriptParserConsumer scriptParser = null)
+		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, ILogger logger = null)
 		{
 			logger = logger ?? new NullLogger();
 			var decorator = logger as ILoggerStringFormatDecorator;
 			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
 
 			ProjectPath = projectPath;
-			ScriptParser = scriptParser ?? new ScriptParserFactory().CreateStandardParser();
+			ScriptParser = scriptParser;
 			_allScripts = new List<SourceScript>();
 		}
 

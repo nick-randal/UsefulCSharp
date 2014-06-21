@@ -58,8 +58,8 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 				messages.AddRange(block.Parse());
 			}
 
-			if(HasBlockOfType<ConfigurationBlock>() == false)
-				_scriptBlocks.Add(new ConfigurationBlock());
+			if(HasBlockOfType<OptionsBlock>() == false)
+				_scriptBlocks.Add(new OptionsBlock());
 
 			if(HasBlockOfType<SqlCommandBlock>() && HasBlockOfType<CatalogBlock>() == false)
 				messages.Add("Sql Text Blocks have been defined but no Catalog Block defined to specify which databases to execute against.");
@@ -102,9 +102,9 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			return needBlock == null ? null : needBlock.Files;
 		}
 
-		public ConfigurationBlock GetConfiguration()
+		public OptionsBlock GetConfiguration()
 		{
-			return (ConfigurationBlock) ScriptBlocks.FirstOrDefault(sb => sb is ConfigurationBlock && sb.IsValid);
+			return (OptionsBlock) ScriptBlocks.FirstOrDefault(sb => sb is OptionsBlock && sb.IsValid);
 		}
 
 		private string _name;

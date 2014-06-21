@@ -22,7 +22,7 @@ using Randal.Utilities.Sql.Deployer.Scripts;
 namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 {
 	[TestClass]
-	public sealed class ConfigurationBlockTests : BaseUnitTest<TimeoutBlockThens>
+	public sealed class OptionsBlockTests : BaseUnitTest<OptionsBlockThens>
 	{
 		[TestInitialize]
 		public override void Setup()
@@ -40,7 +40,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.Configuration.Should().NotBeNull().And.BeAssignableTo<IScriptBlock>();
 			Then.Configuration.Text.Should().Be("{}");
 			Then.Configuration.IsValid.Should().BeFalse();
-			Then.Configuration.Keyword.Should().Be("configuration");
+			Then.Configuration.Keyword.Should().Be("options");
 			Then.Configuration.Settings.Should().BeNull();
 		}
 
@@ -82,7 +82,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 		private void Creating()
 		{
-			Then.Configuration = new ConfigurationBlock(Given.Json);
+			Then.Configuration = new OptionsBlock(Given.Json);
 		}
 
 		private void Parsing()
@@ -92,9 +92,9 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		}
 	}
 
-	public sealed class TimeoutBlockThens
+	public sealed class OptionsBlockThens
 	{
-		public ConfigurationBlock Configuration;
+		public OptionsBlock Configuration;
 		public IReadOnlyList<string> Messages;
 		public ScriptSettings Settings;
 	}
