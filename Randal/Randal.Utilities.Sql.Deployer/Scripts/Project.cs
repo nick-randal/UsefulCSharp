@@ -16,6 +16,7 @@ GNU General Public License for more details.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Randal.Utilities.Sql.Deployer.Configuration;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
@@ -23,7 +24,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 	public interface IProject
 	{
 		IProjectConfig Configuration { get; }
-		IReadOnlyList<SourceScript> AllScripts { get; }
+		IReadOnlyList<SourceScript> NonPriorityScripts { get; }
 		IReadOnlyList<SourceScript> PriorityScripts { get; }
 
 		SourceScript TryGetScript(string scriptName);
@@ -38,21 +39,25 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			if(scripts == null)
 				throw new ArgumentNullException("scripts");
 
+			var allScripts = scripts.ToList();
+
 			Configuration = config;
-			_allScripts = scripts.ToList();
+			_nonPriorityScripts = allScripts.ToList();
+			_allScriptsLookup = allScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.InvariantCultureIgnoreCase);
 			_priorityScripts = new List<SourceScript>();
-			_scriptsLookup = AllScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.InvariantCultureIgnoreCase);
 			SetupPriorityScripts();
+
+			_nonPriorityScripts.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public IProjectConfig Configuration { get; private set; }
-		public IReadOnlyList<SourceScript> AllScripts { get { return _allScripts.ToList().AsReadOnly(); } }
+		public IReadOnlyList<SourceScript> NonPriorityScripts { get { return _nonPriorityScripts.AsReadOnly(); } }
 		public IReadOnlyList<SourceScript> PriorityScripts { get { return _priorityScripts; } }
 
 		public SourceScript TryGetScript(string scriptName)
 		{
 			SourceScript script;
-			_scriptsLookup.TryGetValue(scriptName, out script);
+			_allScriptsLookup.TryGetValue(scriptName, out script);
 			return script;
 		}
 
@@ -66,12 +71,12 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 					throw new InvalidOperationException("Script '" + priorityName + "' listed in the configuration as a priority script was not found.");
 
 				_priorityScripts.Add(script);
-				_allScripts.Remove(script);
+				_nonPriorityScripts.Remove(script);
 			}
 		}
 
-		private readonly Dictionary<string, SourceScript> _scriptsLookup;
+		private readonly Dictionary<string, SourceScript> _allScriptsLookup;
 		private readonly List<SourceScript> _priorityScripts;
-		private readonly List<SourceScript> _allScripts;
+		private readonly List<SourceScript> _nonPriorityScripts;
 	}
 }

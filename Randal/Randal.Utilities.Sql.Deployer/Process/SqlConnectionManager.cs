@@ -39,7 +39,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 	public sealed class SqlConnectionManager : ISqlConnectionManager
 	{
-		public SqlConnectionManager(ISqlCommandWrapperFactory commandFactory)
+		public SqlConnectionManager(ISqlCommandWrapperFactory commandFactory = null)
 		{
 			_databaseNames = new List<string>();
 			_scnBuilder = new SqlConnectionStringBuilder();

@@ -35,7 +35,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		[TestMethod]
 		public void ShouldAcceptParseBlocks()
 		{
-			GivenParser.WithRule("pre", (text) => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre));
+			GivenParser.WithRule("pre", text => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre));
 
 			When(Creating);
 
@@ -47,9 +47,9 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		public void ShouldCreateSourceScriptFromValidText()
 		{
 			GivenParser
-				.WithRule("pre", (text) => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre))
-				.WithRule("main", (text) => new SqlCommandBlock("main", text, SqlScriptPhase.Main))
-				.WithRule("post", (text) => new SqlCommandBlock("post", text, SqlScriptPhase.Post));
+				.WithRule("pre", text => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre))
+				.WithRule("main", text => new SqlCommandBlock("main", text, SqlScriptPhase.Main))
+				.WithRule("post", text => new SqlCommandBlock("post", text, SqlScriptPhase.Post));
 
 			Given.Text = "--:: pre\nselect 1\n--:: main\nselect 2\n--:: post\nselect 3\nGO";
 

@@ -56,7 +56,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			When(Creating);
 
 			Then.Project.Should().NotBeNull();
-			Then.Project.AllScripts.Should().HaveCount(2);
+			Then.Project.NonPriorityScripts.Should().HaveCount(2);
 			Then.Project.PriorityScripts.Should().HaveCount(1);
 			Then.Project.TryGetScript("ScriptA").Should().NotBeNull();
 			Then.Project.TryGetScript("ScriptB").Should().NotBeNull();

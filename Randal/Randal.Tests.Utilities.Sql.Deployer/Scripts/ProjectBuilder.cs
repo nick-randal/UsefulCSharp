@@ -1,11 +1,7 @@
 ﻿using Randal.Core.Testing.UnitTest;
 using Randal.Utilities.Sql.Deployer.Configuration;
 using Randal.Utilities.Sql.Deployer.Scripts;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 {
@@ -30,7 +26,8 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 		public Project Build()
 		{
-			return new Project(_config, _scripts);
+			var project = new Project(_config, _scripts);
+			return project;
 		}
 
 		public static explicit operator Project(ProjectBuilder builder)
@@ -52,7 +49,9 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 		public ScriptBuilder WithCatalogs(string catalogs)
 		{
-			_blocks.Add(new CatalogBlock(catalogs));
+			var block = new CatalogBlock(catalogs);
+			block.Parse();
+			_blocks.Add(block);
 			return this;
 		}
 
@@ -64,7 +63,9 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 		public SourceScript Build()
 		{
-			return new SourceScript(_name, _blocks);
+			var script = new SourceScript(_name, _blocks);
+			script.Validate();
+			return script;
 		}
 
 		public static explicit operator SourceScript(ScriptBuilder builder)

@@ -20,7 +20,6 @@ using Randal.Utilities.Sql.Deployer.IO;
 using Randal.Utilities.Sql.Deployer.Scripts;
 using Randal.Core.Testing.UnitTest;
 using Randal.Core.Enums;
-using System;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.IO
 {

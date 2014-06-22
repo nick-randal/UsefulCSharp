@@ -14,7 +14,10 @@ GNU General Public License for more details.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Randal.Core.IO.Logging;
+using Randal.Utilities.Sql.Deployer.Helpers;
 using Randal.Utilities.Sql.Deployer.Scripts;
 
 namespace Randal.Utilities.Sql.Deployer.Process
@@ -37,6 +40,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			_project = project;
 			_connectionManager = connectionManager;
 			_logger = new LoggerStringFormatDecorator(logger ?? new NullLogger());
+			_patternLookup = new CatalogPatternLookup();
 		}
 
 		public bool CanUpgrade()
@@ -54,21 +58,48 @@ namespace Randal.Utilities.Sql.Deployer.Process
 		public void DeployScripts()
 		{
 			DeployPhase(SqlScriptPhase.Pre);
+			DeployPhase(SqlScriptPhase.Main);
+			DeployPhase(SqlScriptPhase.Post);
 		}
 
 		private void DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
-			string sql;
-
-			foreach (var script in _project.AllScripts)
+			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
-				sql = script.RequestSqlScriptPhase(sqlScriptPhase);
+				var sql = script.RequestSqlScriptPhase(sqlScriptPhase);
 				if (sql == null)
 					continue;
 
+				var configuration = script.GetConfiguration();
+
 				using (var command = _connectionManager.CreateCommand(sql))
-					command.Execute("master");
+				{
+					foreach (var catalog in GetCatalogs(script))
+					{
+						if(configuration == null)
+							command.Execute(catalog);
+						else
+							command.Execute(catalog, configuration.Settings.Timeout);
+					}
+				}
 			}
+		}
+
+		private IEnumerable<string> GetCatalogs(SourceScript script)
+		{
+			var matchingDatabases = new List<string>();
+
+			foreach (var pattern in script.GetCatalogPatterns())
+			{
+				var rgx = _patternLookup[pattern];
+
+				matchingDatabases.AddRange(
+					_connectionManager.DatabaseNames
+					.Where(dbName => rgx.IsMatch(dbName))
+				);
+			}
+
+			return matchingDatabases.Distinct().OrderBy(x => x);
 		}
 
 		private void CreateProductsTable()
@@ -126,5 +157,6 @@ namespace Randal.Utilities.Sql.Deployer.Process
 		private readonly IProject _project;
 		private readonly LoggerStringFormatDecorator _logger;
 		private readonly ISqlConnectionManager _connectionManager;
+		private CatalogPatternLookup _patternLookup;
 	}
 }

@@ -69,21 +69,14 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			return messages;
 		}
 
-		private bool HasBlockOfType<TBlock>() 
-			where TBlock : IScriptBlock
-		{
-			return _scriptBlocks.Exists(sb => sb is TBlock);
-		}
-
 		public bool HasSqlScriptPhase(SqlScriptPhase requestedPhase)
 		{
-			return RequestSqlScriptPhase(requestedPhase) != null;
+			return GetSqlCommandBlock(requestedPhase) != null;
 		}
 
 		public string RequestSqlScriptPhase(SqlScriptPhase requestedPhase)
 		{
-			var scriptBlock = (SqlCommandBlock)_scriptBlocks
-				.FirstOrDefault(sb => sb is SqlCommandBlock && ((SqlCommandBlock)sb).Phase == requestedPhase);
+			var scriptBlock = GetSqlCommandBlock(requestedPhase);
 
 			return scriptBlock == null ? null : scriptBlock.RequestForExecution();
 		}
@@ -105,6 +98,18 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		public OptionsBlock GetConfiguration()
 		{
 			return (OptionsBlock) ScriptBlocks.FirstOrDefault(sb => sb is OptionsBlock && sb.IsValid);
+		}
+
+		private SqlCommandBlock GetSqlCommandBlock(SqlScriptPhase requestedPhase)
+		{
+			return (SqlCommandBlock) _scriptBlocks
+				.FirstOrDefault(sb => sb is SqlCommandBlock && ((SqlCommandBlock) sb).Phase == requestedPhase);
+		}
+
+		private bool HasBlockOfType<TBlock>() 
+			where TBlock : IScriptBlock
+		{
+			return _scriptBlocks.Exists(sb => sb is TBlock);
 		}
 
 		private string _name;

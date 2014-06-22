@@ -21,7 +21,6 @@ using Randal.Core.IO.Logging;
 using Randal.Utilities.Sql.Deployer.Process;
 using Randal.Utilities.Sql.Deployer.Scripts;
 using Rhino.Mocks;
-using Randal.Utilities.Sql.Deployer.Configuration;
 using Randal.Tests.Utilities.Sql.Deployer.Scripts;
 
 namespace Randal.Tests.Utilities.Sql.Deployer.Process
@@ -34,7 +33,13 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Process
 		{
 			base.Setup();
 			Given.Project = MockRepository.GenerateMock<IProject>();
-			Given.ConnectionManager = MockRepository.GenerateMock<ISqlConnectionManager>();
+			
+			var manager = MockRepository.GenerateMock<ISqlConnectionManager>();
+			manager.Stub(x => x.CreateCommand(Arg<string>.Is.Anything, Arg<object[]>.Is.Anything))
+				.Return(MockRepository.GenerateMock<ISqlCommandWrapper>());
+			manager.Stub(x => x.DatabaseNames).Return(new[] {"master","model","Research","Data"});
+
+			Given.ConnectionManager = manager;
 		}
 
 		[TestMethod]

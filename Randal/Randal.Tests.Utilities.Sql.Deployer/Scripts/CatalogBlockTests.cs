@@ -14,7 +14,6 @@ GNU General Public License for more details.
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Utilities.Sql.Deployer.Scripts;
@@ -55,9 +54,9 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.Object.IsValid.Should().BeTrue();
 			Then.Messages.Should().HaveCount(0);
 			Then.Object.CatalogPatterns.Should().HaveCount(3);
-			Then.Object.CatalogPatterns[0].Should().Be("^master$");
-			Then.Object.CatalogPatterns[1].Should().Be("^DB123$");
-			Then.Object.CatalogPatterns[2].Should().Be(@"^X_[_\w\d-]*$");
+			Then.Object.CatalogPatterns[0].Should().Be("master");
+			Then.Object.CatalogPatterns[1].Should().Be("DB123");
+			Then.Object.CatalogPatterns[2].Should().Be(@"X_%");
 		}
 
 		[TestMethod]
@@ -70,18 +69,6 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.Object.IsValid.Should().BeFalse();
 			Then.Object.CatalogPatterns.Should().HaveCount(0);
 			Then.Messages.Should().HaveCount(3);
-		}
-
-		[TestMethod]
-		public void ShouldNotHaveErrorMessageWhenParsingUnqualifiedWildcard()
-		{
-			Given.Text = "%";
-
-			When(Creating, Parsing);
-
-			Then.Object.IsValid.Should().BeTrue();
-			Then.Object.CatalogPatterns.Should().HaveCount(1);
-			Then.Object.CatalogPatterns.First().Should().Be(@"^[_\w\d-]*$");
 		}
 
 		private void Parsing()

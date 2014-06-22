@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\InstallerConfig.cs" />
+    <Compile Include="Helpers\CatalogPatternLookup.cs" />
     <Compile Include="IO\ProjectLoader.cs" />
     <Compile Include="Process\SqlCommandWrapper.cs" />
     <Compile Include="Process\SqlCommandWrapperFactory.cs" />

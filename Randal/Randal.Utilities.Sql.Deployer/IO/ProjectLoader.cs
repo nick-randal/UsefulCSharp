@@ -56,7 +56,6 @@ namespace Randal.Utilities.Sql.Deployer.IO
 			_logger.AddEntry("project '{0}' : '{1}'", Configuration.Project, Configuration.Version);
 			_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
 
-
 			_logger.AddEntry("Validating scripts");
 			return LoadAndValidateScripts(projectDirectory);
 		}

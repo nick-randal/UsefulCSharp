@@ -36,11 +36,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			foreach (var catalog in catalogs.Select(cat => cat.Trim()))
 			{
 				if (CatalogPatternValidation.IsMatch(catalog))
-				{
-					var temp = Regex.Escape(catalog);
-					temp = StartOfLine + temp.Replace(Wildcard, WildcardPattern) + EndOfLine;
-					_catalogPatterns.Add(temp);
-				}
+					_catalogPatterns.Add(catalog);
 				else
 					messages.Add("Invalid catalog pattern '" + catalog + "'");
 			}
@@ -51,14 +47,8 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		}
 
 		private readonly List<string> _catalogPatterns;
-		private const string 
-			Wildcard = "%", 
-			StartOfLine = "^", 
-			EndOfLine = "$",
-			WildcardPattern = @"[_\w\d-]*"
-		;
 		
-		private static readonly Regex CatalogPatternValidation = new Regex(@"^[%_\w\d-]+$", 
+		private static readonly Regex CatalogPatternValidation = new Regex(@"^[%._\w\d-]+$", 
 			RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
 	}
 }
