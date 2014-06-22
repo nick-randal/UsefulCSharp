@@ -16,6 +16,7 @@ GNU General Public License for more details.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Randal.Core.Enums;
 using Randal.Core.IO.Logging;
 using Randal.Utilities.Sql.Deployer.Helpers;
 using Randal.Utilities.Sql.Deployer.Scripts;
@@ -25,7 +26,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 	public interface IScriptDeployer
 	{
 		bool CanUpgrade();
-		void DeployScripts();
+		Returned DeployScripts();
 	}
 
 	public sealed class ScriptDeployer : IScriptDeployer
@@ -45,42 +46,66 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public bool CanUpgrade()
 		{
-			CreateProductsTable();
+			CreateProjectsTable();
 
 			var valid = IsProjectValidUpgrade();
 
 			if (valid)
-				AddProductVersion();
+				AddProject();
 
 			return valid;
 		}
 
-		public void DeployScripts()
+		public Returned DeployScripts()
 		{
-			DeployPhase(SqlScriptPhase.Pre);
-			DeployPhase(SqlScriptPhase.Main);
-			DeployPhase(SqlScriptPhase.Post);
+			if(DeployPhase(SqlScriptPhase.Pre) == Returned.Failure)
+				return Returned.Failure;
+
+			if (DeployPhase(SqlScriptPhase.Main) == Returned.Failure)
+				return Returned.Failure;
+			
+			return DeployPhase(SqlScriptPhase.Post);	
 		}
 
-		private void DeployPhase(SqlScriptPhase sqlScriptPhase)
+		private Returned DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
+			_logger.AddEntryNoTimestamp("{0} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", sqlScriptPhase);
+
 			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
 				var sql = script.RequestSqlScriptPhase(sqlScriptPhase);
 				if (sql == null)
 					continue;
 
-				var configuration = script.GetConfiguration();
+				_logger.AddEntry(script.Name);
 
-				using (var command = _connectionManager.CreateCommand(sql))
+				try
 				{
-					foreach (var catalog in GetCatalogs(script))
-					{
-						if(configuration == null)
-							command.Execute(catalog);
-						else
-							command.Execute(catalog, configuration.Settings.Timeout);
-					}
+					ExecSql(script, sql);
+				}
+				catch (Exception ex)
+				{
+					_logger.AddException(ex);
+					return Returned.Failure;
+				}
+			}
+
+			return Returned.Success;
+		}
+
+		private void ExecSql(SourceScript script, string sql)
+		{
+			var configuration = script.GetConfiguration();
+
+			using (var command = _connectionManager.CreateCommand(sql))
+			{
+				foreach (var catalog in GetCatalogs(script))
+				{
+					_logger.AddEntryNoTimestamp("    {0}", catalog);
+					if (configuration == null)
+						command.Execute(catalog);
+					else
+						command.Execute(catalog, configuration.Settings.Timeout);
 				}
 			}
 		}
@@ -102,9 +127,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			return matchingDatabases.Distinct().OrderBy(x => x);
 		}
 
-		private void CreateProductsTable()
+		private void CreateProjectsTable()
 		{
-			_logger.AddEntry("Creating Product Version table.");
+			_logger.AddEntry("creating Projects table.");
 
 			using (var command = _connectionManager.CreateCommand(TextResources.Sql.CreateProductsTable))
 			{
@@ -112,9 +137,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			}
 		}
 
-		private void AddProductVersion()
+		private void AddProject()
 		{
-			_logger.AddEntry("Adding this package's product and version to products table.");
+			_logger.AddEntry("adding project record.");
 
 			var values = new object[] { _project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName };
 			using (var command = _connectionManager.CreateCommand(TextResources.Sql.InsertProduct, values))
@@ -135,28 +160,28 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))
 				{
-					_logger.AddEntry("Never encountered this project before, continuing.");
+					_logger.AddEntry("never encountered this project before, continuing.");
 					return true;
 				}
 
 				databaseVersion = new Version(reader.GetString(0));
 			}
 
-			_logger.AddEntry("Found version in database for '{0}' as '{1}'", config.Project, databaseVersion);
+			_logger.AddEntry("found project '{0}' as '{1}'", config.Project, databaseVersion);
 
 			if (databaseVersion >= projectVersion)
 			{
-				_logger.AddEntry("Project is older than or equal to what is currently deployed.");
+				_logger.AddEntry("project is older than or equal to what is currently deployed.");
 				return false;
 			}
 
-			_logger.AddEntry("Project is newer than what is currently deployed, continuing.");
+			_logger.AddEntry("project is newer than what is currently deployed, continuing.");
 			return true;
 		}
 
 		private readonly IProject _project;
 		private readonly LoggerStringFormatDecorator _logger;
 		private readonly ISqlConnectionManager _connectionManager;
-		private CatalogPatternLookup _patternLookup;
+		private readonly CatalogPatternLookup _patternLookup;
 	}
 }

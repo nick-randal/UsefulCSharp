@@ -71,7 +71,7 @@
     <Compile Include="Dynamic\DynamicEntityTests.cs" />
     <Compile Include="IO\Logging\StringLoggerTests.cs" />
     <Compile Include="IO\Logging\OneLogTests.cs" />
-    <Compile Include="IO\Logging\ExceptionEntryTests.cs" />
+    <Compile Include="IO\Logging\LogExceptionEntryTests.cs" />
     <Compile Include="IO\Logging\FileLogSettingsTests.cs" />
     <Compile Include="IO\Logging\AsyncFileLoggerTests.cs" />
     <Compile Include="IO\Logging\LogStringDecoratorFormatTests.cs" />
@@ -79,7 +79,7 @@
     <Compile Include="IO\Logging\FileHandling\LogFolderTests.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFileTests.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFileManagerTests.cs" />
-    <Compile Include="IO\Logging\LogFormatterTests.cs" />
+    <Compile Include="IO\Logging\LogEntryFormatterTests.cs" />
     <Compile Include="IO\Logging\LogEntryTests.cs" />
     <Compile Include="IO\Logging\LogEntryNoTimestampTests.cs" />
     <Compile Include="IO\Logging\NullLoggerTests.cs" />

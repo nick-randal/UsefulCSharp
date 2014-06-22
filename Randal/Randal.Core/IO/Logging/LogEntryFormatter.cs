@@ -14,6 +14,9 @@ GNU General Public License for more details.
 */
 
 using System;
+using System.Data.SqlClient;
+using System.Net.Mail;
+using System.Text;
 
 namespace Randal.Core.IO.Logging
 {
@@ -26,12 +29,95 @@ namespace Randal.Core.IO.Logging
 	{
 		public string Format(ILogEntry entry)
 		{
+			var exEntry = entry as ExceptionEntry;
+
+			if (exEntry != null)
+				return FormatException(exEntry);
+
 			return string.Concat(
 						entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
-						' ',
+						"    ",
 						entry.Message,
 						Environment.NewLine
 					);
+		}
+
+		private static string FormatException(ExceptionEntry entry)
+		{
+			var text = new StringBuilder();
+
+			if (string.IsNullOrWhiteSpace(entry.Message) == false)
+				text.AppendLine(entry.Message.Trim());
+
+			if (entry.Exception == null)
+			{
+				text.AppendLine(TextResources.Errors.NoExceptionProvided);
+				return text.ToString();
+			}
+
+			text.AppendLine(TextResources.Errors.ErrorInfo);
+			text.AppendLine(TextResources.DashedBreak80Wide);
+
+			var inner = entry.Exception;
+			while (inner != null)
+			{
+				try
+				{
+					if (FormatSqlException(text, inner as SqlException) ||
+						FormatSmtpException(text, inner as SmtpException)) { }
+					else
+						text.AppendFormat("{0} : {1}", inner.GetType().FullName, inner.Message);
+				}
+				finally
+				{
+					text.AppendLine();
+					inner = inner.InnerException;
+				}
+			}
+
+			FormatStackTrace(entry, text);
+
+			return text.ToString();
+		}
+
+		private static void FormatStackTrace(ExceptionEntry entry, StringBuilder text)
+		{
+			if (entry.Exception == null)
+				return;
+
+			text.AppendLine();
+			text.AppendLine("Stack Trace");
+			text.AppendLine();
+			text.AppendLine(entry.Exception.StackTrace);
+			text.AppendLine(TextResources.DashedBreak80Wide);
+		}
+
+		private static bool FormatSmtpException(StringBuilder text, SmtpException smtpEx)
+		{
+			if (smtpEx == null)
+				return false;
+
+			text.AppendFormat("SMTP Error : {0} - {1}", smtpEx.StatusCode, smtpEx.Message);
+			return true;
+		}
+
+		private static bool FormatSqlException(StringBuilder text, SqlException sqlEx)
+		{
+			if (sqlEx == null)
+				return false;
+
+			text.AppendLine(sqlEx.Message);
+			text.AppendFormat("Source {0}, Code {1}, Line {2}, Procedure {3}", sqlEx.Source, sqlEx.Number, sqlEx.LineNumber, sqlEx.Procedure);
+			text.AppendLine();
+
+			for (var i = 0; i < sqlEx.Errors.Count; i++)
+			{
+				text.AppendFormat("{0} line {1}: {2}",
+					sqlEx.Errors[i].Procedure, sqlEx.Errors[i].LineNumber, sqlEx.Errors[i].Message
+					);
+			}
+
+			return true;
 		}
 	}
 }

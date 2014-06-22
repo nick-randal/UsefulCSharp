@@ -35,11 +35,22 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public SqlCommandWrapper(SqlConnection connection, SqlTransaction transaction, string commandText, params object[] values)
 		{
+			string formatted;
+
+			try
+			{
+				formatted = string.Format(commandText, values);
+			}
+			catch (FormatException ex)
+			{
+				throw new FormatException("Failed to format sql command '" + commandText + "'", ex);
+			}
+
 			_sqlCommand = new SqlCommand
 			{
 				Connection = connection,
 				CommandType = CommandType.Text,
-				CommandText = string.Format(commandText, values)
+				CommandText = formatted
 			};
 
 			if (transaction != null)

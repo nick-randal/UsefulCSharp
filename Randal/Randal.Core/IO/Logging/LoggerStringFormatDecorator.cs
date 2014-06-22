@@ -24,6 +24,7 @@ namespace Randal.Core.IO.Logging
 		void AddBlank(Verbosity verbosity = Verbosity.Info);
 		void AddEntryNoTimestamp(string message, params object[] values);
 		void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
+		void AddException(Exception ex);
 		void AddException(Exception ex, string message, params object[] values);
 	}
 
@@ -61,6 +62,11 @@ namespace Randal.Core.IO.Logging
 			var formatted = string.Format(message, values);
 
 			_logger.Add(new LogEntryNoTimestamp(formatted, verbosity));
+		}
+
+		public void AddException(Exception ex)
+		{
+			_logger.Add(new ExceptionEntry(ex));
 		}
 
 		public void AddException(Exception ex, string message, params object[] values)

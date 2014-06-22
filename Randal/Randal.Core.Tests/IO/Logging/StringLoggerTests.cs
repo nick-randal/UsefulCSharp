@@ -51,7 +51,7 @@ namespace Randal.Tests.Core.IO.Logging
 		{
 			Given.Entry = new LogEntry("Hello world", new DateTime(2014, 6, 11));
 			When(Creating, GettingText);
-			Then.Text.Should().Be("140611 000000 Hello world\r\n");
+			Then.Text.Should().Be("140611 000000    Hello world\r\n");
 		}
 
 		[TestMethod]

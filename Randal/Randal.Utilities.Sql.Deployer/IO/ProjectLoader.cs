@@ -48,7 +48,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 		{
 			var projectDirectory = new DirectoryInfo(ProjectPath);
 
-			_logger.AddEntry("Load configuration");
+			_logger.AddEntry("load configuration");
 
 			if (LoadConfiguration(projectDirectory) == Returned.Failure)
 				return Returned.Failure;
@@ -56,7 +56,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 			_logger.AddEntry("project '{0}' : '{1}'", Configuration.Project, Configuration.Version);
 			_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
 
-			_logger.AddEntry("Validating scripts");
+			_logger.AddEntry("validating scripts");
 			return LoadAndValidateScripts(projectDirectory);
 		}
 
