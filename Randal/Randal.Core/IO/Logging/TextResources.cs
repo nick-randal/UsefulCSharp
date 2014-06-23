@@ -20,7 +20,8 @@ namespace Randal.Core.IO.Logging
 		public const string
 			DashedBreak80Wide = "--------------------------------------------------------------------------------",
 			Timestamp = "yyMMdd HHmmss",
-			NoTimestamp = "             ",
+			NoTimestamp = "                 ",
+			Prepend = "    ",
 			AttentionRepeatingLines = "ATTENTION: The previous line was repeated {0} times.",
 			ApplicationEventLog = "Application"
 		;

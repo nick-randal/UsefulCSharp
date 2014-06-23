@@ -58,13 +58,46 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public Returned DeployScripts()
 		{
-			if(DeployPhase(SqlScriptPhase.Pre) == Returned.Failure)
+			var phases = new[] { SqlScriptPhase.Pre, SqlScriptPhase.Main, SqlScriptPhase.Post };
+
+			if(DeployPriorityScripts(phases) == Returned.Failure)
 				return Returned.Failure;
 
-			if (DeployPhase(SqlScriptPhase.Main) == Returned.Failure)
+			if (phases.Any(phase => DeployPhase(phase) == Returned.Failure))
+			{
 				return Returned.Failure;
-			
-			return DeployPhase(SqlScriptPhase.Post);	
+			}
+
+			return Returned.Success;
+		}
+
+		private Returned DeployPriorityScripts(SqlScriptPhase[] phases)
+		{
+			_logger.AddEntryNoTimestamp("Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+			foreach (var script in _project.PriorityScripts)
+			{
+				_logger.AddEntry(script.Name);
+
+				foreach (var phase in phases)
+				{
+					if (script.HasSqlScriptPhase(phase) == false)
+						continue;
+
+					_logger.AddEntryNoTimestamp("  {0}", phase);
+					try
+					{
+						ExecSql(script, phase);
+					}
+					catch (Exception ex)
+					{
+						_logger.AddException(ex);
+						return Returned.Failure;
+					}
+				}
+			}
+
+			return Returned.Success;
 		}
 
 		private Returned DeployPhase(SqlScriptPhase sqlScriptPhase)
@@ -73,15 +106,11 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
-				var sql = script.RequestSqlScriptPhase(sqlScriptPhase);
-				if (sql == null)
-					continue;
-
 				_logger.AddEntry(script.Name);
 
 				try
 				{
-					ExecSql(script, sql);
+					ExecSql(script, sqlScriptPhase);
 				}
 				catch (Exception ex)
 				{
@@ -93,8 +122,12 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			return Returned.Success;
 		}
 
-		private void ExecSql(SourceScript script, string sql)
+		private void ExecSql(SourceScript script, SqlScriptPhase phase)
 		{
+			var sql = script.RequestSqlScriptPhase(phase);
+			if (sql == null)
+				return;
+
 			var configuration = script.GetConfiguration();
 
 			using (var command = _connectionManager.CreateCommand(sql))

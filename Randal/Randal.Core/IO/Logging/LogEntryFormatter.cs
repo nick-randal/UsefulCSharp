@@ -36,7 +36,7 @@ namespace Randal.Core.IO.Logging
 
 			return string.Concat(
 						entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
-						"    ",
+						TextResources.Prepend,
 						entry.Message,
 						Environment.NewLine
 					);
