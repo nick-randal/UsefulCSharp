@@ -85,14 +85,22 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		{
 			var catalogBlock = (CatalogBlock)_scriptBlocks.FirstOrDefault(sb => sb is CatalogBlock && sb.IsValid);
 
-			return catalogBlock == null ? null : catalogBlock.CatalogPatterns;
+			var catalogs = new List<string>();
+			if(catalogBlock != null)
+				catalogs.AddRange(catalogBlock.CatalogPatterns);
+
+			return catalogs.AsReadOnly();
 		}
 
 		public IReadOnlyList<string> GetNeeds()
 		{
 			var needBlock = (NeedBlock) ScriptBlocks.FirstOrDefault(sb => sb is NeedBlock && sb.IsValid);
 
-			return needBlock == null ? null : needBlock.Files;
+			var needed = new List<string>();
+			if(needBlock != null)
+				needed.AddRange(needBlock.Files);
+
+			return needed.AsReadOnly();
 		}
 
 		public OptionsBlock GetConfiguration()

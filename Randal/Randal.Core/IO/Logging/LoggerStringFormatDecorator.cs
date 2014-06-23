@@ -26,6 +26,8 @@ namespace Randal.Core.IO.Logging
 		void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
 		void AddException(Exception ex);
 		void AddException(Exception ex, string message, params object[] values);
+
+		ILogger Logger { get; }
 	}
 
 	public sealed class LoggerStringFormatDecorator : ILoggerStringFormatDecorator
@@ -75,6 +77,8 @@ namespace Randal.Core.IO.Logging
 
 			_logger.Add(new ExceptionEntry(ex, formatted));
 		}
+
+		public ILogger Logger { get { return _logger; } }
 
 		#region ILogger Wrappers
 

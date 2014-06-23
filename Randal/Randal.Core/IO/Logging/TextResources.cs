@@ -56,7 +56,7 @@ BEGIN
 		FromMachine			SYSNAME			NOT NULL,
 		FromUser			SYSNAME			NOT NULL,
 		InstalledOn			DATETIME		NOT NULL DEFAULT GETDATE(),
-		InstalledBy			SYSNAME			NOT NULL DEFAULT CURRENT_USER,
+		InstalledBy			SYSNAME			NOT NULL DEFAULT SUSER_NAME(),
 
 		PRIMARY KEY CLUSTERED (Project, Version)
 	)
@@ -67,13 +67,6 @@ END",
 				GetDatabases = "select [name] from master.sys.databases where [name] not in ('msdb', 'tempdb')",
 				GetProductVersion = "SELECT MAX(Version) FROM master.dbo.ProjectsDeployed WHERE Project = '{0}'"
 			;
-				/*IncludeLogNote = "NOTE !!!    Please include the entire log file when reporting errors.",
-				MsgPackageNew = "The package is more recent than the existing database version, proceeding...",
-				MsgSqlOpen1 = "Opening a connection to sql server ({0}) using integrated security.",
-				MsgSqlOpen2 = "Opening a connection to sql server ({0}) for user ({1}).",
-				Timeout = "Timeout : Rollback is taking longer than the connection timeout.  This does not affect the rollback completing."
-				ErrSqlConnection = "Failed to open a connection to SQL Server.",
-				 */
 		}
 	}
 }

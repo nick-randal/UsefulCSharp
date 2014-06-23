@@ -73,11 +73,11 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private Returned DeployPriorityScripts(SqlScriptPhase[] phases)
 		{
-			_logger.AddEntryNoTimestamp("Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			_logger.AddEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
 
 			foreach (var script in _project.PriorityScripts)
 			{
-				_logger.AddEntry(script.Name);
+				_logger.AddEntry(Verbosity.Important, script.Name);
 
 				foreach (var phase in phases)
 				{
@@ -102,11 +102,11 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private Returned DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
-			_logger.AddEntryNoTimestamp("{0} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", sqlScriptPhase);
+			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine, sqlScriptPhase);
 
 			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
-				_logger.AddEntry(script.Name);
+				_logger.AddEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
 
 				try
 				{
@@ -124,6 +124,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private void ExecSql(SourceScript script, SqlScriptPhase phase)
 		{
+			ExecNeededScripts(script, phase);
+
 			var sql = script.RequestSqlScriptPhase(phase);
 			if (sql == null)
 				return;
@@ -140,6 +142,19 @@ namespace Randal.Utilities.Sql.Deployer.Process
 					else
 						command.Execute(catalog, configuration.Settings.Timeout);
 				}
+			}
+		}
+
+		private void ExecNeededScripts(SourceScript script, SqlScriptPhase phase)
+		{
+			foreach (var scriptName in script.GetNeeds())
+			{
+				var neededScript = _project.TryGetScript(scriptName);
+				if(neededScript == null)
+					throw new InvalidOperationException("Needed script '" + scriptName + "' not found, was requested from '" + script.Name + "'.");
+
+				_logger.AddEntryNoTimestamp("{0} -> {1}", script.Name, neededScript.Name);
+				ExecSql(neededScript, phase);
 			}
 		}
 

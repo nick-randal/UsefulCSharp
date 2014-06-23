@@ -50,10 +50,10 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 			Then.Object.IsValid.Should().BeTrue();
 			Then.Object.Files.Should().HaveCount(4);
-			Then.Object.Files[0].Should().Be("A.sql");
-			Then.Object.Files[1].Should().Be("B.sql");
-			Then.Object.Files[2].Should().Be("C.sql");
-			Then.Object.Files[3].Should().Be("D.sql");
+			Then.Object.Files[0].Should().Be("A");
+			Then.Object.Files[1].Should().Be("B");
+			Then.Object.Files[2].Should().Be("C");
+			Then.Object.Files[3].Should().Be("D");
 		}
 
 		[TestMethod]

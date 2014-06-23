@@ -37,8 +37,6 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			{
 				var temp = item.Trim();
 
-				
-
 				if (InvalidFileName.IsMatch(temp))
 				{
 					messages.Add("Invalid file name '" + temp + "' provided as a 'need'.");
@@ -46,9 +44,9 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 				}
 
 				if (temp.EndsWith(SqlExtension, StringComparison.InvariantCultureIgnoreCase))
-					_files.Add(temp);
+					_files.Add(temp.Replace(SqlExtension, string.Empty));
 				else
-					_files.Add(temp + ".sql");
+					_files.Add(temp);
 			}
 
 			IsValid = messages.Count == 0;
@@ -56,11 +54,12 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			return messages;
 		}
 
+		private readonly List<string> _files;
+
 		private const string SqlExtension = ".sql";
 
 		private static readonly Regex InvalidFileName =
 			new Regex("[" + Regex.Escape(string.Join(string.Empty, Path.GetInvalidFileNameChars())) + "]",
 				RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-		private readonly List<string> _files;
 	}
 }

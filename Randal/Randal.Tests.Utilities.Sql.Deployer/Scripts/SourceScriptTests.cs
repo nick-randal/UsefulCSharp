@@ -116,7 +116,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		{
 			When(Creating, Validating, GettingCatalogPatterns);
 
-			Then.CatalogPatterns.Should().BeNull();
+			Then.CatalogPatterns.Should().BeEmpty();
 		}
 
 		[TestMethod]
@@ -124,19 +124,19 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		{
 			Given.BlockList.Add(new NeedBlock("A, B"));
 
-			When(Creating, Validating, WhenGettingNeeds);
+			When(Creating, Validating, GettingNeeds);
 
 			Then.Needs.Should().HaveCount(2);
-			Then.Needs[0].Should().Be("A.sql");
-			Then.Needs[1].Should().Be("B.sql");
+			Then.Needs[0].Should().Be("A");
+			Then.Needs[1].Should().Be("B");
 		}
 
 		[TestMethod]
 		public void ShouldReturnNullWhenGettingNeedsGivenNoNeeds()
 		{
-			When(Creating, Validating, WhenGettingNeeds);
+			When(Creating, Validating, GettingNeeds);
 
-			Then.Needs.Should().BeNull();
+			Then.Needs.Should().BeEmpty();
 		}
 
 		[TestMethod]
@@ -179,7 +179,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.HasPhase = Then.Script.HasSqlScriptPhase(Given.CheckForPhase);
 		}
 
-		private void WhenGettingNeeds()
+		private void GettingNeeds()
 		{
 			Then.Needs = Then.Script.GetNeeds();
 		}
