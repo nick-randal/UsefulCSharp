@@ -13,26 +13,21 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
-using Randal.Core.IO.Logging;
-using Randal.Core.Testing.UnitTest;
+using System;
 
-namespace Randal.Tests.Core.IO.Logging
+namespace Randal.Utilities.Sql.Deployer.App
 {
-	[TestClass]
-	public sealed class OneLogTests : BaseUnitTest<object>
+	public sealed class RunnerException : InvalidOperationException
 	{
-		[TestInitialize]
-		public override void Setup()
+		public RunnerException(string message) : base(message)
 		{
-			base.Setup();
+
 		}
 
-		[TestMethod]
-		public void ShouldHaveStringLoggerWhenAccessingInstance()
+		public RunnerException(string message, Exception innerException)
+			: base(message, innerException)
 		{
-			OneLog.Inst.Should().NotBeNull().And.BeAssignableTo<StringLogger>();
+
 		}
 	}
 }

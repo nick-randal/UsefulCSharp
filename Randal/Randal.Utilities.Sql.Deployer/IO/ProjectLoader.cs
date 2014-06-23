@@ -88,7 +88,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 				}
 			}
 
-			_logger.AddEntry("loadded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
+			_logger.AddEntry("loaded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
 
 			return result;
 		}
@@ -103,13 +103,13 @@ namespace Randal.Utilities.Sql.Deployer.IO
 			}
 			catch (DirectoryNotFoundException ex)
 			{
-				_logger.AddException(ex, "Project directory not found at '" + projectDirectory.FullName + "'");
+				_logger.AddException(ex, "project directory not found at '" + projectDirectory.FullName + "'");
 				return Returned.Failure;
 			}
 
 			if (configFile == null)
 			{
-				_logger.AddEntry(Verbosity.Vital, "No 'config.json' configuration file found for project.");
+				_logger.AddEntry(Verbosity.Vital, "no 'config.json' configuration file found for project.");
 				return Returned.Failure;
 			}
 
@@ -121,7 +121,7 @@ namespace Randal.Utilities.Sql.Deployer.IO
 				}
 				catch (JsonReaderException jre)
 				{
-					throw new JsonReaderException("Error loading config.json file, see inner exception details.", jre);
+					throw new JsonReaderException("error loading config.json file, see inner exception details.", jre);
 				}
 			}
 

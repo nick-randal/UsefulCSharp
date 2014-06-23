@@ -126,6 +126,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 		{
 			ExecNeededScripts(script, phase);
 
+			if (script.HasPhaseExecuted(phase))
+				return;
+
 			var sql = script.RequestSqlScriptPhase(phase);
 			if (sql == null)
 				return;
@@ -147,15 +150,21 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private void ExecNeededScripts(SourceScript script, SqlScriptPhase phase)
 		{
+			var hadNeededScripts = false;
+
 			foreach (var scriptName in script.GetNeeds())
 			{
 				var neededScript = _project.TryGetScript(scriptName);
 				if(neededScript == null)
 					throw new InvalidOperationException("Needed script '" + scriptName + "' not found, was requested from '" + script.Name + "'.");
 
+				hadNeededScripts = true;
 				_logger.AddEntryNoTimestamp("{0} -> {1}", script.Name, neededScript.Name);
 				ExecSql(neededScript, phase);
 			}
+
+			if(hadNeededScripts)
+				_logger.AddEntryNoTimestamp("<--- {0}", script.Name);
 		}
 
 		private IEnumerable<string> GetCatalogs(SourceScript script)
@@ -203,6 +212,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 			var projectVersion = new Version(config.Version);
 
+			_logger.AddEntry("Looking up project '{0}'", config.Project);
+
 			using (var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, config.Project, config.Version))
 			using (var reader = command.ExecuteReader(TextResources.Sql.Database.Master))
 			{
@@ -215,7 +226,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 				databaseVersion = new Version(reader.GetString(0));
 			}
 
-			_logger.AddEntry("found project '{0}' as '{1}'", config.Project, databaseVersion);
+			_logger.AddEntry("database version is '{0}' and config version is '{1}'", databaseVersion, config.Version);
 
 			if (databaseVersion >= projectVersion)
 			{

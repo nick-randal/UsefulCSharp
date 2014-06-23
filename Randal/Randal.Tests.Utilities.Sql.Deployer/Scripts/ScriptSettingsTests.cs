@@ -13,7 +13,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
 using Randal.Core.Testing.UnitTest;
@@ -36,25 +35,22 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			When(Creating);
 
 			Then.Settings.Timeout.Should().Be(30);
-			Then.Settings.UseTransaction.Should().BeTrue();
 		}
 
 		[TestMethod]
-		public void ShouldHaveValuesWhenCreatingGivenValues()
+		public void ShouldHaveAssignedValuesWhenCreatingGivenValues()
 		{
 			Given.Timeout = 357;
-			Given.UseTransaction = false;
 
 			When(Creating);
 
 			Then.Settings.Timeout.Should().Be(357);
-			Then.Settings.UseTransaction.Should().BeFalse();
 		}
 
 		private void Creating()
 		{
-			if(Given.TestForMember("Timeout") && Given.TestForMember("UseTransaction"))
-				Then.Settings = new ScriptSettings(Given.Timeout, Given.UseTransaction);
+			if(Given.TestForMember("Timeout"))
+				Then.Settings = new ScriptSettings(Given.Timeout);
 			else
 				Then.Settings = new ScriptSettings();
 		}

@@ -47,13 +47,12 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		[TestMethod]
 		public void ShouldHaveValuesWhenParsingGivenValidJson()
 		{
-			Given.Json = "{ timeout: 256, usetransaction: false }";
+			Given.Json = "{ timeout: 256 }";
 
 			When(Creating, Parsing);
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(256);
-			Then.Settings.UseTransaction.Should().BeFalse();
 		}
 
 		[TestMethod]
@@ -65,19 +64,17 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(30);
-			Then.Settings.UseTransaction.Should().BeTrue();
 		}
 
 		[TestMethod]
 		public void ShouldHaveValuesWhenParsingGivenJsonWithoutEnclosingBraces()
 		{
-			Given.Json = "Timeout: 256, useTransaction: true";
+			Given.Json = "Timeout: 256";
 
 			When(Creating, Parsing);
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(256);
-			Then.Settings.UseTransaction.Should().BeTrue();
 		}
 
 		private void Creating()

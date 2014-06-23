@@ -77,7 +77,6 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.CatalogPatterns.Should().HaveCount(2);
 			Then.Configuration.Should().NotBeNull();
 			Then.Configuration.Settings.Timeout.Should().Be(45);
-			Then.Configuration.Settings.UseTransaction.Should().BeFalse();
 			Then.Script.HasSqlScriptPhase(SqlScriptPhase.Pre).Should().BeTrue();
 			Then.Script.HasSqlScriptPhase(SqlScriptPhase.Main).Should().BeTrue();
 			Then.Script.HasSqlScriptPhase(SqlScriptPhase.Post).Should().BeTrue();
@@ -169,6 +168,30 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.Text.Should().Be("select 1");
 		}
 
+		[TestMethod]
+		public void ShouldIndicateTrueWhenCheckingIfExecutedGivenPreviouslyRequestedBlock()
+		{
+			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
+			Given.RequestedPhase = SqlScriptPhase.Main;
+
+			When(Creating, Validating, RequestingPhase, CheckingIfExecuted);
+
+			Then.WasExecuted.Should().BeTrue();
+		}
+
+		[TestMethod, ExpectedException(typeof(InvalidOperationException))]
+		public void ShouldThrowExceptionWhenRequestingPhaseGivenPhaseDoesNotExist()
+		{
+			Given.RequestedPhase = SqlScriptPhase.Main;
+
+			When(Creating, Validating, RequestingPhase);
+		}
+
+		private void CheckingIfExecuted()
+		{
+			Then.WasExecuted = Then.Script.HasPhaseExecuted(Given.RequestedPhase);
+		}
+
 		private void RequestingPhase()
 		{
 			Then.Text = Then.Script.RequestSqlScriptPhase(Given.RequestedPhase);
@@ -210,7 +233,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 		public SourceScript Script;
 		public OptionsBlock Configuration;
 		public IReadOnlyList<string> CatalogPatterns, Messages, Needs;
-		public bool HasPhase;
+		public bool HasPhase, WasExecuted;
 		public string Text;
 	}
 }

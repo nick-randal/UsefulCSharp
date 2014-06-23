@@ -70,7 +70,6 @@
   <ItemGroup>
     <Compile Include="Dynamic\DynamicEntityTests.cs" />
     <Compile Include="IO\Logging\StringLoggerTests.cs" />
-    <Compile Include="IO\Logging\OneLogTests.cs" />
     <Compile Include="IO\Logging\LogExceptionEntryTests.cs" />
     <Compile Include="IO\Logging\FileLogSettingsTests.cs" />
     <Compile Include="IO\Logging\AsyncFileLoggerTests.cs" />

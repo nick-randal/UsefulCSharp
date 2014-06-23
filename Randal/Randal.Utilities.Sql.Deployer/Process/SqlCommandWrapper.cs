@@ -39,7 +39,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 			try
 			{
-				formatted = string.Format(commandText, values);
+				formatted = values.Length == 0 ? commandText : string.Format(commandText, values);
 			}
 			catch (FormatException ex)
 			{

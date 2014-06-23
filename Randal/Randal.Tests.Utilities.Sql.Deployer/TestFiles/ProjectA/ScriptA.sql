@@ -1,7 +1,7 @@
-﻿--:: catalog TCPLP
+﻿--:: catalog master
 
 --:: ignore
-use TCPLP
+use model
 GO
 
 --:: pre

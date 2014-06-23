@@ -13,23 +13,23 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-using Newtonsoft.Json;
+using CommandLine;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Utilities.Sql.Deployer.App
 {
-	public sealed class ScriptSettings
+	sealed class SqlDeployerProgram
 	{
-		public ScriptSettings() : this(30)
+		static int Main(string[] args)
 		{
-			
-		}
+			var options = new AppOptions();
+			if (Parser.Default.ParseArguments(args, options) == false)
+				return 2;
 
-		public ScriptSettings(int timeout)
-		{
-			Timeout = timeout;
-		}
+			var settings = new RunnerSettings(options.ProjectFolder, options.LogFolder, options.Server, options.Rollback, options.NoTransaction);
+			var runner = new Runner(settings);
+			runner.Go();
 
-		[JsonProperty(Required = Required.Default)]
-		public int Timeout { get; private set; }
+			return -1;
+		}
 	}
 }

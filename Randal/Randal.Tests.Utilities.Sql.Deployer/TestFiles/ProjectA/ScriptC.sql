@@ -1,8 +1,8 @@
-﻿--:: catalog TCPLP
+﻿--:: catalog master
 --:: options { timeout: 30, transaction : false }
 
 --:: ignore
-use TCPLP
+use model
 GO
 
 --:: pre

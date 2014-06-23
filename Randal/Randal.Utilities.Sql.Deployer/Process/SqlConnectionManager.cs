@@ -53,9 +53,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			OpenConnection(newServer, database, null, null);
 		}
 
-		public void OpenConnection(string newServer, string database, string userName, string password)
+		public void OpenConnection(string server, string database, string userName, string password)
 		{
-			_scnBuilder.DataSource = Server;
+			_scnBuilder.DataSource = server;
 			_scnBuilder.InitialCatalog = database;
 			_scnBuilder.ConnectTimeout = 30;
 

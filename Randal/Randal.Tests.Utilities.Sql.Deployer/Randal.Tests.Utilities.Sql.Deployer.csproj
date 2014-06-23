@@ -73,6 +73,7 @@
     <Compile Include="Process\SqlCommandWrapperTests.cs" />
     <Compile Include="Process\SqlCommandWrapperFactoryTests.cs" />
     <Compile Include="Process\SqlConnectionManagerTests.cs" />
+    <Compile Include="Process\ScriptDeployerIntegrationTests.cs" />
     <Compile Include="Scripts\BaseScriptBlockTests.cs" />
     <Compile Include="Scripts\ProjectBuilder.cs" />
     <Compile Include="Scripts\ScriptParserTests.Builder.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Scripts\OptionsBlockTests.cs" />
     <Compile Include="Scripts\ScriptSettingsTests.cs" />
     <Compile Include="Process\ScriptDeployerTests.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

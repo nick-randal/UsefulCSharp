@@ -13,6 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+using System;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
@@ -23,12 +24,19 @@ using Rhino.Mocks;
 namespace Randal.Tests.Utilities.Sql.Deployer.Process
 {
 	[TestClass]
-	public sealed class SqlConnectionManagerTests : BaseUnitTest<UnitTest1Thens>
+	public sealed class SqlConnectionManagerTests : BaseUnitTest<ScriptDeployerThens>
 	{
 		[TestInitialize]
 		public override void Setup()
 		{
 			base.Setup();
+			Then.CommandFactory = null;
+		}
+
+		[TestCleanup]
+		public void Teardown()
+		{
+			Then.Manager.Dispose();
 		}
 
 		[TestMethod]
@@ -44,7 +52,56 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Process
 		{
 			Given.CommandText = "Select 1";
 			When(Creating, CreatingCommand);
-			Then.Command.Should().NotBeNull();
+			Then.Command.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapper>();
+		}
+
+		[TestMethod]
+		public void ShouldRollbackTransactionWhenExecutingAndRollingBack()
+		{
+			Given.Server = ".";
+			Given.Database = "master";
+			Given.CommandText = "Select 1";
+
+			When(Creating, OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, RollingBack);
+		}
+
+		[TestMethod]
+		public void ShouldCommitTransactionWhenExecutingAndCommitting()
+		{
+			Given.Server = ".";
+			Given.Database = "master";
+			Given.CommandText = "Select 1";
+
+			When(Creating, OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, Committing);
+		}
+
+		[TestMethod, ExpectedException(typeof(InvalidOperationException))]
+		public void ShouldThrowExceptionWhenBeginningTransactionWithoutAnOpenConnection()
+		{
+			When(Creating, BeginningTransaction);
+		}
+
+		[TestMethod]
+		public void ShouldTakeNoActionWhenCommittingTransactionAndNoTransactionWasStarted()
+		{
+			Given.Server = ".";
+			Given.Database = "master";
+
+			When(Creating, OpenningConnection, Committing);
+		}
+
+		[TestMethod]
+		public void ShouldTakeNoActionWhenRollingBackTransactionAndNoTransactionWasStarted()
+		{
+			Given.Server = ".";
+			Given.Database = "master";
+
+			When(Creating, OpenningConnection, RollingBack);
+		}
+
+		private void Creating()
+		{
+			Then.Manager = new SqlConnectionManager(Then.CommandFactory);
 		}
 
 		private void CreatingCommand()
@@ -52,20 +109,36 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Process
 			Then.Command = Then.Manager.CreateCommand(Given.CommandText);
 		}
 
-		private void Creating()
+		private void ExecutingCommand()
 		{
-			var commandFactory = MockRepository.GenerateMock<ISqlCommandWrapperFactory>();
-			commandFactory.Stub(
-					x => x.CreateCommand(Arg<SqlConnection>.Is.Anything, Arg<SqlTransaction>.Is.Anything, Arg<string>.Is.Anything, Arg<object[]>.Is.Anything)
-				)
-				.Return(MockRepository.GenerateMock<ISqlCommandWrapper>());
-			Then.Manager = new SqlConnectionManager(commandFactory);
+			Then.Command.Execute(Given.Database);
+		}
+
+		private void OpenningConnection()
+		{
+			Then.Manager.OpenConnection(Given.Server, Given.Database);
+		}
+
+		private void BeginningTransaction()
+		{
+			Then.Manager.BeginTransaction();
+		}
+
+		private void Committing()
+		{
+			Then.Manager.CommitTransaction();
+		}
+
+		private void RollingBack()
+		{
+			Then.Manager.RollbackTransaction();
 		}
 	}
 
-	public sealed class UnitTest1Thens
+	public sealed class ScriptDeployerThens
 	{
 		public SqlConnectionManager Manager;
 		public ISqlCommandWrapper Command;
+		public ISqlCommandWrapperFactory CommandFactory;
 	}
 }

@@ -16,6 +16,7 @@ GNU General Public License for more details.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
@@ -88,5 +89,13 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		private static readonly Regex ScriptBlockRegex = new Regex(@"--::[\s\t]*(?<keyword>[\w\d]+)(?<text>.+?)(?=--::|$)", 
 			RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase | 
 			RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+
+		public static class StandardKeys
+		{
+			public const string
+				Catalog = "catalog", Options = "options", Need = "need",
+				Ignore = "ignore", Pre = "pre", Main = "main", Post = "post"
+			;
+		}
 	}
 }

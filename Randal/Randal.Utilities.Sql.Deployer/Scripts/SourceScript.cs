@@ -74,11 +74,21 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			return GetSqlCommandBlock(requestedPhase) != null;
 		}
 
+		public bool HasPhaseExecuted(SqlScriptPhase requestedPhase)
+		{
+			var scriptBlock = GetSqlCommandBlock(requestedPhase);
+
+			return scriptBlock.IsExecuted;
+		}
+
 		public string RequestSqlScriptPhase(SqlScriptPhase requestedPhase)
 		{
 			var scriptBlock = GetSqlCommandBlock(requestedPhase);
 
-			return scriptBlock == null ? null : scriptBlock.RequestForExecution();
+			if(scriptBlock == null)
+				throw new InvalidOperationException("No script block available for requested phase " + requestedPhase);
+
+			return scriptBlock.RequestForExecution();
 		}
 
 		public IReadOnlyList<string> GetCatalogPatterns()
