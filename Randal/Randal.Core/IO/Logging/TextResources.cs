@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 namespace Randal.Core.IO.Logging
 {
@@ -24,14 +22,14 @@ namespace Randal.Core.IO.Logging
 			Prepend = "    ",
 			AttentionRepeatingLines = "ATTENTION: The previous line was repeated {0} times.",
 			ApplicationEventLog = "Application"
-		;
+			;
 
 		public static class Errors
 		{
 			public const string
 				ErrorInfo = "Error Info",
 				NoExceptionProvided = "An error occurred but no instance of Exception provided."
-			;
+				;
 		}
 
 		public static class Sql
@@ -41,7 +39,7 @@ namespace Randal.Core.IO.Logging
 				public const string
 					Master = "master",
 					TempDb = "tempdb"
-				;
+					;
 			}
 
 			public const string
@@ -66,7 +64,7 @@ BEGIN
 END",
 				GetDatabases = "select [name] from master.sys.databases where [name] not in ('msdb', 'tempdb')",
 				GetProductVersion = "SELECT MAX(Version) FROM master.dbo.ProjectsDeployed WHERE Project = '{0}'"
-			;
+				;
 		}
 	}
 }

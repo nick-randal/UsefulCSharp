@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -52,7 +50,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Given.Text = "\nselect 1\n\t go \t\r\nselect ' go '\ngo";
 			Given.Keyword = "post";
 			Given.Phase = SqlScriptPhase.Post;
-			
+
 			When(Creating, ParsingSqlTextBlock);
 
 			Then.Object.IsValid.Should().BeTrue();
@@ -87,7 +85,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			Then.Object.IsExecuted.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof(InvalidOperationException))]
+		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
 		public void ShouldThrowExceptionWhenRequestingExecutionMoreThanOnce()
 		{
 			Given.Text = "Select 1";
@@ -97,8 +95,8 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 			When(Creating, RequestingForExecution, RequestingForExecution);
 		}
 
-		[TestMethod, 
-		ExpectedException(typeof(InvalidOperationException), "Cannot execute invalid script block.")]
+		[TestMethod,
+		 ExpectedException(typeof (InvalidOperationException), "Cannot execute invalid script block.")]
 		public void ShouldThrowExceptionWhenRequestingExecutionGivenUnparsedBlock()
 		{
 			Given.Text = "Select 1";

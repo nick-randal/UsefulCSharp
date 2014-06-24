@@ -1,24 +1,22 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Fakes;
 using System.IO;
+using FluentAssertions;
 using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
 using Randal.Core.IO.Logging.FileHandling;
 using Randal.Core.Testing.UnitTest;
 
@@ -54,7 +52,7 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 			Given.Path = @".\LogTest";
 			Given.BaseFileName = "System";
 			Given.FolderDoesNotExist = true;
-			
+
 			When(Creating, VerifyingFolder);
 
 			Then.FolderVerified.Should().BeTrue();
@@ -128,10 +126,10 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 		private void Creating()
 		{
 			if (Given.FolderDoesNotExist)
-			{	
+			{
 				var directory = new DirectoryInfo(Given.Path);
 				if (directory.Exists)
-					directory.Delete(true);	
+					directory.Delete(true);
 			}
 
 			Then.Folder = new LogFolder(Given.Path, Given.BaseFileName);

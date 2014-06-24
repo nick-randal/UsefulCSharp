@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -33,9 +31,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 	{
 		public ScriptDeployer(IProject project, ISqlConnectionManager connectionManager, ILogger logger)
 		{
-			if(project == null)
+			if (project == null)
 				throw new ArgumentNullException("project");
-			if(connectionManager == null)
+			if (connectionManager == null)
 				throw new ArgumentNullException("connectionManager");
 
 			_project = project;
@@ -58,9 +56,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public Returned DeployScripts()
 		{
-			var phases = new[] { SqlScriptPhase.Pre, SqlScriptPhase.Main, SqlScriptPhase.Post };
+			var phases = new[] {SqlScriptPhase.Pre, SqlScriptPhase.Main, SqlScriptPhase.Post};
 
-			if(DeployPriorityScripts(phases) == Returned.Failure)
+			if (DeployPriorityScripts(phases) == Returned.Failure)
 				return Returned.Failure;
 
 			if (phases.Any(phase => DeployPhase(phase) == Returned.Failure))
@@ -102,7 +100,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private Returned DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
-			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine, sqlScriptPhase);
+			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
+				sqlScriptPhase);
 
 			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
@@ -124,8 +123,6 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		private void ExecSql(SourceScript script, SqlScriptPhase phase)
 		{
-			ExecNeededScripts(script, phase);
-
 			if (script.HasPhaseExecuted(phase))
 				return;
 
@@ -148,37 +145,16 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			}
 		}
 
-		private void ExecNeededScripts(SourceScript script, SqlScriptPhase phase)
-		{
-			var hadNeededScripts = false;
-
-			foreach (var scriptName in script.GetNeeds())
-			{
-				var neededScript = _project.TryGetScript(scriptName);
-				if(neededScript == null)
-					throw new InvalidOperationException("Needed script '" + scriptName + "' not found, was requested from '" + script.Name + "'.");
-
-				hadNeededScripts = true;
-				_logger.AddEntryNoTimestamp("{0} -> {1}", script.Name, neededScript.Name);
-				ExecSql(neededScript, phase);
-			}
-
-			if(hadNeededScripts)
-				_logger.AddEntryNoTimestamp("<--- {0}", script.Name);
-		}
-
 		private IEnumerable<string> GetCatalogs(SourceScript script)
 		{
 			var matchingDatabases = new List<string>();
 
-			foreach (var pattern in script.GetCatalogPatterns())
+			foreach (var rgx in script.GetCatalogPatterns().Select(pattern => _patternLookup[pattern]))
 			{
-				var rgx = _patternLookup[pattern];
-
 				matchingDatabases.AddRange(
 					_connectionManager.DatabaseNames
-					.Where(dbName => rgx.IsMatch(dbName))
-				);
+						.Where(dbName => rgx.IsMatch(dbName))
+					);
 			}
 
 			return matchingDatabases.Distinct().OrderBy(x => x);
@@ -198,7 +174,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 		{
 			_logger.AddEntry("adding project record.");
 
-			var values = new object[] { _project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName };
+			var values = new object[]
+			{_project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName};
 			using (var command = _connectionManager.CreateCommand(TextResources.Sql.InsertProduct, values))
 			{
 				command.Execute(TextResources.Sql.Database.Master);
@@ -214,7 +191,8 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 			_logger.AddEntry("Looking up project '{0}'", config.Project);
 
-			using (var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, config.Project, config.Version))
+			using (
+				var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, config.Project, config.Version))
 			using (var reader = command.ExecuteReader(TextResources.Sql.Database.Master))
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))

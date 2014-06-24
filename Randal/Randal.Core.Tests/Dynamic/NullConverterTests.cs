@@ -1,22 +1,20 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
-
+using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
-using System.Collections.Generic;
 
 namespace Randal.Tests.Core.Dynamic
 {
@@ -36,7 +34,7 @@ namespace Randal.Tests.Core.Dynamic
 		[TestMethod]
 		public void ShouldHaveNullResultWhenConverting()
 		{
-			GivenDataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};
 			WhenConverting();
 			ThenResult.Should().BeNull();
 			ThenSuccess.Should().BeFalse();
@@ -50,7 +48,7 @@ namespace Randal.Tests.Core.Dynamic
 		private void WhenConverting()
 		{
 			WhenCreating();
-			ThenSuccess = ThenConverter.TryConversion(typeof(IDictionary<string, object>), GivenDataDictionary, out ThenResult);
+			ThenSuccess = ThenConverter.TryConversion(typeof (IDictionary<string, object>), GivenDataDictionary, out ThenResult);
 		}
 
 		private Dictionary<string, object> GivenDataDictionary;

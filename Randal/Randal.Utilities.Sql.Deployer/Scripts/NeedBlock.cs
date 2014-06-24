@@ -1,22 +1,20 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
 {
@@ -27,13 +25,16 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			_files = new List<string>();
 		}
 
-		public IReadOnlyList<string> Files { get { return _files; } } 
+		public IReadOnlyList<string> Files
+		{
+			get { return _files; }
+		}
 
 		public override IReadOnlyList<string> Parse()
 		{
 			var messages = new List<string>();
 
-			foreach(var item in base.Parse())
+			foreach (var item in base.Parse())
 			{
 				var temp = item.Trim();
 

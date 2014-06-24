@@ -11,13 +11,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-namespace Randal.Core.IO.Logging
+namespace Randal.Tests.Utilities.Sql.Deployer
 {
-	public enum Verbosity
+	public static class Test
 	{
-		All = 0,
-		Info = 1,
-		Important = 2,
-		Vital = 3
+		public static class Paths
+		{
+			public const string
+				ProjectA = @".\TestFiles\ProjectA"
+				;
+		}
 	}
 }

@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Data.SqlClient;
@@ -35,11 +33,11 @@ namespace Randal.Core.IO.Logging
 				return FormatException(exEntry);
 
 			return string.Concat(
-						entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
-						TextResources.Prepend,
-						entry.Message,
-						Environment.NewLine
-					);
+				entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
+				TextResources.Prepend,
+				entry.Message,
+				Environment.NewLine
+				);
 		}
 
 		private static string FormatException(ExceptionEntry entry)
@@ -64,7 +62,9 @@ namespace Randal.Core.IO.Logging
 				try
 				{
 					if (FormatSqlException(text, inner as SqlException) ||
-						FormatSmtpException(text, inner as SmtpException)) { }
+					    FormatSmtpException(text, inner as SmtpException))
+					{
+					}
 					else
 						text.AppendFormat("{0} : {1}", inner.GetType().FullName, inner.Message);
 				}
@@ -107,7 +107,8 @@ namespace Randal.Core.IO.Logging
 				return false;
 
 			text.AppendLine(sqlEx.Message);
-			text.AppendFormat("Source {0}, Code {1}, Line {2}, Procedure {3}", sqlEx.Source, sqlEx.Number, sqlEx.LineNumber, sqlEx.Procedure);
+			text.AppendFormat("Source {0}, Code {1}, Line {2}, Procedure {3}", sqlEx.Source, sqlEx.Number, sqlEx.LineNumber,
+				sqlEx.Procedure);
 			text.AppendLine();
 
 			for (var i = 0; i < sqlEx.Errors.Count; i++)

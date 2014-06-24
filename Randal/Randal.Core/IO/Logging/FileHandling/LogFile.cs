@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.IO;
@@ -37,7 +35,10 @@ namespace Randal.Core.IO.Logging.FileHandling
 			_sizeInBytes = sizeInBytes;
 		}
 
-		public string FilePath { get { return _file.FullName; } }
+		public string FilePath
+		{
+			get { return _file.FullName; }
+		}
 
 		public void Open()
 		{
@@ -69,10 +70,11 @@ namespace Randal.Core.IO.Logging.FileHandling
 
 		private void CreateStreamWriter()
 		{
-			_writer = new StreamWriter(new FileStream(_file.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
-			{
-				AutoFlush = true
-			};
+			_writer =
+				new StreamWriter(new FileStream(_file.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
+				{
+					AutoFlush = true
+				};
 
 			if (_writer.BaseStream.Length < _sizeInBytes)
 				_writer.BaseStream.SetLength(_sizeInBytes);
@@ -83,7 +85,7 @@ namespace Randal.Core.IO.Logging.FileHandling
 			if (_writer == null)
 				return;
 
-			if(_state == LogFileState.OpenAvailable && _writer.BaseStream.Position >= _sizeInBytes)
+			if (_state == LogFileState.OpenAvailable && _writer.BaseStream.Position >= _sizeInBytes)
 				_state = LogFileState.OpenExhausted;
 		}
 
@@ -137,13 +139,16 @@ namespace Randal.Core.IO.Logging.FileHandling
 			private set { _state = value; }
 		}
 
-		public long SizeInBytes { get { return _sizeInBytes; } }
+		public long SizeInBytes
+		{
+			get { return _sizeInBytes; }
+		}
 
 		public StreamWriter GetStreamWriter()
 		{
 			RefreshState();
 
-			if(_state == LogFileState.OpenAvailable || _state == LogFileState.OpenExhausted)
+			if (_state == LogFileState.OpenAvailable || _state == LogFileState.OpenExhausted)
 				return _writer;
 
 			return null;

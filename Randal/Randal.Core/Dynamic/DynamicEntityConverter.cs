@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -34,11 +32,20 @@ namespace Randal.Core.Dynamic
 			_converters = new Dictionary<Type, Func<Dictionary<string, object>, object>>();
 		}
 
-		public int ConverterCount { get { return _converters.Count; } }
+		public int ConverterCount
+		{
+			get { return _converters.Count; }
+		}
 
-		public bool HasConverters { get { return _converters.Count > 0; } }
+		public bool HasConverters
+		{
+			get { return _converters.Count > 0; }
+		}
 
-		protected Dictionary<Type, Func<Dictionary<string, object>, object>> Converters { get { return _converters; } }
+		protected Dictionary<Type, Func<Dictionary<string, object>, object>> Converters
+		{
+			get { return _converters; }
+		}
 
 		public bool TryConversion(Type type, Dictionary<string, object> data, out object result)
 		{
@@ -56,7 +63,7 @@ namespace Randal.Core.Dynamic
 
 		public void AddTypeConverter<TConvertTo>(Func<Dictionary<string, object>, object> converter)
 		{
-			Converters.Add(typeof(TConvertTo), converter);
+			Converters.Add(typeof (TConvertTo), converter);
 		}
 
 		public void AddTypeConverter(Type type, Func<Dictionary<string, object>, object> converter)
@@ -66,7 +73,7 @@ namespace Randal.Core.Dynamic
 
 		public Func<Dictionary<string, object>, object> RemoveTypeConverter<TConvertTo>()
 		{
-			return RemoveTypeConverter(typeof(TConvertTo));
+			return RemoveTypeConverter(typeof (TConvertTo));
 		}
 
 		public Func<Dictionary<string, object>, object> RemoveTypeConverter(Type type)

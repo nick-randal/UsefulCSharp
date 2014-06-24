@@ -1,25 +1,23 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Structures;
 using Randal.Core.Testing.UnitTest;
-using System.Collections.Generic;
 
 namespace Randal.Tests.Core.Structures
 {
@@ -62,7 +60,7 @@ namespace Randal.Tests.Core.Structures
 			Then.List.Should().HaveCount(9);
 
 			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] { 1, 2, 9, 5, 6, 3, 8, 4, 7 });
+			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 9, 5, 6, 3, 8, 4, 7});
 		}
 
 		[TestMethod]
@@ -77,8 +75,8 @@ namespace Randal.Tests.Core.Structures
 			When(Creating, BuildingDependencies);
 
 			Then.List.Should().HaveCount(4);
-			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] { 1, 2, 3, 4 });
-			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] { 1, 2, 3, 4 });
+			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
+			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
 		}
 
 		[TestMethod, ExpectedException(typeof (KeyNotFoundException))]
@@ -111,7 +109,7 @@ namespace Randal.Tests.Core.Structures
 		}
 
 
-		sealed class Builder
+		private sealed class Builder
 		{
 			public Builder()
 			{

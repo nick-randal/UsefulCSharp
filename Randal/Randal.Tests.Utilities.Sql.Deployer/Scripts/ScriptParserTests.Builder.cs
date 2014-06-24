@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -21,7 +19,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 {
 	public sealed partial class ScriptParserTests
 	{
-		class ParserBuilder
+		private class ParserBuilder
 		{
 			private readonly List<Tuple<string, Func<string, IScriptBlock>>> _rules;
 			private Func<string, string, IScriptBlock> _fallbackRule;
@@ -49,7 +47,7 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
 				var parser = new ScriptParser();
 
 				_rules.ForEach(r => parser.AddRule(r.Item1, r.Item2));
-				if(_fallbackRule != null)
+				if (_fallbackRule != null)
 					parser.SetFallbackRule(_fallbackRule);
 
 				return parser;

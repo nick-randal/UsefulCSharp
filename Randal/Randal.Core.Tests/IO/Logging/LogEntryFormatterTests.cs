@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Data.SqlClient;
@@ -78,7 +76,7 @@ namespace Randal.Tests.Core.IO.Logging
 				"Error Info\r\n--------------------------------------------------------------------------------\r\n" +
 				"SMTP Error : ClientNotPermitted - Client does not have permission to submit mail to this server.\r\n\r\n" +
 				"Stack Trace\r\n\r\n\r\n--------------------------------------------------------------------------------\r\n"
-			);
+				);
 		}
 
 		[TestMethod]
@@ -92,7 +90,7 @@ namespace Randal.Tests.Core.IO.Logging
 				"Hello error!\r\nError Info\r\n--------------------------------------------------------------------------------\r\n" +
 				"System.ArgumentException : Value does not fall within the expected range.\r\n\r\n" +
 				"Stack Trace\r\n\r\n\r\n--------------------------------------------------------------------------------\r\n"
-			);
+				);
 		}
 
 		[TestMethod]

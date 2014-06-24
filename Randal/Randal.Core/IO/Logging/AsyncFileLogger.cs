@@ -1,23 +1,21 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Randal.Core.IO.Logging.FileHandling;
 
 namespace Randal.Core.IO.Logging
@@ -31,13 +29,15 @@ namespace Randal.Core.IO.Logging
 
 	public sealed class AsyncFileLogger : ILogger
 	{
-		public AsyncFileLogger(IFileLoggerSettings settings, ILogFileManager logWriterManager = null, ILogEntryFormatter formatter = null)
+		public AsyncFileLogger(IFileLoggerSettings settings, ILogFileManager logWriterManager = null,
+			ILogEntryFormatter formatter = null)
 		{
 			if (settings == null)
 				throw new ArgumentNullException("settings");
 
 			_formatter = formatter ?? new LogEntryFormatter();
-			_logWriterManager = logWriterManager ?? new LogFileManager(settings, new LogFolder(settings.BasePath, settings.BaseFileName));
+			_logWriterManager = logWriterManager ??
+			                    new LogFileManager(settings, new LogFolder(settings.BasePath, settings.BaseFileName));
 
 			_logQueue = new ConcurrentQueue<ILogEntry>();
 			_signal = new ManualResetEventSlim(false);
@@ -113,7 +113,10 @@ namespace Randal.Core.IO.Logging
 			_signal.Set();
 		}
 
-		private CancellationToken CancellationToken { get { return _token.Token; } }
+		private CancellationToken CancellationToken
+		{
+			get { return _token.Token; }
+		}
 
 		private void RequestCancellation()
 		{
@@ -153,10 +156,10 @@ namespace Randal.Core.IO.Logging
 
 			try
 			{
-				if (_task == null) 
+				if (_task == null)
 					return;
 
-				for (var n = 0; n < 40; n++)	// wait up to 10 seconds
+				for (var n = 0; n < 40; n++) // wait up to 10 seconds
 				{
 					if (_task.Status == TaskStatus.RanToCompletion ||
 					    _task.Status == TaskStatus.Faulted ||
@@ -170,7 +173,7 @@ namespace Randal.Core.IO.Logging
 					_task.Dispose();
 				_task = null;
 			}
-			catch(Exception ex) 
+			catch (Exception ex)
 			{
 				EventLog.WriteEntry(TextResources.ApplicationEventLog, ex.ToString(), EventLogEntryType.Error);
 			}
@@ -185,7 +188,7 @@ namespace Randal.Core.IO.Logging
 
 			try
 			{
-				var settings = (FileLoggerSettings)asyncState;
+				var settings = (FileLoggerSettings) asyncState;
 
 				while (true)
 				{

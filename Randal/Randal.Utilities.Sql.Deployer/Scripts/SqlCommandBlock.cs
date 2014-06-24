@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -51,10 +49,10 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 
 		public string RequestForExecution()
 		{
-			if(IsValid == false)
+			if (IsValid == false)
 				throw new InvalidOperationException("Cannot execute invalid script block.");
 
-			if(IsExecuted)
+			if (IsExecuted)
 				throw new InvalidOperationException("Cannot request execution for script block more than once.");
 
 			IsExecuted = true;
@@ -63,6 +61,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		}
 
 		private string _commandText;
+
 		private static readonly Regex FilterGo = new Regex(@"^\s*go(\s+|$)",
 			RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 	}

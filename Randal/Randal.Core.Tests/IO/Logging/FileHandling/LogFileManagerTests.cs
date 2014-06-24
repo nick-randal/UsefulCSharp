@@ -1,22 +1,20 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.IO.Logging;
 using Randal.Core.IO.Logging.FileHandling;
 using Randal.Core.Testing.UnitTest;
@@ -38,7 +36,7 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 		[TestCleanup]
 		public void Teardown()
 		{
-			if (Then.Manager == null) 
+			if (Then.Manager == null)
 				return;
 
 			Then.Manager.Dispose();
@@ -46,7 +44,7 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 			Then.Manager = null;
 		}
 
-		[TestMethod, ExpectedException(typeof(ArgumentNullException))]
+		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{
 			Given.NullSettings = true;
@@ -96,7 +94,7 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 				return;
 
 			IFileLoggerSettings settings = null;
-			if(Given.NullSettings == false)
+			if (Given.NullSettings == false)
 				settings = new FileLoggerSettings(Test.Paths.IoLoggingFolder, "LFMT", Given.Size, false);
 
 			Then.Manager = new LogFileManager(settings);
@@ -104,7 +102,7 @@ namespace Randal.Tests.Core.IO.Logging.FileHandling
 
 		private void WritingText()
 		{
-			Then.Writer.WriteLine(Given.TextToWrite);	
+			Then.Writer.WriteLine(Given.TextToWrite);
 		}
 	}
 

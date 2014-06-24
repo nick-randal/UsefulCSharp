@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using Randal.Core.Enums;
@@ -26,12 +24,12 @@ namespace Randal.Utilities.Sql.Deployer.App
 	{
 		public Runner(RunnerSettings settings, ILogger logger = null)
 		{
-			if(settings == null)
+			if (settings == null)
 				throw new ArgumentNullException("settings");
 
 			_settings = settings;
-			
-			if(logger == null)
+
+			if (logger == null)
 				logger = new AsyncFileLogger(settings.FileLoggerSettings);
 			var decorator = logger as ILoggerStringFormatDecorator;
 			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
@@ -137,7 +135,7 @@ namespace Randal.Utilities.Sql.Deployer.App
 
 		public void Dispose()
 		{
-			if(_logger != null)
+			if (_logger != null)
 				_logger.Dispose();
 		}
 

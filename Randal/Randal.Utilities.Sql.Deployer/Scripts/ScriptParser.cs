@@ -1,22 +1,19 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace Randal.Utilities.Sql.Deployer.Scripts
@@ -51,7 +48,11 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			_fallbackRule = fallbackRule;
 		}
 
-		public bool HasFallbackRule { get { return _fallbackRule != null; } }
+		public bool HasFallbackRule
+		{
+			get { return _fallbackRule != null; }
+		}
+
 		public SourceScript Parse(string name, string text)
 		{
 			var blockMatches = ScriptBlockRegex.Matches(text);
@@ -65,7 +66,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 
 				if (_keywordRuleLookup.TryGetValue(keyword, out rule))
 					blocks.Add(rule(blockText));
-				else if(_fallbackRule != null)
+				else if (_fallbackRule != null)
 					blocks.Add(_fallbackRule(keyword, blockText));
 				else
 					throw new InvalidOperationException("Unexpected block keyword '" + keyword + "' found and no fallback rule set.");
@@ -81,21 +82,27 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 
 		private readonly Dictionary<string, Func<string, IScriptBlock>> _keywordRuleLookup;
 		private Func<string, string, IScriptBlock> _fallbackRule;
-		
-		private const string 
+
+		private const string
 			MatchGroupKeyword = "keyword",
 			MatchGroupText = "text"
-		;
-		private static readonly Regex ScriptBlockRegex = new Regex(@"--::[\s\t]*(?<keyword>[\w\d]+)(?<text>.+?)(?=--::|$)", 
-			RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase | 
+			;
+
+		private static readonly Regex ScriptBlockRegex = new Regex(@"--::[\s\t]*(?<keyword>[\w\d]+)(?<text>.+?)(?=--::|$)",
+			RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase |
 			RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
 		public static class StandardKeys
 		{
 			public const string
-				Catalog = "catalog", Options = "options", Need = "need",
-				Ignore = "ignore", Pre = "pre", Main = "main", Post = "post"
-			;
+				Catalog = "catalog",
+				Options = "options",
+				Need = "need",
+				Ignore = "ignore",
+				Pre = "pre",
+				Main = "main",
+				Post = "post"
+				;
 		}
 	}
 }

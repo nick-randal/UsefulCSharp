@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -46,7 +44,10 @@ namespace Randal.Utilities.Sql.Deployer.Process
 			_commandWrapperFactory = commandFactory ?? new SqlCommandWrapperFactory();
 		}
 
-		public string Server { get { return _scnBuilder.DataSource; } }
+		public string Server
+		{
+			get { return _scnBuilder.DataSource; }
+		}
 
 		public void OpenConnection(string newServer, string database)
 		{
@@ -75,7 +76,7 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 		public void BeginTransaction()
 		{
-			if(_connection == null || _connection.State != ConnectionState.Open)
+			if (_connection == null || _connection.State != ConnectionState.Open)
 				throw new InvalidOperationException("Cannot begin transaction without and valid server connection.");
 
 			_transaction = _connection.BeginTransaction(IsolationLevel.Serializable);
@@ -121,7 +122,9 @@ namespace Randal.Utilities.Sql.Deployer.Process
 				if (_transaction != null)
 					_transaction.Dispose();
 			}
-			catch (SqlException) {}
+			catch (SqlException)
+			{
+			}
 			finally
 			{
 				_connection = null;
@@ -141,7 +144,6 @@ namespace Randal.Utilities.Sql.Deployer.Process
 
 				connection.Dispose();
 				return null;
-
 			}
 			catch (SqlException)
 			{

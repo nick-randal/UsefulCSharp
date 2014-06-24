@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System;
 using System.Collections.Generic;
@@ -46,7 +44,10 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			}
 		}
 
-		public IReadOnlyList<IScriptBlock> ScriptBlocks { get { return _scriptBlocks.AsReadOnly(); } }
+		public IReadOnlyList<IScriptBlock> ScriptBlocks
+		{
+			get { return _scriptBlocks.AsReadOnly(); }
+		}
 
 		public bool IsValid { get; private set; }
 
@@ -58,11 +59,12 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 				messages.AddRange(block.Parse());
 			}
 
-			if(HasBlockOfType<OptionsBlock>() == false)
+			if (HasBlockOfType<OptionsBlock>() == false)
 				_scriptBlocks.Add(new OptionsBlock());
 
-			if(HasBlockOfType<SqlCommandBlock>() && HasBlockOfType<CatalogBlock>() == false)
-				messages.Add("Sql Text Blocks have been defined but no Catalog Block defined to specify which databases to execute against.");
+			if (HasBlockOfType<SqlCommandBlock>() && HasBlockOfType<CatalogBlock>() == false)
+				messages.Add(
+					"Sql Text Blocks have been defined but no Catalog Block defined to specify which databases to execute against.");
 
 			IsValid = messages.Count == 0;
 
@@ -85,7 +87,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 		{
 			var scriptBlock = GetSqlCommandBlock(requestedPhase);
 
-			if(scriptBlock == null)
+			if (scriptBlock == null)
 				throw new InvalidOperationException("No script block available for requested phase " + requestedPhase);
 
 			return scriptBlock.RequestForExecution();
@@ -93,10 +95,10 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 
 		public IReadOnlyList<string> GetCatalogPatterns()
 		{
-			var catalogBlock = (CatalogBlock)_scriptBlocks.FirstOrDefault(sb => sb is CatalogBlock && sb.IsValid);
+			var catalogBlock = (CatalogBlock) _scriptBlocks.FirstOrDefault(sb => sb is CatalogBlock && sb.IsValid);
 
 			var catalogs = new List<string>();
-			if(catalogBlock != null)
+			if (catalogBlock != null)
 				catalogs.AddRange(catalogBlock.CatalogPatterns);
 
 			return catalogs.AsReadOnly();
@@ -107,7 +109,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 			var needBlock = (NeedBlock) ScriptBlocks.FirstOrDefault(sb => sb is NeedBlock && sb.IsValid);
 
 			var needed = new List<string>();
-			if(needBlock != null)
+			if (needBlock != null)
 				needed.AddRange(needBlock.Files);
 
 			return needed.AsReadOnly();
@@ -124,7 +126,7 @@ namespace Randal.Utilities.Sql.Deployer.Scripts
 				.FirstOrDefault(sb => sb is SqlCommandBlock && ((SqlCommandBlock) sb).Phase == requestedPhase);
 		}
 
-		private bool HasBlockOfType<TBlock>() 
+		private bool HasBlockOfType<TBlock>()
 			where TBlock : IScriptBlock
 		{
 			return _scriptBlocks.Exists(sb => sb is TBlock);

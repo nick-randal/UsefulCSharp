@@ -73,7 +73,7 @@
     <Compile Include="IO\Logging\LogExceptionEntryTests.cs" />
     <Compile Include="IO\Logging\FileLogSettingsTests.cs" />
     <Compile Include="IO\Logging\AsyncFileLoggerTests.cs" />
-    <Compile Include="IO\Logging\LoggerStringDecoratorFormatTests.cs" />
+    <Compile Include="IO\Logging\LoggerStringFormatDecoratorTests.cs" />
     <Compile Include="Structures\DependencyListBuilderTests.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFolderTests.cs" />

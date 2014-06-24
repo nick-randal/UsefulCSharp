@@ -1,17 +1,15 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
-
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 using System.Collections.Generic;
 using FluentAssertions;
@@ -34,7 +32,7 @@ namespace Randal.Tests.Core.Dynamic
 		public void ShouldHaveValidObjectWhenCreating()
 		{
 			dynamic entity = new DynamicEntity();
-			
+
 			Then.Entity = entity;
 			Then.Entity.Should().NotBeNull().And.BeAssignableTo<DynamicEntity>();
 		}
@@ -53,7 +51,7 @@ namespace Randal.Tests.Core.Dynamic
 			exists.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof(RuntimeBinderException))]
+		[TestMethod, ExpectedException(typeof (RuntimeBinderException))]
 		public void ShouldThrowExceptionWhenAccessingNonExistentProperty()
 		{
 			dynamic entity = new DynamicEntity();
@@ -84,7 +82,7 @@ namespace Randal.Tests.Core.Dynamic
 			exists.Should().BeFalse("all properties were cleared");
 		}
 
-		[TestMethod, ExpectedException(typeof(RuntimeBinderException))]
+		[TestMethod, ExpectedException(typeof (RuntimeBinderException))]
 		public void ShouldThrowExceptionWhenConvertingToUnexpectedType()
 		{
 			dynamic entity = new DynamicEntity();

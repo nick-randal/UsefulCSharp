@@ -1,6 +1,19 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+using System.Text.RegularExpressions;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Utilities.Sql.Deployer.Helpers;
 
@@ -31,7 +44,8 @@ namespace Randal.Tests.Utilities.Sql.Deployer.Helpers
 
 			When(Creating, Getting);
 
-			Then.Pattern.Options.Should().Be(RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+			Then.Pattern.Options.Should()
+				.Be(RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 			Then.Lookup.Count.Should().Be(1);
 			Then.Pattern.ToString().Should().Be(@"^ma[._\w\d-]*er$");
 		}

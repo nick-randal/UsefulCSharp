@@ -1,24 +1,22 @@
-﻿/*
-Useful C#
-Copyright (C) 2014  Nicholas Randal
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-Useful C# is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*/
-
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Core.Dynamic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Randal.Core.Dynamic;
 
 namespace Randal.Tests.Core.Dynamic
 {
@@ -36,11 +34,11 @@ namespace Randal.Tests.Core.Dynamic
 		[TestMethod]
 		public void ShouldHaveNullResultWhenConvertingGivenNoValidConverters()
 		{
-			GivenDataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			GivenConversionTo = typeof(string);
+			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};
+			GivenConversionTo = typeof (string);
 
 			WhenConverting();
-			
+
 			ThenResult.Should().BeNull();
 			ThenSuccess.Should().BeFalse();
 		}
@@ -48,7 +46,7 @@ namespace Randal.Tests.Core.Dynamic
 		[TestMethod]
 		public void ShouldHaveRegisteredConverterWhenConverterIsAdded()
 		{
-			GivenConversionTo = typeof(string);
+			GivenConversionTo = typeof (string);
 			GivenConverter = dct => string.Join(", ", dct.Keys.Select(key => key + "=" + dct[key]));
 
 			WhenAddingConverter();
@@ -71,7 +69,7 @@ namespace Randal.Tests.Core.Dynamic
 		[TestMethod]
 		public void ShouldNotHaveConverterWhenConverterIsRemoved()
 		{
-			GivenConversionTo = typeof(string);
+			GivenConversionTo = typeof (string);
 			GivenConverter = dct => string.Join(", ", dct.Keys.Select(key => key + "=" + dct[key]));
 
 			WhenRemovingConverter();
@@ -102,12 +100,12 @@ namespace Randal.Tests.Core.Dynamic
 			ThenConverter.ConverterCount.Should().Be(0);
 			ThenRemovedConverter.Should().BeNull();
 		}
-		
+
 		[TestMethod]
 		public void ShouldHaveValidResultWhenConvertingToAKnownConverterType()
 		{
-			GivenDataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			GivenConversionTo = typeof(string);
+			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};
+			GivenConversionTo = typeof (string);
 			GivenConverter = dct => string.Join(", ", dct.Keys.Select(key => key + "=" + dct[key]));
 
 			WhenConverting();
