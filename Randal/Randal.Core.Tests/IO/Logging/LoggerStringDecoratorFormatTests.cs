@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Randal.Tests.Core.IO.Logging
 {
 	[TestClass]
-	public sealed class LogStringDecoratorFormatTests : BaseUnitTest<LoggerStringFormatDecoratorThens>
+	public sealed class LoggerStringDecoratorFormatTests : BaseUnitTest<LoggerStringFormatDecoratorThens>
 	{
 		[TestInitialize]
 		public override void Setup()
@@ -50,6 +50,13 @@ namespace Randal.Tests.Core.IO.Logging
 			Given.Text = "Hey";
 			When(Creating, AddingLogEntry);
 			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntry>.Is.NotNull));
+		}
+
+		[TestMethod]
+		public void ShouldAddBlankLineWhenAddingBlank()
+		{
+			When(Creating, AddingBlank);
+			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntryNoTimestamp>.Is.NotNull));
 		}
 
 		[TestMethod]
@@ -89,6 +96,11 @@ namespace Randal.Tests.Core.IO.Logging
 		private void AddingLogEntry()
 		{
 			Then.Decorator.AddEntry(Given.Text);
+		}
+
+		private void AddingBlank()
+		{
+			Then.Decorator.AddBlank();
 		}
 
 		private void Creating()
