@@ -62,6 +62,7 @@
     <Compile Include="IO\Logging\TextResources.cs" />
     <Compile Include="IO\Logging\Verbosity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\DependencyListBuilder.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

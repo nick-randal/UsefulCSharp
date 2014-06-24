@@ -74,6 +74,7 @@
     <Compile Include="IO\Logging\FileLogSettingsTests.cs" />
     <Compile Include="IO\Logging\AsyncFileLoggerTests.cs" />
     <Compile Include="IO\Logging\LogStringDecoratorFormatTests.cs" />
+    <Compile Include="Structures\DependencyListBuilderTests.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFolderTests.cs" />
     <Compile Include="IO\Logging\FileHandling\LogFileTests.cs" />
