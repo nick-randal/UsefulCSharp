@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using Randal.Core.IO.Logging;
+using Randal.Logging;
 
 namespace Randal.Utilities.Sql.Deployer.App
 {

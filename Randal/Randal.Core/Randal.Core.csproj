@@ -32,11 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dynamic\DictionaryConverter.cs" />
@@ -45,26 +40,12 @@
     <Compile Include="Dynamic\MissingMemberBehavior.cs" />
     <Compile Include="Dynamic\NullConverter.cs" />
     <Compile Include="Enums\Returned.cs" />
-    <Compile Include="IO\Logging\ILogger.cs" />
-    <Compile Include="IO\Logging\LogExceptionEntry.cs" />
-    <Compile Include="IO\Logging\FileHandling\LogFile.cs" />
-    <Compile Include="IO\Logging\FileHandling\LogFileState.cs" />
-    <Compile Include="IO\Logging\FileHandling\LogFolder.cs" />
-    <Compile Include="IO\Logging\AsyncFileLogger.cs" />
-    <Compile Include="IO\Logging\FileLogSettings.cs" />
-    <Compile Include="IO\Logging\LogEntry.cs" />
-    <Compile Include="IO\Logging\LoggerStringFormatDecorator.cs" />
-    <Compile Include="IO\Logging\LogEntryFormatter.cs" />
-    <Compile Include="IO\Logging\LogEntryNoTimestamp.cs" />
-    <Compile Include="IO\Logging\FileHandling\LogFileManager.cs" />
-    <Compile Include="IO\Logging\NullLogger.cs" />
-    <Compile Include="IO\Logging\StringLogger.cs" />
-    <Compile Include="IO\Logging\TextResources.cs" />
-    <Compile Include="IO\Logging\Verbosity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Structures\DependencyListBuilder.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="IO\Logging\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

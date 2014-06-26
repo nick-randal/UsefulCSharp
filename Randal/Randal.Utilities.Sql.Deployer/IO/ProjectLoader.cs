@@ -17,7 +17,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
-using Randal.Core.IO.Logging;
+using Randal.Logging;
 using Randal.Utilities.Sql.Deployer.Configuration;
 using Randal.Utilities.Sql.Deployer.Scripts;
 

@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Randal.Core.Enums;
-using Randal.Core.IO.Logging;
+using Randal.Logging;
 using Randal.Utilities.Sql.Deployer.Helpers;
 using Randal.Utilities.Sql.Deployer.Scripts;
 

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using Randal.Core.IO.Logging;
+using Randal.Logging;
 
 namespace Randal.Utilities.Sql.Deployer.Process
 {

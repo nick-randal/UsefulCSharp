@@ -14,7 +14,7 @@
 using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Core.IO.Logging;
+using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
 using Randal.Tests.Utilities.Sql.Deployer.Scripts;
 using Randal.Utilities.Sql.Deployer.Process;

@@ -48,7 +48,7 @@ namespace Randal.Core.Structures
 			return ordered;
 		}
 
-		private void AddItem(TValue current, ICollection<TValue> ordered, IReadOnlyDictionary<TKey, TValue> lookup,
+		private static void AddItem(TValue current, ICollection<TValue> ordered, IReadOnlyDictionary<TKey, TValue> lookup,
 			ISet<TKey> added, Func<TValue, TKey> getKeyFunc, Func<TValue, IEnumerable<TKey>> getDependenciesFunc)
 		{
 			var currentKey = getKeyFunc(current);

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Randal.Utilities.Sql.Deployer.App</RootNamespace>
     <AssemblyName>Randal.Utilities.Sql.Deployer.App</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -41,11 +41,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppOptions.cs" />
@@ -63,6 +58,10 @@
     <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
       <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
       <Name>Randal.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Randal.Logging\Randal.Logging.csproj">
+      <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
+      <Name>Randal.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Utilities.Sql.Deployer.csproj">
       <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
