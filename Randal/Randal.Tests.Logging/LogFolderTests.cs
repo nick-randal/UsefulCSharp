@@ -63,11 +63,11 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveFilePathForExistingFileWhenGetNextFilePathGivenAnExistingLogFile()
 		{
 			Given.Path = Test.Paths.LoggingFolder;
-			Given.BaseFileName = "Test";
+			Given.BaseFileName = "Process";
 
 			When(Creating, GettingNextFilePath);
 
-			Then.FilePath.Should().EndWith("Test_004.log");
+			Then.FilePath.Should().EndWith("Process_005.log");
 			Then.FileExists.Should().BeTrue();
 		}
 
@@ -75,11 +75,11 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveSubsequentFilePathForExistingFileWhenGettingNextFilePathGivenTwoAttempts()
 		{
 			Given.Path = Test.Paths.LoggingFolder;
-			Given.BaseFileName = "Test";
+			Given.BaseFileName = "Process";
 
 			When(Creating, GettingNextFilePath, GettingNextFilePath);
 
-			Then.FilePath.Should().EndWith("Test_005.log");
+			Then.FilePath.Should().EndWith("Process_006.log");
 			Then.FileExists.Should().BeFalse();
 		}
 

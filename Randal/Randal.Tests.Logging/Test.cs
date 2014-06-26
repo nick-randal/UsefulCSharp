@@ -18,8 +18,8 @@ namespace Randal.Tests.Logging
 		public static class Paths
 		{
 			public const string
-				LoggingFolder = @".\TestFiles"
-				;
+				LoggingFolder = @".\TestFiles\Logs\"
+			;
 		}
 	}
 }
