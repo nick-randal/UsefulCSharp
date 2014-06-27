@@ -19,7 +19,7 @@ namespace Someplace
 		}
 		
 		[TestMethod]
-		public void
+		public void ShouldHaveValidInstanceWithValueWhenCreatingObjectGivenValue123()
 		{
 			Given.NeededValue = 123;
 			
