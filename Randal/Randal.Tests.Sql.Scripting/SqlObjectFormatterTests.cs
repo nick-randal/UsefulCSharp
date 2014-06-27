@@ -33,7 +33,6 @@ namespace Randal.Tests.Sql.Scripting
 		public void ShouldHaveUsableFormatterWhenCreating()
 		{
 			When(Creating);
-
 			Then.Formatter.Should().NotBeNull().And.BeAssignableTo<ISqlObjectFormatter>();
 		}
 
