@@ -10,8 +10,8 @@ Extensible interface to modify funtionality at any stage of the logging process.
 - Extensible formatting
 - Optional verbosity filtering to quickly increase or decrease log output
 
+Example 1 - file logger
 ```csharp
-// simple file log example
 var settings = new FileLoggerSettings(@"C:\Logs", "Test", 4194304, true);
 var log = new AsyncFileLogger(settings);
 
@@ -19,4 +19,16 @@ log.Add(new LogEntry("Hello log"));   // standard date and time stamping
 log.Add(new LogEntryNoTimestamp("an entry without standard timestamping"));
 
 log.Dispose();
+```
+
+Example 2 - file logger with string format decorator
+```csharp
+var settings2 = new FileLoggerSettings(@"C:\__dev\Research\Log", "Test2", 2048, true);
+var log2 = new LoggerStringFormatDecorator(new AsyncFileLogger(settings));
+
+log2.AddBlank();
+log2.AddEntry("Hello log");
+log2.AddEntryNoTimestamp("an entry without standard timestamping");
+
+log2.Dispose();
 ```
