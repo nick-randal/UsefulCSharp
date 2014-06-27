@@ -9,6 +9,8 @@ Extensible interface to modify funtionality at any stage of the logging process.
 - Null logger
 - Extensible formatting
 - Optional verbosity filtering to quickly increase or decrease log output
+- Support for dependency injection
+- Works well with IOC containers
 
 Example 1 - file logger
 ```csharp
