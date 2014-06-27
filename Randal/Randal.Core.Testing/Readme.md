@@ -4,6 +4,12 @@ This library provides a base class to help facilitate and structure the Given Wh
 One of the best features is the use oF the DLR for the Givens.  You can define any Given property on the fly without having previously defined it.  This probably sounds like C# heresy but it's true.
 
 ```csharp
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Randal.Core.Testing.UnitTest;
+
+namespace Someplace
+{
 	public sealed class TestObjectTests : BaseUnitTest<TestObjectThens>
 	{
 		[TestInitialize]
@@ -27,9 +33,10 @@ One of the best features is the use oF the DLR for the Givens.  You can define a
 			Then.Target = new TestObject(Given.NeededValue);
 		}
 	}
-	
+
 	public sealed class TestObjectThens
 	{
 		public TestObject Target;
 	}
+}
 ```
