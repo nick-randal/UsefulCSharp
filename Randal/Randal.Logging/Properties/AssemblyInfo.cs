@@ -19,11 +19,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Randal.Logging")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Extensible Asynchronous File Logger")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.Logging")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
