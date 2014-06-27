@@ -15,9 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Randal.Core.Structures;
-using Randal.Utilities.Sql.Deployer.Configuration;
+using Randal.Sql.Deployer.Configuration;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public interface IProject
 	{

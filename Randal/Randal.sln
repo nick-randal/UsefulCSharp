@@ -9,21 +9,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Core", "Randal
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{DFF7C383-F47E-458B-AA52-499776579BEC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Utilities", "SQL Utilities", "{EF5477A9-19A5-4DC4-A5B5-88A5D0CDC43F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{EF5477A9-19A5-4DC4-A5B5-88A5D0CDC43F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Utilities.Sql.Deployer", "Randal.Tests.Utilities.Sql.Deployer\Randal.Tests.Utilities.Sql.Deployer.csproj", "{A6B19F04-1365-4234-9FD4-B9B49529DE47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Sql.Deployer", "Randal.Tests.Utilities.Sql.Deployer\Randal.Tests.Sql.Deployer.csproj", "{A6B19F04-1365-4234-9FD4-B9B49529DE47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Utilities.Sql.Deployer", "Randal.Utilities.Sql.Deployer\Randal.Utilities.Sql.Deployer.csproj", "{B910A326-38AD-4DC4-999C-03B3B1CE3D77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer", "Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj", "{B910A326-38AD-4DC4-999C-03B3B1CE3D77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core.Testing", "Randal.Core.Testing\Randal.Core.Testing.csproj", "{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Utilities.Sql.Deployer.App", "Randal.Utilities.Sql.Deployer.App\Randal.Utilities.Sql.Deployer.App.csproj", "{02DDD4EC-A098-4C73-BC88-EC7607C8E5E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer.App", "Randal.Utilities.Sql.Deployer.App\Randal.Sql.Deployer.App.csproj", "{02DDD4EC-A098-4C73-BC88-EC7607C8E5E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Logging", "Randal.Logging\Randal.Logging.csproj", "{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Logging", "Randal.Tests.Logging\Randal.Tests.Logging.csproj", "{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{09CF1969-1702-4DF3-A7DB-C199F079F55B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Sql.Scripting", "Randal.Tests.Sql.Scripting\Randal.Tests.Sql.Scripting.csproj", "{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Scripting", "Randal.Sql.Scripting\Randal.Sql.Scripting.csproj", "{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,5 +88,7 @@ Global
 		{02DDD4EC-A098-4C73-BC88-EC7607C8E5E3} = {EF5477A9-19A5-4DC4-A5B5-88A5D0CDC43F}
 		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61} = {09CF1969-1702-4DF3-A7DB-C199F079F55B}
 		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8} = {09CF1969-1702-4DF3-A7DB-C199F079F55B}
+		{2E41E8D7-A10A-41F1-9618-00E17DC14D6A} = {EF5477A9-19A5-4DC4-A5B5-88A5D0CDC43F}
+		{DD00D8D6-540C-4E44-8608-65D1C9A3A6BA} = {EF5477A9-19A5-4DC4-A5B5-88A5D0CDC43F}
 	EndGlobalSection
 EndGlobal

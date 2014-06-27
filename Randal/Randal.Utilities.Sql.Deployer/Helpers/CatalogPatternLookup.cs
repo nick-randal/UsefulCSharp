@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Randal.Utilities.Sql.Deployer.Helpers
+namespace Randal.Sql.Deployer.Helpers
 {
 	public sealed class CatalogPatternLookup
 	{

@@ -13,9 +13,9 @@
 
 using System;
 using System.Collections.Generic;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	public sealed partial class ScriptParserTests
 	{

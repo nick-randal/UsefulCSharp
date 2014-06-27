@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Randal.Core.Testing")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Unit test support for Given When Then test pattern.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.Core.Testing")]
@@ -48,5 +48,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyFileVersion("1.0.0.1")]

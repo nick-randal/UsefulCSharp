@@ -7,8 +7,8 @@
     <ProjectGuid>{02DDD4EC-A098-4C73-BC88-EC7607C8E5E3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Randal.Utilities.Sql.Deployer.App</RootNamespace>
-    <AssemblyName>Randal.Utilities.Sql.Deployer.App</AssemblyName>
+    <RootNamespace>Randal.Sql.Deployer.App</RootNamespace>
+    <AssemblyName>Randal.Sql.Deployer.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Randal.Utilities.Sql.Deployer.App.SqlDeployerProgram</StartupObject>
+    <StartupObject>Randal.Sql.Deployer.App.SqlDeployerProgram</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine">
@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -63,9 +64,9 @@
       <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
       <Name>Randal.Logging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Utilities.Sql.Deployer.csproj">
+    <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj">
       <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
-      <Name>Randal.Utilities.Sql.Deployer</Name>
+      <Name>Randal.Sql.Deployer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

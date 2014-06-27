@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public sealed class CatalogBlock : CsvParameterBlock
 	{

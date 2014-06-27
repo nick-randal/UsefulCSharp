@@ -16,11 +16,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
 using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.IO;
-using Randal.Utilities.Sql.Deployer.Process;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.IO;
+using Randal.Sql.Deployer.Process;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Process
+namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass, DeploymentItem(Test.Paths.ProjectA, Test.Paths.ProjectA)]
 	public sealed class ScriptDeployerIntegrationTests : BaseUnitTest<ScriptDeployerIntegrationThens>

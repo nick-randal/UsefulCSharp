@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public sealed class NeedBlock : CsvParameterBlock
 	{

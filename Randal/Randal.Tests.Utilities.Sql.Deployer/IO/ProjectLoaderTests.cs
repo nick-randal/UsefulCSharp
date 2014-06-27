@@ -16,10 +16,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
 using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.IO;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.IO;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.IO
+namespace Randal.Tests.Sql.Deployer.IO
 {
 	[TestClass, DeploymentItem("TestFiles", "TestFiles")]
 	public sealed class ProjectLoaderTests : BaseUnitTest<ProjectLoaderThens>

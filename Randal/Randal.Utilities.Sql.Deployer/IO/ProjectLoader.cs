@@ -18,10 +18,10 @@ using System.Linq;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
-using Randal.Utilities.Sql.Deployer.Configuration;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Configuration;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Utilities.Sql.Deployer.IO
+namespace Randal.Sql.Deployer.IO
 {
 	public sealed class ProjectLoader
 	{

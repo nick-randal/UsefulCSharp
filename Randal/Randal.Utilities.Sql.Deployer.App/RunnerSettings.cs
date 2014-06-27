@@ -13,7 +13,7 @@
 
 using Randal.Logging;
 
-namespace Randal.Utilities.Sql.Deployer.App
+namespace Randal.Sql.Deployer.App
 {
 	public sealed class RunnerSettings
 	{

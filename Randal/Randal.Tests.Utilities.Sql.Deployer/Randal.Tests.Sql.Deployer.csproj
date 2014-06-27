@@ -6,8 +6,8 @@
     <ProjectGuid>{A6B19F04-1365-4234-9FD4-B9B49529DE47}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Randal.Tests.Utilities.Sql.Deployer</RootNamespace>
-    <AssemblyName>Randal.Tests.Utilities.Sql.Deployer</AssemblyName>
+    <RootNamespace>Randal.Tests.Sql.Deployer</RootNamespace>
+    <AssemblyName>Randal.Tests.Sql.Deployer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -92,6 +92,7 @@
     <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="TestFiles\ProjectA\config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -110,9 +111,9 @@
       <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
       <Name>Randal.Logging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Utilities.Sql.Deployer.csproj">
+    <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj">
       <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
-      <Name>Randal.Utilities.Sql.Deployer</Name>
+      <Name>Randal.Sql.Deployer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

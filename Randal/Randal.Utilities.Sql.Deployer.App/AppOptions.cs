@@ -14,7 +14,7 @@
 using CommandLine;
 using CommandLine.Text;
 
-namespace Randal.Utilities.Sql.Deployer.App
+namespace Randal.Sql.Deployer.App
 {
 	public sealed class AppOptions
 	{

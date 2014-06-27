@@ -16,9 +16,9 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Configuration;
+using Randal.Sql.Deployer.Configuration;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Configuration
+namespace Randal.Tests.Sql.Deployer.Configuration
 {
 	[TestClass]
 	public sealed class InstallerConfigTests : BaseUnitTest<InstallerConfigThens>

@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BCCC5815-0945-4363-AB8E-706E51E0A0AF}</ProjectGuid>
+    <ProjectGuid>{2E41E8D7-A10A-41F1-9618-00E17DC14D6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Randal.Tests.Core</RootNamespace>
-    <AssemblyName>Randal.Tests.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Randal.Tests.Sql.Scripting</RootNamespace>
+    <AssemblyName>Randal.Tests.Sql.Scripting</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,7 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,7 +42,20 @@
       <HintPath>..\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.Smo, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Randal.Core">
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.1\lib\net45\Randal.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Randal.Core.Testing">
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.1\lib\net45\Randal.Core.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -54,33 +66,26 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise />
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Dynamic\DynamicEntityTests.cs" />
-    <Compile Include="Structures\DependencyListBuilderTests.cs" />
+    <Compile Include="SqlObjectFormatterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dynamic\NullConverterTests.cs" />
-    <Compile Include="Dynamic\DictionaryConverterTests.cs" />
-    <Compile Include="Dynamic\DynamicEntityConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">
-      <Project>{7e3c2598-ad31-4a85-93d1-89b7d835a9de}</Project>
-      <Name>Randal.Core.Testing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
-      <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
-      <Name>Randal.Core</Name>
+    <ProjectReference Include="..\Randal.Sql.Scripting\Randal.Sql.Scripting.csproj">
+      <Project>{dd00d8d6-540c-4e44-8608-65d1c9a3a6ba}</Project>
+      <Name>Randal.Sql.Scripting</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Fakes Include="Fakes\System.fakes" />
-    <Fakes Include="Fakes\mscorlib.fakes" />
     <None Include="LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

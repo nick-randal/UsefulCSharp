@@ -16,12 +16,12 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
-using Randal.Tests.Utilities.Sql.Deployer.Scripts;
-using Randal.Utilities.Sql.Deployer.Process;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Tests.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Process;
+using Randal.Sql.Deployer.Scripts;
 using Rhino.Mocks;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Process
+namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass]
 	public sealed class ScriptDeployerTests : BaseUnitTest<SqlDeployerThens>

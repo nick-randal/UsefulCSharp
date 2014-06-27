@@ -16,10 +16,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Randal.Core.Enums;
 using Randal.Logging;
-using Randal.Utilities.Sql.Deployer.Helpers;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Helpers;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Utilities.Sql.Deployer.Process
+namespace Randal.Sql.Deployer.Process
 {
 	public interface IScriptDeployer
 	{

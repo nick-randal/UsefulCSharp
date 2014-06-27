@@ -16,9 +16,9 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	[TestClass]
 	public sealed partial class ScriptParserTests : BaseUnitTest<ScriptParserThens>

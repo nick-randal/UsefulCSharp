@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public sealed class OptionsBlock : BaseScriptBlock
 	{

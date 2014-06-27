@@ -14,9 +14,9 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Process;
+using Randal.Sql.Deployer.Process;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Process
+namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass]
 	public sealed class SqlCommandWrapperFactoryTests : BaseUnitTest<SqlCommandWrapperFactoryThens>

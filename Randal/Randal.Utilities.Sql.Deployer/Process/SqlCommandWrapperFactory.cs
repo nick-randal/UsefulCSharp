@@ -13,7 +13,7 @@
 
 using System.Data.SqlClient;
 
-namespace Randal.Utilities.Sql.Deployer.Process
+namespace Randal.Sql.Deployer.Process
 {
 	public interface ISqlCommandWrapperFactory
 	{

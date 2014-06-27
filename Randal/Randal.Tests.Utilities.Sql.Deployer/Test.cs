@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-namespace Randal.Tests.Utilities.Sql.Deployer
+namespace Randal.Tests.Sql.Deployer
 {
 	public static class Test
 	{

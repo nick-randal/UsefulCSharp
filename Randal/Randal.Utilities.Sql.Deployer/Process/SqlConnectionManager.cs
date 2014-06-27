@@ -18,7 +18,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using Randal.Logging;
 
-namespace Randal.Utilities.Sql.Deployer.Process
+namespace Randal.Sql.Deployer.Process
 {
 	public interface ISqlConnectionManager : IDisposable
 	{

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Given When Then tests</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.Core.Testing/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>First release.</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>Unit, Test, Given</tags>
+  </metadata>
+</package>

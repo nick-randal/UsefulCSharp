@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Randal.Utilities.Sql.Deployer.Configuration
+namespace Randal.Sql.Deployer.Configuration
 {
 	public interface IProjectConfig
 	{

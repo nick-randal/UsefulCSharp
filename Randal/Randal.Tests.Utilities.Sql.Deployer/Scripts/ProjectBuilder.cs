@@ -13,10 +13,10 @@
 
 using System.Collections.Generic;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Configuration;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Configuration;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	public sealed class ProjectBuilder : ITestObjectBuilder<Project>
 	{

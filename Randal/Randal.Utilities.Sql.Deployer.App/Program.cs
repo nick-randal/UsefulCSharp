@@ -13,7 +13,7 @@
 
 using CommandLine;
 
-namespace Randal.Utilities.Sql.Deployer.App
+namespace Randal.Sql.Deployer.App
 {
 	internal sealed class SqlDeployerProgram
 	{

@@ -14,7 +14,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public abstract class CsvParameterBlock : BaseScriptBlock
 	{

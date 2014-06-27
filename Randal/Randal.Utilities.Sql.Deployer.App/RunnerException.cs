@@ -13,7 +13,7 @@
 
 using System;
 
-namespace Randal.Utilities.Sql.Deployer.App
+namespace Randal.Sql.Deployer.App
 {
 	public sealed class RunnerException : InvalidOperationException
 	{

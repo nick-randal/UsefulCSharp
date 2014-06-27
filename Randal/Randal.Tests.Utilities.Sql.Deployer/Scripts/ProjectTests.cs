@@ -16,11 +16,11 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Configuration;
-using Randal.Utilities.Sql.Deployer.IO;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Configuration;
+using Randal.Sql.Deployer.IO;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Scripts
+namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	[TestClass, DeploymentItem("TestFiles", "TestFiles")]
 	public sealed class ProjectTests : BaseUnitTest<ProjectTestsThens>

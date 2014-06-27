@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Randal.Utilities.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts
 {
 	public sealed class SourceScript
 	{

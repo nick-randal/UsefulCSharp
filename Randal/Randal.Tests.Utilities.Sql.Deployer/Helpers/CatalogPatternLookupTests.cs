@@ -15,9 +15,9 @@ using System.Text.RegularExpressions;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Utilities.Sql.Deployer.Helpers;
+using Randal.Sql.Deployer.Helpers;
 
-namespace Randal.Tests.Utilities.Sql.Deployer.Helpers
+namespace Randal.Tests.Sql.Deployer.Helpers
 {
 	[TestClass]
 	public sealed class CatalogPatternLookupTests : BaseUnitTest<CatalogPatternLookupThens>

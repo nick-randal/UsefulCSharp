@@ -14,11 +14,11 @@
 using System;
 using Randal.Core.Enums;
 using Randal.Logging;
-using Randal.Utilities.Sql.Deployer.IO;
-using Randal.Utilities.Sql.Deployer.Process;
-using Randal.Utilities.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.IO;
+using Randal.Sql.Deployer.Process;
+using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Utilities.Sql.Deployer.App
+namespace Randal.Sql.Deployer.App
 {
 	public sealed class Runner : IDisposable
 	{
