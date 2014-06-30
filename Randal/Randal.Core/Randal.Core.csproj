@@ -42,8 +42,8 @@
     <Compile Include="Dynamic\NullConverter.cs" />
     <Compile Include="Enums\Returned.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Strings\NamedFieldParser.cs" />
-    <Compile Include="Strings\StringFormatter.cs" />
+    <Compile Include="Strings\NamedFieldFormatter.cs" />
+    <Compile Include="Strings\StringFormatHelper.cs" />
     <Compile Include="Strings\StringFormatterExtensions.cs" />
     <Compile Include="Structures\DependencyListBuilder.cs" />
   </ItemGroup>

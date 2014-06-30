@@ -59,7 +59,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Dynamic\DynamicEntityTests.cs" />
-    <Compile Include="Strings\StringFormatterTests.cs" />
+    <Compile Include="Strings\StringFormatHelperTests.cs" />
+    <Compile Include="Strings\NamedFieldFormatterTests.cs" />
     <Compile Include="Structures\DependencyListBuilderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dynamic\NullConverterTests.cs" />

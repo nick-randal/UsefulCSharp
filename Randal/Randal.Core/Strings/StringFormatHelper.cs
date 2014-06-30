@@ -1,39 +1,47 @@
-﻿using System;
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.UI;
 
 namespace Randal.Core.Strings
 {
-	public interface IStringFormatter
+	public interface IStringFormatHelper
 	{
 		string With(object source);
 		string With(IDictionary<string, object> source);
 		string With(NameValueCollection source);
 	}
 
-	public sealed class StringFormatter : IStringFormatter
+	public sealed class StringFormatHelper : IStringFormatHelper
 	{
-		public StringFormatter(string text, IParser parser = null)
+		public StringFormatHelper(string text, IStringFormatter formatter = null)
 		{
 			if (text == null)
 				throw new ArgumentNullException("text");
 
-			_parser = parser ?? new NamedFieldParser();
+			_formatter = formatter ?? new NamedFieldFormatter();
 			_textToFormat = text;
 		}
-	
+
 		public string With(object source)
 		{
 			if (source == null)
 				throw new ArgumentNullException("source");
 
-			return _parser.Parse(_textToFormat, exp => GetObjectValue(source, exp));
+			return _formatter.Parse(_textToFormat, exp => GetObjectValue(source, exp));
 		}
 
 		public string With(IDictionary<string, object> source)
@@ -41,7 +49,7 @@ namespace Randal.Core.Strings
 			if (source == null)
 				throw new ArgumentNullException("source");
 
-			return _parser.Parse(_textToFormat, exp => GetKeyValue(source, exp));
+			return _formatter.Parse(_textToFormat, exp => GetKeyValue(source, exp));
 		}
 
 		public string With(NameValueCollection source)
@@ -49,7 +57,7 @@ namespace Randal.Core.Strings
 			if (source == null)
 				throw new ArgumentNullException("source");
 
-			return _parser.Parse(_textToFormat, exp => source[exp] ?? string.Empty);
+			return _formatter.Parse(_textToFormat, exp => source[exp] ?? string.Empty);
 		}
 
 		private static string GetObjectValue(object source, string field)
@@ -63,22 +71,14 @@ namespace Randal.Core.Strings
 				field = field.Substring(0, colonIndex);
 			}
 
-			try
-			{
-				if (string.IsNullOrEmpty(format))
-					return (DataBinder.Eval(source, field) ?? string.Empty).ToString();
+			if (string.IsNullOrEmpty(format))
+				return (DataBinder.Eval(source, field) ?? string.Empty).ToString();
 
-				return DataBinder.Eval(source, field, "{0:" + format + "}") ?? string.Empty;
-			}
-			catch (HttpException ex)
-			{
-				throw new FormatException("Binding error", ex);
-			}
+			return DataBinder.Eval(source, field, "{0:" + format + "}");
 		}
 
 		private static string GetKeyValue(IDictionary<string, object> lookup, string key)
 		{
-			var format = string.Empty;
 			object value;
 
 			if (lookup.TryGetValue(key, out value) == false)
@@ -88,6 +88,6 @@ namespace Randal.Core.Strings
 		}
 
 		private readonly string _textToFormat;
-		private readonly IParser _parser;	
+		private readonly IStringFormatter _formatter;
 	}
 }
