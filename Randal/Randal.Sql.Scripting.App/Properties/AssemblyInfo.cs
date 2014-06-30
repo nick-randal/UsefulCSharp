@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Randal.Sql.Scripting")]
+[assembly: AssemblyTitle("Randal.Sql.Scripting.App")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Randal.Sql.Scripting")]
+[assembly: AssemblyProduct("Randal.Sql.Scripting.App")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("084384ef-8f21-40c0-af4c-91c21fb40739")]
+[assembly: Guid("1fa1a801-572a-49ee-be07-ca8517d5c8eb")]
 
 // Version information for an assembly consists of the following four values:
 //
