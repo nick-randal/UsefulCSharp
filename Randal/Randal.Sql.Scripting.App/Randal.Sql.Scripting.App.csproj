@@ -63,9 +63,24 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
+      <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
+      <Name>Randal.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Randal.Logging\Randal.Logging.csproj">
+      <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
+      <Name>Randal.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Randal.Sql.Scripting\Randal.Sql.Scripting.csproj">
+      <Project>{f15d39b9-2e8f-4a8f-9a31-78a96d981b6f}</Project>
+      <Name>Randal.Sql.Scripting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

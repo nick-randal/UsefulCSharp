@@ -79,6 +79,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Randal.Sql.Scripting\Randal.Sql.Scripting.csproj">
+      <Project>{f15d39b9-2e8f-4a8f-9a31-78a96d981b6f}</Project>
+      <Name>Randal.Sql.Scripting</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
