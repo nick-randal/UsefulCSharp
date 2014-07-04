@@ -40,7 +40,7 @@ namespace Randal.Tests.Logging
 		{
 			When(Creating);
 			Then.Decorator.Should().NotBeNull().And.BeAssignableTo<ILogger>();
-			Then.Decorator.Logger.Should().NotBeNull().And.BeAssignableTo<ILogger>();
+			Then.Decorator.BaseLogger.Should().NotBeNull().And.BeAssignableTo<ILogger>();
 		}
 
 		[TestMethod]

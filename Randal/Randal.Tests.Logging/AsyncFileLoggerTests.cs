@@ -51,13 +51,6 @@ namespace Randal.Tests.Logging
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.Important);
 		}
 
-		[TestMethod]
-		public void ShouldBeDisposedWhenDisposingLogger()
-		{
-			When(Creating, Disposing);
-			Then.Logger.State.Should().Be(AsyncFileLoggerState.Disposed);
-		}
-
 		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{

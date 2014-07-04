@@ -38,7 +38,7 @@ namespace Randal.Sql.Deployer.Process
 
 			_project = project;
 			_connectionManager = connectionManager;
-			_logger = new LoggerStringFormatDecorator(logger ?? new NullLogger());
+			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 			_patternLookup = new CatalogPatternLookup();
 		}
 
@@ -217,7 +217,7 @@ namespace Randal.Sql.Deployer.Process
 		}
 
 		private readonly IProject _project;
-		private readonly LoggerStringFormatDecorator _logger;
+		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 		private readonly CatalogPatternLookup _patternLookup;
 	}

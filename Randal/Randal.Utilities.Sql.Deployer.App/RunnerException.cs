@@ -15,6 +15,7 @@ using System;
 
 namespace Randal.Sql.Deployer.App
 {
+	[Serializable]
 	public sealed class RunnerException : InvalidOperationException
 	{
 		public RunnerException(string message) : base(message)

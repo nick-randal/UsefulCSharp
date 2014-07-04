@@ -27,9 +27,7 @@ namespace Randal.Sql.Deployer.IO
 	{
 		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, ILogger logger = null)
 		{
-			logger = logger ?? new NullLogger();
-			var decorator = logger as ILoggerStringFormatDecorator;
-			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
+			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 
 			ProjectPath = projectPath;
 			ScriptParser = scriptParser;
@@ -129,7 +127,7 @@ namespace Randal.Sql.Deployer.IO
 			return Returned.Success;
 		}
 
-		private readonly ILoggerStringFormatDecorator _logger;
+		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer ScriptParser { get; set; }
 	}

@@ -171,6 +171,15 @@ namespace Randal.Logging
 				if (_task.IsCompleted || _task.IsCanceled || _task.IsFaulted)
 					_task.Dispose();
 				_task = null;
+
+				if(_signal != null)
+					_signal.Dispose();
+
+				if(_token != null)
+					_token.Dispose();
+
+				if(_settingsLock != null)
+					_settingsLock.Dispose();
 			}
 			catch (Exception ex)
 			{

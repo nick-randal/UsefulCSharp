@@ -28,11 +28,7 @@ namespace Randal.Sql.Deployer.App
 				throw new ArgumentNullException("settings");
 
 			_settings = settings;
-
-			if (logger == null)
-				logger = new AsyncFileLogger(settings.FileLoggerSettings);
-			var decorator = logger as ILoggerStringFormatDecorator;
-			_logger = decorator ?? new LoggerStringFormatDecorator(logger);
+			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 		}
 
 		public void Go()
@@ -62,7 +58,7 @@ namespace Randal.Sql.Deployer.App
 				}
 				catch (RunnerException ex)
 				{
-					_logger.Add(new ExceptionEntry(ex));
+					_logger.AddException(ex);
 				}
 				finally
 				{
@@ -115,7 +111,7 @@ namespace Randal.Sql.Deployer.App
 
 		private Project LoadProject(IScriptParserConsumer parser)
 		{
-			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, _logger);
+			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, _logger.BaseLogger);
 			if (loader.Load() == Returned.Failure)
 				throw new RunnerException("Failed to load project");
 
@@ -124,7 +120,7 @@ namespace Randal.Sql.Deployer.App
 
 		private void DeployScripts(IProject project, ISqlConnectionManager connectionManager)
 		{
-			var deployer = new ScriptDeployer(project, connectionManager, _logger);
+			var deployer = new ScriptDeployer(project, connectionManager, _logger.BaseLogger);
 
 			if (deployer.CanUpgrade() == false)
 				throw new RunnerException("Cannot upgrade project");
@@ -136,10 +132,10 @@ namespace Randal.Sql.Deployer.App
 		public void Dispose()
 		{
 			if (_logger != null)
-				_logger.Dispose();
+				_logger.BaseLogger.Dispose();
 		}
 
-		private readonly ILoggerStringFormatDecorator _logger;
+		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly RunnerSettings _settings;
 	}
 }

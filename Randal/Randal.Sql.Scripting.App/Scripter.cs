@@ -28,10 +28,7 @@ namespace Randal.Sql.Scripting.App
 			_scriptFileManager = scriptFileManager;
 			_formatter = formatter ?? new ScriptFormatter(_server);
 
-			if(logger is ILoggerStringFormatDecorator == false)
-				_logger = new LoggerStringFormatDecorator(logger);
-			else
-				_logger = (ILoggerStringFormatDecorator)logger;
+			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
 		public void DumpScripts(string sprocsFolder = "Sprocs", string udfFolder = "Functions", string viewFolder = "Views")
@@ -77,6 +74,6 @@ namespace Randal.Sql.Scripting.App
 		}
 
 		private readonly IScriptFileManager _scriptFileManager;
-		private readonly ILoggerStringFormatDecorator _logger;
+		private readonly ILoggerStringFormatWrapper _logger;
 	}
 }

@@ -15,96 +15,30 @@ using System;
 
 namespace Randal.Logging
 {
-	public interface ILoggerStringFormatDecorator : ILogger
+	public sealed class LoggerStringFormatDecorator : LoggerStringFormatWrapper, ILogger
 	{
-		void AddEntry(string message, params object[] values);
-		void AddEntry(Verbosity verbosity, string message, params object[] values);
-		void AddBlank(Verbosity verbosity = Verbosity.Info);
-		void AddEntryNoTimestamp(string message, params object[] values);
-		void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
-		void AddException(Exception ex);
-		void AddException(Exception ex, string message, params object[] values);
-
-		ILogger Logger { get; }
-	}
-
-	public sealed class LoggerStringFormatDecorator : ILoggerStringFormatDecorator
-	{
-		public LoggerStringFormatDecorator(ILogger logger)
+		public LoggerStringFormatDecorator(ILogger logger) : base(logger)
 		{
-			_logger = logger;
 		}
-
-		public void AddEntry(string message, params object[] values)
-		{
-			AddEntry(Verbosity.Info, message, values);
-		}
-
-		public void AddEntry(Verbosity verbosity, string message, params object[] values)
-		{
-			var formatted = string.Format(message, values);
-
-			_logger.Add(new LogEntry(formatted, verbosity));
-		}
-
-		public void AddBlank(Verbosity verbosity = Verbosity.Info)
-		{
-			_logger.Add(new LogEntryNoTimestamp(string.Empty, verbosity));
-		}
-
-		public void AddEntryNoTimestamp(string message, params object[] values)
-		{
-			AddEntryNoTimestamp(Verbosity.Info, message, values);
-		}
-
-		public void AddEntryNoTimestamp(Verbosity verbosity, string message, params object[] values)
-		{
-			var formatted = string.Format(message, values);
-
-			_logger.Add(new LogEntryNoTimestamp(formatted, verbosity));
-		}
-
-		public void AddException(Exception ex)
-		{
-			_logger.Add(new ExceptionEntry(ex));
-		}
-
-		public void AddException(Exception ex, string message, params object[] values)
-		{
-			var formatted = string.Format(message, values);
-
-			_logger.Add(new ExceptionEntry(ex, formatted));
-		}
-
-		public ILogger Logger
-		{
-			get { return _logger; }
-		}
-
-		#region ILogger Wrappers
 
 		public Verbosity VerbosityThreshold
 		{
-			get { return _logger.VerbosityThreshold; }
+			get { return Logger.VerbosityThreshold; }
 		}
 
 		public void ChangeVerbosityThreshold(Verbosity newLevel)
 		{
-			_logger.ChangeVerbosityThreshold(newLevel);
+			Logger.ChangeVerbosityThreshold(newLevel);
 		}
 
 		public void Add(ILogEntry entry)
 		{
-			_logger.Add(entry);
+			Logger.Add(entry);
 		}
 
 		public void Dispose()
 		{
-			_logger.Dispose();
+			Logger.Dispose();
 		}
-
-		#endregion
-
-		private readonly ILogger _logger;
 	}
 }

@@ -89,13 +89,27 @@ namespace Randal.Logging
 			}
 		}
 
-		public void Dispose()
+		protected virtual void Dispose(bool disposing)
 		{
+			if (!disposing) 
+				return;
+
 			Writer.Flush();
 			Writer.Close();
 			Writer.Dispose();
 
 			Lock.Dispose();
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		~TextWriterLogger()
+		{
+			Dispose(false);
 		}
 
 		protected readonly TextWriter Writer;
