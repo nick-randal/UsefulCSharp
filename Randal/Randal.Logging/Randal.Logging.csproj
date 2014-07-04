@@ -43,7 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncFileLogger.cs" />
-    <Compile Include="Owin\LoggerOwinFormatter.cs" />
+    <Compile Include="Owin\LoggerMiddleware.cs" />
+    <Compile Include="Owin\EnvironmentFormatter.cs" />
+    <Compile Include="Owin\OwinContextFormatter.cs" />
     <Compile Include="Owin\LoggerOwinMiddleware.cs" />
     <Compile Include="TextWriterLogger.cs" />
     <Compile Include="LogFile.cs" />

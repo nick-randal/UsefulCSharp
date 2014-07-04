@@ -15,15 +15,19 @@ using Microsoft.Owin;
 
 namespace Randal.Logging.Owin
 {
-	public interface ILoggerOwinFormatter
+	public interface IOwinFormatter
 	{
 		bool UsePreEntry { get; }
-		ILogEntry GetPreEntry(IOwinContext context);
 		bool UsePostEntry { get; }
+	}
+
+	public interface IOwinContextFormatter : IOwinFormatter
+	{
+		ILogEntry GetPreEntry(IOwinContext context);
 		ILogEntry GetPostEntry(IOwinContext context);
 	}
 
-	public sealed class LoggerOwinFormatter : ILoggerOwinFormatter
+	public sealed class OwinContextFormatter : IOwinContextFormatter
 	{
 		public bool UsePreEntry
 		{

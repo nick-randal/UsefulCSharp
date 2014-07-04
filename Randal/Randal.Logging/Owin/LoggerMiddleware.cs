@@ -12,33 +12,35 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Owin;
 
 namespace Randal.Logging.Owin
 {
-	public sealed class LoggerOwinMiddleware : OwinMiddleware, IDisposable
+	using AppFunc = Func<IDictionary<string, object>, Task>;
+
+	public sealed class LoggerMiddleware : IDisposable
 	{
-		public LoggerOwinMiddleware(OwinMiddleware next, ILogger logger) : this(next, logger, null)
+		public LoggerMiddleware(AppFunc next, ILogger logger) : this(next, logger, null)
 		{
 		}
 
-		public LoggerOwinMiddleware(OwinMiddleware next, ILogger logger, IOwinContextFormatter formatter)
-			: base(next)
+		public LoggerMiddleware(AppFunc next, ILogger logger, IEnvironmentFormatter formatter)
 		{
+			_next = next;
 			_logger = logger;
-			_formatter = formatter ?? new OwinContextFormatter();
+			_formatter = formatter ?? new EnvironmentFormatter();
 		}
 
-		public override async Task Invoke(IOwinContext context)
+		public async Task Invoke(IDictionary<string, object> environment)
 		{
-			if(_formatter.UsePreEntry)
-				_logger.Add(_formatter.GetPreEntry(context));
+			if (_formatter.UsePreEntry)
+				_logger.Add(_formatter.GetPreEntry(environment));
 
-			await Next.Invoke(context);
+			await _next.Invoke(environment);
 
-			if(_formatter.UsePostEntry)
-				_logger.Add(_formatter.GetPostEntry(context));
+			if (_formatter.UsePostEntry)
+				_logger.Add(_formatter.GetPostEntry(environment));
 		}
 
 		public void Dispose()
@@ -47,6 +49,7 @@ namespace Randal.Logging.Owin
 		}
 
 		private readonly ILogger _logger;
-		private readonly IOwinContextFormatter _formatter;
+		private readonly IEnvironmentFormatter _formatter;
+		private readonly AppFunc _next;
 	}
 }
