@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>First release.</releaseNotes>
     <copyright>Copyright 2014 Nicholas Randal</copyright>
-    <tags>Log,Logging,Asynchronous</tags>
+    <tags>Log,Logging,Asynchronous,OWIN</tags>
   </metadata>
 </package>
