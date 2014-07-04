@@ -84,6 +84,9 @@ namespace Randal.Core.Strings
 			if (lookup.TryGetValue(key, out value) == false)
 				value = string.Empty;
 
+			if (value == null)
+				return string.Empty;
+
 			return value.ToString();
 		}
 

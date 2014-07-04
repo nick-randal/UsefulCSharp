@@ -13,9 +13,9 @@ namespace Randal.Sql.Scripting
 
 	public sealed class ScriptFormatter : IScriptFormatter
 	{
-		public ScriptFormatter(DependencyWalker dependencyWalker)
+		public ScriptFormatter(IServer server)
 		{
-			_dependencyWalker = dependencyWalker;
+			_server = server;
 		}
 
 		public string Format(StoredProcedure sproc)
@@ -41,13 +41,9 @@ namespace Randal.Sql.Scripting
 
 		private string GetNeeds(SqlSmoObject sproc)
 		{
-			var depTree = _dependencyWalker.DiscoverDependencies(new[] { sproc }, true);
-
-			var dependencies = _dependencyWalker.WalkDependencies(depTree)
-				.Cast<DependencyNode>()
-				.Where(x => x.Urn.Value != sproc.Urn && x.Urn.Type != "Table")
-				.Select(x => x.Urn.GetNameForType(x.Urn.Type))
-				.ToList();
+			var dependencies = _server.GetDependencies(sproc)
+				.Where(x => x.Value != sproc.Urn && x.Type != "Table")
+				.Select(x => x.GetNameForType(x.Type)).ToList();
 
 			if (dependencies.Count == 0)
 				return string.Empty;
@@ -55,9 +51,10 @@ namespace Randal.Sql.Scripting
 			return "--:: need " + string.Join(", ", dependencies) + Environment.NewLine;
 		}
 
-		private readonly DependencyWalker _dependencyWalker;
+		private readonly IServer _server;
 
-		private const string SprocScript =
+		private const string 
+			SprocScript =
 @"{needs}--:: catalog {catalog}
 
 --:: ignore
@@ -73,6 +70,11 @@ GO
 
 /*
 	exec {sproc} {args}
-*/";
+*/",
+			UserDefinedFunctionScript = 
+@"",
+			ViewScript = 
+@""
+		;
 	}
 }

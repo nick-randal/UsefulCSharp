@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
 {
@@ -15,9 +16,14 @@ namespace Randal.Sql.Scripting.App
 
 		private static void Main(string[] args)
 		{
-		}
+			var scriptFileManager = new ScriptFileManager(@"C:\__dev\Database\Dump");
+			var server = new ServerWrapper(Local);
 
-		
-		
+			var settings = new FileLoggerSettings(@"c:\__dev\Research\Log", "scripter");
+			using (var logger = new AsyncFileLogger(settings))
+			{
+				new Scripter(server, scriptFileManager, logger).DumpScripts();
+			}
+		}
 	}
 }

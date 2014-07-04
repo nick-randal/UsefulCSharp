@@ -22,7 +22,7 @@ namespace Randal.Core.Strings
 
 		public static IStringFormatHelper Format(this string target)
 		{
-			return Factory(target);
+			return Factory.Invoke(target);
 		}
 	}
 }

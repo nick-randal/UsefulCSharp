@@ -11,82 +11,72 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
 {
 	public sealed class Scripter
 	{
-		private readonly Server _server;
+		private readonly IServer _server;
 		private readonly IScriptFormatter _formatter;
 
-		public Scripter(string serverName, IScriptFormatter formatter = null)
+		public Scripter(IServer server, IScriptFileManager scriptFileManager, ILogger logger, IScriptFormatter formatter = null)
 		{
-			_server = new Server(serverName);
-			var depWalker = new DependencyWalker(_server);
-			_formatter = formatter ?? new ScriptFormatter(depWalker);
+			_server = server;
+			_scriptFileManager = scriptFileManager;
+			_formatter = formatter ?? new ScriptFormatter(_server);
+
+			if(logger is ILoggerStringFormatDecorator == false)
+				_logger = new LoggerStringFormatDecorator(logger);
+			else
+				_logger = (ILoggerStringFormatDecorator)logger;
 		}
 
-		public void DumpScripts()
+		public void DumpScripts(string sprocsFolder = "Sprocs", string udfFolder = "Functions", string viewFolder = "Views")
 		{
-			var databases = _server.Databases.Cast<Database>().ToList();
-
-			foreach (var db in databases)
+			foreach (var database in _server.GetDatabases())
 			{
+				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					var folderPath = CreateDirectory(@"C:\__dev\Database\Dump", db);
-					ProcessSprocs(db.StoredProcedures.Cast<StoredProcedure>().ToList(), folderPath);
+					ProcessStoredProcedures(database, sprocsFolder);
+					ProcessUserDefinedFunctions(database, udfFolder);
+					ProcessViews(database, viewFolder);
 				}
 				catch (ExecutionFailureException ex)
 				{
-					Console.WriteLine(ex);
+					_logger.AddException(ex);
 				}
 			}
 		}
 
-		private static string CreateDirectory(string basePath, Database database)
+		private void ProcessStoredProcedures(Database database, string subFolder)
 		{
-			var dbPath = Path.Combine(basePath, database.Name, "Sprocs");
-
-			var directory = new DirectoryInfo(dbPath);
-
-			if (directory.Exists)
+			_scriptFileManager.CreateDirectory(database.Name, subFolder);
+			
+			foreach (var sproc in _server.GetStoredProcedures(database))
 			{
-				foreach (var file in directory.GetFiles("*.sql", SearchOption.AllDirectories))
-					file.Delete();
-			}
-			else
-				directory.Create();
-
-			return dbPath;
-		}
-
-		private void ProcessSprocs(IEnumerable<StoredProcedure> list, string folderPath)
-		{
-			foreach (
-				var sproc in list.Where(s => s.ImplementationType == ImplementationType.TransactSql && s.IsSystemObject == false))
-			{
+				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
 				if (sproc.Schema != "dbo")
-					Console.WriteLine("{0} {1}", sproc.Schema, sproc.Name);
+					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
 
-				WriteScriptFile(folderPath, sproc.Name, _formatter.Format(sproc));
+				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
 			}
 		}
 
-		private static void WriteScriptFile(string folder, string name, string text)
+		private void ProcessUserDefinedFunctions(Database database, string subFolder)
 		{
-			var script = new FileInfo(Path.Combine(folder, name + ".sql"));
-
-			using (var writer = new StreamWriter(script.OpenWrite()))
-			{
-				writer.WriteLine(text);
-			}
+			_scriptFileManager.CreateDirectory(database.Name, subFolder);
 		}
+
+		private void ProcessViews(Database database, string subFolder)
+		{
+			_scriptFileManager.CreateDirectory(database.Name, subFolder);
+		}
+
+		private readonly IScriptFileManager _scriptFileManager;
+		private readonly ILoggerStringFormatDecorator _logger;
 	}
 }
