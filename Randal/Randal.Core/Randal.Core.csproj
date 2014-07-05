@@ -46,6 +46,7 @@
     <Compile Include="Strings\StringFormatHelper.cs" />
     <Compile Include="Strings\StringFormatterExtensions.cs" />
     <Compile Include="Structures\DependencyListBuilder.cs" />
+    <Compile Include="Xml\XmlCollection.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
