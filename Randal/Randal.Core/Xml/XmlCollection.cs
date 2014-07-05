@@ -28,6 +28,11 @@ namespace Randal.Core.Xml
 		{
 			Items = items == null ? new List<TItem>() : new List<TItem>(items);
 		}
+		
+		public void Add(TItem item)
+		{
+			Items.Add(item);
+		}
 
 		public void Add(object o)
 		{
