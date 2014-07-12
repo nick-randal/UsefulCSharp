@@ -47,8 +47,12 @@
     <Reference Include="Microsoft.SqlServer.Management.UtilityEnum, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SqlServer.Smo, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SqlServer.SqlEnum, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Randal.Core, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.4\lib\net45\Randal.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Randal.Core.Testing">
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.3\lib\net45\Randal.Core.Testing.dll</HintPath>
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.4\lib\net45\Randal.Core.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
