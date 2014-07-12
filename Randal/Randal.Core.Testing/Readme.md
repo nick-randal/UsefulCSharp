@@ -14,10 +14,14 @@ namespace Someplace
 {
 	public sealed class TestObjectTests : BaseUnitTest<TestObjectThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
+			// Optional : est setup
+		}
+
+		protected override void OnTeardown()
+		{
+			// Optional : test teardown
 		}
 		
 		[TestMethod]
@@ -42,6 +46,8 @@ namespace Someplace
 		
 		private void Creating()
 		{
+			// can check if a dynamic value is defined through  GivensDefined("NeededValue",...)
+
 			Then.Target = new TestObject(Given.NeededValue);
 		}
 		
@@ -51,10 +57,15 @@ namespace Someplace
 		}
 	}
 
-	public sealed class TestObjectThens
+	public sealed class TestObjectThens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
 	{
 		public TestObject Target;
 		public string Text;
+
+		public void Dispose()
+		{
+			// optionally define as IDisposable to have automatic disposal after each test
+		}
 	}
 }
 ```

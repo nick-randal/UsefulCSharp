@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Added missing required assembly Microsoft.CSharp.</releaseNotes>
+		<releaseNotes>Support for cleaner setup and teardown, added function to verify Givens Defined.</releaseNotes>
 		<copyright>Copyright 2014 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
