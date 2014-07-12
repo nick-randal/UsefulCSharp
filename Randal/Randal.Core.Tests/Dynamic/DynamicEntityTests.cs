@@ -34,6 +34,7 @@ namespace Randal.Tests.Core.Dynamic
 			dynamic entity = new DynamicEntity();
 
 			Then.Entity = entity;
+
 			Then.Entity.Should().NotBeNull().And.BeAssignableTo<DynamicEntity>();
 		}
 
@@ -42,11 +43,14 @@ namespace Randal.Tests.Core.Dynamic
 		{
 			dynamic entity = new DynamicEntity();
 			entity.Name = "Jane Doe";
-			Then.String = entity.Name;
 
 			Then.Entity = entity;
+			Then.String = entity.Name;
+			Then.Count = entity.Count();
+
 			Then.Entity.Should().NotBeNull().And.BeAssignableTo<DynamicEntity>();
 			Then.String.Should().Be("Jane Doe");
+			Then.Count.Should().Be(1);
 			bool exists = entity.TestForMember("Name");
 			exists.Should().BeTrue();
 		}
@@ -63,7 +67,9 @@ namespace Randal.Tests.Core.Dynamic
 		public void ShouldReturnNullWhenAccessingNonExistentPropertyGivenMissingMemberBehaviorReturnsNull()
 		{
 			dynamic entity = new DynamicEntity(MissingMemberBehavior.SuccessReturnsNull);
+			
 			Then.String = entity.Name;
+			
 			Then.String.Should().BeNull();
 		}
 
@@ -75,11 +81,13 @@ namespace Randal.Tests.Core.Dynamic
 			entity.Age = 32;
 
 			entity.Clear();
+			Then.MemberExists = entity.TestForMember("Name");
+			Then.Count = entity.Count();
 
-			bool exists = entity.TestForMember("Name");
-			exists.Should().BeFalse("all properties were cleared");
-			exists = entity.TestForMember("Age");
-			exists.Should().BeFalse("all properties were cleared");
+			Then.MemberExists.Should().BeFalse("all properties were cleared");
+			Then.MemberExists = entity.TestForMember("Age");
+			Then.MemberExists.Should().BeFalse("all properties were cleared");
+			Then.Count.Should().Be(0);
 		}
 
 		[TestMethod, ExpectedException(typeof (RuntimeBinderException))]
@@ -109,6 +117,8 @@ namespace Randal.Tests.Core.Dynamic
 			public IDictionary<string, object> Dictionary;
 			public string String;
 			public int Int;
+			public int Count;
+			public bool MemberExists;
 		}
 	}
 }

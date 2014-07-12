@@ -24,12 +24,6 @@ namespace Randal.Tests.Core.Strings
 	[TestClass]
 	public sealed class StringFormatHelperTests : BaseUnitTest<StringFormatHelperThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveFormattedStringWhenFormattingWithNameValueCollection()
 		{

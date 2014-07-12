@@ -52,7 +52,7 @@ namespace Randal.Tests.Logging
 
 		private void Creating()
 		{
-			Then.Entry = Given.TestForMember("Verbosity")
+			Then.Entry = GivensDefined("Verbosity")
 				? new LogEntryNoTimestamp(Given.Message, Given.Verbosity)
 				: new LogEntryNoTimestamp(Given.Message);
 		}

@@ -24,12 +24,6 @@ namespace Randal.Tests.Core.Structures
 	[TestClass]
 	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveEmptyListWhenCreatingNewGraph()
 		{

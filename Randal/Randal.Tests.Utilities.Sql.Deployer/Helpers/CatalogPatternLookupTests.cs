@@ -22,12 +22,6 @@ namespace Randal.Tests.Sql.Deployer.Helpers
 	[TestClass]
 	public sealed class CatalogPatternLookupTests : BaseUnitTest<CatalogPatternLookupThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveEmptyLookupWhenCreatingInstance()
 		{

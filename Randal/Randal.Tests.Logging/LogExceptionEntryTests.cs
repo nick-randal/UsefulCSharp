@@ -22,7 +22,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class LogExceptionEntryTests : BaseUnitTest<UnitTest2Thens>
+	public sealed class LogExceptionEntryTests : BaseUnitTest<LogExceptionEntryThens>
 	{
 		[TestInitialize]
 		public override void Setup()
@@ -38,7 +38,7 @@ namespace Randal.Tests.Logging
 			Given.Exception = new InvalidTimeZoneException();
 			Given.SystemDateTime = new DateTime(2014, 6, 13, 1, 2, 3);
 
-			WhenCreating();
+			When(Creating);
 
 			Then.Entry.Should().NotBeNull().And.BeAssignableTo<ILogEntry>();
 			Then.Entry.VerbosityLevel.Should().Be(Verbosity.Vital);
@@ -47,21 +47,19 @@ namespace Randal.Tests.Logging
 			Then.Entry.Message.Should().BeEmpty();
 		}
 
-		private void WhenCreating()
+		private void Creating()
 		{
 			using (ShimsContext.Create())
 			{
 				ShimDateTime.NowGet = () => Given.SystemDateTime;
 
-				if (Given.TestForMember("Message"))
-					Then.Entry = new ExceptionEntry(Given.Exception, Given.Message);
-				else
-					Then.Entry = new ExceptionEntry(Given.Exception);
+				Then.Entry = GivensDefined("Message") ? 
+					new ExceptionEntry(Given.Exception, Given.Message) : new ExceptionEntry(Given.Exception);
 			}
 		}
 	}
 
-	public sealed class UnitTest2Thens
+	public sealed class LogExceptionEntryThens
 	{
 		public ExceptionEntry Entry;
 	}

@@ -60,9 +60,9 @@ namespace Randal.Tests.Logging
 
 		private void Creating()
 		{
-			if (Given.TestForMember("Timestamp") && Given.TestForMember("Verbosity"))
+			if (GivensDefined("Timestamp", "Verbosity"))
 				Then.Entry = new LogEntry(Given.Message, Given.Timestamp, Given.Verbosity);
-			else if (Given.TestForMember("Timestamp"))
+			else if (GivensDefined("Timestamp"))
 				Then.Entry = new LogEntry(Given.Message, Given.Timestamp);
 			else
 			{

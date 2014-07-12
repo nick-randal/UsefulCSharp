@@ -12,24 +12,48 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
 
 namespace Randal.Core.Testing.UnitTest
 {
+	[TestClass]
 	public abstract class BaseUnitTest<TThens> where TThens : class, new()
 	{
+		[TestInitialize]
 		public virtual void Setup()
 		{
 			Given = Given ?? new DynamicEntity(MissingMemberBehavior.SuccessReturnsNull);
 			Given.Clear();
 
 			Then = new TThens();
+
+			OnSetup();
 		}
+
+		[TestCleanup]
+		public virtual void Teardown()
+		{
+			OnTeardown();
+		}
+
+		protected virtual void OnSetup() { }
+
+		protected virtual void OnTeardown() { }
 
 		protected void When(params Action[] actions)
 		{
 			foreach (var action in actions)
 				action();
+		}
+
+		protected bool GivensDefined(params string[] members)
+		{
+			if (members.Length == 0)
+				return true;
+
+			return members.All(member => Given.TestForMember(member));
 		}
 
 		protected dynamic Given;

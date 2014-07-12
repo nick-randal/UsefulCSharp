@@ -26,12 +26,15 @@ namespace Randal.Tests.Logging
 		public override void Setup()
 		{
 			base.Setup();
+
 			Given.SizeInBytes = 1024L;
 		}
 
 		[TestCleanup]
-		public void Teardown()
+		public override void Teardown()
 		{
+			base.Teardown();
+
 			Then.Log.Dispose();
 
 			var file = new FileInfo(Given.Path);

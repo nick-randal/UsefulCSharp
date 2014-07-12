@@ -24,11 +24,8 @@ namespace Randal.Tests.Sql.Deployer.IO
 	[TestClass, DeploymentItem("TestFiles", "TestFiles")]
 	public sealed class ProjectLoaderTests : BaseUnitTest<ProjectLoaderThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			var parser = new ScriptParser();
 
 			parser.AddRule("catalog", txt => new CatalogBlock(txt));
@@ -44,8 +41,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Given.Parser = parser;
 		}
 
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			Then.Logger.Dispose();
 		}

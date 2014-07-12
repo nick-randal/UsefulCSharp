@@ -23,12 +23,6 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 	[TestClass]
 	public sealed class InstallerConfigTests : BaseUnitTest<InstallerConfigThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveDefaultConfigWhenCreating()
 		{

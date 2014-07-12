@@ -21,12 +21,6 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class ScriptSettingsTests : BaseUnitTest<ScriptSettingsThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveDefaultValuesWhenCreating()
 		{
@@ -47,10 +41,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		private void Creating()
 		{
-			if (Given.TestForMember("Timeout"))
-				Then.Settings = new ScriptSettings(Given.Timeout);
-			else
-				Then.Settings = new ScriptSettings();
+			Then.Settings = GivensDefined("Timeout") ? new ScriptSettings(Given.Timeout) : new ScriptSettings();
 		}
 	}
 

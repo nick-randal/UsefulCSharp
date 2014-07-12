@@ -36,6 +36,11 @@ namespace Randal.Core.Dynamic
 			return _dataDictionary.ContainsKey(name);
 		}
 
+		public int Count()
+		{
+			return _dataDictionary.Count;
+		}
+
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
 			var valueFound = _dataDictionary.TryGetValue(binder.Name, out result);
