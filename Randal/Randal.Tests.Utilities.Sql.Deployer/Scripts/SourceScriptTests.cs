@@ -23,11 +23,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class SourceScriptTests : BaseUnitTest<SourceScriptThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Given.Name = "UnitTest";
 			Given.BlockList = new List<IScriptBlock>();
 		}

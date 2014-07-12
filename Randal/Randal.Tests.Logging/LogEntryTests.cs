@@ -24,12 +24,6 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogEntryTests : BaseUnitTest<LogEntryThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidLogEntryWhenCreatingGivenDefaults()
 		{

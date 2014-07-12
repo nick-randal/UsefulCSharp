@@ -24,11 +24,8 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogExceptionEntryTests : BaseUnitTest<LogExceptionEntryThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Given.SystemDateTime = new DateTime();
 		}
 

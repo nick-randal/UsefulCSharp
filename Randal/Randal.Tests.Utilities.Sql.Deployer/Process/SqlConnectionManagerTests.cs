@@ -22,15 +22,14 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class SqlConnectionManagerTests : BaseUnitTest<ScriptDeployerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		
+		protected override void OnSetup()
 		{
-			base.Setup();
 			Then.CommandFactory = null;
 		}
 
-		[TestCleanup]
-		public void Teardown()
+		
+		protected override void OnTeardown()
 		{
 			Then.Manager.Dispose();
 		}

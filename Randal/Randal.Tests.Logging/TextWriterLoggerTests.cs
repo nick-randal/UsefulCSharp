@@ -24,12 +24,6 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class TextWriterLoggerTests : BaseUnitTest<TextWriterLoggerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveTextWriterLoggerWhenCreatingInstanceGivenConsoleOut()
 		{

@@ -22,12 +22,6 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class BaseScriptBlockTests : BaseUnitTest<BaseScriptBlockThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveNonEmptyTextAfterInstantiation()
 		{

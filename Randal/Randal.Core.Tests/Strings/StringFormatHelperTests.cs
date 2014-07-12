@@ -63,7 +63,7 @@ namespace Randal.Tests.Core.Strings
 		public void ShouldHaveMonetaryFormatWhenFormattingGivenSpecialFormat()
 		{
 			Given.Text = "show me the {money:c}";
-			Given.Values = new {money = 23.99};
+			Given.Values = new { money = 23.99m };
 
 			When(Creating, Formatting);
 
@@ -79,18 +79,18 @@ namespace Randal.Tests.Core.Strings
 
 		private void Creating()
 		{
-			Then.Helper = new StringFormatHelper(Given.Text);
+			Then.FormatHelper = new StringFormatHelper(Given.Text);
 		}
 
 		private void Formatting()
 		{
-			Then.Text = Then.Helper.With(Given.Values);
+			Then.Text = Then.FormatHelper.With(Given.Values);
 		}
 	}
 
 	public sealed class StringFormatHelperThens
 	{
-		public StringFormatHelper Helper;
+		public StringFormatHelper FormatHelper;
 		public string Text;
 	}
 }

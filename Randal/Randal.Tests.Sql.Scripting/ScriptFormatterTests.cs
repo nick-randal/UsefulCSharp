@@ -11,12 +11,6 @@ namespace Randal.Tests.Sql.Scripting
 	[TestClass]
 	public sealed class ScriptFormatterTests : BaseUnitTest<ScriptFormatterThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidScriptFormatterWhenCreatingInstace()
 		{

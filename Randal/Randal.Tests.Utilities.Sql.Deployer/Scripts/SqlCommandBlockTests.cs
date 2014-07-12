@@ -23,12 +23,6 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class SqlCommandBlockTests : BaseUnitTest<SqlCommandBlockThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveInstanceAfterConstruction()
 		{

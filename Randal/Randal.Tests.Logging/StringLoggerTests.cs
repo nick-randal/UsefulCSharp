@@ -22,14 +22,7 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class StringLoggerTests : BaseUnitTest<StringLoggerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			if (Then.Logger != null)
 				Then.Logger.Dispose();

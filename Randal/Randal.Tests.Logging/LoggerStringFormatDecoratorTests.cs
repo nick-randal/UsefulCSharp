@@ -23,14 +23,7 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LoggerStringFormatDecoratorTests : BaseUnitTest<LoggerStringFormatDecoratorThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			Then.Decorator.Dispose();
 		}

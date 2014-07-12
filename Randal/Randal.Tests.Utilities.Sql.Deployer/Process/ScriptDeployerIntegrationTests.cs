@@ -19,31 +19,21 @@ using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
+using System;
 
 namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass, DeploymentItem(Test.Paths.ProjectA, Test.Paths.ProjectA)]
 	public sealed class ScriptDeployerIntegrationTests : BaseUnitTest<ScriptDeployerIntegrationThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Then.Logger = new StringLogger();
 			var manager = new SqlConnectionManager();
 			manager.OpenConnection(".", "master");
 			manager.BeginTransaction();
 
 			Then.Manager = manager;
-		}
-
-		[TestCleanup]
-		public void Teardown()
-		{
-			Then.Manager.RollbackTransaction();
-			Then.Manager.Dispose();
-			Then.Logger.Dispose();
 		}
 
 		[TestMethod]
@@ -96,12 +86,19 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 	}
 
-	public sealed class ScriptDeployerIntegrationThens
+	public sealed class ScriptDeployerIntegrationThens : IDisposable
 	{
 		public ISqlConnectionManager Manager;
 		public StringLogger Logger;
 		public ScriptDeployer Deployer;
 		public Returned DeployReturned;
 		public bool CanUpgrade;
+
+		public void Dispose()
+		{
+			Manager.RollbackTransaction();
+			Manager.Dispose();
+			Logger.Dispose();
+		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Randal.Core.Dynamic
 {
 	public enum MissingMemberBehavior
 	{
-		SuccessReturnsNull,
+		ReturnsNull,
 		ThrowException
 	}
 }

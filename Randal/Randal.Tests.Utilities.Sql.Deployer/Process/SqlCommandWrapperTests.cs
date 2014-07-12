@@ -23,14 +23,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class SqlCommandWrapperTests : BaseUnitTest<SqlCommandWrapperThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			Then.Wrapper.Dispose();
 		}

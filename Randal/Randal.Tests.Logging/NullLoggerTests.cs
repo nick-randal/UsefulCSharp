@@ -21,14 +21,7 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class NullLoggerTests : BaseUnitTest<NullLoggerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			if (Then.Log != null)
 				Then.Log.Dispose();

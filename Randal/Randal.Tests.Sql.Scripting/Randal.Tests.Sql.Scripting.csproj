@@ -73,6 +73,7 @@
     <Compile Include="ScriptFormatterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerWrapperIntegrationTests.cs" />
+    <Compile Include="ScriptFileManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

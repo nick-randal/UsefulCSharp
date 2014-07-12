@@ -12,12 +12,6 @@ namespace Randal.Tests.Sql.Scripting
 	[TestClass]
 	public sealed class ServerWrapperIntegrationTests : BaseUnitTest<ServerWrapperThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidWrapperWhenCreatingInstance()
 		{

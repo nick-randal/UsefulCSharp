@@ -66,7 +66,7 @@ namespace Randal.Tests.Core.Dynamic
 		[TestMethod]
 		public void ShouldReturnNullWhenAccessingNonExistentPropertyGivenMissingMemberBehaviorReturnsNull()
 		{
-			dynamic entity = new DynamicEntity(MissingMemberBehavior.SuccessReturnsNull);
+			dynamic entity = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
 			
 			Then.String = entity.Name;
 			

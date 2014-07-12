@@ -25,11 +25,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass, DeploymentItem("TestFiles", "TestFiles")]
 	public sealed class ProjectTests : BaseUnitTest<ProjectTestsThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			var parser = new ScriptParser();
 
 			parser.AddRule("catalog", txt => new CatalogBlock(txt));

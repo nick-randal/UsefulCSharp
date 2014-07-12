@@ -26,10 +26,9 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class ScriptDeployerTests : BaseUnitTest<SqlDeployerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
+
 			Given.Project = MockRepository.GenerateMock<IProject>();
 
 			var manager = MockRepository.GenerateMock<ISqlConnectionManager>();

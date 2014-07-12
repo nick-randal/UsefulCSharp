@@ -21,12 +21,6 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class IgnoreScriptBlockTests : BaseUnitTest<IgnoreScriptBlockThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidIgnoreScriptBlockWhenCreating()
 		{

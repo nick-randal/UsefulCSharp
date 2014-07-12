@@ -23,10 +23,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed partial class ScriptParserTests : BaseUnitTest<ScriptParserThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
 			GivenParser = new ParserBuilder();
 		}
 

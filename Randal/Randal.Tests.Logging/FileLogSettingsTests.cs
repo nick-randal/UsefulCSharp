@@ -22,13 +22,7 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class FileLogSettingsTests : BaseUnitTest<FileLogSettingsThens>
 	{
-		[TestInitialize, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
-		[TestMethod]
+		[TestMethod, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
 		public void ShouldHaveFileLoggerWhenCreatingGivenValidValues()
 		{
 			Given.BasePath = Test.Paths.LoggingFolder;
@@ -56,7 +50,7 @@ namespace Randal.Tests.Logging
 			When(Creating);
 		}
 
-		[TestMethod]
+		[TestMethod, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
 		public void ShouldHaveEmptyBaseFileNameWhenCreatingGivenNullBaseFileName()
 		{
 			Given.BasePath = Test.Paths.LoggingFolder;

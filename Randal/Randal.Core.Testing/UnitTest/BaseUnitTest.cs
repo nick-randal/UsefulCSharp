@@ -22,20 +22,25 @@ namespace Randal.Core.Testing.UnitTest
 	public abstract class BaseUnitTest<TThens> where TThens : class, new()
 	{
 		[TestInitialize]
-		public virtual void Setup()
+		public void Setup()
 		{
-			Given = Given ?? new DynamicEntity(MissingMemberBehavior.SuccessReturnsNull);
-			Given.Clear();
-
+			Given = Given ?? new DynamicEntity(MissingMemberBehavior.ReturnsNull);
 			Then = new TThens();
 
 			OnSetup();
 		}
 
 		[TestCleanup]
-		public virtual void Teardown()
+		public void Teardown()
 		{
 			OnTeardown();
+
+			var disposeMe = Then as IDisposable;
+			if (disposeMe != null)
+				disposeMe.Dispose();
+
+			Given.Clear();
+			Then = null;
 		}
 
 		protected virtual void OnSetup() { }

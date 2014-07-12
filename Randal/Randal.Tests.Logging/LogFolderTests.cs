@@ -25,11 +25,8 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogFolderTests : BaseUnitTest<LogFolderThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Given.FolderDoesNotExist = false;
 		}
 

@@ -23,10 +23,8 @@ namespace Randal.Tests.Core.Strings
 	[TestClass]
 	public sealed class NamedFieldFormatterTests : BaseUnitTest<NamedFieldFormatterThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
+		protected override void OnSetup()
+		{		
 			Given.Values = new Dictionary<string, object>();
 		}
 

@@ -23,17 +23,13 @@ namespace Randal.Tests.Logging
 	[TestClass, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
 	public sealed class LogFileManagerTests : BaseUnitTest<LogFileManagerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Given.Size = 1024;
 			Given.NullSettings = false;
 		}
 
-		[TestCleanup]
-		public void Teardown()
+		protected override void OnTeardown()
 		{
 			if (Then.Manager == null)
 				return;

@@ -22,16 +22,11 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogEntryNoTimestampTests : BaseUnitTest<LogEntryNoTimestampThens>
 	{
-		[TestInitialize]
-		public override void Setup()
-		{
-			base.Setup();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidLogEntryWhenCreating()
 		{
 			When(Creating);
+
 			Then.Entry.Should().NotBeNull().And.BeAssignableTo<ILogEntry>();
 			Then.Entry.ShowTimestamp.Should().BeFalse();
 			Then.Entry.Timestamp.Should().Be(DateTime.MinValue);

@@ -23,12 +23,8 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class AsyncFileLoggerTests : BaseUnitTest<AsyncFileLoggerThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
-			Given.NullSettings = false;
 		}
 
 		[TestMethod]
@@ -72,7 +68,11 @@ namespace Randal.Tests.Logging
 		private void Creating()
 		{
 			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024);
-			Then.Logger = new AsyncFileLogger(Given.NullSettings ? null : settings);
+
+			if(GivensDefined("NullSettings") && Given.NullSettings == true)
+				Then.Logger = new AsyncFileLogger(null);
+			else
+				Then.Logger = new AsyncFileLogger(settings);
 			Thread.Sleep(100);
 		}
 	}

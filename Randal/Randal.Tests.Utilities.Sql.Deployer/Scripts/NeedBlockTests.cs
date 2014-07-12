@@ -22,10 +22,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class NeedBlockTests : BaseUnitTest<NeedBlockThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
 			Given.Text = string.Empty;
 		}
 

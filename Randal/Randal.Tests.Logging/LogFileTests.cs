@@ -22,19 +22,13 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogFileTests : BaseUnitTest<LogFileThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
-
 			Given.SizeInBytes = 1024L;
 		}
 
-		[TestCleanup]
-		public override void Teardown()
+		protected override void OnTeardown()
 		{
-			base.Teardown();
-
 			Then.Log.Dispose();
 
 			var file = new FileInfo(Given.Path);

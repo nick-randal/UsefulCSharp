@@ -23,10 +23,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class UnexpectedBlockTests : BaseUnitTest<UnexpectedBlockThens>
 	{
-		[TestInitialize]
-		public override void Setup()
+		protected override void OnSetup()
 		{
-			base.Setup();
 			Given.Keyword = "unknown";
 		}
 

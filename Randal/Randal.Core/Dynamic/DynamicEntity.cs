@@ -50,7 +50,7 @@ namespace Randal.Core.Dynamic
 
 			switch (_missingMemberBehavior)
 			{
-				case MissingMemberBehavior.SuccessReturnsNull:
+				case MissingMemberBehavior.ReturnsNull:
 					return true;
 				default:
 					return false;
