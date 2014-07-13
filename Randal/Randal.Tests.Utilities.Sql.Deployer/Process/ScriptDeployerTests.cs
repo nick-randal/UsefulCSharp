@@ -28,7 +28,6 @@ namespace Randal.Tests.Sql.Deployer.Process
 	{
 		protected override void OnSetup()
 		{
-
 			Given.Project = MockRepository.GenerateMock<IProject>();
 
 			var manager = MockRepository.GenerateMock<ISqlConnectionManager>();

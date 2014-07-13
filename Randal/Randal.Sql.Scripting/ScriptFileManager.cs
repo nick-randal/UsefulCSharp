@@ -32,13 +32,13 @@ namespace Randal.Sql.Scripting
 
 		public void CreateDirectory(string databaseName, string subFolder)
 		{
-			var dbPath = Path.Combine(_basePath, databaseName, "Sprocs");
+			var dbPath = Path.Combine(_basePath, databaseName, subFolder);
 
 			var directory = new DirectoryInfo(dbPath);
 
 			if (directory.Exists)
 			{
-				foreach (var file in directory.GetFiles("*.sql", SearchOption.AllDirectories))
+				foreach (var file in directory.GetFiles(Wildcard + SqlExtension, SearchOption.AllDirectories))
 					file.Delete();
 			}
 			else
@@ -49,7 +49,7 @@ namespace Randal.Sql.Scripting
 
 		public void WriteScriptFile(string name, string text)
 		{
-			var script = new FileInfo(Path.Combine(CurrentFolder, name + ".sql"));
+			var script = new FileInfo(Path.Combine(CurrentFolder, name + SqlExtension));
 
 			using (var writer = new StreamWriter(script.OpenWrite()))
 			{
@@ -58,5 +58,6 @@ namespace Randal.Sql.Scripting
 		}
 
 		private readonly string _basePath;
+		private const string SqlExtension = ".sql", Wildcard = "*";
 	}
 }
