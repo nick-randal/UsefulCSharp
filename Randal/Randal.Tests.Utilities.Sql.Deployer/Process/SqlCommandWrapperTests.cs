@@ -40,7 +40,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		public void ShouldThrowSqlExceptionWhenExecutingGivenNoSqlServer()
 		{
 			Given.Database = "master";
-			When(Creating, ExecutingCommand);
+			When(ExecutingCommand);
 		}
 
 		private void ExecutingCommand()
@@ -48,7 +48,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Wrapper.Execute(Given.Database);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Wrapper = new SqlCommandWrapper(new SqlConnection(), string.Empty);
 		}

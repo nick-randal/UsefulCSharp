@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Json = "{ timeout: 256 }";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(256);
@@ -52,7 +52,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Json = "{ }";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(30);
@@ -63,13 +63,13 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Json = "Timeout: 256";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Settings.Should().NotBeNull();
 			Then.Settings.Timeout.Should().Be(256);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Configuration = new OptionsBlock(Given.Json);
 		}

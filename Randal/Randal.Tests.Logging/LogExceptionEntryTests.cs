@@ -44,7 +44,7 @@ namespace Randal.Tests.Logging
 			Then.Entry.Message.Should().BeEmpty();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			using (ShimsContext.Create())
 			{

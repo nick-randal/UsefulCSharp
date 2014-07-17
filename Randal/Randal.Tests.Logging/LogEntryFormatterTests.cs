@@ -37,7 +37,7 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveValidTextWhenFormattingEntryGivenValidLogEntry()
 		{
 			Given.Entry = new LogEntry("Hello", new DateTime(2014, 1, 31, 7, 0, 0));
-			When(Creating, Formatting);
+			When(Formatting);
 			Then.Text.Should().Be("140131 070000    Hello\r\n");
 		}
 
@@ -45,7 +45,7 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveValidTextWhenFormattingEntryGivenValidLogEntryNoTimestamp()
 		{
 			Given.Entry = new LogEntryNoTimestamp("Hello");
-			When(Creating, Formatting);
+			When(Formatting);
 			Then.Text.Should().Be(TextResources.NoTimestamp + "    " + "Hello\r\n");
 		}
 
@@ -54,7 +54,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Entry = new ExceptionEntry(null);
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("An error occurred but no instance of Exception provided.\r\n");
 		}
@@ -64,7 +64,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Entry = new ExceptionEntry(new SmtpException(SmtpStatusCode.ClientNotPermitted));
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be(
 				"Error Info\r\n--------------------------------------------------------------------------------\r\n" +
@@ -78,7 +78,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Entry = new ExceptionEntry(new ArgumentException(), "Hello error!");
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be(
 				"Hello error!\r\nError Info\r\n--------------------------------------------------------------------------------\r\n" +
@@ -92,7 +92,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Entry = new ExceptionEntry(SqlException());
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Contain("SqlException");
 		}
@@ -116,7 +116,7 @@ namespace Randal.Tests.Logging
 			Then.Text = Then.Formatter.Format(Given.Entry);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Formatter = new LogEntryFormatter();
 		}

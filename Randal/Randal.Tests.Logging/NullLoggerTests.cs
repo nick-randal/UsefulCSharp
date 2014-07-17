@@ -41,14 +41,14 @@ namespace Randal.Tests.Logging
 		{
 			Given.Entry = new LogEntry("Test");
 
-			When(Creating, AddingLogEntry);
+			When(AddingLogEntry);
 		}
 
 		[TestMethod]
 		public void ShouldHaveUnchangedVerbosityLevelWhenChangingVerbosity()
 		{
 			Given.Verbosity = Verbosity.Vital;
-			When(Creating, ChangingVerbosity);
+			When(ChangingVerbosity);
 			Then.Log.VerbosityThreshold.Should().Be(Verbosity.All);
 		}
 
@@ -62,7 +62,7 @@ namespace Randal.Tests.Logging
 			Then.Log.Add(Given.Entry);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Log = new NullLogger();
 		}

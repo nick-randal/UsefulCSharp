@@ -45,7 +45,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Keyword = "post";
 			Given.Phase = SqlScriptPhase.Post;
 
-			When(Creating, ParsingSqlTextBlock);
+			When(ParsingSqlTextBlock);
 
 			Then.Object.IsValid.Should().BeTrue();
 			Then.Object.IsExecuted.Should().BeFalse();
@@ -73,7 +73,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			When(Creating, ParsingSqlTextBlock, RequestingForExecution);
+			When(ParsingSqlTextBlock, RequestingForExecution);
 
 			Then.CommandText.Should().Be("select 1");
 			Then.Object.IsExecuted.Should().BeTrue();
@@ -86,7 +86,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			When(Creating, RequestingForExecution, RequestingForExecution);
+			When(RequestingForExecution, RequestingForExecution);
 		}
 
 		[TestMethod,
@@ -97,10 +97,10 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			When(Creating, RequestingForExecution);
+			When(RequestingForExecution);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = new SqlCommandBlock(Given.Keyword, Given.Text, Given.Phase);
 		}

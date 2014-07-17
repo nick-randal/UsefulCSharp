@@ -45,7 +45,7 @@ namespace Randal.Tests.Logging
 			Then.Entry.VerbosityLevel.Should().Be(Verbosity.Vital);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Entry = GivensDefined("Verbosity")
 				? new LogEntryNoTimestamp(Given.Message, Given.Verbosity)

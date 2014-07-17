@@ -64,7 +64,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 					new SqlCommandBlock("post", "select 3", SqlScriptPhase.Post)
 				});
 
-			When(Creating, Validating, GettingCatalogPatterns, GettingConfiguration);
+			When(Validating, GettingCatalogPatterns, GettingConfiguration);
 
 			Then.Script.ScriptBlocks.Should().HaveCount(6);
 			Then.Messages.Should().HaveCount(0);
@@ -82,7 +82,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.BlockList.AddRange(new List<IScriptBlock> {new CatalogBlock("TCPLP, Coupon")});
 
-			When(Creating, Validating, GettingConfiguration);
+			When(Validating, GettingConfiguration);
 
 			Then.Script.ScriptBlocks.Should().HaveCount(2);
 			Then.Messages.Should().HaveCount(0);
@@ -99,7 +99,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 					new SqlCommandBlock("pre", "select 1", SqlScriptPhase.Pre)
 				});
 
-			When(Creating, Validating);
+			When(Validating);
 
 			Then.Script.IsValid.Should().BeFalse();
 			Then.Messages.Should().HaveCount(1);
@@ -108,7 +108,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		[TestMethod]
 		public void ShouldReturnNullWhenGettingCatalogPatternsGivenNoCatalogBlock()
 		{
-			When(Creating, Validating, GettingCatalogPatterns);
+			When(Validating, GettingCatalogPatterns);
 
 			Then.CatalogPatterns.Should().BeEmpty();
 		}
@@ -118,7 +118,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.BlockList.Add(new NeedBlock("A, B"));
 
-			When(Creating, Validating, GettingNeeds);
+			When(Validating, GettingNeeds);
 
 			Then.Needs.Should().HaveCount(2);
 			Then.Needs[0].Should().Be("A");
@@ -128,7 +128,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		[TestMethod]
 		public void ShouldReturnNullWhenGettingNeedsGivenNoNeeds()
 		{
-			When(Creating, Validating, GettingNeeds);
+			When(Validating, GettingNeeds);
 
 			Then.Needs.Should().BeEmpty();
 		}
@@ -139,7 +139,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
 			Given.CheckForPhase = SqlScriptPhase.Main;
 
-			When(Creating, Validating, CheckingForPhase);
+			When(Validating, CheckingForPhase);
 
 			Then.HasPhase.Should().BeTrue();
 		}
@@ -158,7 +158,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
 			Given.RequestedPhase = SqlScriptPhase.Main;
 
-			When(Creating, Validating, RequestingPhase);
+			When(Validating, RequestingPhase);
 
 			Then.Text.Should().Be("select 1");
 		}
@@ -169,7 +169,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
 			Given.RequestedPhase = SqlScriptPhase.Main;
 
-			When(Creating, Validating, RequestingPhase, CheckingIfExecuted);
+			When(Validating, RequestingPhase, CheckingIfExecuted);
 
 			Then.WasExecuted.Should().BeTrue();
 		}
@@ -179,7 +179,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.RequestedPhase = SqlScriptPhase.Main;
 
-			When(Creating, Validating, RequestingPhase);
+			When(Validating, RequestingPhase);
 		}
 
 		private void CheckingIfExecuted()
@@ -217,7 +217,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages = Then.Script.Validate();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Script = new SourceScript(Given.Name, Given.BlockList);
 		}

@@ -32,7 +32,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Values.Add("name", "Ignatius Freeley");
 			Given.Values.Add("age", "24");
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("Hello my name is Ignatius Freeley and I am 24 years old.");
 		}
@@ -43,7 +43,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
 			Given.Values = new {name = "Slim Shadee", age = 28};
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("Hello my name is Slim Shadee and I am 28 years old.");
 		}
@@ -54,7 +54,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
 			Given.Values = new Dictionary<string, object> {{"name", "Inigo Montoya"}, {"age", 32}};
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("Hello my name is Inigo Montoya and I am 32 years old.");
 		}
@@ -65,7 +65,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Text = "show me the {money:c}";
 			Given.Values = new { money = 23.99m };
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("show me the $23.99");
 		}
@@ -77,7 +77,7 @@ namespace Randal.Tests.Core.Strings
 			When(Creating);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.FormatHelper = new StringFormatHelper(Given.Text);
 		}

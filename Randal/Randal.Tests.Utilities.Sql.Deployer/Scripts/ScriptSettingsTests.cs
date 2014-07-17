@@ -39,7 +39,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Settings.Timeout.Should().Be(357);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Settings = GivensDefined("Timeout") ? new ScriptSettings(Given.Timeout) : new ScriptSettings();
 		}

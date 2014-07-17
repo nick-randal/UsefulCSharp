@@ -71,12 +71,12 @@ namespace Randal.Tests.Sql.Deployer.Process
 						.WithMainBlock("Select 1")
 				);
 
-			When(Creating, Deploying);
+			When(Deploying);
 
 			Then.Manager.AssertWasCalled(x => x.CreateCommand(Arg<string>.Is.Anything, Arg<object[]>.Is.Anything));
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Deployer = new ScriptDeployer(Given.Project, Given.ConnectionManager, new StringLogger());
 			Then.Manager = Given.ConnectionManager;

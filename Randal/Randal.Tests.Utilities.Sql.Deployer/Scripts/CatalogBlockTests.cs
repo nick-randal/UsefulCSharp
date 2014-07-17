@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "master, DB123, X_%";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Object.IsValid.Should().BeTrue();
 			Then.Messages.Should().HaveCount(0);
@@ -56,7 +56,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "t-d?, P&E, t;";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Object.IsValid.Should().BeFalse();
 			Then.Object.CatalogPatterns.Should().HaveCount(0);
@@ -68,7 +68,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages = Then.Object.Parse();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = new CatalogBlock(Given.Text);
 		}

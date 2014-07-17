@@ -81,7 +81,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			When(Creating);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Project = new Project(Given.Configuration, Given.Scripts);
 		}

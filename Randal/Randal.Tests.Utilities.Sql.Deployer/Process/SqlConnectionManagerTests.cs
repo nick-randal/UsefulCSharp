@@ -46,7 +46,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		public void ShouldHaveCommandWrapperWhenCreatingCommand()
 		{
 			Given.CommandText = "Select 1";
-			When(Creating, CreatingCommand);
+			When(CreatingCommand);
 			Then.Command.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapper>();
 		}
 
@@ -57,7 +57,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.Database = "master";
 			Given.CommandText = "Select 1";
 
-			When(Creating, OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, RollingBack);
+			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, RollingBack);
 		}
 
 		[TestMethod]
@@ -67,13 +67,13 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.Database = "master";
 			Given.CommandText = "Select 1";
 
-			When(Creating, OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, Committing);
+			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, Committing);
 		}
 
 		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
 		public void ShouldThrowExceptionWhenBeginningTransactionWithoutAnOpenConnection()
 		{
-			When(Creating, BeginningTransaction);
+			When(BeginningTransaction);
 		}
 
 		[TestMethod]
@@ -82,7 +82,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.Server = ".";
 			Given.Database = "master";
 
-			When(Creating, OpenningConnection, Committing);
+			When(OpenningConnection, Committing);
 		}
 
 		[TestMethod]
@@ -91,10 +91,10 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.Server = ".";
 			Given.Database = "master";
 
-			When(Creating, OpenningConnection, RollingBack);
+			When(OpenningConnection, RollingBack);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Manager = new SqlConnectionManager(Then.CommandFactory);
 		}

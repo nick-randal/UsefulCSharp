@@ -41,7 +41,7 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveSameTextWhenGettingTextGivenValue()
 		{
 			Given.Entry = new LogEntry("Hello world", new DateTime(2014, 6, 11));
-			When(Creating, AddingEntry, GettingText);
+			When(AddingEntry, GettingText);
 			Then.Text.Should().Be("140611 000000    Hello world\r\n");
 		}
 
@@ -49,11 +49,11 @@ namespace Randal.Tests.Logging
 		public void ShouldChangeValueWhenChangingVerbosityGivenDifferentVerbosityLevel()
 		{
 			Given.Verbosity = Verbosity.Vital;
-			When(Creating, GettingChangedVerbosity);
+			When(GettingChangedVerbosity);
 			Then.Verbosity.Should().Be(Verbosity.Vital);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Logger = new StringLogger();
 		}

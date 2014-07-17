@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Randal.Sql.Scripting
 {
@@ -19,6 +20,7 @@ namespace Randal.Sql.Scripting
 		string CurrentFolder { get; }
 		void CreateDirectory(string databaseName, string subFolder);
 		void WriteScriptFile(string name, string text);
+		void WriteScriptFileAsync(string name, string text);
 	}
 
 	public sealed class ScriptFileManager : IScriptFileManager
@@ -54,6 +56,16 @@ namespace Randal.Sql.Scripting
 			using (var writer = new StreamWriter(script.OpenWrite()))
 			{
 				writer.WriteLine(text);
+			}
+		}
+
+		public async void WriteScriptFileAsync(string name, string text)
+		{
+			var script = new FileInfo(Path.Combine(CurrentFolder, name + SqlExtension));
+
+			using (var writer = new StreamWriter(script.OpenWrite()))
+			{
+				await writer.WriteLineAsync(text);
 			}
 		}
 

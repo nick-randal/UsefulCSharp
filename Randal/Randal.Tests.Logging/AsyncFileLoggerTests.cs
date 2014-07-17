@@ -42,7 +42,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Verbosity = Verbosity.Important;
 
-			When(Creating, SettingVerbosity);
+			When(SettingVerbosity);
 
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.Important);
 		}
@@ -65,7 +65,7 @@ namespace Randal.Tests.Logging
 			Then.Logger.ChangeVerbosityThreshold(Given.Verbosity);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024);
 

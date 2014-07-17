@@ -33,7 +33,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			When(CreatingInstace);
+			When(Creating);
 
 			Then.Object.Should().NotBeNull().And.BeAssignableTo<IScriptBlock>();
 			Then.Object.IsValid.Should().BeFalse();
@@ -46,13 +46,13 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			When(CreatingInstace, Parsing);
+			When(Parsing);
 
 			Then.Messages.Should().HaveCount(1);
 			Then.Messages.First().Should().Be("Unexpected keyword 'unknown' found for this block.");
 		}
 
-		private void CreatingInstace()
+		protected override void Creating()
 		{
 			Then.Object = new UnexpectedBlock(Given.Keyword, Given.Text);
 		}

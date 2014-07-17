@@ -49,7 +49,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 			Given.Text = "--:: pre\nselect 1\n--:: main\nselect 2\n--:: post\nselect 3\nGO";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.SourceScript.ScriptBlocks.Should().HaveCount(3);
 			Then.SourceScript.ScriptBlocks[2].Keyword.Should().Be("post");
@@ -63,7 +63,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			GivenParser.WithFallbackRule((kw, text) => new UnexpectedBlock(kw, text));
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.SourceScript.ScriptBlocks.Should().HaveCount(1);
 
@@ -78,10 +78,10 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			When(Creating, Parsing);
+			When(Parsing);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Parser = GivenParser;
 		}

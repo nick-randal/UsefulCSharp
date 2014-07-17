@@ -42,7 +42,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "A, B, C.sql,,D";
 
-			When(Creating, WhenParsing);
+			When(WhenParsing);
 
 			Then.Object.IsValid.Should().BeTrue();
 			Then.Object.Files.Should().HaveCount(4);
@@ -57,7 +57,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "File*A, File?B, Procedures\\ReadAll";
 
-			When(Creating, WhenParsing);
+			When(WhenParsing);
 
 			Then.Object.IsValid.Should().BeFalse();
 			Then.Messages.Should().HaveCount(3);
@@ -68,7 +68,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages = Then.Object.Parse();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = new NeedBlock(Given.Text);
 		}

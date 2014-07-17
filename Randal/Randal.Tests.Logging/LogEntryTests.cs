@@ -52,7 +52,7 @@ namespace Randal.Tests.Logging
 			Then.Entry.VerbosityLevel.Should().Be(Verbosity.Important);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			if (GivensDefined("Timestamp", "Verbosity"))
 				Then.Entry = new LogEntry(Given.Message, Given.Timestamp, Given.Verbosity);

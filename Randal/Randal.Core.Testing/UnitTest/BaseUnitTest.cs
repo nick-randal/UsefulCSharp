@@ -49,9 +49,14 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected void When(params Action[] actions)
 		{
+			if (actions.Any(a => a == Creating) == false)
+				Creating();
+
 			foreach (var action in actions)
 				action();
 		}
+
+		protected abstract void Creating();
 
 		protected bool GivensDefined(params string[] members)
 		{

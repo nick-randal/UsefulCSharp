@@ -22,11 +22,11 @@ namespace Randal.Tests.Sql.Scripting
 		public void ShouldHaveTextWhenFormattingStoredProcedure()
 		{
 			Given.Procedure = "spTest";
-			When(Creating, Formatting);
+			When(Formatting);
 			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure 'spTest'\r\nGO\r\n\r\n--:: main\r\n\r\n\r\n\r\n/*\r\n	exec spTest \r\n*/");
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			var server = MockRepository.GenerateMock<IServer>();
 			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new Urn[0]);

@@ -58,7 +58,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		public void ShouldIndicateInvalidPathWhenLoadProjectFromInvalidPath()
 		{
 			Given.ProjectPath = @"c:\some folder";
-			When(Creating, Loading);
+			When(Loading);
 			Then.Has.Should().Be(Returned.Failure, "because the path is invalid");
 		}
 
@@ -66,7 +66,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		public void ShouldIndicateMissingConfigurationWhenLoadProjectFromWrongFolder()
 		{
 			Given.ProjectPath = @".";
-			When(Creating, Loading);
+			When(Loading);
 			Then.Has.Should().Be(Returned.Failure, "because the config file does not exist.");
 		}
 
@@ -75,7 +75,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		{
 			Given.ProjectPath = @".\TestFiles\ProjectA";
 
-			When(Creating, Loading);
+			When(Loading);
 
 			Then.Has.Should().Be(Returned.Success);
 			Then.Object.Configuration.Should().NotBeNull();
@@ -84,7 +84,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Object.AllScripts.Should().HaveCount(3);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Logger = new StringLogger();
 			Then.Object = new ProjectLoader(Given.ProjectPath, scriptParser: Given.Parser, logger: Then.Logger);

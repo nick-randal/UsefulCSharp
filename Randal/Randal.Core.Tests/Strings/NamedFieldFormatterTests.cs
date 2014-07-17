@@ -42,7 +42,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
 			Given.Values = new Dictionary<string, object> {{"name", "Inigo Montoya"}, {"age", 32}};
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("Hello my name is Inigo Montoya and I am 32 years old.");
 		}
@@ -52,7 +52,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "{{Hello world}}";
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("{Hello world}");
 		}
@@ -63,7 +63,7 @@ namespace Randal.Tests.Core.Strings
 			Given.Text = "{part1}{part2}";
 			Given.Values = new Dictionary<string, object> {{"part1", "Foo"}, {"part2", "Bar"}};
 
-			When(Creating, Formatting);
+			When(Formatting);
 
 			Then.Text.Should().Be("FooBar");
 		}
@@ -74,7 +74,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey name},";
 
-			When(Creating, Formatting);
+			When(Formatting);
 		}
 
 		[TestMethod, ExpectedException(typeof (FormatException))]
@@ -82,7 +82,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey {";
 
-			When(Creating, Formatting);
+			When(Formatting);
 		}
 
 		[TestMethod, ExpectedException(typeof (FormatException))]
@@ -90,7 +90,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey {name,";
 
-			When(Creating, Formatting);
+			When(Formatting);
 		}
 
 		[TestMethod, ExpectedException(typeof (FormatException))]
@@ -98,7 +98,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "{}";
 
-			When(Creating, Formatting);
+			When(Formatting);
 		}
 
 		private void Formatting()
@@ -107,7 +107,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text = Then.Formatter.Parse(Given.Text, getValueFunc);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Formatter = new NamedFieldFormatter();
 		}

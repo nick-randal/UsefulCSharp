@@ -33,7 +33,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Text.Should().Be("use TCPLP\nGO");
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = new IgnoreScriptBlock(Given.Text);
 		}

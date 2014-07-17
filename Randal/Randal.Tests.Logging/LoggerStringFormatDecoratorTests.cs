@@ -40,14 +40,14 @@ namespace Randal.Tests.Logging
 		public void ShouldAddLogEntryToInternalLoggerWhenAddingLogEntry()
 		{
 			Given.Text = "Hey";
-			When(Creating, AddingLogEntry);
+			When(AddingLogEntry);
 			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntry>.Is.NotNull));
 		}
 
 		[TestMethod]
 		public void ShouldAddBlankLineWhenAddingBlank()
 		{
-			When(Creating, AddingBlank);
+			When(AddingBlank);
 			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntryNoTimestamp>.Is.NotNull));
 		}
 
@@ -55,7 +55,7 @@ namespace Randal.Tests.Logging
 		public void ShouldAddLogEntryToInternalLoggerWhenAddingLogEntryWithoutTimestamp()
 		{
 			Given.Text = "Hey again";
-			When(Creating, AddingEntryWithoutTimestamp);
+			When(AddingEntryWithoutTimestamp);
 			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntryNoTimestamp>.Is.NotNull));
 		}
 
@@ -64,14 +64,14 @@ namespace Randal.Tests.Logging
 		{
 			Given.Text = "Oops";
 			Given.Exception = new StubFileLoadException();
-			When(Creating, AddingException);
+			When(AddingException);
 			Then.Logger.AssertWasCalled(x => x.Add(Arg<LogEntry>.Is.NotNull));
 		}
 
 		[TestMethod]
 		public void ShouldCallInternalLoggerDisposeWhenDisposing()
 		{
-			When(Creating, Disposing);
+			When(Disposing);
 			Then.Logger.AssertWasCalled(x => x.Dispose());
 		}
 
@@ -95,7 +95,7 @@ namespace Randal.Tests.Logging
 			Then.Decorator.AddBlank();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Logger = MockRepository.GenerateMock<ILogger>();
 			Then.Decorator = new LoggerStringFormatDecorator(Then.Logger);

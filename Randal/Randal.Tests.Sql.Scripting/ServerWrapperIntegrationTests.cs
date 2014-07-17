@@ -24,7 +24,7 @@ namespace Randal.Tests.Sql.Scripting
 		public void ShouldHaveListWhenGettingDatabases()
 		{
 			Given.Name = ".";
-			When(Creating, GettingDatabases);
+			When(GettingDatabases);
 			Then.Databases.Should().NotBeEmpty();
 		}
 
@@ -33,7 +33,7 @@ namespace Randal.Tests.Sql.Scripting
 			Then.Databases = Then.Server.GetDatabases();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Server = new ServerWrapper(Given.Name);
 		}

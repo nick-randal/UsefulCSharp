@@ -1,12 +1,5 @@
-﻿using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Randal.Logging;
+﻿using Randal.Logging;
+using CommandLine;
 
 namespace Randal.Sql.Scripting.App
 {
@@ -14,8 +7,12 @@ namespace Randal.Sql.Scripting.App
 	{
 		public const string Local = ".", Staging = "TCSQLStaging01";
 
-		private static void Main(string[] args)
+		private static int Main(string[] args)
 		{
+			var options = new AppOptions();
+			if (Parser.Default.ParseArguments(args, options) == false)
+				return 2;
+
 			var scriptFileManager = new ScriptFileManager(@"C:\__dev\Database\Dump");
 			var server = new ServerWrapper(Local);
 
@@ -24,6 +21,8 @@ namespace Randal.Sql.Scripting.App
 			{
 				new Scripter(server, scriptFileManager, logger).DumpScripts();
 			}
+
+			return -1;
 		}
 	}
 }

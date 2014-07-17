@@ -53,7 +53,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Path = @".\Test.log";
 
-			When(Creating, OpeningLog);
+			When(OpeningLog);
 
 			Then.State.Should().Be(LogFileState.OpenAvailable);
 			Then.Writer.Should().NotBeNull();
@@ -70,7 +70,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.Path = Test.Paths.LoggingFolder + @"\Test_004.log";
 
-			When(Creating, OpeningLog);
+			When(OpeningLog);
 
 			Then.State.Should().Be(LogFileState.OpenAvailable);
 			Then.Writer.Should().NotBeNull();
@@ -83,7 +83,7 @@ namespace Randal.Tests.Logging
 			Given.Path = Test.Paths.LoggingFolder + @"\Test_004.log";
 			Given.SizeInBytes = 0;
 
-			When(Creating, OpeningLog);
+			When(OpeningLog);
 
 			Then.State.Should().Be(LogFileState.OpenExhausted);
 			Then.Writer.Should().NotBeNull();
@@ -94,13 +94,13 @@ namespace Randal.Tests.Logging
 		{
 			Given.Path = @".\Test.log";
 
-			When(Creating, OpeningLog, ClosingLog);
+			When(OpeningLog, ClosingLog);
 
 			Then.State.Should().Be(LogFileState.Unknown);
 			Then.Writer.Should().BeNull();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Log = new LogFile(Given.Path, Given.SizeInBytes);
 			UpdateState();

@@ -59,7 +59,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldReturnOpenedWriterWhenGettingStreamWriter()
 		{
-			When(Creating, GettingStreamWriter);
+			When(GettingStreamWriter);
 
 			Then.Writer.Should().NotBeNull();
 			Then.Manager.LogFileName.Should().EndWith("_001.log");
@@ -71,7 +71,7 @@ namespace Randal.Tests.Logging
 			Given.Size = 2;
 			Given.TextToWrite = "Hi";
 
-			When(Creating, GettingStreamWriter, WritingText, GettingStreamWriter);
+			When(GettingStreamWriter, WritingText, GettingStreamWriter);
 
 			Then.Writer.Should().NotBeNull();
 			Then.Writer.BaseStream.CanWrite.Should().BeTrue();
@@ -83,7 +83,7 @@ namespace Randal.Tests.Logging
 			Then.Writer = Then.Manager.GetStreamWriter();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			if (Then.Manager != null)
 				return;

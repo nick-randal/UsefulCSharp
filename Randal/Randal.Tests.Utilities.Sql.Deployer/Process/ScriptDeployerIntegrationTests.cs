@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		{
 			Given.Path = Test.Paths.ProjectA;
 
-			When(Creating, CheckingCanUpgrade);
+			When(CheckingCanUpgrade);
 
 			Then.CanUpgrade.Should().BeTrue();
 		}
@@ -51,12 +51,12 @@ namespace Randal.Tests.Sql.Deployer.Process
 		{
 			Given.Path = Test.Paths.ProjectA;
 
-			When(Creating, Deploying);
+			When(Deploying);
 
 			Then.DeployReturned.Should().Be(Returned.Success);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			var parser = new ScriptParser();
 			parser.AddRule("catalog", txt => new CatalogBlock(txt));

@@ -28,13 +28,13 @@ namespace Randal.Tests.Sql.Scripting
 			Given.DatabaseName = "Research";
 			Given.SubFolder = "Views";
 
-			When(Creating, AddingDirectory);
+			When(AddingDirectory);
 
 			Then.Exists.Should().BeTrue();
 			Then.Manager.CurrentFolder.Should().Be(@".\Research\Views");
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Manager = new ScriptFileManager(".");
 		}

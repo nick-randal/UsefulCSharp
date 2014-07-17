@@ -55,7 +55,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Keyword = "invalid";
 			Given.Text = "--:: it doesn't really matter for a mock derivation";
 
-			When(Creating, Parsing);
+			When(Parsing);
 
 			Then.Object.IsValid.Should().BeFalse();
 			Then.Messages.Should().BeEmpty();
@@ -66,7 +66,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages = Then.Object.Parse();
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = new DerivedBaseScriptBlock(Given.Keyword, Given.Text);
 		}

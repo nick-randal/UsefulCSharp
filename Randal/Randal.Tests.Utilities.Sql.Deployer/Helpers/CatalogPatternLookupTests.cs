@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Helpers
 		{
 			Given.Text = "ma%er";
 
-			When(Creating, Getting);
+			When(Getting);
 
 			Then.Pattern.Options.Should()
 				.Be(RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
@@ -49,7 +49,7 @@ namespace Randal.Tests.Sql.Deployer.Helpers
 			Then.Pattern = Then.Lookup[Given.Text];
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Lookup = new CatalogPatternLookup();
 		}

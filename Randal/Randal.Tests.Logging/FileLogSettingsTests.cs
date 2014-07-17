@@ -64,7 +64,7 @@ namespace Randal.Tests.Logging
 			Then.Settings.FileSize.Should().Be(FileLoggerSettings.FiveMegabytes);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Settings = new FileLoggerSettings(Given.BasePath, Given.BaseFileName, Given.FileSize,
 				Given.TruncateRepeatingLines);

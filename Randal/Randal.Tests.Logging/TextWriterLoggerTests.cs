@@ -36,11 +36,11 @@ namespace Randal.Tests.Logging
 		public void ShouldCallWriteLineWhenWritingGivenEntry()
 		{
 			Given.Entry = new LogEntry("Test");
-			When(Creating, Writing);
+			When(Writing);
 			Then.Writer.AssertWasCalled(x => x.Write(Arg<string>.Is.NotNull));
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Writer = Given.Stream ?? MockRepository.GenerateMock<TextWriter>();
 			Then.Logger = new TextWriterLogger(Then.Writer);

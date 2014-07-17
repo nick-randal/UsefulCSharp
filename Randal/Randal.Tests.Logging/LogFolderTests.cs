@@ -50,7 +50,7 @@ namespace Randal.Tests.Logging
 			Given.BaseFileName = "System";
 			Given.FolderDoesNotExist = true;
 
-			When(Creating, VerifyingFolder);
+			When(VerifyingFolder);
 
 			Then.FolderVerified.Should().BeTrue();
 			Then.FolderExists.Should().BeTrue();
@@ -62,7 +62,7 @@ namespace Randal.Tests.Logging
 			Given.Path = Test.Paths.LoggingFolder;
 			Given.BaseFileName = "Process";
 
-			When(Creating, GettingNextFilePath);
+			When(GettingNextFilePath);
 
 			Then.FilePath.Should().EndWith("Process_005.log");
 			Then.FileExists.Should().BeTrue();
@@ -74,7 +74,7 @@ namespace Randal.Tests.Logging
 			Given.Path = Test.Paths.LoggingFolder;
 			Given.BaseFileName = "Process";
 
-			When(Creating, GettingNextFilePath, GettingNextFilePath);
+			When(GettingNextFilePath, GettingNextFilePath);
 
 			Then.FilePath.Should().EndWith("Process_006.log");
 			Then.FileExists.Should().BeFalse();
@@ -86,7 +86,7 @@ namespace Randal.Tests.Logging
 			Given.Path = ".";
 			Given.BaseFileName = "Test";
 
-			When(Creating, GettingNextFilePath);
+			When(GettingNextFilePath);
 
 			Then.FilePath.Should().EndWith("Test_001.log");
 			Then.FileExists.Should().BeFalse();
@@ -99,7 +99,7 @@ namespace Randal.Tests.Logging
 			Given.Path = ".";
 			Given.BaseFileName = "Test";
 
-			When(Creating, GettingFallbackFilePath);
+			When(GettingFallbackFilePath);
 
 			Then.FilePath.Should().EndWith("Test_3364dd9a-5fd3-4cd9-a5b7-96a8f82bed08.log");
 			Then.FileExists.Should().BeFalse();
@@ -120,7 +120,7 @@ namespace Randal.Tests.Logging
 			}
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			if (Given.FolderDoesNotExist)
 			{

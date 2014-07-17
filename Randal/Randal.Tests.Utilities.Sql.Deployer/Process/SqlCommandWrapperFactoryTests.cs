@@ -34,7 +34,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		{
 			Given.CommandText = "Select 1";
 
-			When(Creating, CreatingNewCommand);
+			When(CreatingNewCommand);
 
 			Then.Command.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapper>();
 		}
@@ -44,7 +44,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Command = Then.Factory.CreateCommand(null, null, Given.CommandText);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Factory = new SqlCommandWrapperFactory();
 		}

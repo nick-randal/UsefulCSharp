@@ -49,7 +49,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 			Then.Object.Project.Should().Be("UnitTest");
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Object = JsonConvert.DeserializeObject<ProjectConfig>(Given.Json);
 		}

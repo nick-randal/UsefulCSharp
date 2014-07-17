@@ -24,7 +24,7 @@ namespace Randal.Tests.Core.Structures
 	[TestClass]
 	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
 	{
-		[TestMethod]
+		[TestMethod, TestCategory("Positive")]
 		public void ShouldHaveEmptyListWhenCreatingNewGraph()
 		{
 			Given.Values = new Builder().Build();
@@ -35,7 +35,7 @@ namespace Randal.Tests.Core.Structures
 			Then.Graph.OriginalValues.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[TestMethod, TestCategory("Positive")]
 		public void ShouldHaveListOfValuesWhenBuildingDependenciesGivenValues()
 		{
 			Given.Values = new Builder()
@@ -47,7 +47,7 @@ namespace Randal.Tests.Core.Structures
 				.WithItem(6).WithItem(7).WithItem(8).WithItem(9)
 				.Build();
 
-			When(Creating, BuildingDependencies);
+			When(BuildingDependencies);
 
 			Then.Graph.Should().NotBeNull();
 			Then.Graph.OriginalValues.Should().HaveCount(9);
@@ -57,7 +57,7 @@ namespace Randal.Tests.Core.Structures
 			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 9, 5, 6, 3, 8, 4, 7});
 		}
 
-		[TestMethod]
+		[TestMethod, TestCategory("Positive")]
 		public void ShouldNotThrowExceptionWhenBuildingDependenciesGivenCircularReference()
 		{
 			Given.Values = new Builder()
@@ -66,22 +66,22 @@ namespace Randal.Tests.Core.Structures
 				.WithItem(3, 1, 2)
 				.WithItem(4).Build();
 
-			When(Creating, BuildingDependencies);
+			When(BuildingDependencies);
 
 			Then.List.Should().HaveCount(4);
 			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
 			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
 		}
 
-		[TestMethod, ExpectedException(typeof (KeyNotFoundException))]
+		[TestMethod, ExpectedException(typeof(KeyNotFoundException)), TestCategory("Negative")]
 		public void ShouldThrowExceptionWhenBuildingDependenciesGivenNonExistentDependency()
 		{
 			Given.Values = new Builder().WithItem(1, 2).Build();
 
-			When(Creating, BuildingDependencies);
+			When(BuildingDependencies);
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, ExpectedException(typeof (ArgumentNullException)), TestCategory("Negative")]
 		public void ShouldThrowExceptionWhenCreatingGivenNullValues()
 		{
 			Given.Values = null;
@@ -89,7 +89,7 @@ namespace Randal.Tests.Core.Structures
 			When(Creating);
 		}
 
-		private void Creating()
+		protected override void Creating()
 		{
 			Then.Graph = new DependencyListBuilder<int, Tuple<int, int[]>>(Given.Values);
 		}
