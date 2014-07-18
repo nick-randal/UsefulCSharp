@@ -46,6 +46,14 @@
     <Reference Include="mscorlib.4.0.0.0.Fakes">
       <HintPath>FakesAssemblies\mscorlib.4.0.0.0.Fakes.dll</HintPath>
     </Reference>
+    <Reference Include="Randal.Core, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.7\lib\net45\Randal.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Randal.Core.Testing, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.7\lib\net45\Randal.Core.Testing.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -111,10 +119,6 @@
     <Fakes Include="Fakes\mscorlib.fakes" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">
-      <Project>{7e3c2598-ad31-4a85-93d1-89b7d835a9de}</Project>
-      <Name>Randal.Core.Testing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Randal.Logging\Randal.Logging.csproj">
       <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
       <Name>Randal.Logging</Name>

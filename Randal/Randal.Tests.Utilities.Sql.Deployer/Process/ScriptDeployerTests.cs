@@ -51,6 +51,8 @@ namespace Randal.Tests.Sql.Deployer.Process
 		{
 			Given.Project = null;
 			When(Creating);
+
+			
 		}
 
 		[TestMethod, ExpectedException(typeof (ArgumentNullException))]

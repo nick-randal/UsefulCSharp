@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Support for cleaner setup and teardown, added function to verify Givens Defined.</releaseNotes>
+		<releaseNotes>Support for ThrowsExceptionWhen to use an exception assertion mechanism other than MSTest's ExpectedException.</releaseNotes>
 		<copyright>Copyright 2014 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>

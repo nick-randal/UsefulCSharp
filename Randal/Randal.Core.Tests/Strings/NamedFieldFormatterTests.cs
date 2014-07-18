@@ -23,11 +23,6 @@ namespace Randal.Tests.Core.Strings
 	[TestClass]
 	public sealed class NamedFieldFormatterTests : BaseUnitTest<NamedFieldFormatterThens>
 	{
-		protected override void OnSetup()
-		{		
-			Given.Values = new Dictionary<string, object>();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidFormatterWhenCreatingInstance()
 		{
@@ -68,48 +63,58 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("FooBar");
 		}
 
-
-		[TestMethod, ExpectedException(typeof (FormatException))]
+		[TestMethod]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedClosingBrace()
 		{
 			Given.Text = "Hey name},";
 
-			When(Formatting);
+			ThrowsExceptionWhen(Formatting);
+
+			ThenLastAction.ShouldThrow<FormatException>("Unescaped closing brace found at position 9.");
 		}
 
-		[TestMethod, ExpectedException(typeof (FormatException))]
+		[TestMethod]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBraceAndNoMoreText()
 		{
 			Given.Text = "Hey {";
 
-			When(Formatting);
+			ThrowsExceptionWhen(Formatting);
+
+			ThenLastAction.ShouldThrow<FormatException>("Opening brace with no field name specified at position 5.");
 		}
 
-		[TestMethod, ExpectedException(typeof (FormatException))]
+		[TestMethod]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
 
-			When(Formatting);
+			ThrowsExceptionWhen(Formatting);
+
+			ThenLastAction.ShouldThrow<FormatException>("Opening brace with field expression 'name,' has no closing brace at position 10.");
 		}
 
-		[TestMethod, ExpectedException(typeof (FormatException))]
+		[TestMethod]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithEmptyBraces()
 		{
 			Given.Text = "{}";
 
-			When(Formatting);
-		}
+			ThrowsExceptionWhen(Formatting);
 
-		private void Formatting()
-		{
-			Func<string, string> getValueFunc = key => Given.Values[key].ToString();
-			Then.Text = Then.Formatter.Parse(Given.Text, getValueFunc);
+			ThenLastAction.ShouldThrow<FormatException>("Opening brace with no field name specified at position 1.");
 		}
 
 		protected override void Creating()
 		{
 			Then.Formatter = new NamedFieldFormatter();
+		}
+
+		private void Formatting()
+		{
+			if(GivensDefined("Values") == false)
+				Given.Values = new Dictionary<string, object>();
+
+			Func<string, string> getValueFunc = key => Given.Values[key].ToString();
+			Then.Text = Then.Formatter.Parse(Given.Text, getValueFunc);
 		}
 	}
 

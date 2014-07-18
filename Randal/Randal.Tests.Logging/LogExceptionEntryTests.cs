@@ -24,11 +24,6 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class LogExceptionEntryTests : BaseUnitTest<LogExceptionEntryThens>
 	{
-		protected override void OnSetup()
-		{
-			Given.SystemDateTime = new DateTime();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidEntryWhenCreating()
 		{
@@ -42,6 +37,18 @@ namespace Randal.Tests.Logging
 			Then.Entry.ShowTimestamp.Should().BeTrue();
 			Then.Entry.Timestamp.Should().Be(new DateTime(2014, 6, 13, 1, 2, 3));
 			Then.Entry.Message.Should().BeEmpty();
+		}
+
+		[TestMethod]
+		public void ShouldTextPresentWhenCreatingGivenMessageText()
+		{
+			Given.Message = "Hello Exception!";
+			Given.Exception = new InvalidTimeZoneException();
+			Given.SystemDateTime = new DateTime(2014, 6, 13, 1, 2, 3);
+
+			When(Creating);
+
+			Then.Entry.Message.Should().Be("Hello Exception!");
 		}
 
 		protected override void Creating()

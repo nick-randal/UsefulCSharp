@@ -35,6 +35,8 @@ namespace Randal.Core.Testing.UnitTest
 		{
 			OnTeardown();
 
+			ThenLastAction = null;
+
 			var disposeMe = Then as IDisposable;
 			if (disposeMe != null)
 				disposeMe.Dispose();
@@ -47,6 +49,29 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected virtual void OnTeardown() { }
 
+		/// <summary>
+		/// Dyanmic object to receive any necessary Given data for the current test.
+		/// </summary>
+		protected dynamic Given;
+
+		/// <summary>
+		/// Determine if all provided members have been defined as Given values.
+		/// </summary>
+		/// <param name="members">A list of property names</param>
+		/// <returns>True if all properties specified are defined, otherwise False.</returns>
+		protected bool GivensDefined(params string[] members)
+		{
+			if (members.Length == 0)
+				return true;
+
+			return members.All(member => Given.TestForMember(member));
+		}
+
+		/// <summary>
+		/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
+		/// However, if a Creating is provided then it will not be called automatically and it is assumed that the caller wants full control of actions and the order.
+		/// </summary>
+		/// <param name="actions">A list of actions to be performed for the current test</param>
 		protected void When(params Action[] actions)
 		{
 			if (actions.Any(a => a == Creating) == false)
@@ -56,17 +81,27 @@ namespace Randal.Core.Testing.UnitTest
 				action();
 		}
 
-		protected abstract void Creating();
-
-		protected bool GivensDefined(params string[] members)
+		/// <summary>
+		/// Will execute each action provided, in order, except for the last one.  That action will be set as ThenLastAction and will not be executed.
+		/// This is done so that the action can be executed in conjunction with an assertion mechanism other than MSTest's ExpectedException attribute.
+		/// </summary>
+		/// <param name="actions"></param>
+		protected void ThrowsExceptionWhen(params Action[] actions)
 		{
-			if (members.Length == 0)
-				return true;
+			var listOfActions = actions.ToList();
 
-			return members.All(member => Given.TestForMember(member));
+			if (actions.Any(a => a == Creating) == false)
+				listOfActions.Insert(0, Creating);
+
+			for (var n = 0; n < listOfActions.Count - 1; n++)
+				listOfActions[n]();
+
+			ThenLastAction = listOfActions.Last();
 		}
 
-		protected dynamic Given;
+		protected abstract void Creating();
+
 		protected TThens Then;
+		protected Action ThenLastAction { get; private set; }
 	}
 }
