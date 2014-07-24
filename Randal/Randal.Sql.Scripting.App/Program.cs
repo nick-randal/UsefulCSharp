@@ -1,5 +1,5 @@
-﻿using Randal.Logging;
-using CommandLine;
+﻿using CommandLine;
+using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
 {

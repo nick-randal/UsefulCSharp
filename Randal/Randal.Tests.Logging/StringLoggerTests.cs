@@ -22,12 +22,6 @@ namespace Randal.Tests.Logging
 	[TestClass]
 	public sealed class StringLoggerTests : BaseUnitTest<StringLoggerThens>
 	{
-		protected override void OnTeardown()
-		{
-			if (Then.Logger != null)
-				Then.Logger.Dispose();
-		}
-
 		[TestMethod]
 		public void ShouldHaveValidLoggerWhenCreating()
 		{
@@ -41,7 +35,9 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveSameTextWhenGettingTextGivenValue()
 		{
 			Given.Entry = new LogEntry("Hello world", new DateTime(2014, 6, 11));
+
 			When(AddingEntry, GettingText);
+
 			Then.Text.Should().Be("140611 000000    Hello world\r\n");
 		}
 
@@ -49,8 +45,20 @@ namespace Randal.Tests.Logging
 		public void ShouldChangeValueWhenChangingVerbosityGivenDifferentVerbosityLevel()
 		{
 			Given.Verbosity = Verbosity.Vital;
+
 			When(GettingChangedVerbosity);
+
 			Then.Verbosity.Should().Be(Verbosity.Vital);
+		}
+
+		[TestMethod]
+		public void ShouldDo()
+		{
+			Given.Entry = new LogEntry("Nothing is ever truly lost", new DateTime(2014, 6, 11));
+
+			When(AddingEntry, Disposing, GettingText);
+
+			Then.Text.Should().Be("140611 000000    Nothing is ever truly lost\r\n");
 		}
 
 		protected override void Creating()
@@ -80,10 +88,16 @@ namespace Randal.Tests.Logging
 		}
 	}
 
-	public sealed class StringLoggerThens
+	public sealed class StringLoggerThens : IDisposable
 	{
 		public StringLogger Logger;
 		public string Text;
 		public Verbosity Verbosity;
+
+		public void Dispose()
+		{
+			if (Logger != null)
+				Logger.Dispose();
+		}
 	}
 }

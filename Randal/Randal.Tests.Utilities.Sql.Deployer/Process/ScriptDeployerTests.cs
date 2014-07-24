@@ -14,11 +14,11 @@
 using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
-using Randal.Tests.Sql.Deployer.Scripts;
+using Randal.Logging;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Tests.Sql.Deployer.Scripts;
 using Rhino.Mocks;
 
 namespace Randal.Tests.Sql.Deployer.Process

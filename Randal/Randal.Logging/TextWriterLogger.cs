@@ -91,6 +91,11 @@ namespace Randal.Logging
 
 		protected virtual void Dispose(bool disposing)
 		{
+			if (Disposed)
+				return;
+
+			Disposed = true;
+
 			if (!disposing) 
 				return;
 
@@ -112,6 +117,7 @@ namespace Randal.Logging
 			Dispose(false);
 		}
 
+		protected bool Disposed = false;
 		protected readonly TextWriter Writer;
 		protected readonly ILogEntryFormatter Formatter;
 		protected volatile Verbosity Verbosity;

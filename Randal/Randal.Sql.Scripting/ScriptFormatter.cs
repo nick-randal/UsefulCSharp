@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.Management.Smo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Management.Smo;
 using Randal.Core.Strings;
 
 namespace Randal.Sql.Scripting

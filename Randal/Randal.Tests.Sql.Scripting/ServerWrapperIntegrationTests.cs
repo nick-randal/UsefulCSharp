@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
-using Randal.Sql.Scripting;
 using Randal.Core.Testing.UnitTest;
-using System.Collections.Generic;
+using Randal.Sql.Scripting;
 
 namespace Randal.Tests.Sql.Scripting
 {

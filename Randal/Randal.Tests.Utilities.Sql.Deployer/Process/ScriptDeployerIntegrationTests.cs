@@ -11,15 +11,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
-using Randal.Logging;
 using Randal.Core.Testing.UnitTest;
+using Randal.Logging;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
-using System;
 
 namespace Randal.Tests.Sql.Deployer.Process
 {

@@ -19,18 +19,22 @@ namespace Randal.Logging
 	{
 		public StringLogger(ILogEntryFormatter formatter = null) : base(new StringWriter(), formatter)
 		{
+			LastText = string.Empty;
 		}
+
+		public string LastText { get; private set; }
 
 		public string GetLatestText()
 		{
-			string text;
+			if (Disposed)
+				return LastText;
 
 			Lock.EnterWriteLock();
 			try
 			{
 				Writer.Flush();
 				var stringBuilder = ((StringWriter) Writer).GetStringBuilder();
-				text = stringBuilder.ToString();
+				LastText = stringBuilder.ToString();
 				stringBuilder.Clear();
 			}
 			finally
@@ -38,7 +42,14 @@ namespace Randal.Logging
 				Lock.ExitWriteLock();
 			}
 
-			return text;
+			return LastText;
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			GetLatestText();
+
+			base.Dispose(disposing);
 		}
 	}
 }
