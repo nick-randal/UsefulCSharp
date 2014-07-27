@@ -19,13 +19,6 @@ using System.Threading.Tasks;
 
 namespace Randal.Logging
 {
-	public enum AsyncFileLoggerState
-	{
-		Created,
-		Running,
-		Disposed
-	}
-
 	public sealed class AsyncFileLogger : ILogger
 	{
 		public AsyncFileLogger(IFileLoggerSettings settings, ILogFileManager logWriterManager = null,
@@ -42,7 +35,8 @@ namespace Randal.Logging
 			_signal = new ManualResetEventSlim(false);
 			_token = new CancellationTokenSource();
 			_settingsLock = new ReaderWriterLockSlim();
-			_task = Task.Factory.StartNew(Run, settings, CancellationToken);
+
+			_task = Task.Run(() => RunAsync(settings), CancellationToken);
 		}
 
 		public Verbosity VerbosityThreshold
@@ -57,35 +51,6 @@ namespace Randal.Logging
 				finally
 				{
 					_settingsLock.ExitReadLock();
-				}
-			}
-		}
-
-		public AsyncFileLoggerState State
-		{
-			get
-			{
-				_settingsLock.EnterReadLock();
-				try
-				{
-					return _state;
-				}
-				finally
-				{
-					_settingsLock.ExitReadLock();
-				}
-			}
-
-			set
-			{
-				_settingsLock.EnterWriteLock();
-				try
-				{
-					_state = value;
-				}
-				finally
-				{
-					_settingsLock.ExitWriteLock();
 				}
 			}
 		}
@@ -122,116 +87,122 @@ namespace Randal.Logging
 			_token.Cancel();
 		}
 
-		private bool WaitForEntries()
-		{
-			try
-			{
-				_signal.Wait(_token.Token);
-				return false;
-			}
-			catch (OperationCanceledException)
-			{
-				return true;
-			}
-		}
-
-		private bool GetNextEntryOrReset(out ILogEntry entry)
-		{
-			var result = _logQueue.TryDequeue(out entry);
-
-			if (result == false)
-				_signal.Reset();
-
-			return result;
-		}
-
 		public void Dispose()
 		{
-			State = AsyncFileLoggerState.Disposed;
-			// allow a few more messages before shutting down
-			Thread.Sleep(500);
+			if (_disposed)
+				return;
 
 			RequestCancellation();
 
 			try
 			{
-				if (_task == null)
-					return;
+				DisposeOfTask();
 
-				for (var n = 0; n < 40; n++) // wait up to 10 seconds
-				{
-					if (_task.Status == TaskStatus.RanToCompletion ||
-					    _task.Status == TaskStatus.Faulted ||
-					    _task.Status == TaskStatus.Canceled)
-						break;
+				DisposeOfManualEvent();
 
-					Thread.Sleep(250);
-				}
+				DisposeOfCancellationToken();
 
-				if (_task.IsCompleted || _task.IsCanceled || _task.IsFaulted)
-					_task.Dispose();
-				_task = null;
-
-				if(_signal != null)
-					_signal.Dispose();
-
-				if(_token != null)
-					_token.Dispose();
-
-				if(_settingsLock != null)
-					_settingsLock.Dispose();
+				DisposeOfReaderWriterLock();
 			}
 			catch (Exception ex)
 			{
 				EventLog.WriteEntry(TextResources.ApplicationEventLog, ex.ToString(), EventLogEntryType.Error);
 			}
+			finally
+			{
+				_disposed = true;
+			}
 		}
 
-		private void Run(object asyncState)
+		private void DisposeOfReaderWriterLock()
 		{
-			string lastRepeatedText = null;
-			var repetitionCount = 1;
-
-			State = AsyncFileLoggerState.Running;
+			if (_settingsLock == null)
+				return;
 
 			try
 			{
-				var settings = (FileLoggerSettings) asyncState;
-
-				while (true)
-				{
-					// block until entries are available, if we get cancelled then return
-					// the base class, signals, waits and then cancels, so pending entries should get written
-					if (WaitForEntries())
-					{
-						WriteRepetitionInfo(repetitionCount);
-						return;
-					}
-
-					ILogEntry entry;
-					if (GetNextEntryOrReset(out entry) == false)
-						continue;
-
-					if (settings.ShouldTruncateRepeatingLines)
-					{
-						if (string.Compare(lastRepeatedText, entry.Message, StringComparison.InvariantCultureIgnoreCase) == 0)
-						{
-							repetitionCount++;
-							continue;
-						}
-
-						lastRepeatedText = entry.Message;
-						WriteRepetitionInfo(repetitionCount);
-
-						repetitionCount = 1;
-					}
-
-					// Get the current stream or a new stream if necessary
-					var writer = _logWriterManager.GetStreamWriter();
-					writer.Write(_formatter.Format(entry));
-				}
+				_settingsLock.Dispose();
 			}
-				// generally we do not catch exceptions like this, safe guard against the thread death and not being cleaned up appropriately
+			finally
+			{
+				_settingsLock = null;
+			}
+		}
+
+		private void DisposeOfCancellationToken()
+		{
+			if (_token == null)
+				return;
+
+			try
+			{
+				_token.Dispose();
+			}
+			finally
+			{
+				_token = null;
+			}
+		}
+
+		private void DisposeOfManualEvent()
+		{
+			if (_signal == null)
+				return;
+
+			try
+			{
+				_signal.Dispose();
+			}
+			finally
+			{
+				_signal = null;
+			}
+		}
+
+		private void DisposeOfTask()
+		{
+			if (_task == null)
+				return;
+
+			try
+			{
+				_task.Wait(5000);
+				_task.Dispose();
+			}
+			finally
+			{
+				_task = null;
+			}
+		}
+
+		private bool HasEntriesAndIsNotCancelled(out ILogEntry entry)
+		{
+			try
+			{
+				if (_logQueue.TryDequeue(out entry))
+					return true;
+
+				_signal.Reset();
+				_signal.Wait(_token.Token);
+				_logQueue.TryDequeue(out entry);
+			}
+			catch (OperationCanceledException)
+			{
+				entry = null;
+				return false;
+			}
+
+			return true;
+		}
+
+		private async Task RunAsync(IFileLoggerSettings settings)
+		{
+			try
+			{
+				var repetitionCount = await ProcessEntriesAsync(settings.ShouldTruncateRepeatingLines);
+
+				await WriteRepetitionInfo(repetitionCount);
+			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
@@ -243,25 +214,54 @@ namespace Randal.Logging
 			}
 		}
 
-		private void WriteRepetitionInfo(int repetitionCount)
+		private async Task<int> ProcessEntriesAsync(bool truncateRepetition)
+		{
+			string lastRepeatedText = null;
+			var repetitionCount = 1;
+			ILogEntry entry;
+
+			while (HasEntriesAndIsNotCancelled(out entry))
+			{
+				if (truncateRepetition)
+				{
+					if (string.Compare(lastRepeatedText, entry.Message, StringComparison.InvariantCultureIgnoreCase) == 0)
+					{
+						repetitionCount++;
+						continue;
+					}
+
+					lastRepeatedText = entry.Message;
+					await WriteRepetitionInfo(repetitionCount);
+
+					repetitionCount = 1;
+				}
+
+				await _logWriterManager.GetStreamWriter().WriteAsync(_formatter.Format(entry));
+			}
+
+			return repetitionCount;
+		}
+
+		private async Task WriteRepetitionInfo(int repetitionCount)
 		{
 			if (repetitionCount <= 1)
 				return;
 
-			var writer = _logWriterManager.GetStreamWriter();
-			writer.WriteLine(TextResources.AttentionRepeatingLines, repetitionCount);
+			await _logWriterManager.GetStreamWriter().WriteLineAsync(
+				string.Concat(TextResources.AttentionRepeatingLinesPrefix, repetitionCount, TextResources.AttentionRepeatingLinesSuffix)
+			);
 		}
 
 		internal const int SetupWait = 1000;
 
+		private volatile bool _disposed;
 		private Task _task;
-		private AsyncFileLoggerState _state = AsyncFileLoggerState.Created;
-		private readonly CancellationTokenSource _token;
+		private ManualResetEventSlim _signal;
+		private ReaderWriterLockSlim _settingsLock;
+		private CancellationTokenSource _token;
 		private readonly ConcurrentQueue<ILogEntry> _logQueue;
-		private readonly ManualResetEventSlim _signal;
 		private readonly ILogEntryFormatter _formatter;
 		private readonly ILogFileManager _logWriterManager;
-		private readonly ReaderWriterLockSlim _settingsLock;
 		private volatile Verbosity _verbosity;
 	}
 }

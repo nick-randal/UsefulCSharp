@@ -20,7 +20,8 @@ namespace Randal.Logging
 			Timestamp = "yyMMdd HHmmss",
 			NoTimestamp = "                 ",
 			Prepend = "    ",
-			AttentionRepeatingLines = "ATTENTION: The previous line was repeated {0} times.",
+			AttentionRepeatingLinesPrefix = "ATTENTION: The previous line was repeated ",
+			AttentionRepeatingLinesSuffix = " times.",
 			ApplicationEventLog = "Application"
 			;
 

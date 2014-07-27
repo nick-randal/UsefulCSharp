@@ -12,33 +12,30 @@
 // GNU General Public License for more details.
 
 using System;
+using System.IO;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
+using Rhino.Mocks;
 
 namespace Randal.Tests.Logging
 {
 	[TestClass]
 	public sealed class AsyncFileLoggerTests : BaseUnitTest<AsyncFileLoggerThens>
 	{
-		protected override void OnSetup()
-		{
-		}
-
 		[TestMethod]
-		public void ShouldHaveFileLoggerWhenCreating()
+		public void ShouldHaveFileLogger_WhenCreating()
 		{
 			When(Creating);
 
 			Then.Logger.Should().NotBeNull().And.BeAssignableTo<ILogger>();
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.All);
-			Then.Logger.State.Should().Be(AsyncFileLoggerState.Running);
 		}
 
 		[TestMethod]
-		public void ShouldChangeValueWhenSettingVerbosityGivenNewVerbosityLevel()
+		public void ShouldChangeValue_WhenSettingVerbosity_GivenNewVerbosityLevel()
 		{
 			Given.Verbosity = Verbosity.Important;
 
@@ -47,16 +44,60 @@ namespace Randal.Tests.Logging
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.Important);
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
-		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
+		[TestMethod]
+		public void ShouldThrowException_WhenCreating_GivenNullSettings()
 		{
 			Given.NullSettings = true;
 
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
+		}
+
+		[TestMethod]
+		public void ShouldHaveText_WhenLogging_GivenEntries()
+		{
+			Given.Entries = new[] { new LogEntry("Yay for logging.", new DateTime(1891, 3, 15, 4, 30, 00)) };
+
+			When(Logging, Disposing);
+
+			Then.Text.Should().Be("910315 043000    Yay for logging.\r\n");
+		}
+
+		[TestMethod]
+		public void ShouldHaveTruncatedText_WhenLogging_GivenDuplicateEntries()
+		{
+			Given.Entries = new[]
+			{
+				new LogEntryNoTimestamp("Can you hear me now?"),
+				new LogEntryNoTimestamp("Can you hear me now?"),
+				new LogEntryNoTimestamp("Good")
+			};
+
+			When(Logging, Disposing);
+
+			Then.Text.Should().Be("                     Can you hear me now?\r\nATTENTION: The previous line was repeated 2 times.\r\n                     Good\r\n");
+		}
+
+		private void Logging()
+		{
+			foreach(ILogEntry entry in Given.Entries)
+				Then.Logger.Add(entry);
+			Thread.Sleep(50);
 		}
 
 		private void Disposing()
 		{
+			Then.Writer.Flush();
+			Then.Writer.BaseStream.Position = 0;
+
+			using (var reader = new StreamReader(Then.Writer.BaseStream))
+			{
+				Then.Text = reader.ReadToEnd();
+			}
+
+			Then.Writer = null;
+
 			Then.Logger.Dispose();
 		}
 
@@ -72,13 +113,34 @@ namespace Randal.Tests.Logging
 			if(GivensDefined("NullSettings") && Given.NullSettings == true)
 				Then.Logger = new AsyncFileLogger(null);
 			else
-				Then.Logger = new AsyncFileLogger(settings);
-			Thread.Sleep(100);
+				Then.Logger = new AsyncFileLogger(settings, GetMockLogFileManager());
+
+			Thread.Sleep(50);
+		}
+
+		private ILogFileManager GetMockLogFileManager()
+		{
+			var logFileManager = MockRepository.GenerateMock<ILogFileManager>();
+
+			Then.Writer = new StreamWriter(new MemoryStream());
+			logFileManager.Stub(x => x.GetStreamWriter()).Return(Then.Writer);
+			return logFileManager;
 		}
 	}
 
-	public sealed class AsyncFileLoggerThens
+	public sealed class AsyncFileLoggerThens : IDisposable
 	{
 		public AsyncFileLogger Logger;
+		public StreamWriter Writer;
+		public string Text;
+		
+		public void Dispose()
+		{
+			if(Writer != null)
+				Writer.Dispose();
+
+			if(Logger != null)
+				Logger.Dispose();
+		}
 	}
 }
