@@ -202,6 +202,8 @@ namespace Randal.Logging
 				var repetitionCount = await ProcessEntriesAsync(settings.ShouldTruncateRepeatingLines);
 
 				await WriteRepetitionInfo(repetitionCount);
+
+				await _logWriterManager.GetStreamWriter().WriteLineAsync();
 			}
 			catch (Exception ex)
 			{
