@@ -5,6 +5,11 @@ One of the best features is the use oF the DLR for the Givens.  You can define a
 
 The other focus is around composable When statements.
 
+- Exception assertions closer to the point of being thrown
+- Optional overrides for OnSetup OnTeardown for less typing
+- Given and Then automatically cleaned up before each test
+- When assumed Creating action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically
+
 ```csharp
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,7 +49,17 @@ namespace Someplace
 			Then.Text.Should().Be("Object said, 123");
 		}
 		
-		private void Creating()
+		[TestMethod]
+		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBrace()
+		{
+			Given.Text = "Hey {name,";
+
+			ThrowsExceptionWhen(Formatting);
+
+			ThenLastAction.ShouldThrow<FormatException>("Oops");
+		}
+		
+		protected override Creating()
 		{
 			// can check if a dynamic value is defined through  GivensDefined("NeededValue",...)
 
