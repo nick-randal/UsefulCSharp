@@ -65,14 +65,14 @@ namespace Randal.Logging
 
 		public void AddException(Exception ex)
 		{
-			Logger.Add(new ExceptionEntry(ex));
+			Logger.Add(new LogExceptionEntry(ex));
 		}
 
 		public void AddException(Exception ex, string message, params object[] values)
 		{
 			var formatted = string.Format(message, values);
 
-			Logger.Add(new ExceptionEntry(ex, formatted));
+			Logger.Add(new LogExceptionEntry(ex, formatted));
 		}
 
 		public ILogger BaseLogger

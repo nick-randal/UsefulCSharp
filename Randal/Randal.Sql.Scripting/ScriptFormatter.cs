@@ -8,6 +8,7 @@ namespace Randal.Sql.Scripting
 {
 	public interface IScriptFormatter
 	{
+		string Format(ScriptSchemaObjectBase schemaObject);
 		string Format(StoredProcedure sproc);
 	}
 
@@ -18,23 +19,80 @@ namespace Randal.Sql.Scripting
 			_server = server;
 		}
 
+		public string Format(ScriptSchemaObjectBase schemaObject)
+		{
+			var sproc = schemaObject as StoredProcedure;
+			var udf = schemaObject as UserDefinedFunction;
+			var view = schemaObject as View;
+
+			if (sproc != null)
+				return Format(sproc);
+			
+			if (udf != null)
+				return Format(udf);
+			
+			if (view != null)
+				return Format(view);
+
+			throw new InvalidOperationException("Not supported.");
+		}
+
+		public string Format(View view)
+		{
+			var values = new Dictionary<string, object>
+			{
+				{ "catalog", view.Parent.Name },
+				{ "schema", view.Schema },
+				{ "view", view.Name },
+				{ "body", view.TextBody },
+				{ "header", view.ScriptHeader(true) },
+				{ "needs", GetNeeds(view) ?? string.Empty }
+			};
+
+			return ViewScript.Format().With(values); 
+		}
+
+		public string Format(UserDefinedFunction udf)
+		{
+			var values = new Dictionary<string, object>
+			{
+				{ "catalog", udf.Parent.Name },
+				{ "schema", udf.Schema },
+				{ "udf", udf.Name },
+				{ "body", udf.TextBody },
+				{ "header", udf.ScriptHeader(true) },
+				{ "needs", GetNeeds(udf) ?? string.Empty }
+			};
+
+			switch (udf.FunctionType)
+			{
+				case UserDefinedFunctionType.Inline:
+					values["funcType"] = "inline";
+					break;
+				case UserDefinedFunctionType.Table:
+					values["funcType"] = "multi";
+					break;
+				default:
+					values["funcType"] = "scalar";
+					break;
+			}
+
+			return UserDefinedFunctionScript.Format().With(values); 
+		}
+
 		public string Format(StoredProcedure sproc)
 		{
 			var values = new Dictionary<string, object>
 			{
-				{"catalog", sproc.Parent.Name},
-				{"sproc", sproc.Name},
-				{"body", sproc.TextBody}
+				{ "catalog", sproc.Parent.Name },
+				{ "schema", sproc.Schema },
+				{ "sproc", sproc.Name },
+				{ "body", sproc.TextBody },
+				{ "header", sproc.ScriptHeader(true) },
+				{ "needs", GetNeeds(sproc) ?? string.Empty }
 			};
 
-			var temp = sproc.TextHeader.Replace("create procedure", "alter procedure");
-			values.Add("header", temp);
-
-			temp = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
-			values.Add("parameters", temp);
-
-			temp = GetNeeds(sproc);
-			values.Add("needs", temp ?? string.Empty);
+			values["parameters"] = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
 
 			return SprocScript.Format().With(values); 
 		}
@@ -61,7 +119,7 @@ namespace Randal.Sql.Scripting
 use {catalog}
 
 --:: pre
-exec coreCreateProcedure '{sproc}'
+exec coreCreateProcedure '{schema}.{sproc}'
 GO
 
 --:: main
@@ -71,10 +129,40 @@ GO
 /*
 	exec {sproc} {args}
 */",
-			UserDefinedFunctionScript = 
-@"",
-			ViewScript = 
-@""
+			UserDefinedFunctionScript =
+@"{needs}--:: catalog {catalog}
+
+--:: ignore
+use {catalog}
+
+--:: pre
+exec coreCreateFunction '{schema}.{udf}', '{funcType}'
+GO
+
+--:: main
+{header}
+{body}
+
+/*
+	select {udf}()
+*/",
+			ViewScript =
+@"{needs}--:: catalog {catalog}
+
+--:: ignore
+use {catalog}
+
+--:: pre
+exec coreCreateView '{view}', '{schema}'
+GO
+
+--:: main
+{header}
+{body}
+
+/*
+	select top 100 * from {view}
+*/"
 		;
 	}
 }

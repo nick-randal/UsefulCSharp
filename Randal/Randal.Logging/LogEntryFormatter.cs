@@ -27,7 +27,7 @@ namespace Randal.Logging
 	{
 		public string Format(ILogEntry entry)
 		{
-			var exEntry = entry as ExceptionEntry;
+			var exEntry = entry as LogExceptionEntry;
 
 			if (exEntry != null)
 				return FormatException(exEntry);
@@ -40,7 +40,7 @@ namespace Randal.Logging
 				);
 		}
 
-		private static string FormatException(ExceptionEntry entry)
+		private static string FormatException(LogExceptionEntry entry)
 		{
 			var text = new StringBuilder();
 
@@ -80,7 +80,7 @@ namespace Randal.Logging
 			return text.ToString();
 		}
 
-		private static void FormatStackTrace(ExceptionEntry entry, StringBuilder text)
+		private static void FormatStackTrace(LogExceptionEntry entry, StringBuilder text)
 		{
 			if (entry.Exception == null)
 				return;

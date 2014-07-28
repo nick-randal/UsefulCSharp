@@ -15,9 +15,9 @@ using System;
 
 namespace Randal.Logging
 {
-	public sealed class ExceptionEntry : LogEntry
+	public sealed class LogExceptionEntry : LogEntry
 	{
-		public ExceptionEntry(Exception exception, string message = null)
+		public LogExceptionEntry(Exception exception, string message = null)
 			: base(message, DateTime.Now, Verbosity.Vital)
 		{
 			_exception = exception;

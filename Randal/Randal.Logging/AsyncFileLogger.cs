@@ -36,7 +36,7 @@ namespace Randal.Logging
 			_token = new CancellationTokenSource();
 			_settingsLock = new ReaderWriterLockSlim();
 
-			_task = Task.Run(() => RunAsync(settings), CancellationToken);
+			_task = Task.Run(() => RunAsync(settings), _token.Token);
 		}
 
 		public Verbosity VerbosityThreshold
@@ -77,22 +77,12 @@ namespace Randal.Logging
 			_signal.Set();
 		}
 
-		private CancellationToken CancellationToken
-		{
-			get { return _token.Token; }
-		}
-
-		private void RequestCancellation()
-		{
-			_token.Cancel();
-		}
-
 		public void Dispose()
 		{
 			if (_disposed)
 				return;
 
-			RequestCancellation();
+			_token.Cancel();
 
 			try
 			{

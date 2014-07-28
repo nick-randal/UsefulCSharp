@@ -17,8 +17,19 @@ namespace Randal.Sql.Scripting.App
 {
 	public sealed class AppOptions
 	{
-		[Option('p', "projectFolder", Required = true,
-		   HelpText = "The project folder containg the config.json an all associated SQL files.")]
+		[Option('s', "server", Required = true, HelpText = ServerHelpText)]
+		public string Server { get; set; }
+
+		[Option('o', "outputFolder", Required = true, HelpText = OutputFolderHelpText)]
 		public string ProjectFolder { get; set; }
+
+		[Option('l', "logFolder", Required = true, HelpText = LogFolderHelpText)]
+		public string LogFolder { get; set; }
+
+		public const string 
+			ServerHelpText = @"",
+			OutputFolderHelpText = @"",
+			LogFolderHelpText = @""
+		;
 	}
 }

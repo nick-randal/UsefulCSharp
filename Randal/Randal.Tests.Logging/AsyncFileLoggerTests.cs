@@ -57,7 +57,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveText_WhenLogging_GivenEntries()
 		{
-			Given.Entries = new[] { new LogEntry("Yay for logging.", new DateTime(1891, 3, 15, 4, 30, 00)) };
+			Given.Entries = new[] {new LogEntry("Yay for logging.", new DateTime(1891, 3, 15, 4, 30, 00))};
 
 			When(Logging, Disposing);
 
@@ -76,12 +76,14 @@ namespace Randal.Tests.Logging
 
 			When(Logging, Disposing);
 
-			Then.Text.Should().Be("                     Can you hear me now?\r\nATTENTION: The previous line was repeated 2 times.\r\n                     Good\r\n");
+			Then.Text.Should()
+				.Be(
+					"                     Can you hear me now?\r\nATTENTION: The previous line was repeated 2 times.\r\n                     Good\r\n");
 		}
 
 		private void Logging()
 		{
-			foreach(ILogEntry entry in Given.Entries)
+			foreach (ILogEntry entry in Given.Entries)
 				Then.Logger.Add(entry);
 			Thread.Sleep(50);
 		}
@@ -110,7 +112,7 @@ namespace Randal.Tests.Logging
 		{
 			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024);
 
-			if(GivensDefined("NullSettings") && Given.NullSettings == true)
+			if (GivensDefined("NullSettings") && Given.NullSettings == true)
 				Then.Logger = new AsyncFileLogger(null);
 			else
 				Then.Logger = new AsyncFileLogger(settings, GetMockLogFileManager());
@@ -133,13 +135,13 @@ namespace Randal.Tests.Logging
 		public AsyncFileLogger Logger;
 		public StreamWriter Writer;
 		public string Text;
-		
+
 		public void Dispose()
 		{
-			if(Writer != null)
+			if (Writer != null)
 				Writer.Dispose();
 
-			if(Logger != null)
+			if (Logger != null)
 				Logger.Dispose();
 		}
 	}

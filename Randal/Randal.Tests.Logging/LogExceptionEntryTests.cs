@@ -58,13 +58,13 @@ namespace Randal.Tests.Logging
 				ShimDateTime.NowGet = () => Given.SystemDateTime;
 
 				Then.Entry = GivensDefined("Message") ? 
-					new ExceptionEntry(Given.Exception, Given.Message) : new ExceptionEntry(Given.Exception);
+					new LogExceptionEntry(Given.Exception, Given.Message) : new LogExceptionEntry(Given.Exception);
 			}
 		}
 	}
 
 	public sealed class LogExceptionEntryThens
 	{
-		public ExceptionEntry Entry;
+		public LogExceptionEntry Entry;
 	}
 }

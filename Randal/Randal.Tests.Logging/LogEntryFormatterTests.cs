@@ -52,7 +52,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveNoExceptionMessageWhenCreatingGivenNullExcpetion()
 		{
-			Given.Entry = new ExceptionEntry(null);
+			Given.Entry = new LogExceptionEntry(null);
 
 			When(Formatting);
 
@@ -62,7 +62,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveSpecialFormatWhenCreatingGivenSmtpException()
 		{
-			Given.Entry = new ExceptionEntry(new SmtpException(SmtpStatusCode.ClientNotPermitted));
+			Given.Entry = new LogExceptionEntry(new SmtpException(SmtpStatusCode.ClientNotPermitted));
 
 			When(Formatting);
 
@@ -76,7 +76,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveCustomMessageWhenCreatingGivenMessageText()
 		{
-			Given.Entry = new ExceptionEntry(new ArgumentException(), "Hello error!");
+			Given.Entry = new LogExceptionEntry(new ArgumentException(), "Hello error!");
 
 			When(Formatting);
 
@@ -90,7 +90,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveSpecialFormatWhenCreatingGivenSqlException()
 		{
-			Given.Entry = new ExceptionEntry(SqlException());
+			Given.Entry = new LogExceptionEntry(SqlException());
 
 			When(Formatting);
 

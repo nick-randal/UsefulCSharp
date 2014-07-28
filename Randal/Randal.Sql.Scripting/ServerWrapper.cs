@@ -10,6 +10,8 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
@@ -21,6 +23,8 @@ namespace Randal.Sql.Scripting
 	{
 		IEnumerable<Database> GetDatabases();
 		IEnumerable<StoredProcedure> GetStoredProcedures(Database database);
+		IEnumerable<UserDefinedFunction> GetUserDefinedFunctions(Database database);
+		IEnumerable<View> GetViews(Database database);
 		IEnumerable<Urn> GetDependencies(SqlSmoObject smo);
 	}
 
@@ -39,7 +43,34 @@ namespace Randal.Sql.Scripting
 
 		public IEnumerable<StoredProcedure> GetStoredProcedures(Database database)
 		{
-			return database.StoredProcedures.Cast<StoredProcedure>().Where(s => s.ImplementationType == ImplementationType.TransactSql && s.IsSystemObject == false).ToList();
+			return database.StoredProcedures
+				.Cast<StoredProcedure>()
+				.Where(sproc => sproc.ImplementationType == ImplementationType.TransactSql && sproc.IsSystemObject == false)
+				.ToList()
+				.AsReadOnly();
+		}
+
+		public IEnumerable<UserDefinedFunction> GetUserDefinedFunctions(Database database)
+		{
+			return database.UserDefinedFunctions
+				.Cast<UserDefinedFunction>()
+				.Where(udf => udf.ImplementationType == ImplementationType.TransactSql && udf.IsSystemObject == false)
+				.ToList()
+				.AsReadOnly();
+		}
+
+		public IEnumerable<View> GetViews(Database database)
+		{
+			return database.Views
+				.Cast<View>()
+				.Where(view =>
+				{
+					if(view.IsIndexable || view.IsSchemaBound)
+						throw new InvalidOperationException("Unexpected view encountered.");
+					return view.IsSystemObject == false;
+				})
+				.ToList()
+				.AsReadOnly();
 		}
 
 		public IEnumerable<Urn> GetDependencies(SqlSmoObject smo)

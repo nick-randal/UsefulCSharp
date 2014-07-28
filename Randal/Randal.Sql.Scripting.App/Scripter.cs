@@ -11,6 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
@@ -38,9 +40,11 @@ namespace Randal.Sql.Scripting.App
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					ProcessStoredProcedures(database, sprocsFolder);
-					ProcessUserDefinedFunctions(database, udfFolder);
-					ProcessViews(database, viewFolder);
+					ProcessObject(database, sprocsFolder, _server.GetStoredProcedures(database));
+
+					ProcessObject(database, udfFolder, _server.GetUserDefinedFunctions(database));
+
+					ProcessObject(database, viewFolder, _server.GetViews(database));
 				}
 				catch (ExecutionFailureException ex)
 				{
@@ -49,6 +53,21 @@ namespace Randal.Sql.Scripting.App
 			}
 		}
 
+		private void ProcessObject(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source) 
+		{
+			_scriptFileManager.CreateDirectory(database.Name, subFolder);
+
+			foreach (var sproc in source)
+			{
+				_logger.AddEntry("{0} {1}.{2}", sproc.GetType().Name, sproc.Schema, sproc.Name);
+				if (sproc.Schema != "dbo")
+					_logger.AddEntry("schema not dbo {0}", sproc.Schema);
+
+				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
+			}
+		}
+
+		/*
 		private void ProcessStoredProcedures(Database database, string subFolder)
 		{
 			_scriptFileManager.CreateDirectory(database.Name, subFolder);
@@ -62,17 +81,34 @@ namespace Randal.Sql.Scripting.App
 				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
 			}
 		}
-
 		private void ProcessUserDefinedFunctions(Database database, string subFolder)
 		{
 			_scriptFileManager.CreateDirectory(database.Name, subFolder);
-		}
 
+			foreach (var udf in _server.GetUserDefinedFunctions(database))
+			{
+				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
+				if (sproc.Schema != "dbo")
+					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
+
+				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
+			}
+		}
+		
 		private void ProcessViews(Database database, string subFolder)
 		{
 			_scriptFileManager.CreateDirectory(database.Name, subFolder);
-		}
 
+			foreach (var view in _server.GetViews(database))
+			{
+				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
+				if (sproc.Schema != "dbo")
+					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
+
+				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
+			}
+		}
+		*/
 		private readonly IScriptFileManager _scriptFileManager;
 		private readonly ILoggerStringFormatWrapper _logger;
 	}
