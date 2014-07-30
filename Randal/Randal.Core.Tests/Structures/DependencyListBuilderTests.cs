@@ -21,114 +21,144 @@ using Randal.Core.Testing.UnitTest;
 
 namespace Randal.Tests.Core.Structures
 {
+	using ItemWithDependcies = Tuple<int, List<int>>;
+
+	public sealed class PositiveTest : TestCategoryBaseAttribute
+	{
+		public override IList<string> TestCategories
+		{
+			get { return List; }
+		}
+
+		private static readonly List<string> List = new List<string> { "Postive" };
+	}
+
+	public sealed class NegativeTest : TestCategoryBaseAttribute
+	{
+		public override IList<string> TestCategories
+		{
+			get { return List; }
+		}
+
+		private static readonly List<string> List = new List<string> { "Postive" };
+	}
+
 	[TestClass]
 	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
 	{
-		[TestMethod, TestCategory("Positive")]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveEmptyListWhenCreatingNewGraph()
 		{
 			Given.Values = new Builder().Build();
 
 			When(Creating);
 
-			Then.Graph.Should().NotBeNull();
-			Then.Graph.OriginalValues.Should().BeEmpty();
+			Then.DependencyListBuilder.Should().NotBeNull();
+			Then.DependencyListBuilder.OriginalValues.Should().BeEmpty();
 		}
 
-		[TestMethod, TestCategory("Positive")]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveListOfValuesWhenBuildingDependenciesGivenValues()
 		{
 			Given.Values = new Builder()
-				.WithItem(1, 2, 3, 4)
-				.WithItem(2, 9, 5)
-				.WithItem(3, 8)
-				.WithItem(4, 7)
-				.WithItem(5, 6)
-				.WithItem(6).WithItem(7).WithItem(8).WithItem(9)
+				.WithItem(0)
+				.WithItem(1).IsDepedentOn(2, 3, 4)
+				.WithItem(2).IsDepedentOn(9, 5)
+				.WithItem(3).IsDepedentOn(8)
+				.WithItem(4).IsDepedentOn(7)
+				.WithItem(5).IsDepedentOn(6)
+				.WithItems(6, 7, 8, 9)
 				.Build();
 
 			When(BuildingDependencies);
 
-			Then.Graph.Should().NotBeNull();
-			Then.Graph.OriginalValues.Should().HaveCount(9);
-			Then.List.Should().HaveCount(9);
+			Then.DependencyListBuilder.Should().NotBeNull();
+			Then.DependencyListBuilder.OriginalValues.Should().HaveCount(10);
+			Then.OrderedList.Should().HaveCount(10);
 
-			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 9, 5, 6, 3, 8, 4, 7});
+			Then.DependencyListBuilder.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+			Then.OrderedList.Select(x => x.Item1).Should().Equal(new[] {0, 9, 6, 5, 2, 8, 3, 7, 4, 1});
 		}
 
-		[TestMethod, TestCategory("Positive")]
-		public void ShouldNotThrowExceptionWhenBuildingDependenciesGivenCircularReference()
+		[TestMethod, TestCategory("Negative")]
+		public void ShouldThrowExceptionWhenBuildingDependenciesGivenCircularReference()
 		{
 			Given.Values = new Builder()
-				.WithItem(1, 2)
-				.WithItem(2, 3, 4)
-				.WithItem(3, 1, 2)
+				.WithItem(1).IsDepedentOn(2)
+				.WithItem(2).IsDepedentOn(3, 4)
+				.WithItem(3).IsDepedentOn(1, 2)
 				.WithItem(4).Build();
 
-			When(BuildingDependencies);
+			ThrowsExceptionWhen(BuildingDependencies);
 
-			Then.List.Should().HaveCount(4);
-			Then.Graph.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
-			Then.List.Select(x => x.Item1).Should().BeEquivalentTo(new[] {1, 2, 3, 4});
+			ThenLastAction.ShouldThrow<InvalidOperationException>("a circular reference was defined.");
 		}
 
-		[TestMethod, ExpectedException(typeof(KeyNotFoundException)), TestCategory("Negative")]
+		[TestMethod, TestCategory("Negative")]
 		public void ShouldThrowExceptionWhenBuildingDependenciesGivenNonExistentDependency()
 		{
-			Given.Values = new Builder().WithItem(1, 2).Build();
+			Given.Values = new Builder().WithItem(1).IsDepedentOn(2).Build();
 
-			When(BuildingDependencies);
+			ThrowsExceptionWhen(BuildingDependencies);
+
+			ThenLastAction.ShouldThrow<KeyNotFoundException>();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException)), TestCategory("Negative")]
+		[TestMethod, TestCategory("Negative")]
 		public void ShouldThrowExceptionWhenCreatingGivenNullValues()
 		{
 			Given.Values = null;
 
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
 		protected override void Creating()
 		{
-			Then.Graph = new DependencyListBuilder<int, Tuple<int, int[]>>(Given.Values);
+			Then.DependencyListBuilder = new DependencyListBuilder<int, ItemWithDependcies>(Given.Values);
 		}
 
 		private void BuildingDependencies()
 		{
-			Func<Tuple<int, int[]>, int> getKeyFunc = x => x.Item1;
-			Func<Tuple<int, int[]>, IEnumerable<int>> getDependenciesFunc = x => x.Item2;
+			Func<ItemWithDependcies, int> getKeyFunc = x => x.Item1;
+			Func<ItemWithDependcies, IEnumerable<int>> getDependenciesFunc = x => x.Item2;
 
-			Then.List = Then.Graph.BuildDependencyList(getKeyFunc, getDependenciesFunc);
+			Then.OrderedList = Then.DependencyListBuilder.BuildDependencyList(getKeyFunc, getDependenciesFunc);
 		}
-
 
 		private sealed class Builder
 		{
-			public Builder()
+			public Builder WithItem(int item)
 			{
-				_list = new List<Tuple<int, int[]>>();
-			}
-
-			public Builder WithItem(int key, params int[] dependencies)
-			{
-				_list.Add(new Tuple<int, int[]>(key, dependencies));
-
+				_list.Add(new ItemWithDependcies(item, new List<int>()));	
 				return this;
 			}
 
-			public IReadOnlyList<Tuple<int, int[]>> Build()
+			public Builder WithItems(params int[] items)
+			{
+				_list.AddRange(items.Select(x => new ItemWithDependcies(x, new List<int>())));
+				return this;
+			}
+
+			public Builder IsDepedentOn(params int[] dependencies)
+			{
+				_list[_list.Count - 1].Item2.AddRange(dependencies);
+				return this;
+			}
+
+			public IReadOnlyList<ItemWithDependcies> Build()
 			{
 				return _list.AsReadOnly();
 			}
 
-			private readonly List<Tuple<int, int[]>> _list;
+			private readonly List<ItemWithDependcies> _list = new List<ItemWithDependcies>();
 		}
 	}
 
 	public sealed class DependencyListBuilderThens
 	{
-		public DependencyListBuilder<int, Tuple<int, int[]>> Graph;
-		public List<Tuple<int, int[]>> List;
+		public DependencyListBuilder<int, ItemWithDependcies> DependencyListBuilder;
+		public List<ItemWithDependcies> OrderedList;
 	}
 }

@@ -11,7 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -67,48 +66,6 @@ namespace Randal.Sql.Scripting.App
 			}
 		}
 
-		/*
-		private void ProcessStoredProcedures(Database database, string subFolder)
-		{
-			_scriptFileManager.CreateDirectory(database.Name, subFolder);
-			
-			foreach (var sproc in _server.GetStoredProcedures(database))
-			{
-				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
-				if (sproc.Schema != "dbo")
-					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
-
-				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
-			}
-		}
-		private void ProcessUserDefinedFunctions(Database database, string subFolder)
-		{
-			_scriptFileManager.CreateDirectory(database.Name, subFolder);
-
-			foreach (var udf in _server.GetUserDefinedFunctions(database))
-			{
-				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
-				if (sproc.Schema != "dbo")
-					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
-
-				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
-			}
-		}
-		
-		private void ProcessViews(Database database, string subFolder)
-		{
-			_scriptFileManager.CreateDirectory(database.Name, subFolder);
-
-			foreach (var view in _server.GetViews(database))
-			{
-				_logger.AddEntry("{0}.{1}", sproc.Schema, sproc.Name);
-				if (sproc.Schema != "dbo")
-					_logger.AddEntry("{0} {1}", sproc.Schema, sproc.Name);
-
-				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
-			}
-		}
-		*/
 		private readonly IScriptFileManager _scriptFileManager;
 		private readonly ILoggerStringFormatWrapper _logger;
 	}

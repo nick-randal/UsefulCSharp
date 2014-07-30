@@ -52,7 +52,7 @@ namespace Randal.Tests.Logging
 		}
 
 		[TestMethod]
-		public void ShouldDo()
+		public void ShouldHaveLoggedTextAvailableWhenGettingTextGivenDisposedLogger()
 		{
 			Given.Entry = new LogEntry("Nothing is ever truly lost", new DateTime(2014, 6, 11));
 
