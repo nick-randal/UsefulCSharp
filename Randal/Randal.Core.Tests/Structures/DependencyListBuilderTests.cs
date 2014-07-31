@@ -27,27 +27,27 @@ namespace Randal.Tests.Core.Structures
 	{
 		public override IList<string> TestCategories
 		{
-			get { return List; }
+			get { return Traits; }
 		}
 
-		private static readonly List<string> List = new List<string> { "Postive" };
+		private static readonly List<string> Traits = new List<string> { "Postive" };
 	}
 
 	public sealed class NegativeTest : TestCategoryBaseAttribute
 	{
 		public override IList<string> TestCategories
 		{
-			get { return List; }
+			get { return Traits; }
 		}
 
-		private static readonly List<string> List = new List<string> { "Postive" };
+		private static readonly List<string> Traits = new List<string> { "Postive" };
 	}
 
 	[TestClass]
 	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveEmptyListWhenCreatingNewGraph()
+		public void ShouldHaveEmptyList_WhenCreatingNewObject()
 		{
 			Given.Values = new Builder().Build();
 
@@ -74,7 +74,7 @@ namespace Randal.Tests.Core.Structures
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveListOfValuesWhenBuildingDependenciesGivenValues()
+		public void ShouldHaveListOfValues_WhenBuildingDependencies_GivenValues()
 		{
 			Given.Values = new Builder()
 				.WithItem(0)
@@ -96,8 +96,8 @@ namespace Randal.Tests.Core.Structures
 			Then.OrderedList.Select(x => x.Item1).Should().Equal(new[] {0, 9, 6, 5, 2, 8, 3, 7, 4, 1});
 		}
 
-		[TestMethod, TestCategory("Negative")]
-		public void ShouldThrowExceptionWhenBuildingDependenciesGivenCircularReference()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenBuildingDependencies_GivenCircularReference()
 		{
 			Given.Values = new Builder()
 				.WithItem(1).IsDepedentOn(2)
@@ -111,8 +111,8 @@ namespace Randal.Tests.Core.Structures
 				.WithMessage("a circular reference was detected.  Circular path: \r\n1 -> 2 -> 5 -> 1");
 		}
 
-		[TestMethod, TestCategory("Negative")]
-		public void ShouldThrowExceptionWhenBuildingDependenciesGivenNonExistentDependency()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenBuildingDependencies_GivenNonExistentDependency()
 		{
 			Given.Values = new Builder().WithItem(1).IsDepedentOn(2).Build();
 
@@ -121,8 +121,8 @@ namespace Randal.Tests.Core.Structures
 			ThenLastAction.ShouldThrow<KeyNotFoundException>();
 		}
 
-		[TestMethod, TestCategory("Negative")]
-		public void ShouldThrowExceptionWhenCreatingGivenNullValues()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenCreating_GivenNullValues()
 		{
 			Given.Values = null;
 
