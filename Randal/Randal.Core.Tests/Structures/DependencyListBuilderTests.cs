@@ -58,6 +58,22 @@ namespace Randal.Tests.Core.Structures
 		}
 
 		[TestMethod, PositiveTest]
+		public void ShouldHaveListOfValues_WhenBuildingDependencies_GivenValuesReferencingSameDependency()
+		{
+			Given.Values = new Builder()
+				.WithItem(1).IsDepedentOn(4)
+				.WithItem(2).IsDepedentOn(4)
+				.WithItem(3).IsDepedentOn(4)
+				.WithItems(4, 5)
+				.Build();
+
+			When(BuildingDependencies);
+
+			Then.OrderedList.Should().HaveCount(5);
+			Then.OrderedList.Select(x => x.Item1).Should().Equal(new[] { 4, 1, 2, 3, 5 });
+		}
+
+		[TestMethod, PositiveTest]
 		public void ShouldHaveListOfValuesWhenBuildingDependenciesGivenValues()
 		{
 			Given.Values = new Builder()
@@ -76,7 +92,7 @@ namespace Randal.Tests.Core.Structures
 			Then.DependencyListBuilder.OriginalValues.Should().HaveCount(10);
 			Then.OrderedList.Should().HaveCount(10);
 
-			Then.DependencyListBuilder.OriginalValues.Select(x => x.Item1).Should().BeEquivalentTo(new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+			Then.DependencyListBuilder.OriginalValues.Select(x => x.Item1).Should().Equal(new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 			Then.OrderedList.Select(x => x.Item1).Should().Equal(new[] {0, 9, 6, 5, 2, 8, 3, 7, 4, 1});
 		}
 
@@ -85,13 +101,14 @@ namespace Randal.Tests.Core.Structures
 		{
 			Given.Values = new Builder()
 				.WithItem(1).IsDepedentOn(2)
-				.WithItem(2).IsDepedentOn(3, 4)
-				.WithItem(3).IsDepedentOn(1, 2)
-				.WithItem(4).Build();
+				.WithItem(2).IsDepedentOn(5)
+				.WithItem(5).IsDepedentOn(4, 1)
+				.WithItems(3, 4).Build();
 
 			ThrowsExceptionWhen(BuildingDependencies);
 
-			ThenLastAction.ShouldThrow<InvalidOperationException>("a circular reference was defined.");
+			ThenLastAction.ShouldThrow<InvalidOperationException>("a circular reference was defined.")
+				.WithMessage("a circular reference was defined.  Circular path: \r\n1 -> 2 -> 5 -> 1");
 		}
 
 		[TestMethod, TestCategory("Negative")]

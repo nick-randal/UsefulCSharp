@@ -43,8 +43,14 @@
       <HintPath>..\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Randal.Core, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -52,6 +58,9 @@
     </Reference>
     <Reference Include="Randal.Core.Testing">
       <HintPath>..\packages\Randal.Core.Testing.1.0.0.7\lib\net45\Randal.Core.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Randal.Logging">
+      <HintPath>..\packages\Randal.Logging.1.0.0.3\lib\net45\Randal.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
@@ -106,10 +115,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Logging\Randal.Logging.csproj">
-      <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
-      <Name>Randal.Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj">
       <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
       <Name>Randal.Sql.Deployer</Name>

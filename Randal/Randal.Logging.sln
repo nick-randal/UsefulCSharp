@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Logging", "Randal.Logging\Randal.Logging.csproj", "{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Logging", "Randal.Tests.Logging\Randal.Tests.Logging.csproj", "{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{09CF1969-1702-4DF3-A7DB-C199F079F55B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D7DCCC7B-E615-4FD4-BAF0-DAD6D4868F61} = {09CF1969-1702-4DF3-A7DB-C199F079F55B}
+		{AB0CE0CD-53B7-4C5E-BC33-022BF1AF5DA8} = {09CF1969-1702-4DF3-A7DB-C199F079F55B}
+	EndGlobalSection
+EndGlobal

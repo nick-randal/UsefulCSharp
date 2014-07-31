@@ -55,14 +55,18 @@ namespace Randal.Core.Structures
 			IReadOnlyDictionary<TKey, TValue> dependencyLookup, 
 			Func<TValue, TKey> getKeyItemFunc, 
 			Func<TValue, IEnumerable<TKey>> getDependenciesFunc, 
-			ISet<TKey> itemsAlreadyAdded = null)
+			IList<TKey> itemsAlreadyAdded = null)
 		{
 			if (itemsAlreadyAdded == null)
-				itemsAlreadyAdded = new HashSet<TKey>();
+				itemsAlreadyAdded = new List<TKey>();
 
 			var currentKey = getKeyItemFunc(currentItem);
 			if (itemsAlreadyAdded.Contains(currentKey))
-				throw new InvalidOperationException("A circular reference was detected.");
+			{
+				itemsAlreadyAdded.Add(currentKey);
+				throw new InvalidOperationException(
+					"A circular reference was detected.  Circular path: \r\n" + string.Join(" -> ", itemsAlreadyAdded));
+			}
 
 			itemsAlreadyAdded.Add(currentKey);
 
