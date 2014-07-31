@@ -57,8 +57,7 @@ namespace Randal.Core.Structures
 			Func<TValue, IEnumerable<TKey>> getDependenciesFunc, 
 			IList<TKey> itemsAlreadyAdded = null)
 		{
-			if (itemsAlreadyAdded == null)
-				itemsAlreadyAdded = new List<TKey>();
+			itemsAlreadyAdded = itemsAlreadyAdded == null ? new List<TKey>() : new List<TKey>(itemsAlreadyAdded);
 
 			var currentKey = getKeyItemFunc(currentItem);
 			if (itemsAlreadyAdded.Contains(currentKey))

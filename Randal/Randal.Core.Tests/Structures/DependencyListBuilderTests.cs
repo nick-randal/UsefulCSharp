@@ -108,7 +108,7 @@ namespace Randal.Tests.Core.Structures
 			ThrowsExceptionWhen(BuildingDependencies);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>("a circular reference was defined.")
-				.WithMessage("a circular reference was defined.  Circular path: \r\n1 -> 2 -> 5 -> 1");
+				.WithMessage("a circular reference was detected.  Circular path: \r\n1 -> 2 -> 5 -> 1");
 		}
 
 		[TestMethod, TestCategory("Negative")]
