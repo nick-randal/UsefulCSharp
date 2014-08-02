@@ -29,7 +29,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.BlockList = new List<IScriptBlock>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNameWithoutExtensionWhenCreating()
 		{
 			Given.Name = "NameWithExtension.Sql";
@@ -39,7 +39,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Script.Name.Should().Be("NameWithExtension");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveZeroScriptBlocksAfterInstantiationGivenEmptyList()
 		{
 			When(Creating);
@@ -50,7 +50,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Configuration.Should().BeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveAllValidBlocksWhenValidatingSourceScriptGivenValidBlocks()
 		{
 			Given.BlockList.AddRange(
@@ -77,7 +77,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Script.HasSqlScriptPhase(SqlScriptPhase.Post).Should().BeTrue();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDefaultConfigurationWhenValidatingGivenNoConfigurationBlock()
 		{
 			Given.BlockList.AddRange(new List<IScriptBlock> {new CatalogBlock("TCPLP, Coupon")});
@@ -90,7 +90,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Configuration.Should().NotBeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldIndicateInvalidWhenValidatingGivenSqlBlocksWithNoCatalogBlock()
 		{
 			Given.BlockList.AddRange(
@@ -105,7 +105,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages.Should().HaveCount(1);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnNullWhenGettingCatalogPatternsGivenNoCatalogBlock()
 		{
 			When(Validating, GettingCatalogPatterns);
@@ -113,7 +113,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.CatalogPatterns.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnListOfNeedsWhenGettingNeedsGivenValidNeedBlock()
 		{
 			Given.BlockList.Add(new NeedBlock("A, B"));
@@ -125,7 +125,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Needs[1].Should().Be("B");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnNullWhenGettingNeedsGivenNoNeeds()
 		{
 			When(Validating, GettingNeeds);
@@ -133,7 +133,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Needs.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldIndicateTrueWhenCheckingForPhase()
 		{
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
@@ -144,15 +144,17 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.HasPhase.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullName()
 		{
 			Given.Name = null;
 
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnTextWhenRequestingSqlScriptPhase()
 		{
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
@@ -163,7 +165,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Text.Should().Be("select 1");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldIndicateTrueWhenCheckingIfExecutedGivenPreviouslyRequestedBlock()
 		{
 			Given.BlockList.Add(new SqlCommandBlock("main", "select 1", SqlScriptPhase.Main));
@@ -174,12 +176,14 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.WasExecuted.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenRequestingPhaseGivenPhaseDoesNotExist()
 		{
 			Given.RequestedPhase = SqlScriptPhase.Main;
 
-			When(Validating, RequestingPhase);
+			ThrowsExceptionWhen(Validating, RequestingPhase);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
 		private void CheckingIfExecuted()

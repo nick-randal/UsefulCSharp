@@ -22,7 +22,7 @@ namespace Randal.Tests.Sql.Scripting
 	[TestClass]
 	public sealed class ScriptFileManagerTests : BaseUnitTest<ScriptFileManagerThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDirectoryWhenCreatingDirectory()
 		{
 			Given.DatabaseName = "Research";

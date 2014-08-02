@@ -22,7 +22,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class BaseScriptBlockTests : BaseUnitTest<BaseScriptBlockThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNonEmptyTextAfterInstantiation()
 		{
 			Given.Keyword = "\nignore\n";
@@ -36,8 +36,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Text.Should().Be("use TCPLP");
 		}
 
-		[TestMethod]
-		public void ShouldHaveEmptyStringsWhenCreatingGivenNullValues()
+		[TestMethod, NegativeTest]
+		public void ShouldHaveEmptyStrings_WhenCreating_GivenNullValues()
 		{
 			Given.Keyword = null;
 			Given.Text = null;
@@ -49,8 +49,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Text.Should().BeEmpty();
 		}
 
-		[TestMethod]
-		public void ShouldHaveEmptyListOfMessagesAndBeInvalidWhenParsing()
+		[TestMethod, NegativeTest]
+		public void ShouldHaveEmptyListOfMessagesAndBeInvalid_WhenParsing()
 		{
 			Given.Keyword = "invalid";
 			Given.Text = "--:: it doesn't really matter for a mock derivation";

@@ -11,14 +11,14 @@ namespace Randal.Tests.Sql.Scripting
 	[TestClass]
 	public sealed class ScriptFormatterTests : BaseUnitTest<ScriptFormatterThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidScriptFormatterWhenCreatingInstace()
 		{
 			When(Creating);
 			Then.Formatter.Should().NotBeNull().And.BeAssignableTo<IScriptFormatter>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveTextWhenFormattingStoredProcedure()
 		{
 			Given.Procedure = "spTest";

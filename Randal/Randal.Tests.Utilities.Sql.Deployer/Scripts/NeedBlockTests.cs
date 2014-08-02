@@ -22,12 +22,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class NeedBlockTests : BaseUnitTest<NeedBlockThens>
 	{
-		protected override void OnSetup()
-		{
-			Given.Text = string.Empty;
-		}
-
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveInvalidBlockWhenCreating()
 		{
 			When(Creating);
@@ -37,7 +32,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Keyword.Should().Be("need");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidBlockWhenParsingGivenValidInput()
 		{
 			Given.Text = "A, B, C.sql,,D";
@@ -52,7 +47,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Files[3].Should().Be("D");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldBeInvalidWhenParsingGivenListOfInvalidFileNames()
 		{
 			Given.Text = "File*A, File?B, Procedures\\ReadAll";
@@ -70,7 +65,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		protected override void Creating()
 		{
-			Then.Object = new NeedBlock(Given.Text);
+			Then.Object = new NeedBlock(GivensDefined("Text") ? Given.Text : string.Empty);
 		}
 	}
 

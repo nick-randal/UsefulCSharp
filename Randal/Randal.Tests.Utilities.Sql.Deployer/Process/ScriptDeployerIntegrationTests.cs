@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Manager = manager;
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnSuccessWhenCheckingCanUpgrade()
 		{
 			Given.Path = Test.Paths.ProjectA;
@@ -46,7 +46,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.CanUpgrade.Should().BeTrue();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnSuccessWhenDeployingScripts()
 		{
 			Given.Path = Test.Paths.ProjectA;

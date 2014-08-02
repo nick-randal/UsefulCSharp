@@ -38,7 +38,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.ConnectionManager = manager;
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveScriptDeployerWhenCreating()
 		{
 			When(Creating);
@@ -46,23 +46,23 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Deployer.Should().NotBeNull().And.BeAssignableTo<IScriptDeployer>();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenNullProject()
 		{
 			Given.Project = null;
-			When(Creating);
-
-			
+			ThrowsExceptionWhen(Creating);
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenNullConnectionManager()
 		{
 			Given.ConnectionManager = null;
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldCallExecuteWhenDeployingScripts()
 		{
 			Given.Project = (Project) new ProjectBuilder()

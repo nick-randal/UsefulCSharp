@@ -22,7 +22,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class CatalogBlockTests : BaseUnitTest<CatalogBlockThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveInvalidBlockWhenCreating()
 		{
 			Given.Text = " master ";
@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.CatalogPatterns.Should().HaveCount(0);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidBlockWhenParsingGivenValidInput()
 		{
 			Given.Text = "master, DB123, X_%";
@@ -51,7 +51,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.CatalogPatterns[2].Should().Be(@"X_%");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldHaveErrorMessagesWhenParsingGivenInvalidInput()
 		{
 			Given.Text = "t-d?, P&E, t;";

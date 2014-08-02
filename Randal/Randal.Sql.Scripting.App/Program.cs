@@ -23,7 +23,13 @@ namespace Randal.Sql.Scripting.App
 				logger.Add("SQL Scripting Application".ToLogEntry());
 				logger.Add(string.Concat("generating scripts for ", Local).ToLogEntry());
 
-				new Scripter(server, scriptFileManager, logger).DumpScripts();
+				var scripter = new Scripter(server, scriptFileManager, logger);
+				
+				scripter.DumpScripts( 
+					new ScriptingSource("Sprocs", (srvr, db) => srvr.GetStoredProcedures(db)),
+					new ScriptingSource("Functions", (srvr, db) => srvr.GetUserDefinedFunctions(db)),
+					new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db))
+				);
 			}
 
 			return -1;

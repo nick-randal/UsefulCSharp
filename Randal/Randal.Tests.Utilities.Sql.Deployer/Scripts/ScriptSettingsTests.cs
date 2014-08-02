@@ -21,7 +21,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class ScriptSettingsTests : BaseUnitTest<ScriptSettingsThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDefaultValuesWhenCreating()
 		{
 			When(Creating);
@@ -29,7 +29,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Settings.Timeout.Should().Be(30);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveAssignedValuesWhenCreatingGivenValues()
 		{
 			Given.Timeout = 357;

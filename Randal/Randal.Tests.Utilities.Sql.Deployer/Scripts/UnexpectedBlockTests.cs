@@ -25,10 +25,10 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	{
 		protected override void OnSetup()
 		{
-			Given.Keyword = "unknown";
+			
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldCreateValidInstanceWhenCreatingUnexpectedBlockFromText()
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Text.Should().Be("--:: unknown\nselect 1\nGO");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldLeaveTextUnalteredAndHaveErrorMessageWhenParsingAnUnexpectedBlock()
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
@@ -54,6 +54,9 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		protected override void Creating()
 		{
+			if(GivensDefined("Keyword") == false)
+				Given.Keyword = "unknown";
+			
 			Then.Object = new UnexpectedBlock(Given.Keyword, Given.Text);
 		}
 

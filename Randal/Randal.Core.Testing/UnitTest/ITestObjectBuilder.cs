@@ -13,7 +13,7 @@
 
 namespace Randal.Core.Testing.UnitTest
 {
-	public interface ITestObjectBuilder<TBuild>
+	public interface ITestObjectBuilder<out TBuild>
 	{
 		TBuild Build();
 	}

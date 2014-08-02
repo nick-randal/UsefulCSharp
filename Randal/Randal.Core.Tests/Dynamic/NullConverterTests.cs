@@ -15,13 +15,14 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
+using Randal.Core.Testing.UnitTest;
 
 namespace Randal.Tests.Core.Dynamic
 {
 	[TestClass]
 	public class NullConverterTests
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNoConvertersWhenCreatingOfNullConverter()
 		{
 			WhenCreating();
@@ -31,7 +32,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenConverter.ConverterCount.Should().Be(0);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNullResultWhenConverting()
 		{
 			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};

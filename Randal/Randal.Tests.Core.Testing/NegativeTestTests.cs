@@ -14,33 +14,34 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Sql.Deployer.Scripts;
 
-namespace Randal.Tests.Sql.Deployer.Scripts
+namespace Randal.Tests.Core.Testing
 {
 	[TestClass]
-	public sealed class IgnoreScriptBlockTests : BaseUnitTest<IgnoreScriptBlockThens>
+	public sealed class NegativeTestTests : BaseUnitTest<NegativeTestThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidIgnoreScriptBlockWhenCreating()
+		public void ShouldHaveAttributeWithCorrectTraits_WhenCreating()
 		{
-			Given.Text = "use TCPLP\nGO\n";
-
 			When(Creating);
 
-			Then.Object.Should().NotBeNull().And.BeAssignableTo<BaseScriptBlock>();
-			Then.Object.IsValid.Should().BeTrue();
-			Then.Object.Text.Should().Be("use TCPLP\nGO");
+			Then
+				.Attribute.Should().NotBeNull()
+				.And
+				.BeAssignableTo<TestCategoryBaseAttribute>();
+			Then.Attribute.TestCategories.Should().HaveCount(1);
+			Then.Attribute.TestCategories[0].Should().Be("Negative");
+
 		}
 
 		protected override void Creating()
 		{
-			Then.Object = new IgnoreScriptBlock(Given.Text);
+			Then.Attribute = new NegativeTest();
 		}
 	}
 
-	public sealed class IgnoreScriptBlockThens
+	public sealed class NegativeTestThens
 	{
-		public IgnoreScriptBlock Object;
+		public NegativeTest Attribute;
 	}
 }

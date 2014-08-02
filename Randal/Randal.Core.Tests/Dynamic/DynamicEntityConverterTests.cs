@@ -17,13 +17,14 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
+using Randal.Core.Testing.UnitTest;
 
 namespace Randal.Tests.Core.Dynamic
 {
 	[TestClass]
 	public class DynamicEntityConverterTests
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNoConvertesWhenCreating()
 		{
 			ThenConverter.Should().BeAssignableTo<IDynamicEntityConverter>();
@@ -31,7 +32,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenConverter.ConverterCount.Should().Be(0);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNullResultWhenConvertingGivenNoValidConverters()
 		{
 			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};
@@ -43,7 +44,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenSuccess.Should().BeFalse();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveRegisteredConverterWhenConverterIsAdded()
 		{
 			GivenConversionTo = typeof (string);
@@ -55,7 +56,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenConverter.ConverterCount.Should().Be(1);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveRegisteredConverterWhenConverterIsAddedUsingGenericMethod()
 		{
 			GivenConverter = dct => string.Join(", ", dct.Keys.Select(key => key + "=" + dct[key]));
@@ -66,7 +67,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenConverter.ConverterCount.Should().Be(1);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldNotHaveConverterWhenConverterIsRemoved()
 		{
 			GivenConversionTo = typeof (string);
@@ -79,7 +80,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenRemovedConverter.Should().NotBeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldNotHaveConverterWhenConverterIsRemovedUsingGenericMethod()
 		{
 			GivenConverter = dct => string.Join(", ", dct.Keys.Select(key => key + "=" + dct[key]));
@@ -91,7 +92,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenRemovedConverter.Should().NotBeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNullWhenRemovingNonExistentConverter()
 		{
 			WhenRemovingConverter<string>();
@@ -101,7 +102,7 @@ namespace Randal.Tests.Core.Dynamic
 			ThenRemovedConverter.Should().BeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidResultWhenConvertingToAKnownConverterType()
 		{
 			GivenDataDictionary = new Dictionary<string, object> {{"Name", "Jane Doe"}};

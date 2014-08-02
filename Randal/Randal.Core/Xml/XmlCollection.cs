@@ -17,8 +17,6 @@ namespace Randal.Core.Xml
 {
 	public sealed class XmlCollection<TItem>
 	{
-		public List<TItem> Items { get; private set; }
-
 		public XmlCollection()
 			: this(null)
 		{
@@ -28,6 +26,8 @@ namespace Randal.Core.Xml
 		{
 			Items = items == null ? new List<TItem>() : new List<TItem>(items);
 		}
+		
+		public List<TItem> Items { get; private set; }
 		
 		public void Add(TItem item)
 		{

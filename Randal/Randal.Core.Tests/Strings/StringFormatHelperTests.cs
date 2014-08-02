@@ -24,7 +24,7 @@ namespace Randal.Tests.Core.Strings
 	[TestClass]
 	public sealed class StringFormatHelperTests : BaseUnitTest<StringFormatHelperThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedStringWhenFormattingWithNameValueCollection()
 		{
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
@@ -37,7 +37,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("Hello my name is Ignatius Freeley and I am 24 years old.");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedStringWhenFormattingWithObject()
 		{
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
@@ -48,7 +48,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("Hello my name is Slim Shadee and I am 28 years old.");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedStringWhenFormattingWithDictionaryValues()
 		{
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
@@ -59,7 +59,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("Hello my name is Inigo Montoya and I am 32 years old.");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveMonetaryFormatWhenFormattingGivenSpecialFormat()
 		{
 			Given.Text = "show me the {money:c}";
@@ -70,11 +70,13 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("show me the $23.99");
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowArgumentExceptionWhenCreatingInstanceGivenNullString()
 		{
 			Given.Text = null;
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
 		protected override void Creating()

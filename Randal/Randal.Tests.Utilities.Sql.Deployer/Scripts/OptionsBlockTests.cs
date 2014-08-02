@@ -22,7 +22,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class OptionsBlockTests : BaseUnitTest<OptionsBlockThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveTimeoutBlockWhenCreaatingInstance()
 		{
 			Given.Json = "{}";
@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Configuration.Settings.Should().BeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValuesWhenParsingGivenValidJson()
 		{
 			Given.Json = "{ timeout: 256 }";
@@ -47,7 +47,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Settings.Timeout.Should().Be(256);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDefaultValuesWhenParsingGivenValidJsonWithoutValues()
 		{
 			Given.Json = "{ }";
@@ -58,7 +58,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Settings.Timeout.Should().Be(30);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValuesWhenParsingGivenJsonWithoutEnclosingBraces()
 		{
 			Given.Json = "Timeout: 256";

@@ -23,7 +23,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 	[TestClass]
 	public sealed class SqlCommandBlockTests : BaseUnitTest<SqlCommandBlockThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveInstanceAfterConstruction()
 		{
 			Given.Keyword = "pre";
@@ -38,7 +38,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Phase.Should().Be(SqlScriptPhase.Pre);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldParseValidSqlTextBlock()
 		{
 			Given.Text = "\nselect 1\n\t go \t\r\nselect ' go '\ngo";
@@ -53,7 +53,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Messages.Should().HaveCount(0);
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldNotHaveNullPropertiesWhenInitializedWithNullValues()
 		{
 			Given.Text = null;
@@ -66,8 +66,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.Keyword.Should().NotBeNull().And.BeEmpty();
 		}
 
-		[TestMethod]
-		public void ShouldReturnTextAndMarkedAsExecutedWhenRequestingForExecution()
+		[TestMethod, PositiveTest]
+		public void ShouldReturnTextAndMarkedAsExecuted_WhenRequestingForExecution()
 		{
 			Given.Text = "select 1";
 			Given.Keyword = "main";
@@ -79,25 +79,28 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Object.IsExecuted.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
-		public void ShouldThrowExceptionWhenRequestingExecutionMoreThanOnce()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenRequestingExecutionMoreThanOnce()
 		{
 			Given.Text = "Select 1";
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			When(RequestingForExecution, RequestingForExecution);
+			ThrowsExceptionWhen(ParsingSqlTextBlock, RequestingForExecution, RequestingForExecution);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>().WithMessage("Cannot request execution for script block more than once.");
 		}
 
-		[TestMethod,
-		 ExpectedException(typeof (InvalidOperationException), "Cannot execute invalid script block.")]
-		public void ShouldThrowExceptionWhenRequestingExecutionGivenUnparsedBlock()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenRequestingExecution_GivenUnparsedBlock()
 		{
 			Given.Text = "Select 1";
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			When(RequestingForExecution);
+			ThrowsExceptionWhen(RequestingForExecution);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>().WithMessage("Cannot execute invalid script block.");
 		}
 
 		protected override void Creating()

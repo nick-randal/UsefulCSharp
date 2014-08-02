@@ -23,26 +23,6 @@ namespace Randal.Tests.Core.Structures
 {
 	using ItemWithDependcies = Tuple<int, List<int>>;
 
-	public sealed class PositiveTest : TestCategoryBaseAttribute
-	{
-		public override IList<string> TestCategories
-		{
-			get { return Traits; }
-		}
-
-		private static readonly List<string> Traits = new List<string> { "Postive" };
-	}
-
-	public sealed class NegativeTest : TestCategoryBaseAttribute
-	{
-		public override IList<string> TestCategories
-		{
-			get { return Traits; }
-		}
-
-		private static readonly List<string> Traits = new List<string> { "Postive" };
-	}
-
 	[TestClass]
 	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
 	{

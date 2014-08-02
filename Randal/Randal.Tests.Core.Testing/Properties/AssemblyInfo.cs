@@ -18,11 +18,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Randal.Core.Testing")]
-[assembly: AssemblyDescription("Unit test support for Given When Then test pattern.")]
+[assembly: AssemblyTitle("Randal.Tests.Core.Testing")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
-[assembly: AssemblyProduct("Randal.Core.Testing")]
+[assembly: AssemblyProduct("Randal.Tests.Core.Testing")]
 [assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("71d7f319-4b16-4955-8544-8454fc7ad1f1")]
+[assembly: Guid("86d4ef79-b7b7-4a5b-906b-2db4ac5e81a2")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -48,5 +48,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.8")]
-[assembly: AssemblyFileVersion("1.0.0.8")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

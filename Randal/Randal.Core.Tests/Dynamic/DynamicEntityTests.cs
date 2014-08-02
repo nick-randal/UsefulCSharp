@@ -16,6 +16,7 @@ using FluentAssertions;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
+using Randal.Core.Testing.UnitTest;
 
 namespace Randal.Tests.Core.Dynamic
 {
@@ -28,7 +29,7 @@ namespace Randal.Tests.Core.Dynamic
 			Then = new Thens();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidObjectWhenCreating()
 		{
 			dynamic entity = new DynamicEntity();
@@ -38,7 +39,7 @@ namespace Randal.Tests.Core.Dynamic
 			Then.Entity.Should().NotBeNull().And.BeAssignableTo<DynamicEntity>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDynamicPropertyWhenAssignedValue()
 		{
 			dynamic entity = new DynamicEntity();
@@ -55,7 +56,7 @@ namespace Randal.Tests.Core.Dynamic
 			exists.Should().BeTrue();
 		}
 
-		[TestMethod, ExpectedException(typeof (RuntimeBinderException))]
+		[TestMethod, ExpectedException(typeof (RuntimeBinderException)), NegativeTest]
 		public void ShouldThrowExceptionWhenAccessingNonExistentProperty()
 		{
 			dynamic entity = new DynamicEntity();
@@ -63,7 +64,7 @@ namespace Randal.Tests.Core.Dynamic
 		}
 
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnNullWhenAccessingNonExistentPropertyGivenMissingMemberBehaviorReturnsNull()
 		{
 			dynamic entity = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
@@ -73,7 +74,7 @@ namespace Randal.Tests.Core.Dynamic
 			Then.String.Should().BeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveNoMembersWhenClearingAllMembers()
 		{
 			dynamic entity = new DynamicEntity();
@@ -90,7 +91,7 @@ namespace Randal.Tests.Core.Dynamic
 			Then.Count.Should().Be(0);
 		}
 
-		[TestMethod, ExpectedException(typeof (RuntimeBinderException))]
+		[TestMethod, ExpectedException(typeof (RuntimeBinderException)), NegativeTest]
 		public void ShouldThrowExceptionWhenConvertingToUnexpectedType()
 		{
 			dynamic entity = new DynamicEntity();
@@ -98,7 +99,7 @@ namespace Randal.Tests.Core.Dynamic
 			Then.String = entity;
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldUseRegisteredConverterWhenConvertingToKnownType()
 		{
 			dynamic entity = new DynamicEntity(MissingMemberBehavior.ThrowException, new DictionaryConverter());

@@ -11,7 +11,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
@@ -32,18 +34,15 @@ namespace Randal.Sql.Scripting.App
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
-		public void DumpScripts(string sprocsFolder = "Sprocs", string udfFolder = "Functions", string viewFolder = "Views")
+		public void DumpScripts(params ScriptingSource[] sources)
 		{
 			foreach (var database in _server.GetDatabases())
 			{
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					ProcessObject(database, sprocsFolder, _server.GetStoredProcedures(database));
-
-					ProcessObject(database, udfFolder, _server.GetUserDefinedFunctions(database));
-
-					ProcessObject(database, viewFolder, _server.GetViews(database));
+					foreach(var source in sources)
+						ProcessObject(database, source.SubFolder, source.GetScriptableObjects(_server, database));
 				}
 				catch (ExecutionFailureException ex)
 				{

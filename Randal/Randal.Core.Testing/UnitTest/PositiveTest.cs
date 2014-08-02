@@ -11,33 +11,19 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using CommandLine;
-using Randal.Logging;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Randal.Sql.Deployer.App
+namespace Randal.Core.Testing.UnitTest
 {
-	internal sealed class SqlDeployerProgram
+	public sealed class PositiveTest : TestCategoryBaseAttribute
 	{
-		private static int Main(string[] args)
+		public override IList<string> TestCategories
 		{
-			var options = new AppOptions();
-			if (Parser.Default.ParseArguments(args, options) == false)
-				return 2;
-
-			var settings = new RunnerSettings(
-				options.ProjectFolder, 
-				options.LogFolder, 
-				options.Server, 
-				options.Rollback,
-				options.NoTransaction
-			);
-
-			using (var runner = new Runner(settings, new AsyncFileLogger(settings.FileLoggerSettings)))
-			{
-				runner.Go();
-			}
-
-			return -1;
+			get { return Traits; }
 		}
+
+		private static readonly List<string> Traits = new List<string> { "Positive" };
 	}
+
 }

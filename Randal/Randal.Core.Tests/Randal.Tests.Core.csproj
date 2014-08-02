@@ -66,6 +66,7 @@
     <Compile Include="Dynamic\NullConverterTests.cs" />
     <Compile Include="Dynamic\DictionaryConverterTests.cs" />
     <Compile Include="Dynamic\DynamicEntityConverterTests.cs" />
+    <Compile Include="Xml\XmlCollectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">

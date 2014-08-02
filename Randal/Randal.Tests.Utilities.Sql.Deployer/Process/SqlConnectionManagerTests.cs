@@ -22,19 +22,17 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class SqlConnectionManagerTests : BaseUnitTest<ScriptDeployerThens>
 	{
-		
 		protected override void OnSetup()
 		{
 			Then.CommandFactory = null;
 		}
-
 		
 		protected override void OnTeardown()
 		{
 			Then.Manager.Dispose();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidConnectionmanagerWhenCreating()
 		{
 			When(Creating);
@@ -42,7 +40,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Manager.DatabaseNames.Should().BeEmpty();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveCommandWrapperWhenCreatingCommand()
 		{
 			Given.CommandText = "Select 1";
@@ -50,7 +48,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Command.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapper>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldRollbackTransactionWhenExecutingAndRollingBack()
 		{
 			Given.Server = ".";
@@ -60,8 +58,8 @@ namespace Randal.Tests.Sql.Deployer.Process
 			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, RollingBack);
 		}
 
-		[TestMethod]
-		public void ShouldCommitTransactionWhenExecutingAndCommitting()
+		[TestMethod, PositiveTest]
+		public void ShouldCommitTransaction_WhenExecutingAndCommitting()
 		{
 			Given.Server = ".";
 			Given.Database = "master";
@@ -70,13 +68,14 @@ namespace Randal.Tests.Sql.Deployer.Process
 			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, Committing);
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenBeginningTransactionWithoutAnOpenConnection()
 		{
-			When(BeginningTransaction);
+			ThrowsExceptionWhen(BeginningTransaction);
+			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldTakeNoActionWhenCommittingTransactionAndNoTransactionWasStarted()
 		{
 			Given.Server = ".";
@@ -85,8 +84,8 @@ namespace Randal.Tests.Sql.Deployer.Process
 			When(OpenningConnection, Committing);
 		}
 
-		[TestMethod]
-		public void ShouldTakeNoActionWhenRollingBackTransactionAndNoTransactionWasStarted()
+		[TestMethod, PositiveTest]
+		public void ShouldTakeNoAction_WhenRollingBackTransactionAndNoTransactionWasStarted()
 		{
 			Given.Server = ".";
 			Given.Database = "master";

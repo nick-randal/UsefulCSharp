@@ -10,7 +10,7 @@ namespace Randal.Tests.Sql.Scripting
 	[TestClass]
 	public sealed class ServerWrapperIntegrationTests : BaseUnitTest<ServerWrapperThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidWrapperWhenCreatingInstance()
 		{
 			Given.Name = ".";
@@ -18,7 +18,7 @@ namespace Randal.Tests.Sql.Scripting
 			Then.Server.Should().NotBeNull().And.BeAssignableTo<IServer>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveListWhenGettingDatabases()
 		{
 			Given.Name = ".";

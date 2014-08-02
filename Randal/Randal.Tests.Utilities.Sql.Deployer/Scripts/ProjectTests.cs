@@ -45,7 +45,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.Scripts = loader.AllScripts;
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveConfigurationAndScriptsWhenCreating()
 		{
 			When(Creating);
@@ -58,27 +58,33 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Project.TryGetScript("ScriptC").Should().NotBeNull();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullConfiguration()
 		{
 			Given.Configuration = null;
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullScripts()
 		{
 			Given.Scripts = null;
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenMissingScriptForPriorityList()
 		{
 			Given.Configuration = new ProjectConfig("Test", "14.06.08.01", new[] {"ScriptA"});
 			Given.Scripts = new List<SourceScript>();
 
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
 		protected override void Creating()

@@ -42,6 +42,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest\BaseUnitTest.cs" />
     <Compile Include="UnitTest\ITestObjectBuilder.cs" />
+    <Compile Include="UnitTest\NegativeTest.cs" />
+    <Compile Include="UnitTest\PositiveTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">

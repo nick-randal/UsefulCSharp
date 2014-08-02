@@ -28,8 +28,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			GivenParser = new ParserBuilder();
 		}
 
-		[TestMethod]
-		public void ShouldAcceptParseBlocks()
+		[TestMethod, PositiveTest]
+		public void ShouldAcceptParseBlocks_WhenCreating_GivenValidRules()
 		{
 			GivenParser.WithRule("pre", text => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre));
 
@@ -39,8 +39,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.Parser.RegisteredKeywords().First().Should().Be("pre");
 		}
 
-		[TestMethod]
-		public void ShouldCreateSourceScriptFromValidText()
+		[TestMethod, PositiveTest]
+		public void ShouldCreateSourceScript_WhenParsing_GivenValidText()
 		{
 			GivenParser
 				.WithRule("pre", text => new SqlCommandBlock("pre", text, SqlScriptPhase.Pre))
@@ -57,8 +57,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Then.SourceScript.ScriptBlocks[2].As<ISqlCommandBlock>().Phase.Should().Be(SqlScriptPhase.Post);
 		}
 
-		[TestMethod]
-		public void ShouldProcessFallbackRuleWhenProcessingUnknownKeywords()
+		[TestMethod, PositiveTest]
+		public void ShouldProcessFallbackRule_WhenProcessingUnknownKeywords()
 		{
 			GivenParser.WithFallbackRule((kw, text) => new UnexpectedBlock(kw, text));
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
@@ -73,12 +73,14 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			thenFirstBlock.Text.Should().Be("select 1\nGO");
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
-		public void ShouldThrowExceptionWhenProcessingUnexpectedBlock()
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenProcessingUnexpectedBlock()
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			When(Parsing);
+			ThrowsExceptionWhen(Parsing);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
 		protected override void Creating()

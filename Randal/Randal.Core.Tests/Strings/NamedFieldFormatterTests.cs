@@ -23,7 +23,7 @@ namespace Randal.Tests.Core.Strings
 	[TestClass]
 	public sealed class NamedFieldFormatterTests : BaseUnitTest<NamedFieldFormatterThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidFormatterWhenCreatingInstance()
 		{
 			Given.Text = "Hello world";
@@ -31,7 +31,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Formatter.Should().NotBeNull().And.BeAssignableTo<IStringFormatter>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedStringWhenFormattingWithDictionaryValues()
 		{
 			Given.Text = "Hello my name is {name} and I am {age} years old.";
@@ -42,7 +42,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("Hello my name is Inigo Montoya and I am 32 years old.");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveBracesWhenFormattingWithEscapedBraces()
 		{
 			Given.Text = "{{Hello world}}";
@@ -52,7 +52,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("{Hello world}");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldFormattedValueWhenFormattingBackToBackFields()
 		{
 			Given.Text = "{part1}{part2}";
@@ -63,7 +63,7 @@ namespace Randal.Tests.Core.Strings
 			Then.Text.Should().Be("FooBar");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedClosingBrace()
 		{
 			Given.Text = "Hey name},";
@@ -73,7 +73,7 @@ namespace Randal.Tests.Core.Strings
 			ThenLastAction.ShouldThrow<FormatException>("Unescaped closing brace found at position 9.");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBraceAndNoMoreText()
 		{
 			Given.Text = "Hey {";
@@ -83,7 +83,7 @@ namespace Randal.Tests.Core.Strings
 			ThenLastAction.ShouldThrow<FormatException>("Opening brace with no field name specified at position 5.");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
@@ -93,7 +93,7 @@ namespace Randal.Tests.Core.Strings
 			ThenLastAction.ShouldThrow<FormatException>("Opening brace with field expression 'name,' has no closing brace at position 10.");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithEmptyBraces()
 		{
 			Given.Text = "{}";

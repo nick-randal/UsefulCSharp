@@ -23,7 +23,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 	[TestClass]
 	public sealed class InstallerConfigTests : BaseUnitTest<InstallerConfigThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveDefaultConfigWhenCreating()
 		{
 			Given.Json = "{}";
@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 			Then.Object.Version.Should().Be("01.01.01.01");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidValuesWhenCreatingGivenValueJson()
 		{
 			Given.Json = "{ Version: '14.06.04.01', Project: 'UnitTest', PriorityScripts: [ 'A' ] }";

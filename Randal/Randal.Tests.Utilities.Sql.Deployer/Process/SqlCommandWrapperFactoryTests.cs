@@ -21,7 +21,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class SqlCommandWrapperFactoryTests : BaseUnitTest<SqlCommandWrapperFactoryThens>
 	{
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidFactoryWhenCreating()
 		{
 			When(Creating);
@@ -29,7 +29,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Factory.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapperFactory>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveSqlCommandWrapperWhenFactoryCreatesNewCommand()
 		{
 			Given.CommandText = "Select 1";

@@ -28,7 +28,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Wrapper.Dispose();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveWrapperWhenCreating()
 		{
 			Given.Database = "master";
@@ -36,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Then.Wrapper.Should().NotBeNull().And.BeAssignableTo<ISqlCommandWrapper>();
 		}
 
-		[TestMethod, ExpectedException(typeof (InvalidOperationException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowSqlExceptionWhenExecutingGivenNoSqlServer()
 		{
 			Given.Database = "master";

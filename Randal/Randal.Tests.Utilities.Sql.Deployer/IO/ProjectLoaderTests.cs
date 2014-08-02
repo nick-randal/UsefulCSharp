@@ -46,7 +46,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Logger.Dispose();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValuesSetWhenCreatingGivenValidValues()
 		{
 			Given.ProjectPath = @"c:\some folder";
@@ -54,7 +54,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Object.ProjectPath.Should().Be(@"c:\some folder");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldIndicateInvalidPathWhenLoadProjectFromInvalidPath()
 		{
 			Given.ProjectPath = @"c:\some folder";
@@ -62,7 +62,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Has.Should().Be(Returned.Failure, "because the path is invalid");
 		}
 
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldIndicateMissingConfigurationWhenLoadProjectFromWrongFolder()
 		{
 			Given.ProjectPath = @".";
@@ -70,7 +70,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Has.Should().Be(Returned.Failure, "because the config file does not exist.");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveConfigurationAndSourceFilesWhenLoadingProjectGivenValidFiles()
 		{
 			Given.ProjectPath = @".\TestFiles\ProjectA";

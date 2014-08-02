@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6B19F04-1365-4234-9FD4-B9B49529DE47}</ProjectGuid>
+    <ProjectGuid>{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Randal.Tests.Sql.Deployer</RootNamespace>
-    <AssemblyName>Randal.Tests.Sql.Deployer</AssemblyName>
+    <RootNamespace>Randal.Tests.Core.Testing</RootNamespace>
+    <AssemblyName>Randal.Tests.Core.Testing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,7 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,30 +41,10 @@
     <Reference Include="FluentAssertions.Core">
       <HintPath>..\packages\FluentAssertions.3.1.229\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Owin">
-      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Randal.Core">
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.8\lib\net45\Randal.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Randal.Core.Testing">
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.8\lib\net45\Randal.Core.Testing.dll</HintPath>
-    </Reference>
-    <Reference Include="Randal.Logging">
-      <HintPath>..\packages\Randal.Logging.1.0.0.3\lib\net45\Randal.Logging.dll</HintPath>
-    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -82,53 +61,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Configuration\InstallerConfigTests.cs" />
-    <Compile Include="Helpers\CatalogPatternLookupTests.cs" />
-    <Compile Include="IO\ProjectLoaderTests.cs" />
-    <Compile Include="Process\SqlCommandWrapperTests.cs" />
-    <Compile Include="Process\SqlCommandWrapperFactoryTests.cs" />
-    <Compile Include="Process\SqlConnectionManagerTests.cs" />
-    <Compile Include="Process\ScriptDeployerIntegrationTests.cs" />
-    <Compile Include="Scripts\BaseScriptBlockTests.cs" />
-    <Compile Include="Scripts\ProjectBuilder.cs" />
-    <Compile Include="Scripts\ScriptParserTests.Builder.cs" />
-    <Compile Include="Scripts\ScriptParserTests.cs" />
-    <Compile Include="Scripts\SourceScriptTests.cs" />
-    <Compile Include="Scripts\SqlCommandBlockTests.cs" />
+    <Compile Include="PositiveTestTests.cs" />
+    <Compile Include="NegativeTestTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\UnexpectedBlockTests.cs" />
-    <Compile Include="Scripts\CatalogBlockTests.cs" />
-    <Compile Include="Scripts\IgnoreScriptBlockTests.cs" />
-    <Compile Include="Scripts\NeedBlockTests.cs" />
-    <Compile Include="Scripts\ProjectTests.cs" />
-    <Compile Include="Scripts\OptionsBlockTests.cs" />
-    <Compile Include="Scripts\ScriptSettingsTests.cs" />
-    <Compile Include="Process\ScriptDeployerTests.cs" />
-    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LICENSE" />
     <None Include="packages.config" />
-    <None Include="TestFiles\ProjectA\config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj">
-      <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
-      <Name>Randal.Sql.Deployer</Name>
+    <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">
+      <Project>{7e3c2598-ad31-4a85-93d1-89b7d835a9de}</Project>
+      <Name>Randal.Core.Testing</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestFiles\ProjectA\ScriptC.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles\ProjectA\ScriptB.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles\ProjectA\ScriptA.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
