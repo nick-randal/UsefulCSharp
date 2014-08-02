@@ -13,7 +13,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
@@ -22,26 +22,43 @@ namespace Randal.Sql.Scripting.App
 {
 	public sealed class Scripter
 	{
-		private readonly IServer _server;
-		private readonly IScriptFormatter _formatter;
-
 		public Scripter(IServer server, IScriptFileManager scriptFileManager, ILogger logger, IScriptFormatter formatter = null)
 		{
 			_server = server;
 			_scriptFileManager = scriptFileManager;
+			_onlyTheseDatabases = new List<string>();
+			_excludeTheseDatabases = new List<string>();
+			_sources = new List<ScriptingSource>();
 			_formatter = formatter ?? new ScriptFormatter(_server);
-
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
-		public void DumpScripts(params ScriptingSource[] sources)
+		public void SetupSources(params ScriptingSource[] sources)
 		{
-			foreach (var database in _server.GetDatabases())
+			_sources.Clear();
+			_sources.AddRange(sources);
+		}
+
+		public void OnlyTheseDatabases(params string[] databases)
+		{
+			_onlyTheseDatabases.Clear();
+			_onlyTheseDatabases.AddRange(databases);
+		}
+
+		public void ExcludedTheseDatabases(params string[] databases)
+		{
+			_excludeTheseDatabases.Clear();
+			_excludeTheseDatabases.AddRange(databases);
+		}
+
+		public void DumpScripts()
+		{
+			foreach (var database in GetDatabases())
 			{
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					foreach(var source in sources)
+					foreach(var source in _sources)
 						ProcessObject(database, source.SubFolder, source.GetScriptableObjects(_server, database));
 				}
 				catch (ExecutionFailureException ex)
@@ -49,6 +66,20 @@ namespace Randal.Sql.Scripting.App
 					_logger.AddException(ex);
 				}
 			}
+		}
+
+		private IEnumerable<Database> GetDatabases()
+		{
+			var databases = _server.GetDatabases().AsQueryable();
+
+			if (_onlyTheseDatabases.Count > 0)
+				databases = databases.Where(d => _onlyTheseDatabases.Contains(d.Name, StringComparer.InvariantCultureIgnoreCase));
+
+			if (_excludeTheseDatabases.Count > 0)
+				databases =
+					databases.Where(d => _excludeTheseDatabases.Contains(d.Name, StringComparer.InvariantCultureIgnoreCase) == false);
+			
+			return databases.ToList();
 		}
 
 		private void ProcessObject(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source) 
@@ -65,7 +96,12 @@ namespace Randal.Sql.Scripting.App
 			}
 		}
 
+		private readonly IServer _server;
+		private readonly IScriptFormatter _formatter;
 		private readonly IScriptFileManager _scriptFileManager;
 		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly List<ScriptingSource> _sources;
+		private readonly List<string> _onlyTheseDatabases;
+		private readonly List<string> _excludeTheseDatabases;
 	}
 }
