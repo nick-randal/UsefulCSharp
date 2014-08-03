@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using CommandLine;
 using Randal.Logging;
 
@@ -10,9 +11,9 @@ namespace Randal.Sql.Scripting.App
 
 		private static int Main(string[] args)
 		{
-			//var options = new AppOptions();
-			//if (Parser.Default.ParseArguments(args, options) == false)
-//				return 2;
+			var options = new AppOptions();
+			if (Parser.Default.ParseArguments(args, options) == false)
+				return 2;
 
 			var scriptFileManager = new ScriptFileManager(Path.Combine(@"C:\__dev\Database\Dump", Local));
 			var server = new ServerWrapper(Local);
@@ -25,11 +26,16 @@ namespace Randal.Sql.Scripting.App
 
 				var scripter = new Scripter(server, scriptFileManager, logger);
 				
-				scripter.DumpScripts( 
+				scripter.IncludeTheseDatabases(options.IncludeDatabases.ToArray());
+				scripter.ExcludedTheseDatabases(options.ExcludeDatabases.ToArray());
+
+				scripter.SetupSources( 
 					new ScriptingSource("Sprocs", (srvr, db) => srvr.GetStoredProcedures(db)),
 					new ScriptingSource("Functions", (srvr, db) => srvr.GetUserDefinedFunctions(db)),
 					new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db))
 				);
+
+				scripter.DumpScripts();
 			}
 
 			return -1;

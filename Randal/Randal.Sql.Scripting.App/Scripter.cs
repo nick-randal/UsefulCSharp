@@ -26,7 +26,7 @@ namespace Randal.Sql.Scripting.App
 		{
 			_server = server;
 			_scriptFileManager = scriptFileManager;
-			_onlyTheseDatabases = new List<string>();
+			_includeTheseDatabases = new List<string>();
 			_excludeTheseDatabases = new List<string>();
 			_sources = new List<ScriptingSource>();
 			_formatter = formatter ?? new ScriptFormatter(_server);
@@ -39,15 +39,23 @@ namespace Randal.Sql.Scripting.App
 			_sources.AddRange(sources);
 		}
 
-		public void OnlyTheseDatabases(params string[] databases)
+		public void IncludeTheseDatabases(params string[] databases)
 		{
-			_onlyTheseDatabases.Clear();
-			_onlyTheseDatabases.AddRange(databases);
+			_includeTheseDatabases.Clear();
+
+			if (databases.Length == 0)
+				return;
+
+			_includeTheseDatabases.AddRange(databases);
 		}
 
 		public void ExcludedTheseDatabases(params string[] databases)
 		{
 			_excludeTheseDatabases.Clear();
+
+			if (databases.Length == 0)
+				return;
+
 			_excludeTheseDatabases.AddRange(databases);
 		}
 
@@ -72,8 +80,8 @@ namespace Randal.Sql.Scripting.App
 		{
 			var databases = _server.GetDatabases().AsQueryable();
 
-			if (_onlyTheseDatabases.Count > 0)
-				databases = databases.Where(d => _onlyTheseDatabases.Contains(d.Name, StringComparer.InvariantCultureIgnoreCase));
+			if (_includeTheseDatabases.Count > 0)
+				databases = databases.Where(d => _includeTheseDatabases.Contains(d.Name, StringComparer.InvariantCultureIgnoreCase));
 
 			if (_excludeTheseDatabases.Count > 0)
 				databases =
@@ -101,7 +109,6 @@ namespace Randal.Sql.Scripting.App
 		private readonly IScriptFileManager _scriptFileManager;
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly List<ScriptingSource> _sources;
-		private readonly List<string> _onlyTheseDatabases;
-		private readonly List<string> _excludeTheseDatabases;
+		private readonly List<string> _includeTheseDatabases, _excludeTheseDatabases;
 	}
 }

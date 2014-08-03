@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System.Collections.Generic;
 using CommandLine;
 
 namespace Randal.Sql.Scripting.App
@@ -26,10 +27,18 @@ namespace Randal.Sql.Scripting.App
 		[Option('l', "logFolder", Required = true, HelpText = LogFolderHelpText)]
 		public string LogFolder { get; set; }
 
+		[Option('i', "include", Required = false, HelpText = IncludeDatabasesHelpText)]
+		public IEnumerable<string> IncludeDatabases { get; set; }
+
+		[Option('x', "exclude", Required = false, HelpText = ExcludeDatabasesHelptText)]
+		public IEnumerable<string> ExcludeDatabases { get; set; }
+
 		public const string 
-			ServerHelpText = @"",
-			OutputFolderHelpText = @"",
-			LogFolderHelpText = @""
+			ServerHelpText = @"SQL Server instance to script objects from.",
+			OutputFolderHelpText = @"Folder path where schema objects will be scripted.",
+			LogFolderHelpText = @"Folder path for the log file to be written.",
+			IncludeDatabasesHelpText = "Only include these databases when scripting.",
+			ExcludeDatabasesHelptText = "Exclude these databases when scripting."
 		;
 	}
 }
