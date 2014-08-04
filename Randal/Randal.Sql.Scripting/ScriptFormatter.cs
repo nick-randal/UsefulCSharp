@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Core.Strings;
 
@@ -87,7 +88,7 @@ namespace Randal.Sql.Scripting
 				{ "catalog", sproc.Parent.Name },
 				{ "schema", sproc.Schema },
 				{ "sproc", sproc.Name },
-				{ "body", sproc.TextBody },
+				{ "body", NormalizeSprocBody(sproc.TextBody) },
 				{ "header", sproc.ScriptHeader(true) },
 				{ "needs", GetNeeds(sproc) ?? string.Empty }
 			};
@@ -95,6 +96,15 @@ namespace Randal.Sql.Scripting
 			values["parameters"] = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
 
 			return SprocScript.Format().With(values); 
+		}
+
+		private static string NormalizeSprocBody(string body)
+		{
+			body = PatternLineEndings.Replace(body.Trim(), Environment.NewLine + '\t');
+			if (body.StartsWith("begin", StringComparison.CurrentCultureIgnoreCase) == false)
+				body = "begin" + Environment.NewLine + '\t' + body + Environment.NewLine + "end";
+
+			return body;
 		}
 
 		private string GetNeeds(SqlSmoObject sproc)
@@ -110,6 +120,7 @@ namespace Randal.Sql.Scripting
 		}
 
 		private readonly IServer _server;
+		private static readonly Regex PatternLineEndings = new Regex(@"[\t ]*\r?\n", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
 		private const string 
 			SprocScript =
@@ -119,7 +130,7 @@ namespace Randal.Sql.Scripting
 use {catalog}
 
 --:: pre
-exec coreCreateProcedure '{schema}.{sproc}'
+exec coreCreateProcedure '[{schema}].[{sproc}]'
 GO
 
 --:: main
@@ -127,7 +138,7 @@ GO
 {body}
 
 /*
-	exec {sproc} {args}
+	exec [{schema}].[{sproc}] {parameters}
 */",
 			UserDefinedFunctionScript =
 @"{needs}--:: catalog {catalog}
@@ -136,7 +147,7 @@ GO
 use {catalog}
 
 --:: pre
-exec coreCreateFunction '{schema}.{udf}', '{funcType}'
+exec coreCreateFunction '[{schema}].[{udf}]', '{funcType}'
 GO
 
 --:: main
@@ -144,7 +155,7 @@ GO
 {body}
 
 /*
-	select {udf}()
+	select {schema}.{udf}()
 */",
 			ViewScript =
 @"{needs}--:: catalog {catalog}
@@ -153,7 +164,7 @@ GO
 use {catalog}
 
 --:: pre
-exec coreCreateView '{view}', '{schema}'
+exec coreCreateView '[{view}]', '[{schema}]'
 GO
 
 --:: main

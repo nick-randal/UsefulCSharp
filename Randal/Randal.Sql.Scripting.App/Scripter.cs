@@ -33,37 +33,40 @@ namespace Randal.Sql.Scripting.App
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
-		public void SetupSources(params ScriptingSource[] sources)
+		public Scripter SetupSources(params ScriptingSource[] sources)
 		{
 			_sources.Clear();
 			_sources.AddRange(sources);
+			return this;
 		}
 
-		public void IncludeTheseDatabases(params string[] databases)
+		public Scripter IncludeTheseDatabases(params string[] databases)
 		{
 			_includeTheseDatabases.Clear();
 
 			if (databases.Length == 0)
-				return;
+				return this;
 
 			_includeTheseDatabases.AddRange(databases);
+			return this;
 		}
 
-		public void ExcludedTheseDatabases(params string[] databases)
+		public Scripter ExcludedTheseDatabases(params string[] databases)
 		{
 			_excludeTheseDatabases.Clear();
 
 			if (databases.Length == 0)
-				return;
+				return this;
 
 			_excludeTheseDatabases.AddRange(databases);
+			return this;
 		}
 
 		public void DumpScripts()
 		{
 			foreach (var database in GetDatabases())
 			{
-				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,20} ~~~~~~~~~~", database.Name);
+				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
 					foreach(var source in _sources)
@@ -96,7 +99,7 @@ namespace Randal.Sql.Scripting.App
 
 			foreach (var sproc in source)
 			{
-				_logger.AddEntry("{0} {1}.{2}", sproc.GetType().Name, sproc.Schema, sproc.Name);
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sproc.GetType().Name), sproc.Schema, sproc.Name);
 				if (sproc.Schema != "dbo")
 					_logger.AddEntry("schema not dbo {0}", sproc.Schema);
 
@@ -104,11 +107,25 @@ namespace Randal.Sql.Scripting.App
 			}
 		}
 
+		private static string MapTypeName(string objectType)
+		{
+			if (string.Compare(objectType, "StoredProcedure", StringComparison.OrdinalIgnoreCase) == 0)
+				return "sproc";
+
+			if (string.Compare(objectType, "UserDefinedFunction", StringComparison.OrdinalIgnoreCase) == 0)
+				return "udf  ";
+
+			if (string.Compare(objectType, "View", StringComparison.OrdinalIgnoreCase) == 0)
+				return "view ";
+
+			return objectType;
+		}
+
 		private readonly IServer _server;
 		private readonly IScriptFormatter _formatter;
 		private readonly IScriptFileManager _scriptFileManager;
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly List<ScriptingSource> _sources;
-		private readonly List<string> _includeTheseDatabases, _excludeTheseDatabases;
+		private readonly List<string> _includeTheseDatabases, _excludeTheseDatabases; 
 	}
 }

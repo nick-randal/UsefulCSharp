@@ -1,44 +1,63 @@
-﻿using System.IO;
-using System.Linq;
-using CommandLine;
+﻿using System;
+using System.IO;
 using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
 {
 	public sealed class Program
 	{
-		public const string Local = "localhost", Staging = "TCSQLStaging01";
-
 		private static int Main(string[] args)
 		{
-			var options = new AppOptions();
-			if (Parser.Default.ParseArguments(args, options) == false)
+			var options = ParseCommandLineArguments(args);
+			if (options == null) 
 				return 2;
 
-			var scriptFileManager = new ScriptFileManager(Path.Combine(@"C:\__dev\Database\Dump", Local));
-			var server = new ServerWrapper(Local);
-
-			var settings = new FileLoggerSettings(@"c:\__dev\Research\Log", "scripter");
-			using (var logger = new AsyncFileLogger(settings))
+			using (var logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "scripter")))
 			{
-				logger.Add("SQL Scripting Application".ToLogEntry());
-				logger.Add(string.Concat("generating scripts for ", Local).ToLogEntry());
+				LogHeader(logger, options);
 
-				var scripter = new Scripter(server, scriptFileManager, logger);
-				
-				scripter.IncludeTheseDatabases(options.IncludeDatabases.ToArray());
-				scripter.ExcludedTheseDatabases(options.ExcludeDatabases.ToArray());
+				var scriptFileManager = new ScriptFileManager(Path.Combine(options.OutputFolder, options.Server));
+				var server = new ServerWrapper(options.Server);
 
-				scripter.SetupSources( 
-					new ScriptingSource("Sprocs", (srvr, db) => srvr.GetStoredProcedures(db)),
-					new ScriptingSource("Functions", (srvr, db) => srvr.GetUserDefinedFunctions(db)),
-					new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db))
-				);
+				var scripter = 
+					new Scripter(server, scriptFileManager, logger)
+						.IncludeTheseDatabases(options.IncludeDatabases.ToArray())
+						.ExcludedTheseDatabases(options.ExcludeDatabases.ToArray())
+						.SetupSources( 
+							new ScriptingSource("Sprocs", (srvr, db) => srvr.GetStoredProcedures(db)),
+							new ScriptingSource("Functions", (srvr, db) => srvr.GetUserDefinedFunctions(db)),
+							new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db))
+						);
 
 				scripter.DumpScripts();
+
+				logger.Add("DONE".ToLogEntry());
 			}
 
 			return -1;
+		}
+
+		private static AppOptions ParseCommandLineArguments(string[] args)
+		{
+			var parser = new AppOptionsParser();
+			var results = parser.Parse(args);
+
+			if (!results.HasErrors) 
+				return parser.Object;
+
+			Console.WriteLine(results.ErrorText);
+			return null;
+		}
+
+		private static void LogHeader(ILogger logger, AppOptions options)
+		{
+			logger.Add("SQL Scripting Application".ToLogEntry());
+
+			logger.Add(string.Concat("Server           ", options.Server).ToLogEntryNoTs());
+			logger.Add(string.Concat("Output Folder    ", options.OutputFolder).ToLogEntryNoTs());
+			logger.Add(string.Concat("Log Folder       ", options.LogFolder).ToLogEntryNoTs());
+			logger.Add(string.Concat("Included DBs     ", string.Join(", ", options.IncludeDatabases)).ToLogEntryNoTs());
+			logger.Add(string.Concat("Excluded DBs     ", string.Join(", ", options.ExcludeDatabases)).ToLogEntryNoTs());
 		}
 	}
 }

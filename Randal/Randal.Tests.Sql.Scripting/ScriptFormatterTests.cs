@@ -23,7 +23,7 @@ namespace Randal.Tests.Sql.Scripting
 		{
 			Given.Procedure = "spTest";
 			When(Formatting);
-			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure 'dbo.spTest'\r\nGO\r\n\r\n--:: main\r\nALTER procedure [dbo].[spTest]\r\nreturn -1\r\n\r\n/*\r\n	exec spTest \r\n*/");
+			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure 'dbo.spTest'\r\nGO\r\n\r\n--:: main\r\nALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec spTest \r\n*/");
 		}
 
 		protected override void Creating()

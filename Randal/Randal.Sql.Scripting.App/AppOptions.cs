@@ -11,12 +11,65 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
-using CommandLine;
+using Fclp;
 
 namespace Randal.Sql.Scripting.App
 {
 	public sealed class AppOptions
+	{
+		public string Server { get; set; }
+
+		public string OutputFolder { get; set; }
+
+		public string LogFolder { get; set; }
+
+		public List<string> IncludeDatabases { get; set; }
+
+		public List<string> ExcludeDatabases { get; set; }
+	}
+
+	public sealed class AppOptionsParser : FluentCommandLineBuilder<AppOptions>
+	{
+		public AppOptionsParser()
+		{
+			Setup(x => x.Server)
+				.As('s', "server")
+				.WithDescription(ServerHelpText)
+				.Required();
+
+			Setup(x => x.OutputFolder)
+				.As('o', "outputFolder")
+				.WithDescription(OutputFolderHelpText)
+				.Required();
+
+			Setup(x => x.LogFolder)
+				.As('l', "logFolder")
+				.WithDescription(LogFolderHelpText)
+				.Required();
+
+			Setup(x => x.IncludeDatabases)
+				.As('i', "include")
+				.WithDescription(IncludeDatabasesHelpText)
+				.SetDefault(new List<string>());
+
+			Setup(x => x.ExcludeDatabases)
+				.As('x', "exclude")
+				.WithDescription(ExcludeDatabasesHelptText)
+				.SetDefault(new List<string>());
+		}
+
+		public const string
+			ServerHelpText = @"SQL Server instance to script objects from.",
+			OutputFolderHelpText = @"Folder path where schema objects will be scripted.",
+			LogFolderHelpText = @"Folder path for the log file to be written.",
+			IncludeDatabasesHelpText = "Only include these databases when scripting.",
+			ExcludeDatabasesHelptText = "Exclude these databases when scripting."
+		;
+	}
+
+	/*public sealed class AppOptions
 	{
 		[Option('s', "server", Required = true, HelpText = ServerHelpText)]
 		public string Server { get; set; }
@@ -40,5 +93,5 @@ namespace Randal.Sql.Scripting.App
 			IncludeDatabasesHelpText = "Only include these databases when scripting.",
 			ExcludeDatabasesHelptText = "Exclude these databases when scripting."
 		;
-	}
+	}*/
 }
