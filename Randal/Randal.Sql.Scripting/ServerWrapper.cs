@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 
 namespace Randal.Sql.Scripting
@@ -26,7 +25,7 @@ namespace Randal.Sql.Scripting
 		IEnumerable<UserDefinedFunction> GetUserDefinedFunctions(Database database);
 		IEnumerable<View> GetViews(Database database);
 		IEnumerable<Table> GetTables(Database database);
-		IEnumerable<Urn> GetDependencies(SqlSmoObject smo);
+		IEnumerable<DependencyCollectionNode> GetDependencies(SqlSmoObject smo);
 	}
 
 	public sealed class ServerWrapper : IServer
@@ -83,13 +82,11 @@ namespace Randal.Sql.Scripting
 				.AsReadOnly();
 		}
 
-		public IEnumerable<Urn> GetDependencies(SqlSmoObject smo)
+		public IEnumerable<DependencyCollectionNode> GetDependencies(SqlSmoObject smo)
 		{
 			var depTree = _dependencyWalker.DiscoverDependencies(new[] { smo }, true);
 
-			return _dependencyWalker.WalkDependencies(depTree)
-				.Cast<DependencyNode>()
-				.Select(x => x.Urn);
+			return _dependencyWalker.WalkDependencies(depTree);
 		}
 
 		private readonly DependencyWalker _dependencyWalker;

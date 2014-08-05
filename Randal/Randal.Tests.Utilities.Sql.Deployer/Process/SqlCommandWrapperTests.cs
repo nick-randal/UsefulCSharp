@@ -29,7 +29,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveWrapperWhenCreating()
+		public void ShouldHaveValidInstance_WhenCreating()
 		{
 			Given.Database = "master";
 			When(Creating);
@@ -37,10 +37,11 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldThrowSqlExceptionWhenExecutingGivenNoSqlServer()
+		public void ShouldThrowException_WhenExecuting_GivenNoSqlServer()
 		{
 			Given.Database = "master";
-			When(ExecutingCommand);
+			ThrowsExceptionWhen(ExecutingCommand);
+			ThenLastAction.ShouldThrow<InvalidOperationException>().WithMessage("Invalid operation. The connection is closed.");
 		}
 
 		private void ExecutingCommand()

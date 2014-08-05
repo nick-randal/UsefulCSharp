@@ -28,6 +28,7 @@ namespace Randal.Sql.Scripting
 			var sproc = schemaObject as StoredProcedure;
 			var udf = schemaObject as UserDefinedFunction;
 			var view = schemaObject as View;
+			var table = schemaObject as Table;
 
 			if (sproc != null)
 				return Format(sproc);
@@ -38,6 +39,9 @@ namespace Randal.Sql.Scripting
 			if (view != null)
 				return Format(view);
 
+			if (table != null)
+				return Format(table);
+
 			throw new InvalidOperationException("Not supported.");
 		}
 
@@ -46,10 +50,12 @@ namespace Randal.Sql.Scripting
 			var options = new ScriptingOptions();
 
 			var pre = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
+			pre = PatternLineEndings.Replace(pre.Trim(), Environment.NewLine + '\t');
 
 			options.DriAllConstraints = true;
 			options.PrimaryObject = false;
 			var main = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
+			main = PatternLineEndings.Replace(main.Trim(), Environment.NewLine + '\t');
 
 			var values = new Dictionary<string, object>
 			{
@@ -58,7 +64,7 @@ namespace Randal.Sql.Scripting
 				{ "table", table.Name },
 				{ "pre", pre },
 				{ "main", main },
-				{ "needs", GetNeeds(table) ?? string.Empty }
+				{ "needs", GetNeeds(table, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
 			return TableScript.Format().With(values);
@@ -73,7 +79,7 @@ namespace Randal.Sql.Scripting
 				{ "view", view.Name },
 				{ "body", view.TextBody },
 				{ "header", view.ScriptHeader(true) },
-				{ "needs", GetNeeds(view) ?? string.Empty }
+				{ "needs", GetNeeds(view, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
 			return ViewScript.Format().With(values); 
@@ -88,7 +94,7 @@ namespace Randal.Sql.Scripting
 				{ "udf", udf.Name },
 				{ "body", udf.TextBody },
 				{ "header", udf.ScriptHeader(true) },
-				{ "needs", GetNeeds(udf) ?? string.Empty }
+				{ "needs", GetNeeds(udf, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
 			};
 
 			switch (udf.FunctionType)
@@ -116,7 +122,7 @@ namespace Randal.Sql.Scripting
 				{ "sproc", sproc.Name },
 				{ "body", NormalizeSprocBody(sproc.TextBody) },
 				{ "header", sproc.ScriptHeader(true) },
-				{ "needs", GetNeeds(sproc) ?? string.Empty }
+				{ "needs", GetNeeds(sproc, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
 			};
 
 			values["parameters"] = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
@@ -133,16 +139,34 @@ namespace Randal.Sql.Scripting
 			return body;
 		}
 
-		private string GetNeeds(SqlSmoObject sproc)
+		private string GetNeeds(SqlSmoObject sqlSmoObject, DatabaseObjectTypes requestedDependencyTypes)
 		{
-			var dependencies = _server.GetDependencies(sproc)
-				.Where(x => x.Value != sproc.Urn && x.Type != "Table")
-				.Select(x => x.GetNameForType(x.Type)).ToList();
+			var dependencyTypeList = GetDependencyTypeList(requestedDependencyTypes);
+
+			var dependencies = _server.GetDependencies(sqlSmoObject)
+				.Where(x => x.IsRootNode == false && dependencyTypeList.Contains(x.Urn.Type))
+				.Select(x => x.Urn.GetNameForType(x.Urn.Type))
+				.ToList();
 
 			if (dependencies.Count == 0)
 				return string.Empty;
 
 			return "--:: need " + string.Join(", ", dependencies) + Environment.NewLine;
+		}
+
+		private static IEnumerable<string> GetDependencyTypeList(DatabaseObjectTypes requestedDependencyTypes)
+		{
+			if (requestedDependencyTypes.HasFlag(DatabaseObjectTypes.StoredProcedure))
+				yield return "StoredProcedure";
+			
+			if (requestedDependencyTypes.HasFlag(DatabaseObjectTypes.UserDefinedFunction))
+				yield return "UserDefinedFunction";
+			
+			if (requestedDependencyTypes.HasFlag(DatabaseObjectTypes.View))
+				yield return "View";
+			
+			if (requestedDependencyTypes.HasFlag(DatabaseObjectTypes.Table))
+				yield return "Table";
 		}
 
 		private readonly IServer _server;
@@ -208,10 +232,18 @@ GO
 use {catalog}
 
 --:: pre
-{pre}
+if(dbo.coreTableExists('{table}', '{schema}') = 0) begin
+
+	{pre}
+
+end
 
 --:: main
-{main}
+if(dbo.coreTableExists('{table}', '{schema}') = 0) begin
+
+	{main}
+
+end
 
 /*
 	select top 100 * from {table}

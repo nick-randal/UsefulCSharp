@@ -18,7 +18,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
-namespace Randal.Sql.Scripting.App
+namespace Randal.Sql.Scripting
 {
 	public sealed class Scripter
 	{
@@ -109,18 +109,19 @@ namespace Randal.Sql.Scripting.App
 
 		private static string MapTypeName(string objectType)
 		{
-			if (string.Compare(objectType, "StoredProcedure", StringComparison.OrdinalIgnoreCase) == 0)
-				return "sproc";
+			string replaceWith;
 
-			if (string.Compare(objectType, "UserDefinedFunction", StringComparison.OrdinalIgnoreCase) == 0)
-				return "udf  ";
+			if (TypeNameLookup.TryGetValue(objectType, out replaceWith))
+				return replaceWith;
 
-			if (string.Compare(objectType, "View", StringComparison.OrdinalIgnoreCase) == 0)
-				return "view ";
-
-			return objectType;
+			return objectType.ToLower();
 		}
 
+		private static readonly IDictionary<string, string> TypeNameLookup =
+			new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+			{
+				{"StoredProcedure", "sproc"}, {"UserDefinedFunction", "udf"}, {"View", "view"}
+			};
 		private readonly IServer _server;
 		private readonly IScriptFormatter _formatter;
 		private readonly IScriptFileManager _scriptFileManager;

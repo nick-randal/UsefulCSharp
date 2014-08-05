@@ -17,116 +17,116 @@ using System.Text;
 
 namespace Randal.Core.Strings
 {
+	using GetValueForKeyFunc = Func<string, string>;
+
 	public interface IStringFormatter
 	{
-		string Parse(string text, Func<string, string> getValueForExpressionFunc);
+		string Parse(string text, Func<string, string> getValueForKeyFunc);
 	}
 
 	public sealed class NamedFieldFormatter : IStringFormatter
 	{
-		public string Parse(string text, Func<string, string> getValueForExpressionFunc)
+		public string Parse(string text, GetValueForKeyFunc getValueForKeyFunc)
 		{
 			using (var reader = new StringReader(text))
 			{
-				var state = new NamedFieldParserState
-				{
-					Current = NoMoreText,
-					Position = -1,
-					State = ParserState.Text,
-					GetValueForExpressionFunc = getValueForExpressionFunc
-				};
+				var parser = new NamedFieldParser(getValueForKeyFunc);
 
 				do
 				{
-					state.Position++;
-					state.Current = reader.Read();
+					parser.Current = reader.Read();
 
-					switch (state.State)
+					switch (parser.State)
 					{
-						case ParserState.Text:
-							HandleRegularCharacter(state);
+						case ParsingState.Text:
+							HandleRegularCharacter(parser);
 							break;
-						case ParserState.StartOfExpression:
-							HandleStartOfExpression(state);
+						case ParsingState.StartOfExpression:
+							HandleStartOfExpression(parser);
 							break;
-						case ParserState.Expression:
-							HandleFieldExpression(state);
+						case ParsingState.Expression:
+							HandleFieldExpression(parser);
 							break;
-						case ParserState.EndOfExpression:
-							HandleEndOfExpression(state);
+						case ParsingState.EndOfExpression:
+							HandleEndOfExpression(parser);
 							break;
 					}
-				} while (state.State != ParserState.EndOfFile);
+				} while (parser.State != ParsingState.EndOfFile);
 
-				return state.FormattedText.ToString();
+				return parser.FormattedText.ToString();
 			}
 		}
 
-		private static void HandleRegularCharacter(NamedFieldParserState state)
+		private static void HandleRegularCharacter(NamedFieldParser parser)
 		{
-			switch (state.Current)
+			switch (parser.Current)
 			{
 				case NoMoreText:
-					state.State = ParserState.EndOfFile;
+					parser.State = ParsingState.EndOfFile;
 					break;
 				case OpenBrace:
-					state.State = ParserState.StartOfExpression;
+					parser.State = ParsingState.StartOfExpression;
 					break;
 				case CloseBrace:
-					state.State = ParserState.EndOfExpression;
+					parser.State = ParsingState.EndOfExpression;
 					break;
 				default:
-					state.FormattedText.Append((char) state.Current);
+					parser.FormattedText.Append((char) parser.Current);
 					break;
 			}
 		}
 
-		private static void HandleStartOfExpression(NamedFieldParserState state)
+		private static void HandleStartOfExpression(NamedFieldParser parser)
 		{
-			switch (state.Current)
+			switch (parser.Current)
 			{
 				case NoMoreText:
 				case CloseBrace:
-					throw new FormatException("Opening brace with no field name specified at position " + state.Position + ".");
+					throw new FormatException("Opening brace with no field name specified at position " + parser.Position + ".");
 				case OpenBrace:
-					state.FormattedText.Append((char) OpenBrace);
-					state.State = ParserState.Text;
+					parser.FormattedText.Append((char) OpenBrace);
+					parser.State = ParsingState.Text;
 					break;
 				default:
-					state.FieldExpression.Append((char)state.Current);
-					state.State = ParserState.Expression;
+					parser.FieldExpression.Append((char)parser.Current);
+					parser.State = ParsingState.Expression;
 					break;
 			}
 		}
 
-		private static void HandleFieldExpression(NamedFieldParserState state)
+		private static void HandleFieldExpression(NamedFieldParser parser)
 		{
-			switch (state.Current)
+			switch (parser.Current)
 			{
 				case NoMoreText:
-					throw new FormatException("Opening brace with field expression '" + state.FieldExpression +
-					                          "' has no closing brace at position " + state.Position + ".");
+					throw new FormatException("Opening brace with field expression '" + parser.FieldExpression +
+					                          "' has no closing brace at position " + parser.Position + ".");
 				case CloseBrace:
-					state.FormattedText.Append(state.GetValueForExpressionFunc(state.FieldExpression.ToString()));
-					state.FieldExpression.Clear();
-					state.State = ParserState.Text;
+					InsertValueForPlaceholder(parser);
+					parser.State = ParsingState.Text;
 					break;
 				default:
-					state.FieldExpression.Append((char) state.Current);
+					parser.FieldExpression.Append((char) parser.Current);
 					break;
 			}
 		}
 
-		private static void HandleEndOfExpression(NamedFieldParserState state)
+		private static void InsertValueForPlaceholder(NamedFieldParser parser)
 		{
-			if (state.Current != CloseBrace)
-				throw new FormatException("Unescaped closing brace found at position " + state.Position + ".");
-
-			state.FormattedText.Append((char) CloseBrace);
-			state.State = ParserState.Text;
+			parser.FormattedText.Append(parser.GetValueForKeyFunc(parser.FieldExpression.ToString()));
+			parser.FieldExpression.Clear();
 		}
 
-		private enum ParserState
+		private static void HandleEndOfExpression(NamedFieldParser parser)
+		{
+			if (parser.Current != CloseBrace)
+				throw new FormatException("Unescaped closing brace found at position " + parser.Position + ".");
+
+			parser.FormattedText.Append((char) CloseBrace);
+			parser.State = ParsingState.Text;
+		}
+
+		private enum ParsingState
 		{
 			Text,
 			StartOfExpression,
@@ -135,14 +135,34 @@ namespace Randal.Core.Strings
 			EndOfFile
 		}
 
-		private class NamedFieldParserState
+		private class NamedFieldParser
 		{
-			public ParserState State;
-			public int Position;
-			public int Current;
+			public NamedFieldParser(GetValueForKeyFunc func)
+			{
+				_current = NoMoreText;
+				Position = -1;
+				State = ParsingState.Text;
+				GetValueForKeyFunc = func;
+			}
+
+			public ParsingState State { get; set; }
+			public int Position { get; private set; }
+
+			public int Current
+			{
+				get { return _current; }
+				set
+				{
+					_current = value;
+					Position++;
+				}
+			}
+
+			private int _current;
+
 			public readonly StringBuilder FormattedText = new StringBuilder();
 			public readonly StringBuilder FieldExpression = new StringBuilder();
-			public Func<string, string> GetValueForExpressionFunc;
+			public readonly GetValueForKeyFunc GetValueForKeyFunc;
 		}
 
 		private const int OpenBrace = '{', CloseBrace = '}', NoMoreText = -1;

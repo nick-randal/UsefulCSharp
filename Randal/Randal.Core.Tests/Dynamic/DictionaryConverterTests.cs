@@ -99,7 +99,6 @@ namespace Randal.Tests.Core.Dynamic
 			Then.Result.As<IEnumerable<KeyValuePair<string, object>>>().First().Key.Should().Be("Name");
 		}
 
-
 		private void WhenCreating()
 		{
 			Then.Converter = new DictionaryConverter();

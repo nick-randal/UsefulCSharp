@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace Randal.Sql.Scripting.App
+namespace Randal.Sql.Scripting
 {
 	public interface IScriptingSource
 	{

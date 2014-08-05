@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -23,13 +22,13 @@ namespace Randal.Tests.Sql.Scripting
 		{
 			Given.Procedure = "spTest";
 			When(Formatting);
-			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure 'dbo.spTest'\r\nGO\r\n\r\n--:: main\r\nALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec spTest \r\n*/");
+			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure '[dbo].[spTest]'\r\nGO\r\n\r\n--:: main\r\nALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[spTest] \r\n*/");
 		}
 
 		protected override void Creating()
 		{
 			var server = MockRepository.GenerateMock<IServer>();
-			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new Urn[0]);
+			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new DependencyCollectionNode[0]);
 			Then.Formatter = new ScriptFormatter(server);
 		}
 
