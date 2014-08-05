@@ -26,7 +26,8 @@ namespace Randal.Sql.Scripting.App
 						.SetupSources( 
 							new ScriptingSource("Sprocs", (srvr, db) => srvr.GetStoredProcedures(db)),
 							new ScriptingSource("Functions", (srvr, db) => srvr.GetUserDefinedFunctions(db)),
-							new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db))
+							new ScriptingSource("Views", (srvr, db) => srvr.GetViews(db)),
+							new ScriptingSource("Tables", (srvr, db) => srvr.GetTables(db))
 						);
 
 				scripter.DumpScripts();

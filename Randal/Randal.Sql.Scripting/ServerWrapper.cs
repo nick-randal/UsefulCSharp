@@ -25,6 +25,7 @@ namespace Randal.Sql.Scripting
 		IEnumerable<StoredProcedure> GetStoredProcedures(Database database);
 		IEnumerable<UserDefinedFunction> GetUserDefinedFunctions(Database database);
 		IEnumerable<View> GetViews(Database database);
+		IEnumerable<Table> GetTables(Database database);
 		IEnumerable<Urn> GetDependencies(SqlSmoObject smo);
 	}
 
@@ -69,6 +70,15 @@ namespace Randal.Sql.Scripting
 						throw new InvalidOperationException("Unexpected view encountered.");
 					return view.IsSystemObject == false;
 				})
+				.ToList()
+				.AsReadOnly();
+		}
+
+		public IEnumerable<Table> GetTables(Database database)
+		{
+			return database.Tables
+				.Cast<Table>()
+				.Where(view => view.IsSystemObject == false)
 				.ToList()
 				.AsReadOnly();
 		}

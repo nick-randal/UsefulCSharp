@@ -11,6 +11,9 @@ namespace Randal.Sql.Scripting
 	{
 		string Format(ScriptSchemaObjectBase schemaObject);
 		string Format(StoredProcedure sproc);
+		string Format(UserDefinedFunction sproc);
+		string Format(View sproc);
+		string Format(Table sproc);
 	}
 
 	public sealed class ScriptFormatter : IScriptFormatter
@@ -36,6 +39,29 @@ namespace Randal.Sql.Scripting
 				return Format(view);
 
 			throw new InvalidOperationException("Not supported.");
+		}
+
+		public string Format(Table table)
+		{
+			var options = new ScriptingOptions();
+
+			var pre = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
+
+			options.DriAllConstraints = true;
+			options.PrimaryObject = false;
+			var main = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
+
+			var values = new Dictionary<string, object>
+			{
+				{ "catalog", table.Parent.Name },
+				{ "schema", table.Schema },
+				{ "table", table.Name },
+				{ "pre", pre },
+				{ "main", main },
+				{ "needs", GetNeeds(table) ?? string.Empty }
+			};
+
+			return TableScript.Format().With(values);
 		}
 
 		public string Format(View view)
@@ -173,6 +199,22 @@ GO
 
 /*
 	select top 100 * from {view}
+*/",
+			TableScript =
+@"
+{needs}--:: catalog {catalog}
+
+--:: ignore
+use {catalog}
+
+--:: pre
+{pre}
+
+--:: main
+{main}
+
+/*
+	select top 100 * from {table}
 */"
 		;
 	}
