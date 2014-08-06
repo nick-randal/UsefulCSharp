@@ -11,7 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using CommandLine;
+
+using System;
 using Randal.Logging;
 
 namespace Randal.Sql.Deployer.App
@@ -20,8 +21,8 @@ namespace Randal.Sql.Deployer.App
 	{
 		private static int Main(string[] args)
 		{
-			var options = new AppOptions();
-			if (Parser.Default.ParseArguments(args, options) == false)
+			var options = ParseCommandLineArguments(args);
+			if (options == null)
 				return 2;
 
 			var settings = new RunnerSettings(
@@ -32,12 +33,28 @@ namespace Randal.Sql.Deployer.App
 				options.NoTransaction
 			);
 
-			using (var runner = new Runner(settings, new AsyncFileLogger(settings.FileLoggerSettings)))
+			using(var logger = new AsyncFileLogger(settings.FileLoggerSettings))
+			using (var runner = new Runner(settings, logger))
 			{
 				runner.Go();
 			}
 
 			return -1;
+		}
+
+		private static AppOptions ParseCommandLineArguments(string[] args)
+		{
+			var parser = new AppOptionsParser();
+			var results = parser.Parse(args);
+
+			if (results.HelpCalled)
+				return null;
+
+			if (!results.HasErrors)
+				return parser.Object;
+
+			Console.WriteLine(results.ErrorText);
+			return null;
 		}
 	}
 }

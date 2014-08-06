@@ -47,27 +47,51 @@ namespace Randal.Sql.Scripting
 
 		public string Format(Table table)
 		{
-			var options = new ScriptingOptions();
-
-			var pre = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
-			pre = PatternLineEndings.Replace(pre.Trim(), Environment.NewLine + '\t');
-
-			options.DriAllConstraints = true;
-			options.PrimaryObject = false;
-			var main = string.Join(Environment.NewLine + Environment.NewLine, table.EnumScript(options).Select(x => x.Trim()));
-			main = PatternLineEndings.Replace(main.Trim(), Environment.NewLine + '\t');
-
 			var values = new Dictionary<string, object>
 			{
 				{ "catalog", table.Parent.Name },
 				{ "schema", table.Schema },
 				{ "table", table.Name },
-				{ "pre", pre },
-				{ "main", main },
+				{ "pre", FormatTablePreSection(table) },
+				{ "main", FormatTableMainSection(table) },
+				{ "version", 1.ToVersionToday() },
 				{ "needs", GetNeeds(table, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
 			return TableScript.Format().With(values);
+		}
+
+		private static string FormatTableMainSection(Table table)
+		{
+			var preOptions = new ScriptingOptions
+			{
+				PrimaryObject = false, 
+				DriForeignKeys = true, 
+				DriChecks = true
+			};
+
+			var main = string.Join(DoubleLineBreak, table.EnumScript(preOptions).Select(x => x.Trim()));
+			main = PatternLineEndings.Replace(main.Trim(), LineBreakTab);
+
+			return main;
+		}
+
+		private static string FormatTablePreSection(Table table)
+		{
+			var preOptions = new ScriptingOptions
+			{
+				XmlIndexes = true,
+				Indexes = true,
+				ClusteredIndexes = true,
+				DriPrimaryKey = true,
+				DriIndexes = true,
+				DriClustered = true
+			};
+
+			var sectionText = string.Join(DoubleLineBreak, table.EnumScript(preOptions).Select(x => x.Trim()));
+			sectionText = PatternLineEndings.Replace(sectionText.Trim(), LineBreakTab);
+			
+			return sectionText;
 		}
 
 		public string Format(View view)
@@ -132,9 +156,9 @@ namespace Randal.Sql.Scripting
 
 		private static string NormalizeSprocBody(string body)
 		{
-			body = PatternLineEndings.Replace(body.Trim(), Environment.NewLine + '\t');
+			body = PatternLineEndings.Replace(body.Trim(), LineBreakTab);
 			if (body.StartsWith("begin", StringComparison.CurrentCultureIgnoreCase) == false)
-				body = "begin" + Environment.NewLine + '\t' + body + Environment.NewLine + "end";
+				body = "begin" + LineBreakTab + body + Environment.NewLine + "end";
 
 			return body;
 		}
@@ -144,7 +168,11 @@ namespace Randal.Sql.Scripting
 			var dependencyTypeList = GetDependencyTypeList(requestedDependencyTypes);
 
 			var dependencies = _server.GetDependencies(sqlSmoObject)
-				.Where(x => x.IsRootNode == false && dependencyTypeList.Contains(x.Urn.Type))
+				.Where(x => 
+					x.IsRootNode == false && 
+					dependencyTypeList.Contains(x.Urn.Type) && 
+					InSameDatabase(sqlSmoObject, x)
+				)
 				.Select(x => x.Urn.GetNameForType(x.Urn.Type))
 				.ToList();
 
@@ -152,6 +180,14 @@ namespace Randal.Sql.Scripting
 				return string.Empty;
 
 			return "--:: need " + string.Join(", ", dependencies) + Environment.NewLine;
+		}
+
+		private static bool InSameDatabase(SqlSmoObject sqlSmoObject, DependencyNode x)
+		{
+			return 0 == string.Compare(
+				x.Urn.GetNameForType("Database"), 
+				sqlSmoObject.Urn.GetNameForType("Database"), 
+				StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		private static IEnumerable<string> GetDependencyTypeList(DatabaseObjectTypes requestedDependencyTypes)
@@ -170,6 +206,10 @@ namespace Randal.Sql.Scripting
 		}
 
 		private readonly IServer _server;
+		private static readonly string 
+			DoubleLineBreak = Environment.NewLine + Environment.NewLine,
+			LineBreakTab = Environment.NewLine + '\t'
+		;
 		private static readonly Regex PatternLineEndings = new Regex(@"[\t ]*\r?\n", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
 		private const string 
@@ -239,14 +279,15 @@ if(dbo.coreTableExists('{table}', '{schema}') = 0) begin
 end
 
 --:: main
-if(dbo.coreTableExists('{table}', '{schema}') = 0) begin
+if(dbo.coreGetTableVersion('{table}') < '{version}') begin
 
 	{main}
 
+	exec coreSetTableVersion '{table}', '{version}'
 end
 
 /*
-	select top 100 * from {table}
+	select top 100 * from [{schema}].[{table}]
 */"
 		;
 	}

@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -42,10 +38,6 @@
     <Compile Include="AsyncFileLogger.cs" />
     <Compile Include="LogEntryExtensions.cs" />
     <Compile Include="LoggerStringFormatWrapper.cs" />
-    <Compile Include="Owin\LoggerMiddleware.cs" />
-    <Compile Include="Owin\EnvironmentFormatter.cs" />
-    <Compile Include="Owin\OwinContextFormatter.cs" />
-    <Compile Include="Owin\LoggerOwinMiddleware.cs" />
     <Compile Include="TextWriterLogger.cs" />
     <Compile Include="LogFile.cs" />
     <Compile Include="LogFileManager.cs" />
@@ -66,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
-    <None Include="packages.config" />
     <None Include="Randal.Logging.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

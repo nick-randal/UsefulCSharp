@@ -33,10 +33,15 @@ namespace Randal.Sql.Scripting
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
-		public Scripter SetupSources(params ScriptingSource[] sources)
+		public Scripter AddSources(params ScriptingSource[] sources)
+		{
+			_sources.AddRange(sources);
+			return this;
+		}
+
+		public Scripter ClearSources()
 		{
 			_sources.Clear();
-			_sources.AddRange(sources);
 			return this;
 		}
 
@@ -62,7 +67,7 @@ namespace Randal.Sql.Scripting
 			return this;
 		}
 
-		public void DumpScripts()
+		public Scripter DumpScripts()
 		{
 			foreach (var database in GetDatabases())
 			{
@@ -77,6 +82,8 @@ namespace Randal.Sql.Scripting
 					_logger.AddException(ex);
 				}
 			}
+
+			return this;
 		}
 
 		private IEnumerable<Database> GetDatabases()

@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
 using Fclp;
 
@@ -27,15 +28,35 @@ namespace Randal.Sql.Scripting.App
 		public List<string> IncludeDatabases { get; set; }
 
 		public List<string> ExcludeDatabases { get; set; }
+
+		public bool ScriptStoredProcedures { get; set; }
+
+		public bool ScriptFunctions { get; set; }
+
+		public bool ScriptTables { get; set; }
+
+		public bool ScriptViews { get; set; }
 	}
 
 	public sealed class AppOptionsParser : FluentCommandLineBuilder<AppOptions>
 	{
 		public AppOptionsParser()
 		{
-			Setup(x => x.Server)
-				.As('s', "server")
-				.WithDescription(ServerHelpText)
+			SetupHelp("?", "h", "help").Callback(x => Console.WriteLine(x));
+
+			Setup(x => x.ScriptFunctions)
+				.As('f', "functions")
+				.WithDescription(ScriptUdfHelp)
+				.SetDefault(true);
+
+			Setup(x => x.IncludeDatabases)
+				.As('i', "include")
+				.WithDescription(IncludeDatabasesHelpText)
+				.SetDefault(new List<string>());
+
+			Setup(x => x.LogFolder)
+				.As('l', "logFolder")
+				.WithDescription(LogFolderHelpText)
 				.Required();
 
 			Setup(x => x.OutputFolder)
@@ -43,15 +64,25 @@ namespace Randal.Sql.Scripting.App
 				.WithDescription(OutputFolderHelpText)
 				.Required();
 
-			Setup(x => x.LogFolder)
-				.As('l', "logFolder")
-				.WithDescription(LogFolderHelpText)
+			Setup(x => x.ScriptStoredProcedures)
+				.As('p', "procedures")
+				.WithDescription(ScriptSprocsHelp)
+				.SetDefault(true);
+
+			Setup(x => x.Server)
+				.As('s', "server")
+				.WithDescription(ServerHelpText)
 				.Required();
 
-			Setup(x => x.IncludeDatabases)
-				.As('i', "include")
-				.WithDescription(IncludeDatabasesHelpText)
-				.SetDefault(new List<string>());
+			Setup(x => x.ScriptTables)
+				.As('t', "tables")
+				.WithDescription(ScriptTablesHelp)
+				.SetDefault(false);
+
+			Setup(x => x.ScriptViews)
+				.As('v', "views")
+				.WithDescription(ScriptViewsHelp)
+				.SetDefault(true);
 
 			Setup(x => x.ExcludeDatabases)
 				.As('x', "exclude")
@@ -64,7 +95,11 @@ namespace Randal.Sql.Scripting.App
 			OutputFolderHelpText = @"Folder path where schema objects will be scripted.",
 			LogFolderHelpText = @"Folder path for the log file to be written.",
 			IncludeDatabasesHelpText = "Only include these databases when scripting.",
-			ExcludeDatabasesHelptText = "Exclude these databases when scripting."
+			ExcludeDatabasesHelptText = "Exclude these databases when scripting.",
+			ScriptTablesHelp = "Include script definitions for Tables.",
+			ScriptSprocsHelp = "Include script definitions for Stored Procedures.",
+			ScriptViewsHelp = "Include script definitions for Views.",
+			ScriptUdfHelp = "Include script definitions for User Defined Functions."
 		;
 	}
 }

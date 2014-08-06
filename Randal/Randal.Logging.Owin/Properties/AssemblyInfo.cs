@@ -18,12 +18,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Randal.Core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Randal.Logging.Owin")]
+[assembly: AssemblyDescription("OWIN Middleware for Randal.Logging")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
-[assembly: AssemblyProduct("Randal.Core")]
-[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal, All Rights Reserved")]
+[assembly: AssemblyProduct("Randal.Logging.Owin")]
+[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("4fa5329f-1b81-47d2-8bb9-c51db265f4fc")]
+[assembly: Guid("a7d36e5b-237c-4a8f-8411-e93300940819")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -48,5 +48,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.3")]
-[assembly: AssemblyFileVersion("1.0.0.3")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

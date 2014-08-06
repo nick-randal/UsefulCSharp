@@ -11,36 +11,62 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using CommandLine;
-using CommandLine.Text;
+using System;
+using Fclp;
 
 namespace Randal.Sql.Deployer.App
 {
 	public sealed class AppOptions
 	{
-		[Option('p', "projectFolder", Required = true,
-			HelpText = "The project folder containg the config.json an all associated SQL files.")]
 		public string ProjectFolder { get; set; }
 
-		[Option('l', "logFolder", Required = true, HelpText = "Directory where the log file will be written.")]
 		public string LogFolder { get; set; }
 
-		[Option('s', "server", Required = true, HelpText = "The SQL Server that the project will be deployed against.")]
 		public string Server { get; set; }
 
-		[Option('n', "noTrans", Required = false, HelpText = "Do not use a transaction to execute scripts.")]
 		public bool NoTransaction { get; set; }
 
-		[Option('r', "rollback", Required = false, HelpText = "Rollback the transaction, even if there were no errors.")]
 		public bool Rollback { get; set; }
+	}
 
-		[ParserState]
-		public IParserState LastParserState { get; set; }
-
-		[HelpOption]
-		public string GetUsage()
+	public sealed class AppOptionsParser : FluentCommandLineBuilder<AppOptions>
+	{
+		public AppOptionsParser()
 		{
-			return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
+			SetupHelp("?", "h", "help").Callback(x => Console.WriteLine(x));
+
+			Setup(x => x.ProjectFolder)
+				.As('p', "projectFolder")
+				.WithDescription(ProjectFolderHelpText)
+				.Required();
+
+			Setup(x => x.LogFolder)
+				.As('l', "logFolder")
+				.WithDescription(LogFolderHelpText)
+				.Required();
+
+			Setup(x => x.Server)
+				.As('s', "server")
+				.WithDescription(ServerHelpText)
+				.Required();
+
+			Setup(x => x.NoTransaction)
+				.As('n', "noTrans")
+				.WithDescription(NoTransactionHelpText)
+				.SetDefault(false);
+
+			Setup(x => x.Rollback)
+				.As('r', "rollback")
+				.WithDescription(RollbackHelptText)
+				.SetDefault(false);
 		}
+
+		public const string
+			ProjectFolderHelpText = @"The project folder containg the config.json an all associated SQL files.",
+			ServerHelpText = @"The SQL Server that the project will be deployed against.",
+			LogFolderHelpText = @"Directory where the log file will be written.",
+			NoTransactionHelpText = "Do not use a transaction to execute scripts.",
+			RollbackHelptText = "Rollback the transaction, even if there were no errors."
+		;
 	}
 }

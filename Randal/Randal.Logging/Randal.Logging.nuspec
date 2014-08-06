@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Logging</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Simplified code base by converting to async await.</releaseNotes>
+    <releaseNotes>Removed OWIN to separate library.</releaseNotes>
     <copyright>Copyright 2014 Nicholas Randal</copyright>
-    <tags>Log,Logging,Asynchronous,OWIN</tags>
+    <tags>Log,Logging,Asynchronous</tags>
   </metadata>
 </package>

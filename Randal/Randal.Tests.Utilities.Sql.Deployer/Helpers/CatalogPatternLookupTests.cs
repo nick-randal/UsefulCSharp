@@ -23,7 +23,7 @@ namespace Randal.Tests.Sql.Deployer.Helpers
 	public sealed class CatalogPatternLookupTests : BaseUnitTest<CatalogPatternLookupThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveEmptyLookupWhenCreatingInstance()
+		public void ShouldHaveEmptyLookup_WhenCreatingInstance()
 		{
 			When(Creating);
 
@@ -32,7 +32,7 @@ namespace Randal.Tests.Sql.Deployer.Helpers
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveRegexWhenGettingPatternGivenText()
+		public void ShouldHaveRegex_WhenGettingPattern_GivenText()
 		{
 			Given.Text = "ma%er";
 

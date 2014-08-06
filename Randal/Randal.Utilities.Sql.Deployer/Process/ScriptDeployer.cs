@@ -157,6 +157,9 @@ namespace Randal.Sql.Deployer.Process
 					);
 			}
 
+			if(matchingDatabases.Count == 0)
+				throw new InvalidOperationException("No matching catalogs found for script '" + script.Name + "'. Check the 'catalog' directive.");
+
 			return matchingDatabases.Distinct().OrderBy(x => x);
 		}
 

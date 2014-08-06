@@ -36,17 +36,12 @@
     <StartupObject>Randal.Sql.Deployer.App.SqlDeployerProgram</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="FluentCommandLineParser">
+      <HintPath>..\packages\FluentCommandLineParser.1.2.2\lib\net35\FluentCommandLineParser.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Owin">
-      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Randal.Logging">
-      <HintPath>..\packages\Randal.Logging.1.0.0.3\lib\net45\Randal.Logging.dll</HintPath>
+    <Reference Include="Randal.Logging, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Randal.Logging.1.0.0.4\lib\net45\Randal.Logging.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

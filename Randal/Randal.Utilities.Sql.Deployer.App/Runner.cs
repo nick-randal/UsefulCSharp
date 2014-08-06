@@ -56,7 +56,7 @@ namespace Randal.Sql.Deployer.App
 
 					commit = _settings.ShouldRollback == false;
 				}
-				catch (RunnerException ex)
+				catch (Exception ex)
 				{
 					_logger.AddException(ex);
 				}
@@ -131,8 +131,6 @@ namespace Randal.Sql.Deployer.App
 
 		public void Dispose()
 		{
-			if (_logger != null)
-				_logger.BaseLogger.Dispose();
 		}
 
 		private readonly ILoggerStringFormatWrapper _logger;
