@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Randal.Sql.Scripting
 {
@@ -20,7 +21,7 @@ namespace Randal.Sql.Scripting
 		string CurrentFolder { get; }
 		void CreateDirectory(string databaseName, string subFolder);
 		void WriteScriptFile(string name, string text);
-		void WriteScriptFileAsync(string name, string text);
+		Task WriteScriptFileAsync(string name, string text);
 	}
 
 	public sealed class ScriptFileManager : IScriptFileManager
@@ -51,7 +52,10 @@ namespace Randal.Sql.Scripting
 
 		public void WriteScriptFile(string name, string text)
 		{
-			var script = new FileInfo(Path.Combine(CurrentFolder, name + SqlExtension));
+			if (name.EndsWith(SqlExtension) == false)
+				name += SqlExtension;
+
+			var script = new FileInfo(Path.Combine(CurrentFolder, name));
 
 			using (var writer = new StreamWriter(script.OpenWrite()))
 			{
@@ -59,9 +63,12 @@ namespace Randal.Sql.Scripting
 			}
 		}
 
-		public async void WriteScriptFileAsync(string name, string text)
+		public async Task WriteScriptFileAsync(string name, string text)
 		{
-			var script = new FileInfo(Path.Combine(CurrentFolder, name + SqlExtension));
+			if (name.EndsWith(SqlExtension) == false)
+				name += SqlExtension;
+
+			var script = new FileInfo(Path.Combine(CurrentFolder, name));
 
 			using (var writer = new StreamWriter(script.OpenWrite()))
 			{

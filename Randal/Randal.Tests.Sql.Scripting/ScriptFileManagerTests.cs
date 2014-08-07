@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System.IO;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -23,15 +24,53 @@ namespace Randal.Tests.Sql.Scripting
 	public sealed class ScriptFileManagerTests : BaseUnitTest<ScriptFileManagerThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveDirectoryWhenCreatingDirectory()
+		public void ShouldHaveDirectory_WhenCreatingDirectory()
 		{
 			Given.DatabaseName = "Research";
 			Given.SubFolder = "Views";
 
-			When(AddingDirectory);
+			When(CreatingDirectory);
 
 			Then.Exists.Should().BeTrue();
 			Then.Manager.CurrentFolder.Should().Be(@".\Research\Views");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveFile_WhenWritingScript_GivenText()
+		{
+			Given.DatabaseName = "Research";
+			Given.SubFolder = "Views";
+			Given.File = "Test";
+			Given.Text = "Select 1;";
+
+			When(CreatingDirectory, WritingScript);
+
+			Then.Exists.Should().BeTrue();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveFile_WhenWritingScriptAsync_GivenText()
+		{
+			Given.DatabaseName = "Research";
+			Given.SubFolder = "Views";
+			Given.File = "Test";
+			Given.Text = "Select 1;";
+
+			When(CreatingDirectory, WritingScriptAsync);
+
+			Then.Exists.Should().BeTrue();
+		}
+
+		private async void WritingScriptAsync()
+		{
+			await Then.Manager.WriteScriptFileAsync(Given.File, Given.Text);
+			Then.Exists = new FileInfo(".\\" + Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
+		}
+
+		private void WritingScript()
+		{
+			Then.Manager.WriteScriptFile(Given.File, Given.Text);
+			Then.Exists = new FileInfo(".\\" + Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
 		}
 
 		protected override void Creating()
@@ -39,7 +78,7 @@ namespace Randal.Tests.Sql.Scripting
 			Then.Manager = new ScriptFileManager(".");
 		}
 
-		private void AddingDirectory()
+		private void CreatingDirectory()
 		{
 			Then.Manager.CreateDirectory(Given.DatabaseName, Given.SubFolder);
 

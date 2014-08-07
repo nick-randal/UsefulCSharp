@@ -4,6 +4,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Scripting;
+using Rhino.Mocks;
 
 namespace Randal.Tests.Sql.Scripting
 {
