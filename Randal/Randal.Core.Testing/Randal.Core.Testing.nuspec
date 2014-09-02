@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Added standard Postive and Negative test attributes.</releaseNotes>
+		<releaseNotes>Added Child Builder interface.</releaseNotes>
 		<copyright>Copyright 2014 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
