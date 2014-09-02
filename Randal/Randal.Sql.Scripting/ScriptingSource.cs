@@ -25,11 +25,9 @@ namespace Randal.Sql.Scripting
 
 	public sealed class ScriptingSource : IScriptingSource
 	{
-		private readonly Func<IServer, Database, IEnumerable<ScriptSchemaObjectBase>> _getObjectFuncs;
-
-		public ScriptingSource(string subFolder, Func<IServer, Database, IEnumerable<ScriptSchemaObjectBase>> getObjectFuncs)
+		public ScriptingSource(string subFolder, Func<IServer, Database, IEnumerable<ScriptSchemaObjectBase>> getObjectsFunc)
 		{
-			_getObjectFuncs = getObjectFuncs;
+			_getObjectsFunc = getObjectsFunc;
 			SubFolder = subFolder;
 		}
 
@@ -37,7 +35,9 @@ namespace Randal.Sql.Scripting
 
 		public IEnumerable<ScriptSchemaObjectBase> GetScriptableObjects(IServer server, Database database)
 		{
-			return _getObjectFuncs(server, database);
+			return _getObjectsFunc(server, database);
 		}
+
+		private readonly Func<IServer, Database, IEnumerable<ScriptSchemaObjectBase>> _getObjectsFunc;
 	}
 }

@@ -12,7 +12,6 @@
 // GNU General Public License for more details.
 
 using System.IO;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;

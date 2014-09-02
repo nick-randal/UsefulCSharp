@@ -1,4 +1,17 @@
-﻿using FluentAssertions;
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+using FluentAssertions;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -18,11 +31,14 @@ namespace Randal.Tests.Sql.Scripting
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveTextWhenFormattingStoredProcedure()
+		public void ShouldHaveText_WhenFormatting_GivenStoredProcedure()
 		{
 			Given.Procedure = "spTest";
 			When(Formatting);
-			Then.Text.Should().Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\nexec coreCreateProcedure '[dbo].[spTest]'\r\nGO\r\n\r\n--:: main\r\nALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[spTest] \r\n*/");
+			Then.Text.Should()
+				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
+					"exec coreCreateProcedure '[dbo].[spTest]'\r\nGO\r\n\r\n--:: main\r\n" +
+					"ALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[spTest] \r\n*/");
 		}
 
 		protected override void Creating()
@@ -34,12 +50,28 @@ namespace Randal.Tests.Sql.Scripting
 
 		private void Formatting()
 		{
-			var sproc = new StoredProcedure(new Database(new Server(), "Test"), Given.Procedure)
+			ScriptSchemaObjectBase schemaObject;
+
+			if (GivensDefined("Function"))
 			{
-				Schema = "dbo",
-				TextHeader = "create procedure spTest", TextBody = "return -1"
-			};
-			Then.Text = Then.Formatter.Format(sproc);
+				schemaObject = new StoredProcedure(new Database(new Server(), "Test"), Given.Procedure)
+				{
+					Schema = "dbo",
+					TextHeader = "create procedure spTest",
+					TextBody = "return -1"
+				};
+			}
+			else
+			{
+				schemaObject = new UserDefinedFunction(new Database(new Server(), "Test"), Given.Function)
+				{
+					Schema = "dbo",
+					TextHeader = "create function getTest",
+					TextBody = "return -1"
+				};
+			}
+
+			Then.Text = Then.Formatter.Format(schemaObject);
 		}
 	}
 

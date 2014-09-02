@@ -17,4 +17,9 @@ namespace Randal.Core.Testing.UnitTest
 	{
 		TBuild Build();
 	}
+
+	public interface IChildTestObjectBuilder<out TBuild, out TParentBuilder> : ITestObjectBuilder<TBuild>
+	{
+		TParentBuilder ParentBuilder { get; }
+	}
 }

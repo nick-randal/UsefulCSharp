@@ -31,9 +31,16 @@ namespace Randal.Sql.Scripting
 	public sealed class ServerWrapper : IServer
 	{
 		public ServerWrapper(string serverInstance)
+			: this(new Server(serverInstance))
+		{}
+
+		public ServerWrapper(Server server) : this(server, new DependencyWalker(server))
+		{}
+
+		public ServerWrapper(Server server, DependencyWalker dependencyWalker)
 		{
-			_server = new Server(serverInstance);
-			_dependencyWalker = new DependencyWalker(_server);
+			_server = server;
+			_dependencyWalker = dependencyWalker;
 		}
 
 		public IEnumerable<Database> GetDatabases()

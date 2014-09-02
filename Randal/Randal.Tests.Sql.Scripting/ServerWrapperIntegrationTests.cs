@@ -1,10 +1,23 @@
-﻿using System.Collections.Generic;
+﻿// Useful C#
+// Copyright (C) 2014 Nicholas Randal
+// 
+// Useful C# is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Scripting;
-using Rhino.Mocks;
 
 namespace Randal.Tests.Sql.Scripting
 {
@@ -12,19 +25,69 @@ namespace Randal.Tests.Sql.Scripting
 	public sealed class ServerWrapperIntegrationTests : BaseUnitTest<ServerWrapperThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidWrapperWhenCreatingInstance()
+		public void ShouldHaveValidWrapper_WhenCreatingInstance()
 		{
-			Given.Name = ".";
 			When(Creating);
 			Then.Server.Should().NotBeNull().And.BeAssignableTo<IServer>();
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveListWhenGettingDatabases()
+		public void ShouldHaveList_WhenGettingDatabases()
 		{
-			Given.Name = ".";
 			When(GettingDatabases);
 			Then.Databases.Should().NotBeEmpty();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveList_WhenGettingProcedures()
+		{
+			Given.Database = "master";
+			When(GettingDatabases, GettingProcedures);
+			Then.Procedures.Should().NotBeEmpty();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveList_WhenGettingViews()
+		{
+			Given.Database = "master";
+			When(GettingDatabases, GettingViews);
+			Then.Views.Should().NotBeEmpty();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveList_WhenGettingFunctions()
+		{
+			Given.Database = "master";
+			When(GettingDatabases, GettingFunctions);
+			Then.Functions.Should().NotBeEmpty();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveList_WhenGettingTables()
+		{
+			Given.Database = "master";
+			When(GettingDatabases, GettingTables);
+			Then.Tables.Should().NotBeEmpty();
+		}
+
+		private void GettingFunctions()
+		{
+			Then.Functions = Then.Server.GetUserDefinedFunctions(Then.Databases.First(x => x.Name == Given.Database));
+		}
+
+		private void GettingTables()
+		{
+			Then.Tables = Then.Server.GetTables(Then.Databases.First(x => x.Name == Given.Database));
+		}
+
+		private void GettingViews()
+		{
+			Then.Views = Then.Server.GetViews(Then.Databases.First(x => x.Name == Given.Database));
+		}
+
+		private void GettingProcedures()
+		{
+			Then.Procedures = Then.Server.GetStoredProcedures(Then.Databases.First(x => x.Name == Given.Database));
 		}
 
 		private void GettingDatabases()
@@ -34,7 +97,7 @@ namespace Randal.Tests.Sql.Scripting
 
 		protected override void Creating()
 		{
-			Then.Server = new ServerWrapper(Given.Name);
+			Then.Server = new ServerWrapper(".");
 		}
 	}
 
@@ -42,5 +105,9 @@ namespace Randal.Tests.Sql.Scripting
 	{
 		public ServerWrapper Server;
 		public IEnumerable<Database> Databases;
+		public IEnumerable<UserDefinedFunction> Functions;
+		public IEnumerable<StoredProcedure> Procedures;
+		public IEnumerable<Table> Tables;
+		public IEnumerable<View> Views;
 	}
 }

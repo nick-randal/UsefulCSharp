@@ -33,6 +33,12 @@ namespace Randal.Sql.Scripting
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
+		public IReadOnlyList<string> IncludedDatabases { get { return _includeTheseDatabases.AsReadOnly(); } }
+
+		public IReadOnlyList<string> ExcludedDatabases { get { return _excludeTheseDatabases.AsReadOnly(); } }
+
+		public IReadOnlyList<ScriptingSource> Sources { get { return _sources; } } 
+
 		public Scripter AddSources(params ScriptingSource[] sources)
 		{
 			_sources.AddRange(sources);
@@ -69,6 +75,9 @@ namespace Randal.Sql.Scripting
 
 		public Scripter DumpScripts()
 		{
+			if (_sources.Count == 0)
+				throw new InvalidOperationException("Sources need to be setup prior to dumping scripts.");
+
 			foreach (var database in GetDatabases())
 			{
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
@@ -129,6 +138,7 @@ namespace Randal.Sql.Scripting
 			{
 				{"StoredProcedure", "sproc"}, {"UserDefinedFunction", "udf"}, {"View", "view"}
 			};
+
 		private readonly IServer _server;
 		private readonly IScriptFormatter _formatter;
 		private readonly IScriptFileManager _scriptFileManager;

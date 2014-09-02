@@ -39,15 +39,15 @@ namespace Randal.Tests.Logging
 			Then.Manager = null;
 		}
 
-		[TestMethod, ExpectedException(typeof (ArgumentNullException))]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{
 			Given.NullSettings = true;
-
-			When(Creating);
+			ThrowsExceptionWhen(Creating);
+			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnLogManagerWhenCreating()
 		{
 			When(Creating);
@@ -56,7 +56,7 @@ namespace Randal.Tests.Logging
 			Then.Manager.LogFileName.Should().BeNull();
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnOpenedWriterWhenGettingStreamWriter()
 		{
 			When(GettingStreamWriter);
@@ -65,7 +65,7 @@ namespace Randal.Tests.Logging
 			Then.Manager.LogFileName.Should().EndWith("_001.log");
 		}
 
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldReturnAnotherInstanceOfWriterWhenGettingStreamGivenAnExhaustedLog()
 		{
 			Given.Size = 2;
