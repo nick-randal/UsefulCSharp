@@ -1,7 +1,7 @@
 Given When Then unit testing pattern.
 
-This library provides a base class to help facilitate and structure the Given When Then patter.  
-One of the best features is the use oF the DLR for the Givens.  You can define any Given property on the fly without having previously defined it.  This probably sounds like C# heresy but it's true.
+This library provides a base class and DSL to help facilitate and structure the Given When Then test pattern.  
+One of the best features is the use oF the DLR for the Givens.  You can define any Given property on the fly without having previously defined it.
 
 The other focus is around composable When statements.
 
@@ -21,35 +21,35 @@ namespace Someplace
 	{
 		protected override void OnSetup()
 		{
-			// Optional : est setup
+			// Optional : test setup, this is to avoid the extra noise of Attributes
 		}
 
 		protected override void OnTeardown()
 		{
-			// Optional : test teardown
+			// Optional : test teardown, this is to avoid the extra noise of Attributes
 		}
 		
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstanceWithValueWhenCreatingObjectGivenValue123()
 		{
 			Given.NeededValue = 123;	// Given is a dynamic object, create any number of property values on the fly
 			
-			When(Creating);				// When consumes and executes a list of Action
+			When(Creating);				// 'When' consumes and executes a list of Action
 			
 			Then.Target.Should().NotBeNull();
 		}
 		
-		[TestMethod]
+		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedTextWhenFormattingGivenInstanceWithValue123()
 		{
 			Given.NeededValue = 123;
 			
-			When(Creating, Formatting);
+			When(Formatting);	// Creating can be left out, as it is assumed as our first action
 			
 			Then.Text.Should().Be("Object said, 123");
 		}
 		
-		[TestMethod]
+		[TestMethod, NegativeTest]
 		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
@@ -68,7 +68,7 @@ namespace Someplace
 		
 		private void Formatting()
 		{
-			Then.Tex = Then.Target.Format();
+			Then.Text = Then.Target.Format();
 		}
 	}
 
