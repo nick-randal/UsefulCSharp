@@ -21,11 +21,12 @@ namespace Randal.Tests.QuickXml
 		[TestMethod, PositiveTest]
 		public void ShouldHaveXmlDocument_WhenParsing_GivenDocumentStructure()
 		{
-			Given.Text = "?1.0\nA\n\tB";
+			Given.Text = "A\n\tB";
 
 			When(Parsing);
 
 			Then.Document.Should().NotBeNull();
+			Then.Document.Root.Name.Should().Be("A");
 		}
 
 		private void Parsing()
