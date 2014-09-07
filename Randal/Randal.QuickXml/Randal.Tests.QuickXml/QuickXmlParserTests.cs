@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using FluentAssertions;
 using Randal.QuickXml;
 using System.Xml.Linq;
+using System.IO;
 
 namespace Randal.Tests.QuickXml
 {
@@ -15,7 +17,7 @@ namespace Randal.Tests.QuickXml
 		{
 			When(Creating);
 
-			Then.Target.Should().NotBeNull().And.Should().BeAssignableTo<IQuickXmlParser>();
+			Then.Target.Should().NotBeNull().And.BeAssignableTo<IQuickXmlParser>(" because object is a QuickXmlParser.");
 		}
 
 		[TestMethod, PositiveTest]
@@ -25,13 +27,14 @@ namespace Randal.Tests.QuickXml
 
 			When(Parsing);
 
-			Then.Document.Should().NotBeNull();
-			Then.Document.Root.Name.Should().Be("A");
+			Then.Fragment.Should().NotBeNull();
+			Then.Fragment.Name.LocalName.Should().Be("A");
+			Then.Fragment.Elements().First().Name.LocalName.Should().Be("B");
 		}
 
 		private void Parsing()
 		{
-			throw new NotImplementedException();
+			Then.Fragment = Then.Target.ParseToXElement(new StringReader(Given.Text));
 		}
 
 		protected override void Creating()
@@ -44,6 +47,6 @@ namespace Randal.Tests.QuickXml
 	{
 		public QuickXmlParser Target;
 		public XDocument Document;
-
+		public XElement Fragment;
 	}
 }

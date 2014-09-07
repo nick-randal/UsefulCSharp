@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="QuickXmlParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QDataTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
