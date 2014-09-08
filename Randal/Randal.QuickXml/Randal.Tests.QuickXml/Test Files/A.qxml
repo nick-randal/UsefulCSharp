@@ -1,17 +1,26 @@
 ﻿Organization
-	Department
-	"Human Resources"
-		People
-			Person
-			"Bob Sugar"
-			Salary 35000
-			Age 35
-			YearsOfService 2
-			Ambition Climb the 7 summits
-
-			Person
-			"Jane Doe"
-			Salary 45000
-			Age 56
-			YearsOfService 5
-			Ambition Attain title of Vice President
+	Departments
+		Department
+		"Human Resources"
+			People
+				Person
+				"Bob Sugar"
+				Salary 35000
+				Age 35
+				YearsOfService 2
+				Ambition Climb the 7 summits
+				Person
+				"Jane Doe"
+				Salary 45000
+				Age 56
+				YearsOfService 5
+				Ambition Attain title of Vice President
+		!No comment!
+		Department
+		"IT"
+			People
+				Person
+				"Buffalo Bill"
+				Age 165
+	Data
+	[Some data here]

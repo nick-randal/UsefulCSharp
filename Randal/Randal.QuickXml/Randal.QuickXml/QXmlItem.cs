@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -19,12 +15,10 @@ namespace Randal.QuickXml
 
 	public abstract class QXmlItem : IQxmlItem
 	{
-		protected QXmlItem(XmlNodeType type, int depth, string name, string value)
+		protected QXmlItem(XmlNodeType type, int depth)
 		{
 			Type = type;
-			Depth = Depth;
-			Name = name;
-			Value = value;
+			Depth = depth;
 		}
 
 		public XmlNodeType Type { get; protected set; }
@@ -37,7 +31,11 @@ namespace Randal.QuickXml
 
 	public sealed class QAttribute : QXmlItem
 	{
-		public QAttribute(int depth, string name, string value) : base(XmlNodeType.Attribute, depth, name, value) { }
+		public QAttribute(int depth, string name, string value) : base(XmlNodeType.Attribute, depth)
+		{
+			Name = name;
+			Value = value;
+		}
 
 		public override XNode ToNode()
 		{
@@ -47,7 +45,15 @@ namespace Randal.QuickXml
 
 	public sealed class QElement : QXmlItem
 	{
-		public QElement(int depth, string name) : base(XmlNodeType.Element, depth, name, null) { }
+		public QElement(int depth, string name) : base(XmlNodeType.Element, depth)
+		{
+			Name = name;
+		}
+
+		public override string Value
+		{
+			get { throw new NotSupportedException(); }
+		}
 
 		public override XNode ToNode()
 		{
@@ -57,26 +63,51 @@ namespace Randal.QuickXml
 
 	public sealed class QContent : QXmlItem
 	{
-		public QContent(int depth, string value) : base(XmlNodeType.Text, depth, null, value) { }
+		public QContent(int depth, string value) : base(XmlNodeType.Text, depth)
+		{
+			Value = value;
+		}
+
+		public override string Name
+		{
+			get { throw new NotSupportedException(); }
+		}
 
 		public override XNode ToNode()
 		{
-			var x = new XElement("");
-
 			return new XText(Value);
+		}
+	}
+
+	public sealed class QComment : QXmlItem
+	{
+		public QComment(int depth, string value)
+			: base(XmlNodeType.Comment, depth)
+		{
+			Value = value;
+		}
+
+		public override string Name
+		{
+			get { throw new NotSupportedException(); }
+		}
+
+		public override XNode ToNode()
+		{
+			return new XComment(Value);
 		}
 	}
 
 	public sealed class QData : QXmlItem
 	{
-		public QData(int depth, string value) : base(XmlNodeType.CDATA, depth, null, value) { }
+		public QData(int depth, string value) : base(XmlNodeType.CDATA, depth)
+		{
+			Value = value;
+		}
 
 		public override string Name
 		{
-			get
-			{
-				throw new NotSupportedException();
-			}
+			get { throw new NotSupportedException(); }
 		}
 
 		public override XNode ToNode()
