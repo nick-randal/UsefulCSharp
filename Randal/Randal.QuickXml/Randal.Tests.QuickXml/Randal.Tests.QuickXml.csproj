@@ -79,8 +79,9 @@
     <Compile Include="QuickXmlParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QDataTests.cs" />
-    <Compile Include="QxmlParserDefinitionTests.cs" />
+    <Compile Include="QuickXmlParserDefinitionTests.cs" />
     <Compile Include="QAttributeTests.cs" />
+    <Compile Include="QuickXmlGeneratorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -93,6 +94,11 @@
       <Project>{ff5d390e-2e80-483d-a566-72a48d149d27}</Project>
       <Name>Randal.QuickXml</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Files\B.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace Randal.QuickXml
 {
-	public interface IQxmlItem
+	public interface IQuickXmlItem
 	{
 		XmlNodeType Type { get; }
 		int Depth { get; }
@@ -13,9 +13,9 @@ namespace Randal.QuickXml
 		XNode ToNode();
 	}
 
-	public abstract class QXmlItem : IQxmlItem
+	public abstract class QuickXmlItem : IQuickXmlItem
 	{
-		protected QXmlItem(XmlNodeType type, int depth)
+		protected QuickXmlItem(XmlNodeType type, int depth)
 		{
 			Type = type;
 			Depth = depth;
@@ -29,7 +29,7 @@ namespace Randal.QuickXml
 		public abstract XNode ToNode();
 	}
 
-	public sealed class QAttribute : QXmlItem
+	public sealed class QAttribute : QuickXmlItem
 	{
 		public QAttribute(int depth, string name, string value) : base(XmlNodeType.Attribute, depth)
 		{
@@ -43,7 +43,7 @@ namespace Randal.QuickXml
 		}
 	}
 
-	public sealed class QElement : QXmlItem
+	public sealed class QElement : QuickXmlItem
 	{
 		public QElement(int depth, string name) : base(XmlNodeType.Element, depth)
 		{
@@ -61,7 +61,7 @@ namespace Randal.QuickXml
 		}
 	}
 
-	public sealed class QContent : QXmlItem
+	public sealed class QContent : QuickXmlItem
 	{
 		public QContent(int depth, string value) : base(XmlNodeType.Text, depth)
 		{
@@ -79,7 +79,7 @@ namespace Randal.QuickXml
 		}
 	}
 
-	public sealed class QComment : QXmlItem
+	public sealed class QComment : QuickXmlItem
 	{
 		public QComment(int depth, string value)
 			: base(XmlNodeType.Comment, depth)
@@ -98,7 +98,7 @@ namespace Randal.QuickXml
 		}
 	}
 
-	public sealed class QData : QXmlItem
+	public sealed class QData : QuickXmlItem
 	{
 		public QData(int depth, string value) : base(XmlNodeType.CDATA, depth)
 		{

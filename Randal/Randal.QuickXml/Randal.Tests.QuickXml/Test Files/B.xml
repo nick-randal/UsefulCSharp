@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<xBusinessRules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xBusinessRules.xsd">
+	<!-- global values -->
+	<ObjectLookup id="YearlyIncome" objectId="Enrollment" member="YearlyIncome"/>
+	<ObjectLookup id="IsMilitary" objectId="Enrollment" member="IsMilitary"/>
+	<Logic>
+		<If>
+			<And>
+				<IsTrue valueId="IsMilitary" />
+			</And>
+			<Do>
+				<Logic>
+					<If>
+						<And>
+							<LessThan leftId="YearlyIncome" rightId="HighIncome">
+								<Integer id="HighIncome" value="40000"/>
+							</LessThan>
+						</And>
+						<Do>
+							<Boolean id="IsEnrolled" value="true"/>
+							<Integer id="Benefit" value="75" />
+						</Do>
+					</If>
+					<ElseIf>
+						<And>
+							<LessThan leftId="YearlyIncome" rightId="HighIncome">
+								<Integer id="HighIncome" value="80000"/>
+							</LessThan>
+						</And>
+						<Do>
+							<Boolean id="IsEnrolled" value="true"/>
+							<Integer id="Benefit" value="50" />
+						</Do>
+					</ElseIf>
+					<Else>
+						<Boolean id="IsEnrolled" value="false"/>
+						<Integer id="Benefit" value="0" />
+					</Else>
+				</Logic>
+			</Do>
+		</If>
+		<Else>
+			<Logic>
+				<!-- not in military -->
+				<If>
+					<And>
+						<LessThan leftId="YearlyIncome" rightId="HighIncome">
+							<Integer id="HighIncome" value="30000"/>
+						</LessThan>
+					</And>
+					<Do>
+						<Boolean id="IsEnrolled" value="true"/>
+						<Integer id="Benefit" value="75" />
+					</Do>
+				</If>
+				<ElseIf>
+					<And>
+						<LessThan leftId="YearlyIncome" rightId="HighIncome">
+							<Integer id="HighIncome" value="45000"/>
+						</LessThan>
+					</And>
+					<Do>
+						<Boolean id="IsEnrolled" value="true"/>
+						<Integer id="Benefit" value="50" />
+					</Do>
+				</ElseIf>
+				<ElseIf>
+					<And>
+						<LessThan leftId="YearlyIncome" rightId="HighIncome">
+							<Integer id="HighIncome" value="60000"/>
+						</LessThan>
+					</And>
+					<Do>
+						<Boolean id="IsEnrolled" value="true"/>
+						<Integer id="Benefit" value="25" />
+					</Do>
+				</ElseIf>
+				<Else>
+					<Boolean id="IsEnrolled" value="false"/>
+					<Integer id="Benefit" value="0" />
+				</Else>
+			</Logic>
+		</Else>
+	</Logic>
+	
+</xBusinessRules>

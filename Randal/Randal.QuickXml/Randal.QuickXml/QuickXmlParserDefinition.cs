@@ -4,7 +4,7 @@ using Sprache;
 
 namespace Randal.QuickXml
 {
-	public static class QxmlParserDefinition
+	public static class QuickXmlParserDefinition
 	{
 		private static Parser<T> Escaped<T>(Parser<T> following)
 		{
@@ -61,7 +61,7 @@ namespace Randal.QuickXml
 			)
 		;
 
-		public static readonly Parser<IQxmlItem>
+		public static readonly Parser<IQuickXmlItem>
 			Element =
 			(
 				from ws in Parse.Optional(SpaceOrTab.Many()).Named("Element: Leading Whitespace")
@@ -106,7 +106,7 @@ namespace Randal.QuickXml
 			)
 		;
 
-		public static readonly Parser<IEnumerable<IQxmlItem>> QxmlItems =
+		public static readonly Parser<IEnumerable<IQuickXmlItem>> QxmlItems =
 			from item in ContentData
 				.Or(Comment)
 				.Or(Content)

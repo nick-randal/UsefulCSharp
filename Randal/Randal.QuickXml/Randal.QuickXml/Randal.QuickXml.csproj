@@ -47,8 +47,9 @@
   <ItemGroup>
     <Compile Include="QuickXmlParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QXmlItem.cs" />
-    <Compile Include="QxmlParserDefinition.cs" />
+    <Compile Include="QuickXmlGenerator.cs" />
+    <Compile Include="QuickXmlItem.cs" />
+    <Compile Include="QuickXmlParserDefinition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -15,9 +15,10 @@ namespace Randal.QuickXml
 
 	public sealed class QuickXmlParser : IQuickXmlParser
 	{
-		public QuickXmlParser(Parser<IEnumerable<IQxmlItem>> qxmlParserDefinition)
+		public QuickXmlParser(Parser<IEnumerable<IQuickXmlItem>> qxmlParserDefinition = null)
 		{
-			_qxmlParserDefinition = qxmlParserDefinition;
+			_namespacesLookup = new Dictionary<string, XNamespace>(StringComparer.InvariantCultureIgnoreCase);
+			_qxmlParserDefinition = qxmlParserDefinition ?? QuickXmlParserDefinition.QxmlItems;
 			_elementLookup = new Dictionary<int, XElement>();
 		}
 
@@ -40,7 +41,7 @@ namespace Randal.QuickXml
 				switch (item.Type)
 				{
 					case XmlNodeType.Attribute:
-						element.Add(new XAttribute(item.Name, item.Value));
+						AddAttribute(element, item);
 						break;
 					case XmlNodeType.Text:
 					case XmlNodeType.CDATA:
@@ -55,14 +56,42 @@ namespace Randal.QuickXml
 			return root;
 		}
 
-		private void CreateComment(IQxmlItem item)
+		private void AddAttribute(XElement element, IQuickXmlItem item)
+		{
+			var nameParts = item.Name.Split(':');
+
+			if (nameParts.Length == 1)
+			{
+				element.Add(new XAttribute(item.Name, item.Value));
+				return;
+			}
+
+			var part1 = nameParts[0].Trim();
+			var part2 = nameParts[1].Trim();
+			XNamespace ns;
+
+			if (part1 == "xmlns")
+			{
+				ns = item.Value.Trim();
+				_namespacesLookup.Add(part2, ns);
+				element.Add(new XAttribute(XNamespace.Xmlns + part2, item.Value));
+				return;
+			}
+
+			if(_namespacesLookup.TryGetValue(part1, out ns) == false)
+				throw new InvalidDataException("Namespace definition not found for " + item.Name);
+
+			element.Add(new XAttribute(ns + part2, item.Value));
+		}
+
+		private void CreateComment(IQuickXmlItem item)
 		{
 			var comment = item.ToNode();
 			var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
 			parentElement.Add(comment);
 		}
 
-		private XElement CreateElement(IQxmlItem item, ref XElement root)
+		private XElement CreateElement(IQuickXmlItem item, ref XElement root)
 		{
 			var element = (XElement) item.ToNode();
 
@@ -85,7 +114,8 @@ namespace Randal.QuickXml
 			return element;
 		}
 
-		private readonly Parser<IEnumerable<IQxmlItem>> _qxmlParserDefinition;
+		private readonly IDictionary<string, XNamespace> _namespacesLookup; 
+		private readonly Parser<IEnumerable<IQuickXmlItem>> _qxmlParserDefinition;
 		private readonly IDictionary<int, XElement> _elementLookup;
 	}
 

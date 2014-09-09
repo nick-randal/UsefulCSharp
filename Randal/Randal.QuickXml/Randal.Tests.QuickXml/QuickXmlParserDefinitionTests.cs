@@ -11,7 +11,7 @@ using System;
 namespace Randal.Tests.QuickXml
 {
 	[TestClass]
-	public sealed class QxmlParserDefinitionTests : BaseUnitTest<QxmlParserDefinitionThens>
+	public sealed class QuickXmlParserDefinitionTests : BaseUnitTest<QuickXmlParserDefinitionThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveItem_WhenParsingElement_GivenValidText()
@@ -97,23 +97,20 @@ namespace Randal.Tests.QuickXml
 
 		private void ParsingElement()
 		{
-			Then.Item = QxmlParserDefinition.Element.Parse((string)Given.Text);
+			Then.Item = QuickXmlParserDefinition.Element.Parse((string)Given.Text);
 		}
 
 		private void ParsingComment()
 		{
-			Then.Item = QxmlParserDefinition.Comment.Parse((string)Given.Text);
+			Then.Item = QuickXmlParserDefinition.Comment.Parse((string)Given.Text);
 		}
 
-		protected override void Creating()
-		{
-			
-		}
+		protected override void Creating() { }
 	}
 
-	public sealed class QxmlParserDefinitionThens
+	public sealed class QuickXmlParserDefinitionThens
 	{
-		public IQxmlItem Item;
+		public IQuickXmlItem Item;
 		public XNode Node;
 	}
 }

@@ -105,7 +105,7 @@ namespace Randal.Tests.QuickXml
 
 		protected override void Creating()
 		{
-			Then.Target = new QuickXmlParser(QxmlParserDefinition.QxmlItems);
+			Then.Target = new QuickXmlParser(QuickXmlParserDefinition.QxmlItems);
 		}
 	}
 
