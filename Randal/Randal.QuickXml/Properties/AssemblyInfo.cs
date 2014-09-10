@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Randal.QuickXml")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Author Xml Faster with QuickXML")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.QuickXml")]
