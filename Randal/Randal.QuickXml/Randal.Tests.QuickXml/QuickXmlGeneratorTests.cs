@@ -11,22 +11,52 @@ namespace Randal.Tests.QuickXml
 	[TestClass]
 	public sealed class QuickXmlGeneratorTests : BaseUnitTest<QuickXmlGeneratorThens>
 	{
-		[TestMethod, PositiveTest, DeploymentItem("Test Files\\B.xml", "Test Files")]
+		[TestMethod, PositiveTest, DeploymentItem("Test Files\\", "Test Files\\")]
 		public void ShouldHaveQuickXml_WhenGenerating_GivenXml()
 		{
-			Given.Text = File.ReadAllText("Test Files\\B.xml");
+			Given.Xml = XElement.Parse(File.ReadAllText("Test Files\\B.xml"));
 
 			When(Generating);
 
-			Then.QXml.Should().Be("");
+			var quickXml = File.ReadAllText("Test Files\\B.qxml").NoWhitespace();
+			Then.QXml.NoWhitespace().Should().Be(quickXml);
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveValidText_WhenGenerating_GivenElementWithText()
+		{
+			Given.Xml = new XElement("Test", new XText("Hello world"));
+
+			When(Generating);
+
+			Then.QXml.Should().Be("Test\r\n\t\"Hello world\"\r\n");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveValidText_WhenGenerating_GivenElementWithCData()
+		{
+			Given.Xml = new XElement("Test", new XCData("Hello world"));
+
+			When(Generating);
+
+			Then.QXml.Should().Be("Test\r\n\t[Hello world]\r\n");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveValidText_WhenGenerating_GivenDocument()
+		{
+			Given.Xml = new XDocument(new XElement("Root"));
+
+			When(Generating);
+
+			Then.QXml.Should().Be("Root\r\n");
 		}
 
 		private void Generating()
 		{
-			var root = XElement.Parse(Given.Text);
 			using (var writer = new StringWriter())
 			{
-				Then.Target.GenerateQXml(writer, root);
+				Then.Target.GenerateQuickXml(writer, Given.Xml);
 				writer.Flush();
 				Then.QXml = writer.ToString();
 			}

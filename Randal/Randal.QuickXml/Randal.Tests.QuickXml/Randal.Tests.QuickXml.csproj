@@ -82,9 +82,15 @@
     <Compile Include="QuickXmlParserDefinitionTests.cs" />
     <Compile Include="QAttributeTests.cs" />
     <Compile Include="QuickXmlGeneratorTests.cs" />
+    <Compile Include="GeneratorParserTests.cs" />
+    <Compile Include="TestStringExtensions.cs" />
+    <Compile Include="PartNameTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Test Files\B.qxml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Test Files\A.qxml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -98,6 +104,11 @@
   <ItemGroup>
     <Content Include="Test Files\B.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Test Files\C.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Choose>

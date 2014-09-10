@@ -10,7 +10,6 @@ namespace Randal.QuickXml
 		int Depth { get; }
 		string Name { get; }
 		string Value { get; }
-		XNode ToNode();
 	}
 
 	public abstract class QuickXmlItem : IQuickXmlItem
@@ -25,8 +24,6 @@ namespace Randal.QuickXml
 		public int Depth { get; protected set; }
 		public virtual string Name { get; protected set; }
 		public virtual string Value { get; protected set; }
-
-		public abstract XNode ToNode();
 	}
 
 	public sealed class QAttribute : QuickXmlItem
@@ -35,11 +32,6 @@ namespace Randal.QuickXml
 		{
 			Name = name;
 			Value = value;
-		}
-
-		public override XNode ToNode()
-		{
-			throw new NotSupportedException();
 		}
 	}
 
@@ -54,11 +46,6 @@ namespace Randal.QuickXml
 		{
 			get { throw new NotSupportedException(); }
 		}
-
-		public override XNode ToNode()
-		{
-			return new XElement(Name);
-		}
 	}
 
 	public sealed class QContent : QuickXmlItem
@@ -71,11 +58,6 @@ namespace Randal.QuickXml
 		public override string Name
 		{
 			get { throw new NotSupportedException(); }
-		}
-
-		public override XNode ToNode()
-		{
-			return new XText(Value);
 		}
 	}
 
@@ -91,11 +73,6 @@ namespace Randal.QuickXml
 		{
 			get { throw new NotSupportedException(); }
 		}
-
-		public override XNode ToNode()
-		{
-			return new XComment(Value);
-		}
 	}
 
 	public sealed class QData : QuickXmlItem
@@ -108,11 +85,6 @@ namespace Randal.QuickXml
 		public override string Name
 		{
 			get { throw new NotSupportedException(); }
-		}
-
-		public override XNode ToNode()
-		{
-			return new XCData(Value);
 		}
 	}
 }

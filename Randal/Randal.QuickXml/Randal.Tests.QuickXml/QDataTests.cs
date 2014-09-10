@@ -21,17 +21,6 @@ namespace Randal.Tests.QuickXml
 			Then.Target.Should().NotBeNull();
 		}
 
-		[TestMethod, PositiveTest]
-		public void ShouldHaveValidXNode_WhenConverting()
-		{
-			Given.Depth = 1;
-			Given.Value = "Something";
-
-			When(Converting);
-
-			Then.Node.Should().NotBeNull().And.BeAssignableTo<XCData>();
-		}
-
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenGettingName()
 		{
@@ -46,11 +35,6 @@ namespace Randal.Tests.QuickXml
 		protected override void Creating()
 		{
 			Then.Target = new QData(Given.Depth, Given.Value);
-		}
-
-		private void Converting()
-		{
-			Then.Node = Then.Target.ToNode();
 		}
 
 		private void GettingName()

@@ -1,54 +1,137 @@
 ﻿using System.IO;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Randal.QuickXml
 {
 	public interface IQuickXmlGenerator
 	{
-		void GenerateQXml(TextWriter writer, XElement element);
+		void GenerateQuickXml(TextWriter writer, XElement element);
+		void GenerateQuickXml(TextWriter writer, XDocument element);
 	}
 
 	public sealed class QuickXmlGenerator : IQuickXmlGenerator
 	{
-		public void GenerateQXml(TextWriter writer, XElement root)
+		public void GenerateQuickXml(TextWriter writer, XDocument xml)
 		{
-			Traverse(writer, root);
+			var nav = xml.CreateNavigator();
+
+			Traverse(writer, nav);
 		}
 
-		private static void Traverse(TextWriter writer, XElement element, int depth = 0)
+		public void GenerateQuickXml(TextWriter writer, XElement xml)
 		{
-			var leadIn = new string('\t', depth);
+			var nav = xml.CreateNavigator();
 
-			writer.Write(leadIn);
-			writer.WriteLine(element.Name);
+			Traverse(writer, nav);
+		}
 
-			foreach (var attribute in element.Attributes())
+		private static void Traverse(TextWriter writer, XPathNavigator nav, int depth = 0)
+		{
+			var leadIn = new string(Constants.Tab, depth);
+
+			if(nav.NodeType == XPathNodeType.Root)
+				nav.MoveToFirstChild();
+
+			do
 			{
-				writer.Write(leadIn);
-				writer.WriteLine(attribute.ToString().Replace("=\"", " ").TrimEnd('"'));
-			}
-
-			foreach (var node in element.Nodes())
-			{
-				var childElement = node as XElement;
-				var comment = node as XComment;
-				var text = node as XText;
-				var data = node as XCData;
-
-				if (childElement != null)
+				switch (nav.NodeType)
 				{
-					Traverse(writer, childElement, depth + 1);
-					continue;
+					case XPathNodeType.Element:
+						WriteElement(writer, nav, depth, leadIn);
+						break;
+					case XPathNodeType.Text:
+						WriteTextData(writer, nav, leadIn);
+						break;
+					case XPathNodeType.Comment:
+						WriteComment(writer, nav, leadIn);
+						break;
+					default:
+						throw new InvalidDataException("Encountered unsupported node type of " + nav.NodeType);
 				}
 
-				writer.Write(leadIn);
-				if(comment != null)
-					writer.WriteLine("\t!{0}", comment.Value);
-				if(data != null)
-					writer.WriteLine("[{0}]>", data.Value.Replace("[", "[[").Replace("]", "]]"));
-				if(text != null)
-					writer.WriteLine("\"{0}\"", text.Value.Replace("\"", "\"\""));
+			} while (nav.MoveToNext());
+		}
+
+		private static void WriteElement(TextWriter writer, XPathNavigator nav, int depth, string leadIn)
+		{
+			writer.Write(leadIn);
+			writer.WriteLine(nav.Name);
+
+			WriteNamespaces(writer, nav, leadIn);
+
+			if (nav.HasAttributes)
+				WriteAttributes(writer, nav, leadIn);
+
+			if (!nav.HasChildren)
+				return;
+
+			var childNav = nav.CreateNavigator();
+			childNav.MoveToFirstChild();
+			Traverse(writer, childNav, depth + 1);
+		}
+
+		private static void WriteComment(TextWriter writer, XPathItem nav, string leadIn)
+		{
+			writer.Write(leadIn);
+			writer.Write(Constants.Exclamation);
+			writer.WriteLine(nav.Value.Replace(Constants.NewLine, Constants.Space).Replace(Constants.CReturn, Constants.Space));
+		}
+
+		private static void WriteTextData(TextWriter writer, XPathNavigator nav, string leadIn)
+		{
+			writer.Write(leadIn);
+			if (nav.UnderlyingObject is XCData)
+			{
+				var value = nav.Value.Replace(Constants.LBracketStr, Constants.EscapedLBracket).Replace(Constants.RBracketStr, Constants.EscapedRBracket);
+				WriteEnclosed(writer, Constants.LBracket, value, Constants.RBracket);
 			}
+			else
+			{
+				var value = nav.Value.Replace(Constants.LBracketStr, Constants.EscapedDoubleQuote);
+				WriteEnclosed(writer, Constants.DoubleQuote, value);
+			}
+		}
+
+		private static void WriteEnclosed(TextWriter writer, char begin, string text, char? end = null)
+		{
+			writer.Write(begin);
+			writer.Write(text);
+			writer.WriteLine(end ?? begin);
+		}
+
+		private static void WriteNamespaces(TextWriter writer, IXmlNamespaceResolver nav, string leadIn)
+		{
+			var namespaces = nav.GetNamespacesInScope(XmlNamespaceScope.Local);
+
+			foreach (var n in namespaces)
+			{
+				writer.Write(leadIn);
+				writer.Write(Constants.Xmlns);
+				if (string.IsNullOrWhiteSpace(n.Key) == false)
+				{
+					writer.Write(Constants.Colon);
+					writer.Write(n.Key);
+				}
+				writer.Write(Constants.Space);
+				writer.WriteLine(n.Value);
+			}
+		}
+
+		private static void WriteAttributes(TextWriter writer, XPathNavigator nav, string leadIn)
+		{
+			nav.MoveToFirstAttribute();
+
+			do
+			{
+				writer.Write(leadIn);
+				writer.Write(nav.Name);
+				writer.Write(Constants.Space);
+				writer.WriteLine(nav.Value);
+			} while (nav.MoveToNextAttribute());
+
+			nav.MoveToParent();
 		}
 	}
 }

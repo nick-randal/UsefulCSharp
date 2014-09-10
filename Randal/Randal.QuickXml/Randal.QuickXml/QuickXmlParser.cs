@@ -11,6 +11,9 @@ namespace Randal.QuickXml
 	public interface IQuickXmlParser
 	{
 		XElement ParseToXElement(TextReader reader);
+		XElement ParseToXElement(string qxml);
+		XDocument ParseToXDocument(TextReader reader);
+		XDocument ParseToXDocument(string qxml);
 	}
 
 	public sealed class QuickXmlParser : IQuickXmlParser
@@ -20,6 +23,60 @@ namespace Randal.QuickXml
 			_namespacesLookup = new Dictionary<string, XNamespace>(StringComparer.InvariantCultureIgnoreCase);
 			_qxmlParserDefinition = qxmlParserDefinition ?? QuickXmlParserDefinition.QxmlItems;
 			_elementLookup = new Dictionary<int, XElement>();
+		}
+
+		public XDocument ParseToXDocument(string qxml)
+		{
+			using (var reader = new StringReader(qxml))
+				return ParseToXDocument(reader);
+		}
+
+		public XDocument ParseToXDocument(TextReader reader)
+		{
+			var items = _qxmlParserDefinition.Parse(reader.ReadToEnd());
+			var doc = new XDocument();
+			XElement element = null;
+
+			foreach (var item in items)
+			{
+				if (item.Type == XmlNodeType.Element)
+				{
+					var root = doc.Root;
+					element = CreateElement(item, ref root);
+					if(doc.Root == null)
+						doc.Add(element);
+					continue;
+				}
+
+				switch (item.Type)
+				{
+					case XmlNodeType.Attribute:
+						
+						AddAttribute(element, item);
+						break;
+					case XmlNodeType.Text:
+						if (element == null)
+							throw new InvalidDataException("Item of type " + item.Type + " found before first element.");
+						element.Add(new XText(item.Value));
+						break;
+					case XmlNodeType.CDATA:
+						if (element == null)
+							throw new InvalidDataException("Item of type " + item.Type + " found before first element.");
+						element.Add(new XCData(item.Value));
+						break;
+					case XmlNodeType.Comment:
+						CreateComment(item, doc);
+						break;
+				}
+			}
+
+			return doc;
+		}
+
+		public XElement ParseToXElement(string qxml)
+		{
+			using (var reader = new StringReader(qxml))
+				return ParseToXElement(reader);
 		}
 
 		public XElement ParseToXElement(TextReader reader)
@@ -44,8 +101,10 @@ namespace Randal.QuickXml
 						AddAttribute(element, item);
 						break;
 					case XmlNodeType.Text:
+						element.Add(new XText(item.Value));
+						break;
 					case XmlNodeType.CDATA:
-						element.Add(item.ToNode());
+						element.Add(new XCData(item.Value));
 						break;
 					case XmlNodeType.Comment:
 						CreateComment(item);
@@ -58,42 +117,64 @@ namespace Randal.QuickXml
 
 		private void AddAttribute(XElement element, IQuickXmlItem item)
 		{
-			var nameParts = item.Name.Split(':');
+			if (element == null)
+				throw new InvalidDataException("Item of type " + item.Type + " found before first element.");
 
-			if (nameParts.Length == 1)
+			var nameParts = new PartName(item.Name);
+
+			if (nameParts.IsTwoPart == false)
 			{
-				element.Add(new XAttribute(item.Name, item.Value));
+				if (item.Name == Constants.Xmlns)
+				{
+					element.Name = (XNamespace)item.Value + element.Name.LocalName;
+				}
+				else
+					element.Add(new XAttribute(item.Name, item.Value));
 				return;
 			}
 
-			var part1 = nameParts[0].Trim();
-			var part2 = nameParts[1].Trim();
 			XNamespace ns;
 
-			if (part1 == "xmlns")
+			if (nameParts.One == Constants.Xmlns)
 			{
 				ns = item.Value.Trim();
-				_namespacesLookup.Add(part2, ns);
-				element.Add(new XAttribute(XNamespace.Xmlns + part2, item.Value));
+				_namespacesLookup[nameParts.Two] = ns;
+				element.Add(new XAttribute(XNamespace.Xmlns + nameParts.Two, item.Value));
 				return;
 			}
 
-			if(_namespacesLookup.TryGetValue(part1, out ns) == false)
+			if(_namespacesLookup.TryGetValue(nameParts.One, out ns) == false)
 				throw new InvalidDataException("Namespace definition not found for " + item.Name);
 
-			element.Add(new XAttribute(ns + part2, item.Value));
+			element.Add(new XAttribute(ns + nameParts.Two, item.Value));
 		}
 
-		private void CreateComment(IQuickXmlItem item)
+		private void CreateComment(IQuickXmlItem item, XContainer document = null)
 		{
-			var comment = item.ToNode();
+			var comment = new XComment(item.Value);
 			var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
-			parentElement.Add(comment);
+
+			if(parentElement != null)
+				parentElement.Add(comment);
+			else if(document != null)
+				document.Add(comment);
 		}
 
 		private XElement CreateElement(IQuickXmlItem item, ref XElement root)
 		{
-			var element = (XElement) item.ToNode();
+			XElement element;
+			XNamespace qualifiedNamespace = null;
+			var nameParts = new PartName(item.Name);
+
+			if (nameParts.IsTwoPart)
+			{
+				qualifiedNamespace = _namespacesLookup[nameParts.One];
+				element = new XElement(nameParts.Two);
+			}
+			else
+			{
+				element = new XElement(item.Name);
+			}
 
 			if (root == null)
 			{
@@ -108,7 +189,19 @@ namespace Randal.QuickXml
 
 				_elementLookup[item.Depth] = element;
 				var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
-				parentElement.Add(element);
+
+				if (qualifiedNamespace != null)
+				{
+					parentElement.Add(element);
+					element.Name = qualifiedNamespace + element.Name.LocalName;
+				}
+				else
+				{
+					
+					if (parentElement.Name.Namespace != XNamespace.None)
+						element.Name = parentElement.Name.Namespace + element.Name.LocalName;
+					parentElement.Add(element);
+				}
 			}
 
 			return element;
@@ -118,6 +211,4 @@ namespace Randal.QuickXml
 		private readonly Parser<IEnumerable<IQuickXmlItem>> _qxmlParserDefinition;
 		private readonly IDictionary<int, XElement> _elementLookup;
 	}
-
-	
 }

@@ -1,0 +1,111 @@
+﻿xBusinessRules
+xmlns:xsi http://www.w3.org/2001/XMLSchema-instance
+xsi:noNamespaceSchemaLocation xBusinessRules.xsd
+	! global values 
+	ObjectLookup
+	id YearlyIncome
+	objectId Enrollment
+	member YearlyIncome
+	ObjectLookup
+	id IsMilitary
+	objectId Enrollment
+	member IsMilitary
+	Logic
+		If
+			And
+				IsTrue
+				valueId IsMilitary
+			Do
+				Logic
+					If
+						And
+							LessThan
+							leftId YearlyIncome
+							rightId HighIncome
+								Integer
+								id HighIncome
+								value 40000
+						Do
+							Boolean
+							id IsEnrolled
+							value true
+							Integer
+							id Benefit
+							value 75
+					ElseIf
+						And
+							LessThan
+							leftId YearlyIncome
+							rightId HighIncome
+								Integer
+								id HighIncome
+								value 80000
+						Do
+							Boolean
+							id IsEnrolled
+							value true
+							Integer
+							id Benefit
+							value 50
+					Else
+						Boolean
+						id IsEnrolled
+						value false
+						Integer
+						id Benefit
+						value 0
+		Else
+			Logic
+				! not in military 
+				If
+					And
+						LessThan
+						leftId YearlyIncome
+						rightId HighIncome
+							Integer
+							id HighIncome
+							value 30000
+					Do
+						Boolean
+						id IsEnrolled
+						value true
+						Integer
+						id Benefit
+						value 75
+				ElseIf
+					And
+						LessThan
+						leftId YearlyIncome
+						rightId HighIncome
+							Integer
+							id HighIncome
+							value 45000
+					Do
+						Boolean
+						id IsEnrolled
+						value true
+						Integer
+						id Benefit
+						value 50
+				ElseIf
+					And
+						LessThan
+						leftId YearlyIncome
+						rightId HighIncome
+							Integer
+							id HighIncome
+							value 60000
+					Do
+						Boolean
+						id IsEnrolled
+						value true
+						Integer
+						id Benefit
+						value 25
+				Else
+					Boolean
+					id IsEnrolled
+					value false
+					Integer
+					id Benefit
+					value 0

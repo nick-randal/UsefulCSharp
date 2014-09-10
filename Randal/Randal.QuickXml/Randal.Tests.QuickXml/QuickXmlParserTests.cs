@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -29,9 +28,9 @@ namespace Randal.Tests.QuickXml
 
 			When(Parsing);
 
-			Then.Fragment.Should().NotBeNull();
-			Then.Fragment.Name.LocalName.Should().Be("A");
-			Then.Fragment.Elements().First().Name.LocalName.Should().Be("B");
+			Then.Xml.Name.Should().Be("A");
+			Then.Xml.MoveToFirstChild();
+			Then.Xml.Name.Should().Be("B");
 		}
 
 		[TestMethod, PositiveTest, DeploymentItem("Test Files\\A.qxml", "Test Files")]
@@ -40,13 +39,15 @@ namespace Randal.Tests.QuickXml
 			Given.Text = File.ReadAllText("Test Files\\A.qxml");
 
 			When(Parsing);
-
-			Then.Fragment.Should().NotBeNull();
 			
-			var element = Then.Fragment.XPathSelectElement("./Departments/Department[2]/People/Person[1]");
-			element.Should().NotBeNull().And.BeOfType<XElement>();
-			element.Value.Should().Be("Buffalo Bill");
-			element.Attribute("Age").Value.Should().Be("165");
+			var iterator = Then.Xml.Select("./Departments/Department[2]/People/Person[1]");
+			iterator.MoveNext();
+			iterator.Current.NodeType.Should().Be(XPathNodeType.Element);
+			iterator.Current.Value.Should().Be("Buffalo Bill");
+
+			iterator.Current.MoveToFirstAttribute();
+			iterator.Current.Name.Should().Be("Age");
+			iterator.Current.Value.Should().Be("165");
 		}
 
 		[TestMethod, PositiveTest, DeploymentItem("Test Files\\A.qxml", "Test Files")]
@@ -56,11 +57,9 @@ namespace Randal.Tests.QuickXml
 
 			When(Parsing);
 
-			Then.Fragment.Should().NotBeNull();
-
-			var element = Then.Fragment.XPathSelectElement("./Data");
-			element.Should().NotBeNull().And.BeOfType<XElement>();
-			element.Value.Should().Be("Some data here");
+			var iterator = Then.Xml.Select("//Data/text()");
+			iterator.MoveNext();
+			iterator.Current.Value.Should().Be("Some data here");
 		}
 
 		[TestMethod, PositiveTest, DeploymentItem("Test Files\\A.qxml", "Test Files")]
@@ -70,12 +69,47 @@ namespace Randal.Tests.QuickXml
 
 			When(Parsing);
 
-			Then.Fragment.Should().NotBeNull();
+			Then.Xml.MoveToFirstChild();
+			Then.Xml.MoveToChild(XPathNodeType.Comment).Should().BeTrue();
+			Then.Xml.NodeType.Should().Be(XPathNodeType.Comment);
+			Then.Xml.Value.Should().Be("No comment!");
 
-			var comment = Then.Fragment.DescendantNodes().FirstOrDefault(node => node.NodeType == XmlNodeType.Comment) as XComment;
-			comment.Should().NotBeNull().And.BeAssignableTo<XComment>();
-			comment.Value.Should().Be("No comment!");
-			comment.Parent.Name.LocalName.Should().Be("Departments");
+			Then.Xml.MoveToParent();
+			Then.Xml.Name.Should().Be("Departments");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveXElements_WhenParsing_GivenQualifiedElements()
+		{
+			Given.Text = "a\r\nxmlns:n http://test.com\r\nn:b c\r\n\tn:sub";
+
+			When(Parsing);
+
+			Then.Xml.Name.Should().Be("a");
+			Then.Xml.MoveToFirstAttribute();
+			Then.Xml.Name.Should().Be("n:b");
+			Then.Xml.Value.Should().Be("c");
+
+			Then.Xml.MoveToParent();
+			Then.Xml.MoveToFirstChild();
+			Then.Xml.Name.Should().Be("n:sub");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveXDocument_WhenParsing_GivenQualifiedElements()
+		{
+			Given.Text = "a\r\n\tb\r\n\tc d";
+
+			When(ParsingToDocument);
+
+			Then.Xml.MoveToFirstChild();
+			Then.Xml.Name.Should().Be("a");
+
+			Then.Xml.MoveToFirstChild();
+			Then.Xml.Name.Should().Be("b");
+			Then.Xml.MoveToFirstAttribute();
+			Then.Xml.Name.Should().Be("c");
+			Then.Xml.Value.Should().Be("d");
 		}
 
 		[TestMethod, NegativeTest]
@@ -100,7 +134,14 @@ namespace Randal.Tests.QuickXml
 
 		private void Parsing()
 		{
-			Then.Fragment = Then.Target.ParseToXElement(new StringReader(Given.Text));
+			using (var reader = new StringReader(Given.Text))
+				Then.Xml = Then.Target.ParseToXElement(reader).CreateNavigator();
+		}
+
+		private void ParsingToDocument()
+		{
+			using (var reader = new StringReader(Given.Text))
+				Then.Xml = Then.Target.ParseToXDocument(reader).CreateNavigator();
 		}
 
 		protected override void Creating()
@@ -112,7 +153,6 @@ namespace Randal.Tests.QuickXml
 	public sealed class QuickXmlParserThens
 	{
 		public QuickXmlParser Target;
-		public XDocument Document;
-		public XElement Fragment;
+		public XPathNavigator Xml;
 	}
 }
