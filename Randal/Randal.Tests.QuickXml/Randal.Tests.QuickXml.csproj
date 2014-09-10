@@ -45,14 +45,8 @@
       <HintPath>..\packages\FluentAssertions.3.1.229\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Randal.Core">
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.9\lib\net45\Randal.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Randal.Core.Testing">
       <HintPath>..\packages\Randal.Core.Testing.1.0.0.9\lib\net45\Randal.Core.Testing.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="Sprache, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
