@@ -1,4 +1,17 @@
-﻿using System.IO;
+﻿// // Useful C#
+// // Copyright (C) 2014 Nicholas Randal
+// // 
+// // Useful C# is free software; you can redistribute it and/or modify
+// // it under the terms of the GNU General Public License as published by
+// // the Free Software Foundation; either version 2 of the License, or
+// // (at your option) any later version.
+// // 
+// // This program is distributed in the hope that it will be useful,
+// // but WITHOUT ANY WARRANTY; without even the implied warranty of
+// // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// // GNU General Public License for more details.
+
+using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -31,7 +44,7 @@ namespace Randal.QuickXml
 		{
 			var leadIn = new string(Constants.Tab, depth);
 
-			if(nav.NodeType == XPathNodeType.Root)
+			if (nav.NodeType == XPathNodeType.Root)
 				nav.MoveToFirstChild();
 
 			do
@@ -50,7 +63,6 @@ namespace Randal.QuickXml
 					default:
 						throw new InvalidDataException("Encountered unsupported node type of " + nav.NodeType);
 				}
-
 			} while (nav.MoveToNext());
 		}
 
@@ -84,7 +96,8 @@ namespace Randal.QuickXml
 			writer.Write(leadIn);
 			if (nav.UnderlyingObject is XCData)
 			{
-				var value = nav.Value.Replace(Constants.LBracketStr, Constants.EscapedLBracket).Replace(Constants.RBracketStr, Constants.EscapedRBracket);
+				var value = nav.Value.Replace(Constants.LBracketStr, Constants.EscapedLBracket)
+					.Replace(Constants.RBracketStr, Constants.EscapedRBracket);
 				WriteEnclosed(writer, Constants.LBracket, value, Constants.RBracket);
 			}
 			else

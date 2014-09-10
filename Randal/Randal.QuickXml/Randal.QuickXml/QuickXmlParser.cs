@@ -1,10 +1,23 @@
-﻿using System;
+﻿// // Useful C#
+// // Copyright (C) 2014 Nicholas Randal
+// // 
+// // Useful C# is free software; you can redistribute it and/or modify
+// // it under the terms of the GNU General Public License as published by
+// // the Free Software Foundation; either version 2 of the License, or
+// // (at your option) any later version.
+// // 
+// // This program is distributed in the hope that it will be useful,
+// // but WITHOUT ANY WARRANTY; without even the implied warranty of
+// // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// // GNU General Public License for more details.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using Sprache;
-using System.Xml;
 
 namespace Randal.QuickXml
 {
@@ -43,7 +56,7 @@ namespace Randal.QuickXml
 				{
 					var root = doc.Root;
 					element = CreateElement(item, ref root);
-					if(doc.Root == null)
+					if (doc.Root == null)
 						doc.Add(element);
 					continue;
 				}
@@ -51,7 +64,7 @@ namespace Randal.QuickXml
 				switch (item.Type)
 				{
 					case XmlNodeType.Attribute:
-						
+
 						AddAttribute(element, item);
 						break;
 					case XmlNodeType.Text:
@@ -126,7 +139,7 @@ namespace Randal.QuickXml
 			{
 				if (item.Name == Constants.Xmlns)
 				{
-					element.Name = (XNamespace)item.Value + element.Name.LocalName;
+					element.Name = (XNamespace) item.Value + element.Name.LocalName;
 				}
 				else
 					element.Add(new XAttribute(item.Name, item.Value));
@@ -143,7 +156,7 @@ namespace Randal.QuickXml
 				return;
 			}
 
-			if(_namespacesLookup.TryGetValue(nameParts.One, out ns) == false)
+			if (_namespacesLookup.TryGetValue(nameParts.One, out ns) == false)
 				throw new InvalidDataException("Namespace definition not found for " + item.Name);
 
 			element.Add(new XAttribute(ns + nameParts.Two, item.Value));
@@ -154,9 +167,9 @@ namespace Randal.QuickXml
 			var comment = new XComment(item.Value);
 			var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
 
-			if(parentElement != null)
+			if (parentElement != null)
 				parentElement.Add(comment);
-			else if(document != null)
+			else if (document != null)
 				document.Add(comment);
 		}
 
@@ -172,42 +185,43 @@ namespace Randal.QuickXml
 				element = new XElement(nameParts.Two);
 			}
 			else
-			{
 				element = new XElement(item.Name);
-			}
 
 			if (root == null)
 			{
 				root = element;
 				_elementLookup[0] = root;
+				return element;
 			}
-			else
-			{
-				if (item.Depth == 0)
-					throw new InvalidDataException("Only one root element allowed.  Element '" + item.Name +
-					                               "' is invalid, check leading whitespace.");
 
-				_elementLookup[item.Depth] = element;
-				var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
-
-				if (qualifiedNamespace != null)
-				{
-					parentElement.Add(element);
-					element.Name = qualifiedNamespace + element.Name.LocalName;
-				}
-				else
-				{
-					
-					if (parentElement.Name.Namespace != XNamespace.None)
-						element.Name = parentElement.Name.Namespace + element.Name.LocalName;
-					parentElement.Add(element);
-				}
-			}
+			AddElementToParent(item, element, qualifiedNamespace);
 
 			return element;
 		}
 
-		private readonly IDictionary<string, XNamespace> _namespacesLookup; 
+		private void AddElementToParent(IQuickXmlItem item, XElement element, XNamespace qualifiedNamespace)
+		{
+			if (item.Depth == 0)
+				throw new InvalidDataException("Only one root element allowed.  Element '" + item.Name +
+				                               "' is invalid, check leading whitespace.");
+
+			_elementLookup[item.Depth] = element;
+			var parentElement = _elementLookup.LastOrDefault(i => i.Key < item.Depth).Value;
+
+			if (qualifiedNamespace != null)
+			{
+				parentElement.Add(element);
+				element.Name = qualifiedNamespace + element.Name.LocalName;
+			}
+			else
+			{
+				if (parentElement.Name.Namespace != XNamespace.None)
+					element.Name = parentElement.Name.Namespace + element.Name.LocalName;
+				parentElement.Add(element);
+			}
+		}
+
+		private readonly IDictionary<string, XNamespace> _namespacesLookup;
 		private readonly Parser<IEnumerable<IQuickXmlItem>> _qxmlParserDefinition;
 		private readonly IDictionary<int, XElement> _elementLookup;
 	}

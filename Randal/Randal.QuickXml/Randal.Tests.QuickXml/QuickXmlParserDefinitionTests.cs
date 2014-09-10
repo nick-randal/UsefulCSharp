@@ -1,12 +1,23 @@
-﻿using System.Xml;
-using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// // Useful C#
+// // Copyright (C) 2014 Nicholas Randal
+// // 
+// // Useful C# is free software; you can redistribute it and/or modify
+// // it under the terms of the GNU General Public License as published by
+// // the Free Software Foundation; either version 2 of the License, or
+// // (at your option) any later version.
+// // 
+// // This program is distributed in the hope that it will be useful,
+// // but WITHOUT ANY WARRANTY; without even the implied warranty of
+// // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// // GNU General Public License for more details.
+
+using System;
+using System.Xml;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.QuickXml;
-using Rhino.Mocks.Constraints;
 using Sprache;
-using System;
 
 namespace Randal.Tests.QuickXml
 {
@@ -68,15 +79,17 @@ namespace Randal.Tests.QuickXml
 
 		private void ParsingElement()
 		{
-			Then.Item = QuickXmlParserDefinition.Element.Parse((string)Given.Text);
+			Then.Item = QuickXmlParserDefinition.Element.Parse((string) Given.Text);
 		}
 
 		private void ParsingComment()
 		{
-			Then.Item = QuickXmlParserDefinition.Comment.Parse((string)Given.Text);
+			Then.Item = QuickXmlParserDefinition.Comment.Parse((string) Given.Text);
 		}
 
-		protected override void Creating() { }
+		protected override void Creating()
+		{
+		}
 	}
 
 	public sealed class QuickXmlParserDefinitionThens
