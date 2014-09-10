@@ -15,25 +15,12 @@ using System.Xml;
 
 namespace Randal.QuickXml
 {
-	public interface IQuickXmlItem
+	public sealed class QAttribute : QuickXmlItem
 	{
-		XmlNodeType Type { get; }
-		int Depth { get; }
-		string Name { get; }
-		string Value { get; }
-	}
-
-	public abstract class QuickXmlItem : IQuickXmlItem
-	{
-		protected QuickXmlItem(XmlNodeType type, int depth)
+		public QAttribute(int depth, string name, string value) : base(XmlNodeType.Attribute, depth)
 		{
-			Type = type;
-			Depth = depth;
+			Name = name;
+			Value = value;
 		}
-
-		public XmlNodeType Type { get; protected set; }
-		public int Depth { get; protected set; }
-		public virtual string Name { get; protected set; }
-		public virtual string Value { get; protected set; }
 	}
 }

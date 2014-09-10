@@ -47,6 +47,11 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="PartName.cs" />
+    <Compile Include="QAttribute.cs" />
+    <Compile Include="QElement.cs" />
+    <Compile Include="QComment.cs" />
+    <Compile Include="QData.cs" />
+    <Compile Include="QContent.cs" />
     <Compile Include="QuickXmlParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickXmlGenerator.cs" />

@@ -11,29 +11,21 @@
 // // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // // GNU General Public License for more details.
 
+using System;
 using System.Xml;
 
 namespace Randal.QuickXml
 {
-	public interface IQuickXmlItem
+	public sealed class QData : QuickXmlItem
 	{
-		XmlNodeType Type { get; }
-		int Depth { get; }
-		string Name { get; }
-		string Value { get; }
-	}
-
-	public abstract class QuickXmlItem : IQuickXmlItem
-	{
-		protected QuickXmlItem(XmlNodeType type, int depth)
+		public QData(int depth, string value) : base(XmlNodeType.CDATA, depth)
 		{
-			Type = type;
-			Depth = depth;
+			Value = value;
 		}
 
-		public XmlNodeType Type { get; protected set; }
-		public int Depth { get; protected set; }
-		public virtual string Name { get; protected set; }
-		public virtual string Value { get; protected set; }
+		public override string Name
+		{
+			get { throw new NotSupportedException(); }
+		}
 	}
 }
