@@ -21,9 +21,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Randal.Tests.QuickXml")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.Tests.QuickXml")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

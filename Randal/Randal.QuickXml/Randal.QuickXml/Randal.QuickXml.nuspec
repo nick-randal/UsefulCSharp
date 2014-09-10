@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Quick Xml</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.QuickXml/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.QuickXml</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release of Quick XML.</releaseNotes>
+    <copyright>Copyright 2014 Nicholas Randal</copyright>
+    <tags>XML, QuickXML, QXML</tags>
+  </metadata>
+</package>
