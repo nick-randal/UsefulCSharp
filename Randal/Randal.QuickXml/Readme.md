@@ -1,14 +1,14 @@
 Author xml faster by leaving out all the redundancy and noisy syntax.  
-Quick XML uses leading whitespace to define the document hierarchy is built.
+Quick XML uses leading whitespace to define how the document hierarchy is built.
 Attributes, inner text and CData are defined after the element they belong to.
 
--Attributes - key<space>value<eol>
--Inner text - enclosed in "text"
--CData - enclosed in [data]
--Comments - marked with !comment
+- Attributes - key<space>value<eol>
+- Inner text - enclosed in "text"
+- CData - enclosed in [data]
+- Comments - marked with !comment
 
 The following code can be plugged in to Linqpad.
-Add the nuget package Randal.QuickXml.
+Add the nuget package **Randal.QuickXml**.
 ```csharp
 var qxml = @"
 Directory
