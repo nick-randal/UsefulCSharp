@@ -2,10 +2,47 @@ Author xml faster by leaving out all the redundancy and noisy syntax.
 Quick XML uses leading whitespace to define the document hierarchy is built.
 Attributes, inner text and CData are defined after the element they belong to.
 
-Attributes - key<space>value<eol>
-Inner text - enclosed in "text"
-CData - enclosed in [data]
-Comments - marked with !comment
+-Attributes - key<space>value<eol>
+-Inner text - enclosed in "text"
+-CData - enclosed in [data]
+-Comments - marked with !comment
+
+The following code can be plugged in to Linqpad
+Added the nuget package Randal.QuickXml
+```csharp
+var qxml = @"
+Directory
+	!Super cool
+	People
+		Person
+		Name Bob
+		Age 32
+		Person
+		Name Sue
+		Age 29
+			Ambition
+			""To foster world peace""
+			Data
+			[123456789abcdef]
+".Trim();
+
+var parser = new QuickXmlParser();
+parser.ParseToXElement(qxml).Dump();
+```
+and this will be generated
+```xml
+<Directory>
+  <!--Super cool-->
+  <People>
+    <Person Name="Bob" Age="32" />
+    <Person Name="Sue" Age="29">
+      <Ambition>To foster world peace</Ambition>
+      <Data><![CDATA[123456789abcdef]]></Data>
+    </Person>
+  </People>
+</Directory>
+```
+
 
 Example 1 - Generate Quick XML from XML
 ```csharp
