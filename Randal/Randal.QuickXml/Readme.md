@@ -9,11 +9,20 @@ Comments - marked with !comment
 
 Example 1 - Generate Quick XML from XML
 ```csharp
-var xml = XDocument.Parse(text);
 var gen = new QuickXmlGenerator();
 
 using(var writer = new StringWriter())
 {
+	var xml = XDocument.Parse(text);
+	gen.GenerateQuickXml(writer, xml);
+	var qxml = writer.ToString();
+}
+
+// OR
+
+using(var writer = new StringWriter())
+{
+	var xml = XElement.Parse(text);
 	gen.GenerateQuickXml(writer, xml);
 	var qxml = writer.ToString();
 }
@@ -27,6 +36,8 @@ using(var reader = new StringReader(qxml))
 {
 	var xml = parser.ParseToXDocument(reader);
 }
+
+// OR
 
 using(var reader = new StringReader(qxml))
 {
