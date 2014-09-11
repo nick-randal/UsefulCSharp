@@ -24,6 +24,10 @@ Directory
 			""To foster world peace""
 			Data
 			[123456789abcdef]
+	Test
+	xmlns:g http://test.com
+		g:Apples
+		g:Bananas Are not appples
 ".Trim();
 
 var parser = new QuickXmlParser();
@@ -40,6 +44,9 @@ and this will be generated
       <Data><![CDATA[123456789abcdef]]></Data>
     </Person>
   </People>
+  <Test xmlns:g="http://test.com">
+    <g:Apples g:Bananas="Are not appples" />
+  </Test>
 </Directory>
 ```
 
