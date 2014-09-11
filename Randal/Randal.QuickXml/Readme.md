@@ -7,8 +7,8 @@ Attributes, inner text and CData are defined after the element they belong to.
 -CData - enclosed in [data]
 -Comments - marked with !comment
 
-The following code can be plugged in to Linqpad
-Added the nuget package Randal.QuickXml
+The following code can be plugged in to Linqpad.
+Ad the nuget package Randal.QuickXml
 ```csharp
 var qxml = @"
 Directory
