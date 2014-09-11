@@ -8,7 +8,7 @@ Attributes, inner text and CData are defined after the element they belong to.
 -Comments - marked with !comment
 
 The following code can be plugged in to Linqpad.
-Ad the nuget package Randal.QuickXml
+Add the nuget package Randal.QuickXml.
 ```csharp
 var qxml = @"
 Directory
