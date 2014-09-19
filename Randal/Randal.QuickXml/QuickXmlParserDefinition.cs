@@ -35,8 +35,6 @@ namespace Randal.QuickXml
 
 		private static readonly Parser<char>
 			SpaceOrTab = Parse.Chars(' ', '\t'),
-
-			//End = Parse.Return('^').End().Or(Space.End()).Or(Space),
 			OpenBraket = Parse.Char('['),
 			CloseBraket = Parse.Char(']'),
 			BracketCellContent =
@@ -57,24 +55,17 @@ namespace Randal.QuickXml
 					from content in BracketCellContent.Many().Text()
 					from end in CloseBraket
 					select content
-					),
+				),
 			QuotedCell =
 				(
 					from open in DoubleQuote
 					from content in QuotedCellContent.Many().Text()
 					from end in DoubleQuote
 					select content
-					)
+				)
 			;
 
 		public static readonly Parser<IQuickXmlItem>
-			Element =
-				(
-					from ws in SpaceOrTab.Many().Optional().Named("Element: Leading Whitespace")
-					from id in Parse.Identifier(Parse.Letter, ElementChars).Named("Element: Name")
-					from end in Parse.LineTerminator.Named("Element: End")
-					select new QElement(ws.Get().Count(), id)
-					),
 			Attribute =
 				(
 					from ws in SpaceOrTab.Many().Optional().Named("Attribute: Leading Whitespace")
@@ -83,7 +74,13 @@ namespace Randal.QuickXml
 					from value in Parse.AnyChar.Except(Parse.Chars('\r', '\n')).AtLeastOnce().Text().Named("Attribute: Value")
 					from end in Parse.LineTerminator.Named("Attribute: End")
 					select new QAttribute(ws.Get().Count(), id, value)
-					),
+				),
+			BlankLine = 
+				(
+					from ws in SpaceOrTab.Many().Optional().Named("EmptyLine: Leading Whitespace")
+					from end in Parse.LineTerminator.Named("EmptyLine: End")
+					select new QBlankLine()
+				),
 			Comment =
 				(
 					from ws in SpaceOrTab.Many().Optional().Named("Comment: Leading Whitespace")
@@ -91,29 +88,47 @@ namespace Randal.QuickXml
 					from value in Parse.AnyChar.Except(Parse.Chars('\r', '\n')).AtLeastOnce().Text().Named("Comment: Text")
 					from end in Parse.LineTerminator.Named("Comment: End")
 					select new QComment(ws.Get().Count(), value)
-					),
+				),
 			Content =
 				(
 					from ws in SpaceOrTab.Many().Optional().Named("Content: Leading Whitespace")
 					from qt in QuotedCell.Named("Content: Quoted Text")
 					from end in Parse.LineTerminator.Named("Content: End")
 					select new QContent(ws.Get().Count(), qt)
-					),
+				),
 			ContentData =
 				(
 					from ws in SpaceOrTab.Many().Optional().Named("Content: Leading Whitespace")
 					from qt in BracketCell.Named("Content: Quoted Text")
 					from end in Parse.LineTerminator.Named("Content: End")
 					select new QData(ws.Get().Count(), qt)
-					)
+				),
+			Declaration =
+				(
+					from bang in Parse.Char('?').Once().Named("Declaration: QMark")
+					from name in Parse.Decimal.Named("Declaration: Version")
+					from space in Parse.Chars(' ', '\t').AtLeastOnce().Named("Declaration: Encoding Separator")
+					from encoding in Parse.AnyChar.Except(Parse.Chars('\r', '\n')).AtLeastOnce().Text().Named("Declaration: Encoding")
+					from end in Parse.LineTerminator.Named("Comment: End")
+					select new QDeclaration(name, encoding)
+				),
+			Element =
+				(
+					from ws in SpaceOrTab.Many().Optional().Named("Element: Leading Whitespace")
+					from id in Parse.Identifier(Parse.Letter, ElementChars).Named("Element: Name")
+					from end in Parse.LineTerminator.Named("Element: End")
+					select new QElement(ws.Get().Count(), id)
+				)
 			;
 
 		public static readonly Parser<IEnumerable<IQuickXmlItem>> QxmlItems =
 			from item in ContentData
+				.Or(Declaration)
 				.Or(Comment)
 				.Or(Content)
 				.Or(Attribute)
 				.Or(Element)
+				.Or(BlankLine)
 				.Many()
 				.End()
 			select item;

@@ -9,13 +9,16 @@
 				Age 35
 				YearsOfService 2
 				Ambition Climb the 7 summits
+
 				Person
 				"Jane Doe"
 				Salary 45000
 				Age 56
 				YearsOfService 5
 				Ambition Attain title of Vice President
+
 		!No comment!
+
 		Department
 		"IT"
 			People

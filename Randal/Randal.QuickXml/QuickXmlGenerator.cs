@@ -30,6 +30,9 @@ namespace Randal.QuickXml
 		{
 			var nav = xml.CreateNavigator();
 
+			if(xml.Declaration != null)
+			writer.WriteLine("?{0} {1}", xml.Declaration.Version, xml.Declaration.Encoding);
+
 			Traverse(writer, nav);
 		}
 

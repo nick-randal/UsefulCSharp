@@ -50,6 +50,20 @@ namespace Randal.Tests.QuickXml
 			Then.Item.Type.Should().Be(XmlNodeType.Comment);
 		}
 
+		[TestMethod, PositiveTest]
+		public void ShouldHaveItem_WhenParsingDeclaration_GivenValidText()
+		{
+			Given.Text = "?1.0 ISO-8859-1";
+
+			When(ParsingDeclaration);
+
+			Then.Item.Should().NotBeNull().And.BeAssignableTo<QDeclaration>();
+			Then.Item.Depth.Should().Be(0);
+			Then.Item.Name.Should().Be("1.0");
+			Then.Item.Value.Should().Be("ISO-8859-1");
+			Then.Item.Type.Should().Be(XmlNodeType.XmlDeclaration);
+		}
+
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenAccessingName_GivenContent()
 		{
@@ -85,6 +99,11 @@ namespace Randal.Tests.QuickXml
 		private void ParsingComment()
 		{
 			Then.Item = QuickXmlParserDefinition.Comment.Parse((string) Given.Text);
+		}
+
+		private void ParsingDeclaration()
+		{
+			Then.Item = QuickXmlParserDefinition.Declaration.Parse((string) Given.Text);
 		}
 
 		protected override void Creating()

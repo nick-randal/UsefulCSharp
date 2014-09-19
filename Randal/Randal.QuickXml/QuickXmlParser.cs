@@ -52,6 +52,12 @@ namespace Randal.QuickXml
 
 			foreach (var item in items)
 			{
+				if (item.Type == XmlNodeType.XmlDeclaration)
+				{
+					doc.Declaration = new XDeclaration(item.Name, item.Value, "no");
+					continue;
+				}
+
 				if (item.Type == XmlNodeType.Element)
 				{
 					var root = doc.Root;

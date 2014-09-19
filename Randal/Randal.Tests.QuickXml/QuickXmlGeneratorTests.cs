@@ -26,7 +26,7 @@ namespace Randal.Tests.QuickXml
 		[TestMethod, PositiveTest, DeploymentItem("Test Files\\", "Test Files\\")]
 		public void ShouldHaveQuickXml_WhenGenerating_GivenXml()
 		{
-			Given.Xml = XElement.Parse(File.ReadAllText("Test Files\\B.xml"));
+			Given.Xml = XDocument.Parse(File.ReadAllText("Test Files\\B.xml"));
 
 			When(Generating);
 

@@ -1,17 +1,24 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>Quick Xml</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.QuickXml/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.QuickXml</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Initial release of Quick XML.</releaseNotes>
-    <copyright>Copyright 2014 Nicholas Randal</copyright>
-    <tags>XML, QuickXML, QXML</tags>
-  </metadata>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>Quick Xml</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.QuickXml/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.QuickXml</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<releaseNotes>Added XML Declaration and blank line support.</releaseNotes>
+		<copyright>Copyright 2014 Nicholas Randal</copyright>
+		<tags>XML, QuickXML, QXML</tags>
+		<references>
+			<reference file="Randal.QuickXml.dll"></reference>
+			<reference file="Sprache.dll"></reference>
+		</references>
+	</metadata>
+	<files>
+		<file src="lib\net45\Sprache.dll" target="lib/net45"/>
+	</files>
 </package>
