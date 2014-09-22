@@ -1,15 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Randal.Core.Strings
 {
-	public struct Text : IEquatable<string>
+	public struct Text : IComparable, ICloneable, IComparable<string>, IEquatable<string>
 	{
-		private string _s;
-	
+		private readonly string _s;
+
+		public Text(string s)
+		{
+			_s = s;
+		}
+
+		public Text(Text t)
+		{
+			_s = t._s;
+		}
+
 		public static implicit operator string(Text t)
 		{
 			return t._s;
@@ -17,7 +25,7 @@ namespace Randal.Core.Strings
 	
 		public static implicit operator Text(string s)
 		{
-			return new Text { _s = s ?? string.Empty };
+			return new Text(s ?? string.Empty);
 		}
 	
 		public static explicit operator int(Text t)
@@ -29,14 +37,24 @@ namespace Randal.Core.Strings
 	
 		public static explicit operator Text(int n)
 		{
-			return new Text { _s = n.ToString() };
+			return new Text(n.ToString(CultureInfo.CurrentCulture));
+		}
+
+		public static Text operator *(Text t, int n)
+		{
+			return new Text(string.Join(string.Empty, Enumerable.Repeat(t._s, n)));
 		}
 	
 		public override int GetHashCode()
 		{
 			return _s.GetHashCode();
 		}
-	
+
+		public object Clone()
+		{
+			return new Text((string)_s.Clone());
+		}
+
 		public override string ToString()
 		{
 			return _s;
@@ -47,6 +65,21 @@ namespace Randal.Core.Strings
 			return _s.Equals(other);
 		}
 
-		public static readonly Text Empty;
+		public override bool Equals(object obj)
+		{
+			return _s.Equals(obj);
+		}
+
+		public int CompareTo(string other)
+		{
+			return string.Compare(_s, other, StringComparison.Ordinal);
+		}
+
+		public int CompareTo(object obj)
+		{
+			return _s.CompareTo(obj);
+		}
+
+		public static readonly Text Empty = new Text();
 	}
 }
