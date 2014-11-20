@@ -233,7 +233,7 @@ namespace Randal.Sql.Scripting
 use {catalog}
 
 --:: pre
-exec coreCreateProcedure '[{schema}].[{sproc}]'
+exec coreCreateProcedure '{sproc}', '{schema}'
 GO
 
 --:: main
@@ -250,7 +250,7 @@ GO
 use {catalog}
 
 --:: pre
-exec coreCreateFunction '[{schema}].[{udf}]', '{funcType}'
+exec coreCreateFunction '{udf}', '{schema}', '{funcType}'
 GO
 
 --:: main
@@ -267,7 +267,7 @@ GO
 use {catalog}
 
 --:: pre
-exec coreCreateView '[{view}]', '[{schema}]'
+exec coreCreateView '{view}', '{schema}'
 GO
 
 --:: main
