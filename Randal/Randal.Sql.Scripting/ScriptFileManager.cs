@@ -75,10 +75,7 @@ namespace Randal.Sql.Scripting
 			var file = new FileInfo(Path.Combine(dbPath, ConfigFileName));
 			var version = DateTime.Today.ToString(VersionFormat);
 
-			if (file.Exists == false)
-				file.Create();
-
-			using (var stream = new StreamWriter(file.OpenWrite()))
+			using (var stream = new StreamWriter(file.Exists ? file.OpenWrite() : file.Create()))
 			{
 				stream.Write(ConfigFileFormat, databaseName, version);
 				stream.Flush();

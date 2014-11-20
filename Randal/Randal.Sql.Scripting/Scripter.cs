@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -76,25 +77,36 @@ namespace Randal.Sql.Scripting
 		public Scripter DumpScripts()
 		{
 			var processed = 0;
+			var timeTracker = new Stopwatch();
 
 			if (_sources.Count == 0)
 				throw new InvalidOperationException("Sources need to be setup prior to dumping scripts.");
 
 			foreach (var database in GetDatabases())
 			{
+				timeTracker.Start();
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
 					_scriptFileManager.SetupDatabaseDirectory(database.Name);
+					processed = 0;
 
-					foreach(var source in _sources)
-						processed = ProcessAllObjects(database, source.SubFolder, source.GetScriptableObjects(_server, database));
-
-					_logger.AddEntryNoTimestamp("~~~~~~~~~~ processed {0} SQL objects ~~~~~~~~~~", processed);
+					foreach (var source in _sources)
+					{
+						var scriptableObjects = source.GetScriptableObjects(_server, database);
+						processed += ProcessAllObjectsInSource(database, source.SubFolder, scriptableObjects);
+					}
 				}
-				catch (ExecutionFailureException ex)
+				catch (Exception ex)
 				{
 					_logger.AddException(ex);
+				}
+				finally
+				{
+					timeTracker.Stop();
+					_logger.AddEntry("Elapsed time: {0}", timeTracker.Elapsed);
+					_logger.AddEntryNoTimestamp("~~~~~~~~~~ processed {0} SQL objects ~~~~~~~~~~", processed);
+					timeTracker.Reset();
 				}
 			}
 
@@ -103,6 +115,7 @@ namespace Randal.Sql.Scripting
 
 		private IEnumerable<Database> GetDatabases()
 		{
+			_logger.AddEntry("Getting databases based on options.");
 			var databases = _server.GetDatabases().AsQueryable();
 
 			if (_includeTheseDatabases.Count > 0)
@@ -111,24 +124,36 @@ namespace Randal.Sql.Scripting
 			if (_excludeTheseDatabases.Count > 0)
 				databases =
 					databases.Where(d => _excludeTheseDatabases.Contains(d.Name, StringComparer.InvariantCultureIgnoreCase) == false);
-			
-			return databases.ToList();
+
+			var databaseList = databases.ToList();
+
+			_logger.AddEntry("Databases: {0}",
+				string.Join(", ", databaseList.Select(db => db.Name))
+			);
+
+			return databaseList;
 		}
 
-		private int ProcessAllObjects(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source)
+		private int ProcessAllObjectsInSource(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source)
 		{
 			var processed = 0;
 
-			_logger.AddEntry("Setup script directory.");
+			_logger.AddEntry("Setup script directory '{0}'.", subFolder);
 			_scriptFileManager.SetupScriptDirectory(database.Name, subFolder);
 
 			foreach (var sqlObject in source)
 			{
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
-				if (sqlObject.Schema != "dbo")
-					_logger.AddEntry("schema not dbo {0}", sqlObject.Schema);
+				var scriptName = sqlObject.Name;
 
-				_scriptFileManager.WriteScriptFile(sqlObject.Name, _formatter.Format(sqlObject));
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
+
+				if (sqlObject.Schema != "dbo")
+				{
+					_logger.AddEntry("WARNING: schema not dbo {0}", sqlObject.Schema);
+					scriptName = sqlObject.Schema.Replace('\\', '.') + '.' + scriptName;
+				}
+
+				_scriptFileManager.WriteScriptFile(scriptName, _formatter.Format(sqlObject));
 				processed++;
 			}
 
