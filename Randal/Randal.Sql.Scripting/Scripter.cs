@@ -149,7 +149,7 @@ namespace Randal.Sql.Scripting
 
 				if (sqlObject.Schema != "dbo")
 				{
-					_logger.AddEntry("WARNING: schema not dbo {0}", sqlObject.Schema);
+					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Schema);
 					scriptName = sqlObject.Schema.Replace('\\', '.') + '.' + scriptName;
 				}
 
