@@ -26,7 +26,7 @@ namespace Randal.Sql.Scripting.App
 			if (options == null)
 				return 2;
 
-			using (var logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "scripter")))
+			using (var logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "SQL Scripter")))
 			{
 				LogHeader(logger, options);
 
