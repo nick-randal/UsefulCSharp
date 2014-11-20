@@ -75,6 +75,8 @@ namespace Randal.Sql.Scripting
 
 		public Scripter DumpScripts()
 		{
+			var processed = 0;
+
 			if (_sources.Count == 0)
 				throw new InvalidOperationException("Sources need to be setup prior to dumping scripts.");
 
@@ -83,8 +85,12 @@ namespace Randal.Sql.Scripting
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
+					_scriptFileManager.SetupDatabaseDirectory(database.Name);
+
 					foreach(var source in _sources)
-						ProcessObject(database, source.SubFolder, source.GetScriptableObjects(_server, database));
+						processed = ProcessAllObjects(database, source.SubFolder, source.GetScriptableObjects(_server, database));
+
+					_logger.AddEntryNoTimestamp("~~~~~~~~~~ processed {0} SQL objects ~~~~~~~~~~", processed);
 				}
 				catch (ExecutionFailureException ex)
 				{
@@ -109,28 +115,33 @@ namespace Randal.Sql.Scripting
 			return databases.ToList();
 		}
 
-		private void ProcessObject(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source) 
+		private int ProcessAllObjects(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source)
 		{
-			_scriptFileManager.CreateDirectory(database.Name, subFolder);
+			var processed = 0;
 
-			foreach (var sproc in source)
+			_logger.AddEntry("Setup script directory.");
+			_scriptFileManager.SetupScriptDirectory(database.Name, subFolder);
+
+			foreach (var sqlObject in source)
 			{
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sproc.GetType().Name), sproc.Schema, sproc.Name);
-				if (sproc.Schema != "dbo")
-					_logger.AddEntry("schema not dbo {0}", sproc.Schema);
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
+				if (sqlObject.Schema != "dbo")
+					_logger.AddEntry("schema not dbo {0}", sqlObject.Schema);
 
-				_scriptFileManager.WriteScriptFile(sproc.Name, _formatter.Format(sproc));
+				_scriptFileManager.WriteScriptFile(sqlObject.Name, _formatter.Format(sqlObject));
+				processed++;
 			}
+
+			return processed;
 		}
 
 		private static string MapTypeName(string objectType)
 		{
 			string replaceWith;
 
-			if (TypeNameLookup.TryGetValue(objectType, out replaceWith))
-				return replaceWith;
-
-			return objectType.ToLower();
+			return TypeNameLookup.TryGetValue(objectType, out replaceWith) 
+				? replaceWith 
+				: objectType.ToLower();
 		}
 
 		private static readonly IDictionary<string, string> TypeNameLookup =

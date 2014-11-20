@@ -79,7 +79,7 @@ namespace Randal.Tests.Sql.Scripting
 
 		private void CreatingDirectory()
 		{
-			Then.Manager.CreateDirectory(Given.DatabaseName, Given.SubFolder);
+			Then.Manager.SetupScriptDirectory(Given.DatabaseName, Given.SubFolder);
 
 			var directory = new DirectoryInfo(Then.Manager.CurrentFolder);
 			Then.Exists = directory.Exists;

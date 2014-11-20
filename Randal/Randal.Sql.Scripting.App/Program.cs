@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
@@ -97,6 +98,7 @@ namespace Randal.Sql.Scripting.App
 		private static void LogHeader(ILogger logger, AppOptions options)
 		{
 			logger.Add("SQL Scripting Application".ToLogEntry());
+			logger.Add(typeof (Program).Assembly.GetName().Version.ToString().ToLogEntry());
 
 			var lines = new List<string>
 			{
