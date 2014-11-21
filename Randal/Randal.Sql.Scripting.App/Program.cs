@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
 using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
@@ -26,6 +27,8 @@ namespace Randal.Sql.Scripting.App
 			var options = ParseCommandLineArguments(args);
 			if (options == null)
 				return 2;
+
+			SetupFolders(options.LogFolder, options.OutputFolder);
 
 			using (var logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "SQL Scripter")))
 			{
@@ -47,6 +50,18 @@ namespace Randal.Sql.Scripting.App
 			}
 
 			return -1;
+		}
+
+		private static void SetupFolders(params string[] paths)
+		{
+			foreach (var path in paths)
+			{
+				var directory = new DirectoryInfo(path);
+				if (directory.Exists)
+					continue;
+
+				directory.Create();
+			}
 		}
 
 		private static void ConfigureScriptingSources(AppOptions options, Scripter scripter)
