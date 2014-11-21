@@ -37,8 +37,19 @@ namespace Randal.Tests.Sql.Scripting
 			When(Formatting);
 			Then.Text.Should()
 				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
-					"exec coreCreateProcedure '[dbo].[spTest]'\r\nGO\r\n\r\n--:: main\r\n" +
+					"exec coreCreateProcedure 'spTest', 'dbo'\r\nGO\r\n\r\n--:: main\r\n" +
 					"ALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[spTest] \r\n*/");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveText_WhenFormatting_GivenUserDefinedFunction()
+		{
+			Given.Function = "Test";
+			When(Formatting);
+			Then.Text.Should()
+				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
+				"exec coreCreateFunction 'Test', 'dbo', 'scalar'\r\nGO\r\n\r\n--:: main\r\n" + 
+				"ALTER FUNCTION [dbo].[Test]()\r\nRETURNS [int] AS \r\nreturn -1\r\n\r\n/*\r\n	select dbo.Test()\r\n*/");
 		}
 
 		protected override void Creating()
@@ -54,19 +65,25 @@ namespace Randal.Tests.Sql.Scripting
 
 			if (GivensDefined("Function"))
 			{
-				schemaObject = new StoredProcedure(new Database(new Server(), "Test"), Given.Procedure)
+				schemaObject = new UserDefinedFunction(new Database(new Server(), "Test"), Given.Function)
 				{
-					Schema = "dbo",
-					TextHeader = "create procedure spTest",
+					TextMode = false,
+					DataType = DataType.Int,
+					//ExecutionContext = ExecutionContext.Caller,
+					FunctionType = UserDefinedFunctionType.Scalar,
+					ImplementationType = ImplementationType.TransactSql,
+					//Schema = "dbo",
+					//TextHeader = "create function spTest",
+					
 					TextBody = "return -1"
 				};
 			}
 			else
 			{
-				schemaObject = new UserDefinedFunction(new Database(new Server(), "Test"), Given.Function)
+				schemaObject = new StoredProcedure(new Database(new Server(), "Test"), Given.Procedure)
 				{
 					Schema = "dbo",
-					TextHeader = "create function getTest",
+					TextHeader = "create procedure getTest",
 					TextBody = "return -1"
 				};
 			}

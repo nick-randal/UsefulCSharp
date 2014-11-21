@@ -12,6 +12,8 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -91,7 +93,7 @@ namespace Randal.Tests.Sql.Scripting
 
 		private void DumpingScripts()
 		{
-			Then.MockServer.Stub(x => x.GetDatabases()).Return(new[] { new Database(new Server(), "Test") });
+			Then.MockServer.Stub(x => x.GetDatabases()).Return(new List<Database> { new Database(new Server(), "Test") }.AsEnumerable());
 
 			Then.Target.DumpScripts();
 		}
@@ -113,7 +115,10 @@ namespace Randal.Tests.Sql.Scripting
 		{
 			Then.MockServer = MockRepository.GenerateMock<IServer>();
 			if (GivensDefined("Databases"))
-				Then.MockServer.Stub(x => x.GetDatabases()).Return(Given.Databases);
+			{
+				Database[] databases = Given.Databases;
+				Then.MockServer.Stub(x => x.GetDatabases()).Return(databases.ToList().AsEnumerable());
+			}
 
 			Then.MockScriptFileManager = MockRepository.GenerateMock<IScriptFileManager>();
 			Then.MockLogger = MockRepository.GenerateMock<ILogger>();

@@ -13,11 +13,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
+using ScriptableObject = System.Tuple<Randal.Sql.Scripting.ScriptingSource, Microsoft.SqlServer.Management.Smo.ScriptSchemaObjectBase>;
 
 namespace Randal.Sql.Scripting
 {
@@ -88,14 +89,7 @@ namespace Randal.Sql.Scripting
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					_scriptFileManager.SetupDatabaseDirectory(database.Name);
-					processed = 0;
-
-					foreach (var source in _sources)
-					{
-						var scriptableObjects = source.GetScriptableObjects(_server, database);
-						processed += ProcessAllObjectsInSource(database, source.SubFolder, scriptableObjects);
-					}
+					processed = DumpAllScripts(database);
 				}
 				catch (Exception ex)
 				{
@@ -111,6 +105,56 @@ namespace Randal.Sql.Scripting
 			}
 
 			return this;
+		}
+
+		private int DumpAllScripts(Database database)
+		{
+			_scriptFileManager.SetupDatabaseDirectory(database.Name);
+			var processed = 0;
+			var scriptableObjects = new List<ScriptSchemaObjectBase>();
+
+			foreach (var source in _sources)
+			{
+				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
+				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
+
+				scriptableObjects.AddRange(source.GetScriptableObjects(_server, database));
+			}
+
+			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
+			CheckForNameCollisions(scriptableObjects);
+
+			foreach (var sqlObject in scriptableObjects)
+			{
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
+
+				if (sqlObject.Schema != "dbo")
+				{
+					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Schema);
+				}
+
+				_scriptFileManager.WriteScriptFile(sqlObject.ScriptFileName(), _formatter.Format(sqlObject));
+				processed++;
+			}
+
+			return processed;
+		}
+
+		private void CheckForNameCollisions(IEnumerable<ScriptSchemaObjectBase> scriptableObjects)
+		{
+			var duplicates = scriptableObjects.GroupBy(so => so.ScriptFileName())
+				.Where(group => group.Count() > 1)
+				.Select(group => group.Key)
+				.ToList().AsReadOnly();
+
+			if (!duplicates.Any())
+				return;
+
+			var csvDuplicates = string.Join(", ", duplicates);
+
+			_logger.AddEntry("Duplicate scripts for: {0}", csvDuplicates);
+
+			throw new DuplicateNameException(csvDuplicates);
 		}
 
 		private IEnumerable<Database> GetDatabases()
@@ -132,32 +176,6 @@ namespace Randal.Sql.Scripting
 			);
 
 			return databaseList;
-		}
-
-		private int ProcessAllObjectsInSource(IDatabaseOptions database, string subFolder, IEnumerable<ScriptSchemaObjectBase> source)
-		{
-			var processed = 0;
-
-			_logger.AddEntry("Setup script directory '{0}'.", subFolder);
-			_scriptFileManager.SetupScriptDirectory(database.Name, subFolder);
-
-			foreach (var sqlObject in source)
-			{
-				var scriptName = sqlObject.Name;
-
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
-
-				if (sqlObject.Schema != "dbo")
-				{
-					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Schema);
-					scriptName = sqlObject.Schema.Replace('\\', '.') + '.' + scriptName;
-				}
-
-				_scriptFileManager.WriteScriptFile(scriptName, _formatter.Format(sqlObject));
-				processed++;
-			}
-
-			return processed;
 		}
 
 		private static string MapTypeName(string objectType)

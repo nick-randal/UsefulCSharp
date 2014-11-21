@@ -31,7 +31,7 @@ namespace Randal.Tests.Sql.Scripting
 			When(CreatingDirectory);
 
 			Then.Exists.Should().BeTrue();
-			Then.Manager.CurrentFolder.Should().Be(@".\Research\Views");
+			Then.Manager.CurrentFolder.Should().EndWith(@"\Research\Views");
 		}
 
 		[TestMethod, PositiveTest]
@@ -63,13 +63,13 @@ namespace Randal.Tests.Sql.Scripting
 		private async void WritingScriptAsync()
 		{
 			await Then.Manager.WriteScriptFileAsync(Given.File, Given.Text);
-			Then.Exists = new FileInfo(".\\" + Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
+			Then.Exists = new FileInfo(Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
 		}
 
 		private void WritingScript()
 		{
 			Then.Manager.WriteScriptFile(Given.File, Given.Text);
-			Then.Exists = new FileInfo(".\\" + Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
+			Then.Exists = new FileInfo(Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
 		}
 
 		protected override void Creating()

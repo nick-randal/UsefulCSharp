@@ -38,7 +38,7 @@ namespace Randal.Sql.Scripting.App
 		public bool ScriptViews { get; set; }
 	}
 
-	public sealed class AppOptionsParser : FluentCommandLineBuilder<AppOptions>
+	public sealed class AppOptionsParser : FluentCommandLineParser<AppOptions>
 	{
 		public AppOptionsParser()
 		{

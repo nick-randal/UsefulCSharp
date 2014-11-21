@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Randal.Sql.Scripting.App")]
-[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal")]
+[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal, All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

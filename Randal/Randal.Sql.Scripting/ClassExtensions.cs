@@ -12,10 +12,11 @@
 // GNU General Public License for more details.
 
 using System;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace Randal.Sql.Scripting
 {
-	public static class VersionExtensions
+	public static class ClassExtensions
 	{
 		public static string ToVersion(this DateTime date, int iteration)
 		{
@@ -31,6 +32,16 @@ namespace Randal.Sql.Scripting
 		public static string ToVersionToday(this int iteration)
 		{
 			return DateTime.Today.ToVersion(iteration);
+		}
+
+		public static string ScriptFileName(this ScriptSchemaObjectBase scriptObject)
+		{
+			if (scriptObject.Schema != "dbo")
+			{
+				return scriptObject.Schema.Replace('\\', '.') + '.' + scriptObject.Name;
+			}
+
+			return scriptObject.Name;
 		}
 
 		public const string 

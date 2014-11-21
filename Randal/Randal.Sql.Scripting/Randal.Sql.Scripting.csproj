@@ -71,17 +71,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptingSource.cs" />
     <Compile Include="ServerWrapper.cs" />
-    <Compile Include="VersionExtensions.cs" />
+    <Compile Include="ClassExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
       <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
       <Name>Randal.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="LICENSE" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
