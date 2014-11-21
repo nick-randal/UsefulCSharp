@@ -115,8 +115,11 @@ namespace Randal.Sql.Scripting
 			{
 				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
 				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
+			}
 
-				_logger.AddEntry("Loading scriptable objects.");
+			_logger.AddEntry("Loading scriptable objects.");
+			foreach (var source in _sources)
+			{	
 				scriptableObjects.AddRange(
 					source
 						.GetScriptableObjects(_server, database)
