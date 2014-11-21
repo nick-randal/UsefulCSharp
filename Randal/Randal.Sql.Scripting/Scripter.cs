@@ -75,7 +75,7 @@ namespace Randal.Sql.Scripting
 			return this;
 		}
 
-		public Scripter DumpScripts()
+		public void DumpScripts()
 		{
 			var processed = 0;
 			var timeTracker = new Stopwatch();
@@ -103,22 +103,25 @@ namespace Randal.Sql.Scripting
 					timeTracker.Reset();
 				}
 			}
-
-			return this;
 		}
 
 		private int DumpAllScripts(Database database)
 		{
 			_scriptFileManager.SetupDatabaseDirectory(database.Name);
 			var processed = 0;
-			var scriptableObjects = new List<ScriptSchemaObjectBase>();
+			var scriptableObjects = new List<ScriptableObject>();
 
 			foreach (var source in _sources)
 			{
 				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
 				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
 
-				scriptableObjects.AddRange(source.GetScriptableObjects(_server, database));
+				_logger.AddEntry("Loading scriptable objects.");
+				scriptableObjects.AddRange(
+					source
+						.GetScriptableObjects(_server, database)
+						.Select(so => new ScriptableObject(source, so))
+				);
 			}
 
 			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
@@ -126,23 +129,23 @@ namespace Randal.Sql.Scripting
 
 			foreach (var sqlObject in scriptableObjects)
 			{
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.GetType().Name), sqlObject.Schema, sqlObject.Name);
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.Item2.GetType().Name), sqlObject.Item2.Schema, sqlObject.Item2.Name);
 
-				if (sqlObject.Schema != "dbo")
+				if (sqlObject.Item2.Schema != "dbo")
 				{
-					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Schema);
+					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Item2.Schema);
 				}
 
-				_scriptFileManager.WriteScriptFile(sqlObject.ScriptFileName(), _formatter.Format(sqlObject));
+				_scriptFileManager.WriteScriptFile(database.Name, sqlObject.Item1.SubFolder, sqlObject.Item2.ScriptFileName(), _formatter.Format(sqlObject.Item2));
 				processed++;
 			}
 
 			return processed;
 		}
 
-		private void CheckForNameCollisions(IEnumerable<ScriptSchemaObjectBase> scriptableObjects)
+		private void CheckForNameCollisions(IEnumerable<ScriptableObject> scriptableObjects)
 		{
-			var duplicates = scriptableObjects.GroupBy(so => so.ScriptFileName())
+			var duplicates = scriptableObjects.GroupBy(so => so.Item2.ScriptFileName())
 				.Where(group => group.Count() > 1)
 				.Select(group => group.Key)
 				.ToList().AsReadOnly();

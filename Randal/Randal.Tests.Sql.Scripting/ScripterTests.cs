@@ -80,7 +80,9 @@ namespace Randal.Tests.Sql.Scripting
 
 			When(AddingSources, DumpingScripts);
 
-			Then.MockScriptFileManager.AssertWasCalled(x => x.WriteScriptFile(Arg<string>.Is.Equal("mySp"), Arg<string>.Is.Anything));
+			Then.MockScriptFileManager.AssertWasCalled(x => 
+				x.WriteScriptFile(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Equal("mySp"), Arg<string>.Is.Anything)
+			);
 		}
 
 		[TestMethod, NegativeTest]

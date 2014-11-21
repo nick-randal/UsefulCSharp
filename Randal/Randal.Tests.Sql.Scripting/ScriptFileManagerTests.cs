@@ -31,7 +31,6 @@ namespace Randal.Tests.Sql.Scripting
 			When(CreatingDirectory);
 
 			Then.Exists.Should().BeTrue();
-			Then.Manager.CurrentFolder.Should().EndWith(@"\Research\Views");
 		}
 
 		[TestMethod, PositiveTest]
@@ -46,30 +45,11 @@ namespace Randal.Tests.Sql.Scripting
 
 			Then.Exists.Should().BeTrue();
 		}
-
-		[TestMethod, PositiveTest]
-		public void ShouldHaveFile_WhenWritingScriptAsync_GivenText()
-		{
-			Given.DatabaseName = "Research";
-			Given.SubFolder = "Views";
-			Given.File = "Test";
-			Given.Text = "Select 1;";
-
-			When(CreatingDirectory, WritingScriptAsync);
-
-			Then.Exists.Should().BeTrue();
-		}
-
-		private async void WritingScriptAsync()
-		{
-			await Then.Manager.WriteScriptFileAsync(Given.File, Given.Text);
-			Then.Exists = new FileInfo(Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
-		}
-
+		
 		private void WritingScript()
 		{
-			Then.Manager.WriteScriptFile(Given.File, Given.Text);
-			Then.Exists = new FileInfo(Then.Manager.CurrentFolder + "\\" + Given.File + ".sql").Exists;
+			var path = Then.Manager.WriteScriptFile(Given.DatabaseName, Given.SubFolder, Given.File, Given.Text);
+			Then.Exists = new FileInfo(path).Exists;
 		}
 
 		protected override void Creating()
@@ -79,10 +59,8 @@ namespace Randal.Tests.Sql.Scripting
 
 		private void CreatingDirectory()
 		{
-			Then.Manager.SetupScriptDirectory(Given.DatabaseName, Given.SubFolder);
-
-			var directory = new DirectoryInfo(Then.Manager.CurrentFolder);
-			Then.Exists = directory.Exists;
+			var path = Then.Manager.SetupScriptDirectory(Given.DatabaseName, Given.SubFolder);
+			Then.Exists = new DirectoryInfo(path).Exists;
 		}
 	}
 

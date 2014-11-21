@@ -20,11 +20,9 @@ namespace Randal.Sql.Scripting
 {
 	public interface IScriptFileManager
 	{
-		string CurrentFolder { get; }
 		string SetupDatabaseDirectory(string databaseName);
 		string SetupScriptDirectory(string databaseName, string subFolder);
-		void WriteScriptFile(string name, string text);
-		Task WriteScriptFileAsync(string name, string text);
+		string WriteScriptFile(string database, string subFolder, string name, string text);
 	}
 
 	public sealed class ScriptFileManager : IScriptFileManager
@@ -33,8 +31,6 @@ namespace Randal.Sql.Scripting
 		{
 			_basePath = basePath;
 		}
-
-		public string CurrentFolder { get; private set; }
 
 		public string SetupDatabaseDirectory(string databaseName)
 		{
@@ -65,8 +61,6 @@ namespace Randal.Sql.Scripting
 			if (directory.Exists == false)
 				directory.Create();
 
-			CurrentFolder = directory.FullName;
-
 			return directory.FullName;
 		}
 
@@ -87,30 +81,19 @@ namespace Randal.Sql.Scripting
 			return this;
 		}
 
-		public void WriteScriptFile(string name, string text)
+		public string WriteScriptFile(string database, string subFolder, string name, string text)
 		{
 			if (name.EndsWith(SqlExtension) == false)
 				name += SqlExtension;
 
-			var script = new FileInfo(Path.Combine(CurrentFolder, name));
+			var script = new FileInfo(Path.Combine(_basePath, database, subFolder, name));
 
 			using (var writer = new StreamWriter(script.OpenWrite()))
 			{
 				writer.WriteLine(text);
 			}
-		}
 
-		public async Task WriteScriptFileAsync(string name, string text)
-		{
-			if (name.EndsWith(SqlExtension) == false)
-				name += SqlExtension;
-
-			var script = new FileInfo(Path.Combine(CurrentFolder, name));
-
-			using (var writer = new StreamWriter(script.OpenWrite()))
-			{
-				await writer.WriteLineAsync(text);
-			}
+			return script.FullName;
 		}
 
 		private readonly string _basePath;
