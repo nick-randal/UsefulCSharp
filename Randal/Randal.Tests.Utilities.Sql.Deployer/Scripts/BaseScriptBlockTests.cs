@@ -26,14 +26,14 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		public void ShouldHaveNonEmptyTextAfterInstantiation()
 		{
 			Given.Keyword = "\nignore\n";
-			Given.Text = "\nuse TCPLP\n";
+			Given.Text = "\nuse master\n";
 
 			When(Creating);
 
 			Then.Object.Should().BeAssignableTo<BaseScriptBlock>();
 			Then.Object.IsValid.Should().BeFalse();
 			Then.Object.Keyword.Should().Be("ignore");
-			Then.Object.Text.Should().Be("use TCPLP");
+			Then.Object.Text.Should().Be("use master");
 		}
 
 		[TestMethod, NegativeTest]

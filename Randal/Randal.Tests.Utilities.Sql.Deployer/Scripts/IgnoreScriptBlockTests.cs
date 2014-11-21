@@ -24,13 +24,13 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidIgnoreScriptBlockWhenCreating()
 		{
-			Given.Text = "use TCPLP\nGO\n";
+			Given.Text = "use master\nGO\n";
 
 			When(Creating);
 
 			Then.Object.Should().NotBeNull().And.BeAssignableTo<BaseScriptBlock>();
 			Then.Object.IsValid.Should().BeTrue();
-			Then.Object.Text.Should().Be("use TCPLP\nGO");
+			Then.Object.Text.Should().Be("use master\nGO");
 		}
 
 		protected override void Creating()

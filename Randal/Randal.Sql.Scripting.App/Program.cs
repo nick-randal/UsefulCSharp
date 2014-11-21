@@ -14,8 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Security.AccessControl;
 using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
@@ -24,15 +22,17 @@ namespace Randal.Sql.Scripting.App
 	{
 		private static int Main(string[] args)
 		{
+			AsyncFileLogger logger = null;
 			var options = ParseCommandLineArguments(args);
 			if (options == null)
-				return 2;
+				return ExitCodes.InvalidArguments;
 
-			SetupFolders(options.LogFolder, options.OutputFolder);
-
-			using (var logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "SQL Scripter")))
+			try
 			{
+				logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "SQL Scripter"));
 				LogHeader(logger, options);
+
+				SetupFolders(options.LogFolder, options.OutputFolder);
 
 				var scriptFileManager = new ScriptFileManager(Path.Combine(options.OutputFolder, options.Server));
 				var server = new ServerWrapper(options.Server);
@@ -48,8 +48,20 @@ namespace Randal.Sql.Scripting.App
 
 				logger.Add("DONE".ToLogEntry());
 			}
+			catch (Exception ex)
+			{
+				if(logger != null)
+					logger.Add(new LogExceptionEntry(ex));
+				Console.WriteLine(ex);
+				return ExitCodes.UnexpectedException;
+			}
+			finally
+			{
+				if(logger != null)
+					logger.Dispose();
+			}
 
-			return -1;
+			return ExitCodes.Ok;
 		}
 
 		private static void SetupFolders(params string[] paths)
@@ -130,5 +142,14 @@ namespace Randal.Sql.Scripting.App
 
 			lines.ForEach(l => logger.Add(l.ToLogEntryNoTs()));
 		}
+	}
+
+	internal static class ExitCodes
+	{
+		internal const int
+			Ok = -1,
+			UnexpectedException = 1,
+			InvalidArguments = 2
+		;
 	}
 }

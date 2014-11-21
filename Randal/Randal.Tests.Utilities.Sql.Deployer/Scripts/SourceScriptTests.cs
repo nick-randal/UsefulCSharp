@@ -56,8 +56,8 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			Given.BlockList.AddRange(
 				new List<IScriptBlock>
 				{
-					new IgnoreScriptBlock("use Coupon"),
-					new CatalogBlock("TCPLP, Coupon"),
+					new IgnoreScriptBlock("use Test1"),
+					new CatalogBlock("Test1, Test2"),
 					new OptionsBlock("{ timeout: 45, useTransaction: false}"),
 					new SqlCommandBlock("pre", "select 1", SqlScriptPhase.Pre),
 					new SqlCommandBlock("main", "select 2", SqlScriptPhase.Main),
@@ -80,7 +80,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		[TestMethod, PositiveTest]
 		public void ShouldHaveDefaultConfigurationWhenValidatingGivenNoConfigurationBlock()
 		{
-			Given.BlockList.AddRange(new List<IScriptBlock> {new CatalogBlock("TCPLP, Coupon")});
+			Given.BlockList.AddRange(new List<IScriptBlock> {new CatalogBlock("Companies, Employees")});
 
 			When(Validating, GettingConfiguration);
 

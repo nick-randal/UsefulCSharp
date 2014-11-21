@@ -55,23 +55,23 @@ namespace Randal.Sql.Scripting
 			if (table != null)
 				return Format(table);
 
-			throw new InvalidOperationException("Not supported.");
+			throw new NotSupportedException("No support has been defined for type '" + schemaObject.GetType().FullName + "'.");
 		}
 
 		public string Format(Table table)
 		{
 			var values = new Dictionary<string, object>
 			{
-				{ "catalog", table.Parent.Name },
-				{ "schema", table.Schema },
-				{ "table", table.Name },
+				{ Str.Catalog, table.Parent.Name },
+				{ Str.Schema, table.Schema },
+				{ Str.Table, table.Name },
 				{ "pre", FormatTablePreSection(table) },
 				{ "main", FormatTableMainSection(table) },
-				{ "version", 1.ToVersionToday() },
-				{ "needs", GetNeeds(table, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
+				{ Str.Version, 1.ToVersionToday() },
+				{ Str.Needs, GetNeeds(table, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
-			return TableScript.Format().With(values);
+			return Str.TableScript.Format().With(values);
 		}
 
 		private static string FormatTableMainSection(Table table)
@@ -111,27 +111,27 @@ namespace Randal.Sql.Scripting
 		{
 			var values = new Dictionary<string, object>
 			{
-				{ "catalog", view.Parent.Name },
-				{ "schema", view.Schema },
-				{ "view", view.Name },
-				{ "body", view.TextBody },
-				{ "header", view.ScriptHeader(true) },
-				{ "needs", GetNeeds(view, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
+				{ Str.Catalog, view.Parent.Name },
+				{ Str.Schema, view.Schema },
+				{ Str.View, view.Name },
+				{ Str.Body, view.TextBody },
+				{ Str.Header, view.ScriptHeader(true) },
+				{ Str.Needs, GetNeeds(view, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
-			return ViewScript.Format().With(values); 
+			return Str.ViewScript.Format().With(values); 
 		}
 
 		public string Format(UserDefinedFunction udf)
 		{
 			var values = new Dictionary<string, object>
 			{
-				{ "catalog", udf.Parent.Name },
-				{ "schema", udf.Schema },
-				{ "udf", udf.Name },
-				{ "body", udf.TextBody },
-				{ "header", udf.ScriptHeader(true) },
-				{ "needs", GetNeeds(udf, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
+				{ Str.Catalog, udf.Parent.Name },
+				{ Str.Schema, udf.Schema },
+				{ Str.Udf, udf.Name },
+				{ Str.Body, udf.TextBody },
+				{ Str.Header, udf.ScriptHeader(true) },
+				{ Str.Needs, GetNeeds(udf, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
 			};
 
 			switch (udf.FunctionType)
@@ -147,24 +147,24 @@ namespace Randal.Sql.Scripting
 					break;
 			}
 
-			return UserDefinedFunctionScript.Format().With(values); 
+			return Str.UserDefinedFunctionScript.Format().With(values); 
 		}
 
 		public string Format(StoredProcedure sproc)
 		{
 			var values = new Dictionary<string, object>
 			{
-				{ "catalog", sproc.Parent.Name },
-				{ "schema", sproc.Schema },
-				{ "sproc", sproc.Name },
-				{ "body", NormalizeSprocBody(sproc.TextBody) },
-				{ "header", sproc.ScriptHeader(true) },
-				{ "needs", GetNeeds(sproc, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
+				{ Str.Catalog, sproc.Parent.Name },
+				{ Str.Schema, sproc.Schema },
+				{ Str.Sproc, sproc.Name },
+				{ Str.Body, NormalizeSprocBody(sproc.TextBody) },
+				{ Str.Header, sproc.ScriptHeader(true) },
+				{ Str.Needs, GetNeeds(sproc, DatabaseObjectTypes.StoredProcedure | DatabaseObjectTypes.UserDefinedFunction | DatabaseObjectTypes.View) ?? string.Empty }
 			};
 
 			values["parameters"] = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
 
-			return SprocScript.Format().With(values); 
+			return Str.SprocScript.Format().With(values); 
 		}
 
 		private static string NormalizeSprocBody(string body)
@@ -198,8 +198,8 @@ namespace Randal.Sql.Scripting
 		private static bool InSameDatabase(SqlSmoObject sqlSmoObject, DependencyNode x)
 		{
 			return 0 == string.Compare(
-				x.Urn.GetNameForType("Database"), 
-				sqlSmoObject.Urn.GetNameForType("Database"), 
+				x.Urn.GetNameForType(Str.Database), 
+				sqlSmoObject.Urn.GetNameForType(Str.Database), 
 				StringComparison.InvariantCultureIgnoreCase);
 		}
 
@@ -225,9 +225,15 @@ namespace Randal.Sql.Scripting
 		;
 		private static readonly Regex PatternLineEndings = new Regex(@"[\t ]*\r?\n", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-		private const string 
-			SprocScript =
-@"{needs}--:: catalog {catalog}
+		private static class Str
+		{
+			internal const string
+				Database = "Database",
+				Catalog = "catalog", Schema = "schema", Version = "version",
+				Body = "body", Header = "header", Needs = "needs",
+				Table = "Table", View = "View", Udf = "Udf", Sproc = "Sproc",
+				SprocScript =
+					@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -243,8 +249,8 @@ GO
 /*
 	exec [{schema}].[{sproc}] {parameters}
 */",
-			UserDefinedFunctionScript =
-@"{needs}--:: catalog {catalog}
+				UserDefinedFunctionScript =
+					@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -260,8 +266,8 @@ GO
 /*
 	select {schema}.{udf}()
 */",
-			ViewScript =
-@"{needs}--:: catalog {catalog}
+				ViewScript =
+					@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -277,8 +283,8 @@ GO
 /*
 	select top 100 * from {view}
 */",
-			TableScript =
-@"
+				TableScript =
+					@"
 {needs}--:: catalog {catalog}
 
 --:: ignore
@@ -302,6 +308,7 @@ end
 /*
 	select top 100 * from [{schema}].[{table}]
 */"
-		;
+				;
+		}
 	}
 }

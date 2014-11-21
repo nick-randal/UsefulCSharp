@@ -1,0 +1,5 @@
+{
+	Project: "Core Support",
+	Version: "14.11.20.01",
+	PriorityScripts: [ "coreCreateProcedure", "coreCreateInlineTableFunction", "coreCreateScalarFunction", "coreCreateMultiStatementFunction", "coreCreateFunction", "coreCreateQueryView", "TCDataTypes" ]
+}
