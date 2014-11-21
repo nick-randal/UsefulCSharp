@@ -70,12 +70,7 @@ namespace Randal.Sql.Scripting
 		{
 			return database.Views
 				.Cast<View>()
-				.Where(view =>
-				{
-					if(view.IsIndexable || view.IsSchemaBound)
-						throw new InvalidOperationException("Unexpected view encountered.");
-					return view.IsSystemObject == false;
-				})
+				.Where(view => view.IsSystemObject == false)
 				.ToList()
 				.AsReadOnly();
 		}

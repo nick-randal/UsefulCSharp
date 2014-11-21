@@ -60,18 +60,18 @@ namespace Randal.Sql.Scripting
 
 		public string Format(Table table)
 		{
-			var values = new Dictionary<string, object>
+			var values = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ Str.Catalog, table.Parent.Name },
 				{ Str.Schema, table.Schema },
 				{ Str.Table, table.Name },
-				{ "pre", FormatTablePreSection(table) },
-				{ "main", FormatTableMainSection(table) },
+				{ Str.Pre, FormatTablePreSection(table) },
+				{ Str.Main, FormatTableMainSection(table) },
 				{ Str.Version, 1.ToVersionToday() },
 				{ Str.Needs, GetNeeds(table, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
-			return Str.TableScript.Format().With(values);
+			return Str.Script.Table.Format().With(values);
 		}
 
 		private static string FormatTableMainSection(Table table)
@@ -109,7 +109,7 @@ namespace Randal.Sql.Scripting
 
 		public string Format(View view)
 		{
-			var values = new Dictionary<string, object>
+			var values = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ Str.Catalog, view.Parent.Name },
 				{ Str.Schema, view.Schema },
@@ -119,12 +119,12 @@ namespace Randal.Sql.Scripting
 				{ Str.Needs, GetNeeds(view, DatabaseObjectTypes.UserDefinedFunction) ?? string.Empty }
 			};
 
-			return Str.ViewScript.Format().With(values); 
+			return Str.Script.View.Format().With(values); 
 		}
 
 		public string Format(UserDefinedFunction udf)
 		{
-			var values = new Dictionary<string, object>
+			var values = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ Str.Catalog, udf.Parent.Name },
 				{ Str.Schema, udf.Schema },
@@ -147,12 +147,12 @@ namespace Randal.Sql.Scripting
 					break;
 			}
 
-			return Str.UserDefinedFunctionScript.Format().With(values); 
+			return Str.Script.UserDefinedFunction.Format().With(values); 
 		}
 
 		public string Format(StoredProcedure sproc)
 		{
-			var values = new Dictionary<string, object>
+			var values = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ Str.Catalog, sproc.Parent.Name },
 				{ Str.Schema, sproc.Schema },
@@ -164,14 +164,14 @@ namespace Randal.Sql.Scripting
 
 			values["parameters"] = string.Join(", ", sproc.Parameters.Cast<StoredProcedureParameter>().ToList().Select(p => p.Name + " = "));
 
-			return Str.SprocScript.Format().With(values); 
+			return Str.Script.Sproc.Format().With(values); 
 		}
 
 		private static string NormalizeSprocBody(string body)
 		{
 			body = PatternLineEndings.Replace(body.Trim(), LineBreakTab);
-			if (body.StartsWith("begin", StringComparison.CurrentCultureIgnoreCase) == false)
-				body = "begin" + LineBreakTab + body + Environment.NewLine + "end";
+			if (body.StartsWith(Str.Begin, StringComparison.CurrentCultureIgnoreCase) == false)
+				body = Str.Begin + LineBreakTab + body + Environment.NewLine + Str.End;
 
 			return body;
 		}
@@ -227,13 +227,27 @@ namespace Randal.Sql.Scripting
 
 		private static class Str
 		{
-			internal const string
+			public const string
 				Database = "Database",
-				Catalog = "catalog", Schema = "schema", Version = "version",
-				Body = "body", Header = "header", Needs = "needs",
-				Table = "Table", View = "View", Udf = "Udf", Sproc = "Sproc",
-				SprocScript =
-					@"{needs}--:: catalog {catalog}
+				Catalog = "catalog",
+				Schema = "schema",
+				Version = "version",
+				Body = "body",
+				Header = "header",
+				Needs = "needs",
+				Table = "Table",
+				View = "View",
+				Udf = "Udf",
+				Sproc = "Sproc",
+				Pre = "pre", Main = "main",
+				Begin = "begin", End = "end"
+			;
+
+			public static class Script
+			{
+				public const string
+					Sproc =
+						@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -249,8 +263,8 @@ GO
 /*
 	exec [{schema}].[{sproc}] {parameters}
 */",
-				UserDefinedFunctionScript =
-					@"{needs}--:: catalog {catalog}
+					UserDefinedFunction =
+						@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -266,8 +280,8 @@ GO
 /*
 	select {schema}.{udf}()
 */",
-				ViewScript =
-					@"{needs}--:: catalog {catalog}
+					View =
+						@"{needs}--:: catalog {catalog}
 
 --:: ignore
 use {catalog}
@@ -283,8 +297,8 @@ GO
 /*
 	select top 100 * from {view}
 */",
-				TableScript =
-					@"
+					Table =
+						@"
 {needs}--:: catalog {catalog}
 
 --:: ignore
@@ -308,7 +322,8 @@ end
 /*
 	select top 100 * from [{schema}].[{table}]
 */"
-				;
+					;
+			}
 		}
 	}
 }
