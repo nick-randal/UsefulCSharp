@@ -80,21 +80,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\Sprocs\coreCreateFunction.sql" />
-    <Content Include="Scripts\Sprocs\coreCreateInlineTableFunction.sql" />
-    <Content Include="Scripts\Sprocs\coreCreateMultiStatementFunction.sql" />
-    <Content Include="Scripts\Sprocs\coreCreateProcedure.sql" />
-    <Content Include="Scripts\Sprocs\coreCreateScalarFunction.sql" />
-    <Content Include="Scripts\Sprocs\coreCreateView.sql" />
-    <Content Include="Scripts\Sprocs\coreSetParameter.sql" />
-    <Content Include="Scripts\Sprocs\coreSetTableVersion.sql" />
-    <Content Include="Scripts\Tables\TableVersions.sql" />
-    <Content Include="Scripts\Tables\TCParameters.sql" />
-    <Content Include="Scripts\UDFs\coreGetParameterString.sql" />
-    <Content Include="Scripts\UDFs\coreGetTableVersion.sql" />
-    <Content Include="Scripts\UDFs\coreTableExists.sql" />
-    <Content Include="Scripts\UDFs\coreTrim.sql" />
-    <Content Include="Scripts\UDFs\coreTrimBrackets.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateFunction.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateInlineTableFunction.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateMultiStatementFunction.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateProcedure.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateScalarFunction.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateView.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreSetParameter.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreSetTableVersion.sql" />
+    <Content Include="Scripts\Core\Tables\TableVersions.sql" />
+    <Content Include="Scripts\Core\Tables\TCParameters.sql" />
+    <Content Include="Scripts\Core\UDFs\coreGetParameterString.sql" />
+    <Content Include="Scripts\Core\UDFs\coreGetTableVersion.sql" />
+    <Content Include="Scripts\Core\UDFs\coreTableExists.sql" />
+    <Content Include="Scripts\Core\UDFs\coreTrim.sql" />
+    <Content Include="Scripts\Core\UDFs\coreTrimBrackets.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
