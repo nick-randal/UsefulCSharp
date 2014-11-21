@@ -29,7 +29,7 @@ namespace Randal.Sql.Deployer.App
 		public bool Rollback { get; set; }
 	}
 
-	public sealed class AppOptionsParser : FluentCommandLineBuilder<AppOptions>
+	public sealed class AppOptionsParser : FluentCommandLineParser<AppOptions>
 	{
 		public AppOptionsParser()
 		{
