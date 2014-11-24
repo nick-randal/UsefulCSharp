@@ -79,7 +79,7 @@ namespace Randal.Sql.Scripting
 		{
 			return database.Tables
 				.Cast<Table>()
-				.Where(view => view.IsSystemObject == false)
+				.Where(table => table.IsSystemObject == false)
 				.ToList()
 				.AsReadOnly();
 		}

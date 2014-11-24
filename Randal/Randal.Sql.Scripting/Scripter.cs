@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
-using ScriptableObject = System.Tuple<Randal.Sql.Scripting.ScriptingSource, Microsoft.SqlServer.Management.Smo.ScriptSchemaObjectBase>;
 
 namespace Randal.Sql.Scripting
 {
@@ -130,16 +129,30 @@ namespace Randal.Sql.Scripting
 			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
 			CheckForNameCollisions(scriptableObjects);
 
-			foreach (var sqlObject in scriptableObjects)
+			foreach (var scriptableObject in scriptableObjects)
 			{
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(sqlObject.Item2.GetType().Name), sqlObject.Item2.Schema, sqlObject.Item2.Name);
+				var so = scriptableObject.SchemaObject;
 
-				if (sqlObject.Item2.Schema != "dbo")
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
+
+				if (so.Schema != "dbo")
 				{
-					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", sqlObject.Item2.Schema);
+					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
 				}
 
-				_scriptFileManager.WriteScriptFile(database.Name, sqlObject.Item1.SubFolder, sqlObject.Item2.ScriptFileName(), _formatter.Format(sqlObject.Item2));
+				if (scriptableObject.IsEncrypted)
+				{
+					_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted.", so.Schema, so.Name);
+					continue;
+				}
+
+				_scriptFileManager.WriteScriptFile(
+					database.Name, 
+					scriptableObject.ScriptingSource.SubFolder, 
+					so.ScriptFileName(), 
+					_formatter.Format(so)
+				);
+
 				processed++;
 			}
 
@@ -148,7 +161,7 @@ namespace Randal.Sql.Scripting
 
 		private void CheckForNameCollisions(IEnumerable<ScriptableObject> scriptableObjects)
 		{
-			var duplicates = scriptableObjects.GroupBy(so => so.Item2.ScriptFileName())
+			var duplicates = scriptableObjects.GroupBy(so => so.SchemaObject.ScriptFileName())
 				.Where(group => group.Count() > 1)
 				.Select(group => group.Key)
 				.ToList().AsReadOnly();
