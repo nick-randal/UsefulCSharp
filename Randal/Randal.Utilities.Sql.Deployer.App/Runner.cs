@@ -12,6 +12,8 @@
 // GNU General Public License for more details.
 
 using System;
+using System.IO;
+using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
 using Randal.Sql.Deployer.Configuration;
@@ -30,6 +32,10 @@ namespace Randal.Sql.Deployer.App
 
 			_settings = settings;
 			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
+			var configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
+
+			using (var reader = new FileInfo(configPath).OpenText())
+				_config = JsonConvert.DeserializeObject<ScriptDeployerConfig>(reader.ReadToEnd());
 		}
 
 		public void Go()
@@ -53,7 +59,7 @@ namespace Randal.Sql.Deployer.App
 
 					var project = LoadProject(CreateParser());
 
-					DeployScripts(project, connectionManager);
+					DeployScripts(_config, project, connectionManager);
 
 					commit = _settings.ShouldRollback == false;
 				}
@@ -136,6 +142,7 @@ namespace Randal.Sql.Deployer.App
 		}
 
 		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly IScriptDeployerConfig _config;
 		private readonly RunnerSettings _settings;
 	}
 }
