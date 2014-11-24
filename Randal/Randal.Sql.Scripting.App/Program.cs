@@ -44,7 +44,7 @@ namespace Randal.Sql.Scripting.App
 
 				ConfigureScriptingSources(options, scripter);
 
-				scripter.DumpScripts().Wait();
+				scripter.DumpScripts();
 
 				logger.Add("DONE".ToLogEntry());
 			}

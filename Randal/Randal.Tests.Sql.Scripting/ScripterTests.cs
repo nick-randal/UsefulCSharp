@@ -75,7 +75,13 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldWriteScriptFile_WhenDumpingScripts()
 		{
-			Given.Sources = new[] { new ScriptingSource("Sprocs", (srvr, db) => new ScriptSchemaObjectBase[] { new StoredProcedure(db, "mySp") }) };
+			Given.Sources = new[]
+			{
+				new ScriptingSource("Sprocs", (srvr, db) => new ScriptSchemaObjectBase[]
+				{
+					new StoredProcedure(db, "mySp") { TextMode = false, IsEncrypted = false }
+				})
+			};
 			Given.Databases = new[] { new Database(new Server(), "master") };
 
 			When(AddingSources, DumpingScripts);

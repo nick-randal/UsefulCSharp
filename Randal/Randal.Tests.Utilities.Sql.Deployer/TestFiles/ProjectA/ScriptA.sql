@@ -1,4 +1,4 @@
-﻿--:: catalog master
+﻿--:: catalog model
 
 --:: ignore
 use model

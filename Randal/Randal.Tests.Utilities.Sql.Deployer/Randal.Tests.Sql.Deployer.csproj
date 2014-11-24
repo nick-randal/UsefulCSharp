@@ -67,10 +67,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Randal.Core, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.9\lib\net45\Randal.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Randal.Core.Testing, Version=1.0.0.9, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Randal.Core.Testing.1.0.0.9\lib\net45\Randal.Core.Testing.dll</HintPath>
@@ -132,6 +128,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
+      <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
+      <Name>Randal.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Randal.Utilities.Sql.Deployer\Randal.Sql.Deployer.csproj">
       <Project>{b910a326-38ad-4dc4-999c-03b3b1ce3d77}</Project>
       <Name>Randal.Sql.Deployer</Name>

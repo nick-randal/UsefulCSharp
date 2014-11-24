@@ -67,7 +67,7 @@ namespace Randal.Tests.Sql.Scripting
 		{
 			Given.Database = "master";
 			When(GettingDatabases, GettingTables);
-			Then.Tables.Should().NotBeEmpty();
+			Then.Tables.Should().BeEmpty();
 		}
 
 		private void GettingFunctions()

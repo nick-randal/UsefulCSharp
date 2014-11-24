@@ -1,4 +1,4 @@
-﻿--:: catalog master
+﻿--:: catalog model
 --:: options { timeout: 30, transaction : false }
 
 --:: ignore

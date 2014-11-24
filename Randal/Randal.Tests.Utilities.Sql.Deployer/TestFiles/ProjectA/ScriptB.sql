@@ -1,5 +1,5 @@
 ﻿--:: need ScriptC
---:: catalog master
+--:: catalog model
 
 --:: ignore
 use model

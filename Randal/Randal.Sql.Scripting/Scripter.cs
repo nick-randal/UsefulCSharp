@@ -12,12 +12,10 @@
 // GNU General Public License for more details.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
@@ -76,7 +74,7 @@ namespace Randal.Sql.Scripting
 			return this;
 		}
 
-		public async Task DumpScripts()
+		public void DumpScripts()
 		{
 			var processed = 0;
 			var timeTracker = new Stopwatch();
@@ -90,7 +88,7 @@ namespace Randal.Sql.Scripting
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					processed = await DumpAllScripts(database);
+					processed = DumpAllScripts(database);
 				}
 				catch (Exception ex)
 				{
@@ -106,45 +104,39 @@ namespace Randal.Sql.Scripting
 			}
 		}
 
-		private async Task<int> DumpAllScripts(Database database)
+		private int DumpAllScripts(Database database)
 		{
 			_scriptFileManager.SetupDatabaseDirectory(database.Name);
 			var processed = 0;
 			var scriptableObjects = new List<ScriptableObject>();
-			var tasks = new List<Task>();
 
-			foreach (var source in _sources)
-			{
-				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
-				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
-			}
+			SetupScriptFolders(database);
 
-			_logger.AddEntry("Loading scriptable objects.");
-			foreach (var source in _sources)
-			{	
-				scriptableObjects.AddRange(
-					source
-						.GetScriptableObjects(_server, database)
-						.Select(so => new ScriptableObject(source, so))
-				);
-			}
-
-			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
-			CheckForNameCollisions(scriptableObjects);
+			LoadAndValidateObjects(database, scriptableObjects);
 
 			foreach (var scriptableObject in scriptableObjects)
 			{
-				if (tasks.Count >= 4)
-					await Task.WhenAny(tasks);
+				var so = scriptableObject.SchemaObject;
 
-				var completedTask = tasks.First(t => t.IsCanceled || t.IsCompleted || t.IsFaulted);
-				tasks.Remove(completedTask);
+				_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
 
-				tasks.Add(
-					Task.Factory.StartNew((state) => CreateScriptForSchemaObject((Tuple<Database, ScriptableObject>)state), 
-						new Tuple<Database, ScriptableObject>(database, scriptableObject))
-				);
-				//CreateScriptForSchemaObject(database, scriptableObject))
+				if (so.Schema != "dbo")
+				{
+					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
+				}
+
+				if (scriptableObject.IsEncrypted)
+				{
+					_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);
+					continue;
+				}
+
+				_scriptFileManager.WriteScriptFile(
+					database.Name,
+					scriptableObject.ScriptingSource.SubFolder,
+					so.ScriptFileName(),
+					_formatter.Format(so)
+					);
 				
 				processed++;
 			}
@@ -152,31 +144,29 @@ namespace Randal.Sql.Scripting
 			return processed;
 		}
 
-		private void CreateScriptForSchemaObject(Tuple<Database, ScriptableObject> state)
+		private void LoadAndValidateObjects(Database database, List<ScriptableObject> scriptableObjects)
 		{
-			var database = state.Item1;
-			var scriptableObject = state.Item2;
-			var so = scriptableObject.SchemaObject;
-
-			_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
-
-			if (so.Schema != "dbo")
+			_logger.AddEntry("Loading scriptable objects.");
+			foreach (var source in _sources)
 			{
-				_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
+				scriptableObjects.AddRange(
+					source
+						.GetScriptableObjects(_server, database)
+						.Select(so => new ScriptableObject(source, so))
+					);
 			}
 
-			if (scriptableObject.IsEncrypted)
-			{
-				_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);
-				return;
-			}
+			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
+			CheckForNameCollisions(scriptableObjects);
+		}
 
-			_scriptFileManager.WriteScriptFile(
-				database.Name,
-				scriptableObject.ScriptingSource.SubFolder,
-				so.ScriptFileName(),
-				_formatter.Format(so)
-				);
+		private void SetupScriptFolders(IDatabaseOptions database)
+		{
+			foreach (var source in _sources)
+			{
+				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
+				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
+			}
 		}
 
 		private void CheckForNameCollisions(IEnumerable<ScriptableObject> scriptableObjects)
