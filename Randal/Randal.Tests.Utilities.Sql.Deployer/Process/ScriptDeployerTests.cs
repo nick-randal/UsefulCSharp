@@ -16,6 +16,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
+using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
 using Randal.Tests.Sql.Deployer.Scripts;
@@ -80,7 +81,8 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 		protected override void Creating()
 		{
-			Then.Deployer = new ScriptDeployer(Given.Project, Given.ConnectionManager, new StringLogger());
+			var config = Given.Config ?? new ScriptDeployerConfig();
+			Then.Deployer = new ScriptDeployer(config, Given.Project, Given.ConnectionManager, new StringLogger());
 			Then.Manager = Given.ConnectionManager;
 		}
 

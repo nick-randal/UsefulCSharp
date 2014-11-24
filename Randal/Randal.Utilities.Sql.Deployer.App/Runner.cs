@@ -14,6 +14,7 @@
 using System;
 using Randal.Core.Enums;
 using Randal.Logging;
+using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
@@ -118,9 +119,10 @@ namespace Randal.Sql.Deployer.App
 			return new Project(loader.Configuration, loader.AllScripts);
 		}
 
-		private void DeployScripts(IProject project, ISqlConnectionManager connectionManager)
+		private void DeployScripts(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager)
 		{
-			var deployer = new ScriptDeployer(project, connectionManager, _logger.BaseLogger);
+			
+			var deployer = new ScriptDeployer(config, project, connectionManager, _logger.BaseLogger);
 
 			if (deployer.CanUpgrade() == false)
 				throw new RunnerException("Cannot upgrade project");

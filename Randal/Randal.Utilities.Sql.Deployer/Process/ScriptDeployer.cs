@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Randal.Core.Enums;
 using Randal.Logging;
+using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.Helpers;
 using Randal.Sql.Deployer.Scripts;
 
@@ -25,22 +26,26 @@ namespace Randal.Sql.Deployer.Process
 	{
 		bool CanUpgrade();
 		Returned DeployScripts();
+		IScriptDeployerConfig Config { get; }
 	}
 
 	public sealed class ScriptDeployer : IScriptDeployer
 	{
-		public ScriptDeployer(IProject project, ISqlConnectionManager connectionManager, ILogger logger)
+		public ScriptDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
 		{
 			if (project == null)
 				throw new ArgumentNullException("project");
 			if (connectionManager == null)
 				throw new ArgumentNullException("connectionManager");
 
+			_config = config;
 			_project = project;
 			_connectionManager = connectionManager;
 			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 			_patternLookup = new CatalogPatternLookup();
 		}
+
+		public IScriptDeployerConfig Config { get { return _config; } }
 
 		public bool CanUpgrade()
 		{
@@ -61,12 +66,8 @@ namespace Randal.Sql.Deployer.Process
 			if (DeployPriorityScripts(phases) == Returned.Failure)
 				return Returned.Failure;
 
-			if (phases.Any(phase => DeployPhase(phase) == Returned.Failure))
-			{
-				return Returned.Failure;
-			}
-
-			return Returned.Success;
+			return phases.Any(phase => DeployPhase(phase) == Returned.Failure) 
+				? Returned.Failure : Returned.Success;
 		}
 
 		private Returned DeployPriorityScripts(SqlScriptPhase[] phases)
@@ -219,6 +220,7 @@ namespace Randal.Sql.Deployer.Process
 			return true;
 		}
 
+		private readonly IScriptDeployerConfig _config;
 		private readonly IProject _project;
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly ISqlConnectionManager _connectionManager;

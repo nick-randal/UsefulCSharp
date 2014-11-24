@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
 using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
+using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
@@ -70,9 +71,10 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 			var loader = new ProjectLoader(Given.Path, parser, Then.Logger);
 			loader.Load();
+			var config = Given.Config ?? new ScriptDeployerConfig();
 			var project = new Project(loader.Configuration, loader.AllScripts);
 
-			Then.Deployer = new ScriptDeployer(project, Then.Manager, Then.Logger);
+			Then.Deployer = new ScriptDeployer(config, project, Then.Manager, Then.Logger);
 		}
 
 		private void CheckingCanUpgrade()

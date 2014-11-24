@@ -12,10 +12,12 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
@@ -74,7 +76,7 @@ namespace Randal.Sql.Scripting
 			return this;
 		}
 
-		public void DumpScripts()
+		public async Task DumpScripts()
 		{
 			var processed = 0;
 			var timeTracker = new Stopwatch();
@@ -88,7 +90,7 @@ namespace Randal.Sql.Scripting
 				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
-					processed = DumpAllScripts(database);
+					processed = await DumpAllScripts(database);
 				}
 				catch (Exception ex)
 				{
@@ -104,11 +106,12 @@ namespace Randal.Sql.Scripting
 			}
 		}
 
-		private int DumpAllScripts(Database database)
+		private async Task<int> DumpAllScripts(Database database)
 		{
 			_scriptFileManager.SetupDatabaseDirectory(database.Name);
 			var processed = 0;
 			var scriptableObjects = new List<ScriptableObject>();
+			var tasks = new List<Task>();
 
 			foreach (var source in _sources)
 			{
@@ -131,32 +134,49 @@ namespace Randal.Sql.Scripting
 
 			foreach (var scriptableObject in scriptableObjects)
 			{
-				var so = scriptableObject.SchemaObject;
+				if (tasks.Count >= 4)
+					await Task.WhenAny(tasks);
 
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
+				var completedTask = tasks.First(t => t.IsCanceled || t.IsCompleted || t.IsFaulted);
+				tasks.Remove(completedTask);
 
-				if (so.Schema != "dbo")
-				{
-					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
-				}
-
-				if (scriptableObject.IsEncrypted)
-				{
-					_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted.", so.Schema, so.Name);
-					continue;
-				}
-
-				_scriptFileManager.WriteScriptFile(
-					database.Name, 
-					scriptableObject.ScriptingSource.SubFolder, 
-					so.ScriptFileName(), 
-					_formatter.Format(so)
+				tasks.Add(
+					Task.Factory.StartNew((state) => CreateScriptForSchemaObject((Tuple<Database, ScriptableObject>)state), 
+						new Tuple<Database, ScriptableObject>(database, scriptableObject))
 				);
-
+				//CreateScriptForSchemaObject(database, scriptableObject))
+				
 				processed++;
 			}
 
 			return processed;
+		}
+
+		private void CreateScriptForSchemaObject(Tuple<Database, ScriptableObject> state)
+		{
+			var database = state.Item1;
+			var scriptableObject = state.Item2;
+			var so = scriptableObject.SchemaObject;
+
+			_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
+
+			if (so.Schema != "dbo")
+			{
+				_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
+			}
+
+			if (scriptableObject.IsEncrypted)
+			{
+				_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);
+				return;
+			}
+
+			_scriptFileManager.WriteScriptFile(
+				database.Name,
+				scriptableObject.ScriptingSource.SubFolder,
+				so.ScriptFileName(),
+				_formatter.Format(so)
+				);
 		}
 
 		private void CheckForNameCollisions(IEnumerable<ScriptableObject> scriptableObjects)
