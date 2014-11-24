@@ -30,7 +30,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		protected override void OnSetup()
 		{
 			Then.Logger = new StringLogger();
-			var manager = new SqlConnectionManager();
+			var manager = new SqlConnectionManager(ScriptDeployerConfig.Default.DatabaseLookup);
 			manager.OpenConnection(".", "master");
 			manager.BeginTransaction();
 
@@ -71,7 +71,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 			var loader = new ProjectLoader(Given.Path, parser, Then.Logger);
 			loader.Load();
-			var config = Given.Config ?? new ScriptDeployerConfig();
+			var config = Given.Config ?? ScriptDeployerConfig.Default;
 			var project = new Project(loader.Configuration, loader.AllScripts);
 
 			Then.Deployer = new ScriptDeployer(config, project, Then.Manager, Then.Logger);

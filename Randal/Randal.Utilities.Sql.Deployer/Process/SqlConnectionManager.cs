@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using Randal.Logging;
 
 namespace Randal.Sql.Deployer.Process
 {
@@ -37,8 +36,11 @@ namespace Randal.Sql.Deployer.Process
 
 	public sealed class SqlConnectionManager : ISqlConnectionManager
 	{
-		public SqlConnectionManager(ISqlCommandWrapperFactory commandFactory = null)
+		private readonly string _getDatabaseCommand;
+
+		public SqlConnectionManager(string getDatabaseCommand, ISqlCommandWrapperFactory commandFactory = null)
 		{
+			_getDatabaseCommand = getDatabaseCommand;
 			_databaseNames = new List<string>();
 			_scnBuilder = new SqlConnectionStringBuilder();
 			_commandWrapperFactory = commandFactory ?? new SqlCommandWrapperFactory();
@@ -153,9 +155,9 @@ namespace Randal.Sql.Deployer.Process
 
 		private void GetDatabaseNames()
 		{
-			using (var cmd = CreateCommand(TextResources.Sql.GetDatabases))
+			using (var cmd = CreateCommand(_getDatabaseCommand))
 			{
-				using (var reader = cmd.ExecuteReader(TextResources.Sql.Database.Master))
+				using (var reader = cmd.ExecuteReader("master"))
 				{
 					while (reader.Read())
 						_databaseNames.Add(reader.GetString(0));

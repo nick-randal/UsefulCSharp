@@ -168,9 +168,9 @@ namespace Randal.Sql.Deployer.Process
 		{
 			_logger.AddEntry("creating Projects table.");
 
-			using (var command = _connectionManager.CreateCommand(TextResources.Sql.CreateProductsTable))
+			using (var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.CreateTable))
 			{
-				command.Execute(TextResources.Sql.Database.Master);
+				command.Execute(_config.ProjectsTableConfig.Database);
 			}
 		}
 
@@ -180,24 +180,24 @@ namespace Randal.Sql.Deployer.Process
 
 			var values = new object[]
 			{_project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName};
-			using (var command = _connectionManager.CreateCommand(TextResources.Sql.InsertProduct, values))
+			using (var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.Insert, values))
 			{
-				command.Execute(TextResources.Sql.Database.Master);
+				command.Execute(_config.ProjectsTableConfig.Database);
 			}
 		}
 
 		private bool IsProjectValidUpgrade()
 		{
 			Version databaseVersion;
-			var config = _project.Configuration;
+			var projectConfig = _project.Configuration;
 
-			var projectVersion = new Version(config.Version);
+			var projectVersion = new Version(projectConfig.Version);
 
-			_logger.AddEntry("Looking up project '{0}'", config.Project);
+			_logger.AddEntry("Looking up project '{0}'", projectConfig.Project);
 
 			using (
-				var command = _connectionManager.CreateCommand(TextResources.Sql.GetProductVersion, config.Project, config.Version))
-			using (var reader = command.ExecuteReader(TextResources.Sql.Database.Master))
+				var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.Read, projectConfig.Project, projectConfig.Version))
+			using (var reader = command.ExecuteReader(_config.ProjectsTableConfig.Database))
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))
 				{
@@ -208,7 +208,7 @@ namespace Randal.Sql.Deployer.Process
 				databaseVersion = new Version(reader.GetString(0));
 			}
 
-			_logger.AddEntry("database version is '{0}' and config version is '{1}'", databaseVersion, config.Version);
+			_logger.AddEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectConfig.Version);
 
 			if (databaseVersion >= projectVersion)
 			{

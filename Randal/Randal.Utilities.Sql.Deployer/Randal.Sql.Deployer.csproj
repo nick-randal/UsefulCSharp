@@ -86,9 +86,6 @@
     <Compile Include="Process\ScriptDeployer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>

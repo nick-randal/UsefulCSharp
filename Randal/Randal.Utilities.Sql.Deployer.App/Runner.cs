@@ -42,7 +42,7 @@ namespace Randal.Sql.Deployer.App
 		{
 			var commit = false;
 
-			using (var connectionManager = new SqlConnectionManager())
+			using (var connectionManager = new SqlConnectionManager(_config.DatabaseLookup))
 			{
 				try
 				{

@@ -47,6 +47,7 @@ namespace Randal.Sql.Deployer.Configuration
 		[JsonProperty(Required = Required.Default)]
 		public string Project { get; private set; }
 
-		[JsonProperty(Required = Required.Default)] private readonly List<string> _priorityScripts;
+		[JsonProperty(Required = Required.Default)] 
+		private readonly List<string> _priorityScripts;
 	}
 }

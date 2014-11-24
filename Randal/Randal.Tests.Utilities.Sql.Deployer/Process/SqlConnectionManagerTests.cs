@@ -95,7 +95,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 		protected override void Creating()
 		{
-			Then.Manager = new SqlConnectionManager(Then.CommandFactory);
+			Then.Manager = new SqlConnectionManager("select 'master'", Then.CommandFactory);
 		}
 
 		private void CreatingCommand()
