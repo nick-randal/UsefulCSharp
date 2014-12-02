@@ -18,21 +18,25 @@ namespace Randal.Sql.Deployer.Configuration
 	public interface IScriptDeployerConfig
 	{
 		string DatabaseLookup { get; }
-
 		ProjectsTableConfig ProjectsTableConfig { get; }
+		ValidationFilterConfig ValidationFilterConfig { get; }
 	}
 
 	public sealed class ScriptDeployerConfig : IScriptDeployerConfig
 	{
-		[JsonProperty(Required = Required.Default)]
+		[JsonProperty(Required = Required.Always)]
 		public string DatabaseLookup { get; set; }
 
-		[JsonProperty(Required = Required.Default)]
+		[JsonProperty(Required = Required.Always)]
 		public ProjectsTableConfig ProjectsTableConfig { get; set; }
+
+		[JsonProperty(Required = Required.Always)]
+		public ValidationFilterConfig ValidationFilterConfig { get; set; }
 
 		public static readonly IScriptDeployerConfig Default = new ScriptDeployerConfig
 		{
 			DatabaseLookup = @"select [name] from master.sys.databases where [name] not in ('master', 'msdb', 'tempdb')",
+
 			ProjectsTableConfig = new ProjectsTableConfig
 			{
 				Database = "master",
@@ -53,32 +57,13 @@ BEGIN
 END",
 				Insert = @"INSERT ProjectsDeployed (Project, Version, FromMachine, FromUser) VALUES ('{0}', '{1}', '{2}', '{3}')",
 				Read = @"SELECT MAX(Version) FROM ProjectsDeployed WHERE Project = '{0}'"
+			},
+
+			ValidationFilterConfig = new ValidationFilterConfig
+			{
+				WarnOn = { @"(?<=[\s^.\[]*)exec\s*\(" },
+				HaltOn = { @"create\s+\w", @"drop\s+\w", @"truncate\s+table" }
 			}
 		};
 	}
-
-	public interface IProjectsTableConfig
-	{
-		string Database { get; }
-		string CreateTable { get; }
-		string Insert { get; }
-		string Read { get; }
-	}
-
-	public sealed class ProjectsTableConfig : IProjectsTableConfig
-	{
-		[JsonProperty(Required = Required.Default)]
-		public string Database { get; set; }
-
-		[JsonProperty(Required = Required.Default)]
-		public string CreateTable { get; set; }
-
-		[JsonProperty(Required = Required.Default)]
-		public string Insert { get; set; }
-
-		[JsonProperty(Required = Required.Default)]
-		public string Read { get; set; }
-	}
-
-	
 }

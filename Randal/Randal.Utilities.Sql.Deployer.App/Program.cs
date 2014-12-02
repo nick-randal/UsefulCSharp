@@ -11,7 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-
 using System;
 using Randal.Logging;
 
@@ -34,10 +33,7 @@ namespace Randal.Sql.Deployer.App
 			);
 
 			using(var logger = new AsyncFileLogger(settings.FileLoggerSettings))
-			using (var runner = new Runner(settings, logger))
-			{
-				runner.Go();
-			}
+			new Runner(settings, logger).Go();
 
 			return -1;
 		}

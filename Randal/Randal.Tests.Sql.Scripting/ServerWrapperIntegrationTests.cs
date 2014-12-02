@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingProcedures()
 		{
-			Given.Database = "master";
+			Given.Database = "model";
 			When(GettingDatabases, GettingProcedures);
 			Then.Procedures.Should().NotBeEmpty();
 		}
@@ -49,7 +49,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingViews()
 		{
-			Given.Database = "master";
+			Given.Database = "model";
 			When(GettingDatabases, GettingViews);
 			Then.Views.Should().NotBeEmpty();
 		}
@@ -57,7 +57,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingFunctions()
 		{
-			Given.Database = "master";
+			Given.Database = "model";
 			When(GettingDatabases, GettingFunctions);
 			Then.Functions.Should().NotBeEmpty();
 		}

@@ -69,7 +69,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			parser.AddRule("post", txt => new SqlCommandBlock("post", txt, SqlScriptPhase.Post));
 			parser.SetFallbackRule((kw, txt) => new UnexpectedBlock(kw, txt));
 
-			var loader = new ProjectLoader(Given.Path, parser, Then.Logger);
+			var loader = new ProjectLoader(Given.Path, parser, null, Then.Logger);
 			loader.Load();
 			var config = Given.Config ?? ScriptDeployerConfig.Default;
 			var project = new Project(loader.Configuration, loader.AllScripts);

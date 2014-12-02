@@ -102,7 +102,7 @@ namespace Randal.Sql.Deployer.Scripts
 				Pre = "pre",
 				Main = "main",
 				Post = "post"
-				;
+			;
 		}
 	}
 }

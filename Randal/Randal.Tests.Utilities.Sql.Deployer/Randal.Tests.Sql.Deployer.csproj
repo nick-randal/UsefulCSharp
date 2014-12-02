@@ -97,12 +97,18 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Configuration\InstallerConfigTests.cs" />
+    <Compile Include="Configuration\FilterConfigTests.cs" />
     <Compile Include="Helpers\CatalogPatternLookupTests.cs" />
     <Compile Include="IO\ProjectLoaderTests.cs" />
     <Compile Include="Process\SqlCommandWrapperTests.cs" />
     <Compile Include="Process\SqlCommandWrapperFactoryTests.cs" />
     <Compile Include="Process\SqlConnectionManagerTests.cs" />
     <Compile Include="Process\ScriptDeployerIntegrationTests.cs" />
+    <Compile Include="TestScripts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestScripts.resx</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\BaseScriptBlockTests.cs" />
     <Compile Include="Scripts\ProjectBuilder.cs" />
     <Compile Include="Scripts\ScriptParserTests.Builder.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Scripts\OptionsBlockTests.cs" />
     <Compile Include="Scripts\ScriptSettingsTests.cs" />
     <Compile Include="Process\ScriptDeployerTests.cs" />
+    <Compile Include="Scripts\ScriptCheckerTests.cs" />
     <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +154,12 @@
     <Content Include="TestFiles\ProjectA\ScriptA.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestScripts.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestScripts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

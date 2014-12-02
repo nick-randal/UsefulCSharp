@@ -12,7 +12,10 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
@@ -23,7 +26,7 @@ using Randal.Sql.Deployer.Scripts;
 
 namespace Randal.Sql.Deployer.App
 {
-	public sealed class Runner : IDisposable
+	public sealed class Runner
 	{
 		public Runner(RunnerSettings settings, ILogger logger = null)
 		{
@@ -57,7 +60,7 @@ namespace Randal.Sql.Deployer.App
 						connectionManager.BeginTransaction();
 					}
 
-					var project = LoadProject(CreateParser());
+					var project = LoadProject(CreateParser(), CreateChecker());
 
 					DeployScripts(_config, project, connectionManager);
 
@@ -116,9 +119,22 @@ namespace Randal.Sql.Deployer.App
 			return parser;
 		}
 
-		private Project LoadProject(IScriptParserConsumer parser)
+		private IScriptCheckerConsumer CreateChecker()
 		{
-			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, _logger.BaseLogger);
+			var checker = new ScriptChecker();
+
+			foreach (var pattern in _config.ValidationFilterConfig.WarnOn)
+				checker.AddValidationPattern(pattern, ScriptCheck.Warning);
+
+			foreach (var pattern in _config.ValidationFilterConfig.HaltOn)
+				checker.AddValidationPattern(pattern, ScriptCheck.Fatal);
+
+			return checker;
+		}
+
+		private Project LoadProject(IScriptParserConsumer parser, IScriptCheckerConsumer checker)
+		{
+			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, checker, _logger.BaseLogger);
 			if (loader.Load() == Returned.Failure)
 				throw new RunnerException("Failed to load project");
 
@@ -135,10 +151,6 @@ namespace Randal.Sql.Deployer.App
 
 			if (deployer.DeployScripts() == Returned.Failure)
 				throw new RunnerException("Deploy scripts failed.");
-		}
-
-		public void Dispose()
-		{
 		}
 
 		private readonly ILoggerStringFormatWrapper _logger;
