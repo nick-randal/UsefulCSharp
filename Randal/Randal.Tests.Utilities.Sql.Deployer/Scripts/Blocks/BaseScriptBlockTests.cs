@@ -15,10 +15,9 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
-using Randal.Sql.Deployer.Scripts;
 using Randal.Sql.Deployer.Scripts.Blocks;
 
-namespace Randal.Tests.Sql.Deployer.Scripts
+namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
 	public sealed class BaseScriptBlockTests : BaseUnitTest<BaseScriptBlockThens>

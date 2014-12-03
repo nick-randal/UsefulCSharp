@@ -109,19 +109,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TestScripts.resx</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\BaseScriptBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\BaseScriptBlockTests.cs" />
     <Compile Include="Scripts\ProjectBuilder.cs" />
     <Compile Include="Scripts\ScriptParserTests.Builder.cs" />
     <Compile Include="Scripts\ScriptParserTests.cs" />
     <Compile Include="Scripts\SourceScriptTests.cs" />
-    <Compile Include="Scripts\SqlCommandBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\SqlCommandBlockTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\UnexpectedBlockTests.cs" />
-    <Compile Include="Scripts\CatalogBlockTests.cs" />
-    <Compile Include="Scripts\IgnoreScriptBlockTests.cs" />
-    <Compile Include="Scripts\NeedBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\UnexpectedBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\CatalogBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\IgnoreScriptBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\NeedBlockTests.cs" />
     <Compile Include="Scripts\ProjectTests.cs" />
-    <Compile Include="Scripts\OptionsBlockTests.cs" />
+    <Compile Include="Scripts\Blocks\OptionsBlockTests.cs" />
     <Compile Include="Scripts\ScriptSettingsTests.cs" />
     <Compile Include="Process\ScriptDeployerTests.cs" />
     <Compile Include="Scripts\ScriptCheckerTests.cs" />
@@ -159,6 +159,7 @@
     <EmbeddedResource Include="TestScripts.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TestScripts.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Choose>

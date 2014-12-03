@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -50,6 +51,11 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 			Then.Validation.Should().Be(ScriptCheck.Failed | ScriptCheck.Warning);
 			Then.Messages.Should().HaveCount(5);
+			Then.Messages.ElementAt(0).Should().Contain("Warning: Line 2");
+			Then.Messages.ElementAt(1).Should().Contain("Warning: Line 4");
+			Then.Messages.ElementAt(2).Should().Contain("Failed: Line 1");
+			Then.Messages.ElementAt(3).Should().Contain("Failed: Line 3");
+			Then.Messages.ElementAt(4).Should().Contain("Failed: Line 5");
 		}
 
 		[TestMethod, NegativeTest]
@@ -61,6 +67,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 			Then.Validation.Should().Be(ScriptCheck.Fatal);
 			Then.Messages.Should().HaveCount(1);
+			Then.Messages.ElementAt(0).Should().Contain("expected Multi-line comment end");
 		}
 
 		protected override void Creating()

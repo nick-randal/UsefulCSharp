@@ -65,7 +65,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingTables()
 		{
-			Given.Database = "master";
+			Given.Database = "msdb";
 			When(GettingDatabases, GettingTables);
 			Then.Tables.Should().BeEmpty();
 		}

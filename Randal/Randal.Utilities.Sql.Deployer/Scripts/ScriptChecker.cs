@@ -73,43 +73,53 @@ namespace Randal.Sql.Deployer.Scripts
 		private ScriptCheck EvaluatePatterns(string orignalInput, string sanitizedInput, ICollection<string> tempMessages)
 		{
 			var validationState = ScriptCheck.Passed;
-			string[] inputLines = null;
-
+			
 			foreach (var filter in _patterns)
 			{
 				var matches = filter.Item1.Matches(sanitizedInput);
-				var line = 0;
 
 				if (matches.Count == 0)
 					continue;
 
-				if (inputLines == null)
-					inputLines = orignalInput.Split('\n');
-
+				var lastIndex = 0;
 				validationState |= filter.Item2;
 
 				foreach (Match match in matches)
 				{
-					var text = string.Empty;
-
-					for (; line < inputLines.Length; line++)
-					{
-						if (inputLines[line].Contains(match.Value) == false)
-							continue;
-
-						text = inputLines[line++];
-						break;
-					}
-
-					tempMessages.Add(
-						string.Format("{0}: Line {1}, found \"{2}\".",
-							filter.Item2, line, text.Trim()
-						)
-					);
+					string text;
+					int line;
+					lastIndex = FindTextLocation(orignalInput, lastIndex, match.Value, out line, out text);
+					tempMessages.Add(string.Format("{0}: Line {1}, found \"{2}\".", filter.Item2, line, text));
 				}
 			}
 
 			return validationState;
+		}
+
+		private static int FindTextLocation(string orignalInput, int lastIndex, string match, out int line, out string text)
+		{
+			if (lastIndex < 0)
+				lastIndex = 0;
+
+			lastIndex = orignalInput.IndexOf(match, lastIndex, StringComparison.InvariantCulture);
+			if (lastIndex == -1)
+			{
+				text = "<failed to find text>";
+				line = -1;
+				return -1;
+			}
+
+			line = orignalInput.Substring(0, lastIndex).Count(c => c == '\n') + 1;
+
+			text = new string(
+				orignalInput
+					.Skip(lastIndex - 10)
+					.Take(lastIndex + 10)
+					.Select(c => c == '\r' || c == '\n' ? ' ' : c)
+					.ToArray()
+			);
+
+			return lastIndex + 1;
 		}
 
 		private static string SanitizeCode(string input, ICollection<string> messages)
@@ -163,7 +173,7 @@ namespace Randal.Sql.Deployer.Scripts
 
 		private static readonly Parser<string> MultiLineComment =
 			(
-				from leadingWs in Parse.WhiteSpace.Many()
+				from leadingWs in SimpleWhitespace.Many()
 				from head in MlCommentHead
 				from comment in Parse.AnyChar.Except(MlCommentTail).Many().Text()
 				from tail in MlCommentTail
@@ -172,9 +182,9 @@ namespace Randal.Sql.Deployer.Scripts
 			.Named("Multi-line Comment");
 
 		private static readonly Parser<string>
-			Code = Parse.AnyChar.Except(SlCommentHead.Or(MlCommentHead)).Many().Text(),
-			Comments = SingleLineComment.Or(MultiLineComment);
+			Code = Parse.AnyChar.Except(SlCommentHead.Or(MlCommentHead)).Many().Text().Named("Code"),
+			Comments = SingleLineComment.XOr(MultiLineComment).Named("Comments");
 
-		private static readonly Parser<IEnumerable<string>> Sql = Comments.Or(Code).Many().End();
+		private static readonly Parser<IEnumerable<string>> Sql = Comments.XOr(Code).XMany().End().Named("T-SQL");
 	}
 }
