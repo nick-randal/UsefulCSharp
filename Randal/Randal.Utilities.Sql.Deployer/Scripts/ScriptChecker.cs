@@ -147,7 +147,6 @@ namespace Randal.Sql.Deployer.Scripts
 		private const RegexOptions StandardOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline;
 
 		private static readonly Parser<char> 
-			SimpleWhitespace = Parse.Chars(' ', '\t').Named("Space or Tab"),
 			Newlines = Parse.Chars('\r', '\n').Named("CR or NL");
 
 		private static readonly Parser<IEnumerable<char>> 
@@ -163,7 +162,6 @@ namespace Randal.Sql.Deployer.Scripts
 
 		private static readonly Parser<string> SingleLineComment =
 			(
-				from leadingWs in SimpleWhitespace.Many()
 				from head in SlCommentHead.Text()
 				from comment in Parse.AnyChar.Except(Newlines).Many().Text()
 				from tail in LineTerminator.Text()
@@ -173,7 +171,6 @@ namespace Randal.Sql.Deployer.Scripts
 
 		private static readonly Parser<string> MultiLineComment =
 			(
-				from leadingWs in SimpleWhitespace.Many()
 				from head in MlCommentHead
 				from comment in Parse.AnyChar.Except(MlCommentTail).Many().Text()
 				from tail in MlCommentTail
@@ -185,6 +182,6 @@ namespace Randal.Sql.Deployer.Scripts
 			Code = Parse.AnyChar.Except(SlCommentHead.Or(MlCommentHead)).Many().Text().Named("Code"),
 			Comments = SingleLineComment.Or(MultiLineComment).Named("Comments");
 
-		private static readonly Parser<IEnumerable<string>> Sql = Comments.Or(Code).XMany().End().Named("T-SQL");
+		private static readonly Parser<IEnumerable<string>> Sql = Comments.XOr(Code).XMany().End().Named("T-SQL");
 	}
 }
