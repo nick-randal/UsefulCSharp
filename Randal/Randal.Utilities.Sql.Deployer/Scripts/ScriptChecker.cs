@@ -113,11 +113,11 @@ namespace Randal.Sql.Deployer.Scripts
 
 			text = new string(
 				orignalInput
-					.Skip(lastIndex - 10)
-					.Take(lastIndex + 10)
+					.Skip(lastIndex)
+					.Take(40)
 					.Select(c => c == '\r' || c == '\n' ? ' ' : c)
 					.ToArray()
-			);
+			).Trim();
 
 			return lastIndex + 1;
 		}

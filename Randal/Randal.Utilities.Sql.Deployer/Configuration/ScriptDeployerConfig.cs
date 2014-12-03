@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Randal.Sql.Deployer.Configuration
@@ -61,8 +62,8 @@ END",
 
 			ValidationFilterConfig = new ValidationFilterConfig
 			{
-				WarnOn = new[] { @"(?<=[\s^.\[]*)exec\s*\(" },
-				HaltOn = new[] { @"create\s+\w", @"drop\s+\w", @"truncate\s+table" }
+				WarnOn = new List<string>(),
+				HaltOn = new List<string>()
 			}
 		};
 	}

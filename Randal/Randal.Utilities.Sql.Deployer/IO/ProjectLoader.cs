@@ -79,6 +79,7 @@ namespace Randal.Sql.Deployer.IO
 					var script = ScriptParser.Parse(file.Name, text);
 					var validationMessages = script.Validate();
 
+					LogScriptIssues(file.FullName, checkMessages, validationMessages);
 					if ((check == ScriptCheck.Passed || check == ScriptCheck.Warning) && script.IsValid && validationMessages.Count == 0)
 					{
 						_allScripts.Add(script);
@@ -87,7 +88,6 @@ namespace Randal.Sql.Deployer.IO
 
 					result = Returned.Failure;
 					errors++;
-					LogScriptIssues(file.FullName, checkMessages, validationMessages);
 				}
 			}
 
@@ -98,6 +98,9 @@ namespace Randal.Sql.Deployer.IO
 
 		private void LogScriptIssues(string name, IEnumerable<string> checkMessages, IEnumerable<string> validationMessages)
 		{
+			if ((checkMessages == null || checkMessages.Any() == false) && validationMessages.Any() == false)
+				return;
+
 			_logger.AddEntry(name);
 
 			if (checkMessages != null)
