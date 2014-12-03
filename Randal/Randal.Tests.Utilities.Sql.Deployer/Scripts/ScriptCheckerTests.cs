@@ -48,12 +48,12 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 			When(Validating);
 
-			Then.Validation.Should().Be(ScriptCheck.Fatal | ScriptCheck.Warning);
+			Then.Validation.Should().Be(ScriptCheck.Failed | ScriptCheck.Warning);
 			Then.Messages.Should().HaveCount(5);
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldHaveInvalidScript_WhenValidating_GivenInvalidScript()
+		public void ShouldHaveInvalidScript_WhenValidating_GivenBrokenScript()
 		{
 			Given.Script = TestScripts.BrokenScript;
 
@@ -78,7 +78,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 				Given.FatalFilters = new[] { @"drop\s+\w", @"truncate\s+table" };
 
 			foreach (var filter in Given.FatalFilters)
-				Then.Target.AddValidationPattern(filter, ScriptCheck.Fatal);
+				Then.Target.AddValidationPattern(filter, ScriptCheck.Failed);
 		}
 
 		private void Validating()

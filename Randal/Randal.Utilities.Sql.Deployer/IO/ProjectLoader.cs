@@ -79,7 +79,7 @@ namespace Randal.Sql.Deployer.IO
 					var script = ScriptParser.Parse(file.Name, text);
 					var validationMessages = script.Validate();
 
-					if (check == ScriptCheck.Passed && script.IsValid && validationMessages.Count == 0)
+					if ((check == ScriptCheck.Passed || check == ScriptCheck.Warning) && script.IsValid && validationMessages.Count == 0)
 					{
 						_allScripts.Add(script);
 						continue;

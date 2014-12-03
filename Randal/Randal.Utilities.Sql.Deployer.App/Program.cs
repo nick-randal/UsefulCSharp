@@ -20,22 +20,31 @@ namespace Randal.Sql.Deployer.App
 	{
 		private static int Main(string[] args)
 		{
-			var options = ParseCommandLineArguments(args);
-			if (options == null)
-				return 2;
-
-			IRunnerSettings settings = new RunnerSettings(
-				options.ProjectFolder, 
-				options.LogFolder, 
-				options.Server, 
-				options.Rollback,
-				options.NoTransaction,
-				options.CheckFilesOnly
-			);
-
-			using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
+			try
 			{
-				new Runner(settings, logger).Go();
+				var options = ParseCommandLineArguments(args);
+				if (options == null)
+					return 2;
+
+				IRunnerSettings settings = new RunnerSettings(
+					options.ProjectFolder, 
+					options.LogFolder, 
+					options.Server, 
+					options.Rollback,
+					options.NoTransaction,
+					options.CheckFilesOnly,
+					options.BypassCheck
+				);
+
+				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
+				{
+					new Runner(settings, logger).Go();
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+				return 1;
 			}
 
 			return -1;

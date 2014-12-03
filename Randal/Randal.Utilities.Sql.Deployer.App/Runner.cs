@@ -58,7 +58,8 @@ namespace Randal.Sql.Deployer.App
 						connectionManager.BeginTransaction();
 					}
 
-					var project = LoadProject(CreateParser(), CreateChecker());
+					var checker = _settings.BypassCheck ? null : CreateChecker();
+					var project = LoadProject(CreateParser(), checker);
 					if (_settings.CheckFilesOnly)
 						return;
 
@@ -101,6 +102,8 @@ namespace Randal.Sql.Deployer.App
 			_logger.AddEntryNoTimestamp("use transaction  . :  {0}", _settings.UseTransaction);
 			_logger.AddEntryNoTimestamp("rollback trans . . :  {0}", _settings.ShouldRollback);
 			_logger.AddEntryNoTimestamp("check scripts only :  {0}", _settings.CheckFilesOnly);
+			_logger.AddEntryNoTimestamp("bypass check . . . :  {0}", _settings.BypassCheck);
+			_logger.AddBlank();
 		}
 
 		private static IScriptParserConsumer CreateParser()
@@ -128,7 +131,7 @@ namespace Randal.Sql.Deployer.App
 				checker.AddValidationPattern(pattern, ScriptCheck.Warning);
 
 			foreach (var pattern in _config.ValidationFilterConfig.HaltOn)
-				checker.AddValidationPattern(pattern, ScriptCheck.Fatal);
+				checker.AddValidationPattern(pattern, ScriptCheck.Failed);
 
 			return checker;
 		}
@@ -137,7 +140,7 @@ namespace Randal.Sql.Deployer.App
 		{
 			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, checker, _logger.BaseLogger);
 			if (loader.Load() == Returned.Failure)
-				throw new RunnerException("Failed to load project");
+				throw new RunnerException("Issues found loading project.  Review log for error information.");
 
 			return new Project(loader.Configuration, loader.AllScripts);
 		}

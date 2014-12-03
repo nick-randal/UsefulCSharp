@@ -25,7 +25,8 @@ namespace Randal.Sql.Deployer.Scripts
 	{
 		Passed = 0,
 		Warning = 1,
-		Fatal = 2
+		Failed = 2,
+		Fatal = 4
 	}
 
 	public interface IScriptCheckerConsumer
@@ -42,20 +43,19 @@ namespace Randal.Sql.Deployer.Scripts
 	{
 		public ScriptChecker()
 		{
-			_filters = new List<Pattern>();
+			_patterns = new List<Pattern>();
 		}
 
-		public void AddValidationPattern(string filter, ScriptCheck shouldIssue)
+		public void AddValidationPattern(string pattern, ScriptCheck shouldIssue)
 		{
-			_filters.Add(
-					new Pattern(new Regex(filter, StandardOptions), shouldIssue, filter)
-				);
+			_patterns.Add(
+				new Pattern(new Regex(pattern, StandardOptions), shouldIssue, pattern)
+			);
 		}
 
 		public ScriptCheck Validate(string input, out IEnumerable<string> messages)
 		{
 			var tempMessages = new List<string>();
-			string[] inputLines = null;
 
 			var sanitizedInput = SanitizeCode(input, tempMessages);
 			if (sanitizedInput == null)
@@ -64,46 +64,54 @@ namespace Randal.Sql.Deployer.Scripts
 				return ScriptCheck.Fatal;
 			}
 
-			var validationState = ScriptCheck.Passed;
+			var validationState = EvaluatePatterns(input, sanitizedInput, tempMessages);
 
-			foreach (var filter in _filters)
+			messages = tempMessages;
+			return validationState;
+		}
+
+		private ScriptCheck EvaluatePatterns(string orignalInput, string sanitizedInput, ICollection<string> tempMessages)
+		{
+			var validationState = ScriptCheck.Passed;
+			string[] inputLines = null;
+
+			foreach (var filter in _patterns)
 			{
 				var matches = filter.Item1.Matches(sanitizedInput);
+				var line = 0;
 
 				if (matches.Count == 0)
 					continue;
 
+				if (inputLines == null)
+					inputLines = orignalInput.Split('\n');
+
 				validationState |= filter.Item2;
+
 				foreach (Match match in matches)
 				{
-					if(inputLines == null)
-						inputLines = input.Split('\n');
-					var runningTotal = 0;
-					var line = 0;
 					var text = string.Empty;
 
-					for(; line < inputLines.Length; line++)
+					for (; line < inputLines.Length; line++)
 					{
-						runningTotal += inputLines[line].Length;
-						if (match.Index < runningTotal)
-						{
-							text = inputLines[line];
-							break;
-						}
+						if (inputLines[line].Contains(match.Value) == false)
+							continue;
+
+						text = inputLines[line++];
+						break;
 					}
 
 					tempMessages.Add(
-						string.Format("{0}: Line {1}:{2}, found \"{3}\".", 
-							filter.Item2, line + 1, runningTotal - match.Index, text.Trim()
+						string.Format("{0}: Line {1}, found \"{2}\".",
+							filter.Item2, line, text.Trim()
 						)
 					);
 				}
 			}
 
-			messages = tempMessages;
 			return validationState;
 		}
-		
+
 		private static string SanitizeCode(string input, ICollection<string> messages)
 		{
 			try
@@ -124,7 +132,7 @@ namespace Randal.Sql.Deployer.Scripts
 			}
 		}
 
-		private readonly List<Pattern> _filters;
+		private readonly List<Pattern> _patterns;
 
 		private const RegexOptions StandardOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline;
 
@@ -133,8 +141,9 @@ namespace Randal.Sql.Deployer.Scripts
 			Newlines = Parse.Chars('\r', '\n').Named("CR or NL");
 
 		private static readonly Parser<IEnumerable<char>> 
-			SlCommentLead = Parse.Char('-').Repeat(2).Named("Single line comment start"),
-			MlCommentLead = Parse.String("/*").Named("Multi-line comment start"),
+			SlCommentHead = Parse.Char('-').Repeat(2).Named("Single line comment start"),
+			MlCommentHead = Parse.String("/*").Named("Multi-line comment start"),
+			MlCommentTail = Parse.String("*/").Named("Multi-line comment end"),
 			LineEnd = Newlines.Many().Named("End of line"),
 			LineTerminator = Parse.Return("").End()
 				.Or(LineEnd.End())
@@ -145,9 +154,9 @@ namespace Randal.Sql.Deployer.Scripts
 		private static readonly Parser<string> SingleLineComment =
 			(
 				from leadingWs in SimpleWhitespace.Many()
-				from lead in SlCommentLead.Text()
-				from comment in Parse.AnyChar.Except(Parse.Chars('\r', '\n')).Many().Text()
-				from end in LineTerminator
+				from head in SlCommentHead.Text()
+				from comment in Parse.AnyChar.Except(Newlines).Many().Text()
+				from tail in LineTerminator
 				select string.Empty
 			)
 			.Named("Single Line Comment");
@@ -155,15 +164,15 @@ namespace Randal.Sql.Deployer.Scripts
 		private static readonly Parser<string> MultiLineComment =
 			(
 				from leadingWs in Parse.WhiteSpace.Many()
-				from first in Parse.String("/*")
-				from comment in Parse.AnyChar.Except(Parse.String("*/")).Many().Text()
-				from last in Parse.String("*/")
+				from head in MlCommentHead
+				from comment in Parse.AnyChar.Except(MlCommentTail).Many().Text()
+				from tail in MlCommentTail
 				select string.Empty
 			)
 			.Named("Multi-line Comment");
 
 		private static readonly Parser<string>
-			Code = Parse.AnyChar.Except(SlCommentLead.Or(MlCommentLead)).Many().Text(),
+			Code = Parse.AnyChar.Except(SlCommentHead.Or(MlCommentHead)).Many().Text(),
 			Comments = SingleLineComment.Or(MultiLineComment);
 
 		private static readonly Parser<IEnumerable<string>> Sql = Comments.Or(Code).Many().End();

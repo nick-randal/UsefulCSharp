@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using Randal.Logging;
 
 namespace Randal.Sql.Deployer.App
@@ -24,18 +25,27 @@ namespace Randal.Sql.Deployer.App
 		bool UseTransaction { get; }
 		bool ShouldRollback { get; }
 		bool CheckFilesOnly { get; }
+		bool BypassCheck { get; }
 	}
 
 	public sealed class RunnerSettings : IRunnerSettings
 	{
 		public RunnerSettings(string scriptProjectFolder, string logFolder, string server, 
-			bool rollback = false, bool noTransaction = false, bool checkFilesOnly = false)
+			bool rollback = false, bool noTransaction = false, bool checkFilesOnly = false, bool bypassCheck = false)
 		{
+			if(checkFilesOnly && bypassCheck)
+				throw new ArgumentException("bypassCheck and checkFilesOnly cannot both be true.", "bypassCheck");
+
+			if(checkFilesOnly && (noTransaction == true || rollback == false))
+				throw new ArgumentException("When 'checkFilesOnly' is True, then 'noTransaction' must be False and 'rollback' must be True.", "checkFilesOnly");
+
 			_scriptProjectFolder = scriptProjectFolder;
 			_server = server;
 			_noTransaction = noTransaction;
 			_rollback = rollback;
 			_checkFilesOnly = checkFilesOnly;
+			_bypassCheck = bypassCheck;
+
 			_fileLoggerSettings = new FileLoggerSettings(logFolder, "SqlScriptDeployer");
 		}
 
@@ -53,7 +63,9 @@ namespace Randal.Sql.Deployer.App
 
 		public bool CheckFilesOnly { get { return _checkFilesOnly; } }
 
-		private readonly bool _noTransaction, _checkFilesOnly, _rollback;
+		public bool BypassCheck { get { return _bypassCheck; } }
+
+		private readonly bool _noTransaction, _checkFilesOnly, _rollback, _bypassCheck;
 		private readonly FileLoggerSettings _fileLoggerSettings;
 		private readonly string _scriptProjectFolder, _server;
 	}
