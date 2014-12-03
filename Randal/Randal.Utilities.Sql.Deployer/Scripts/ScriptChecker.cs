@@ -92,7 +92,11 @@ namespace Randal.Sql.Deployer.Scripts
 						}
 					}
 
-					tempMessages.Add(string.Format("{0}: Line {1}, found \"{2}\".", filter.Item2, line, text));
+					tempMessages.Add(
+						string.Format("{0}: Line {1}:{2}, found \"{3}\".", 
+							filter.Item2, line + 1, runningTotal - match.Index, text.Trim()
+						)
+					);
 				}
 			}
 
@@ -131,7 +135,7 @@ namespace Randal.Sql.Deployer.Scripts
 		private static readonly Parser<IEnumerable<char>> 
 			SlCommentLead = Parse.Char('-').Repeat(2).Named("Single line comment start"),
 			MlCommentLead = Parse.String("/*").Named("Multi-line comment start"),
-			LineEnd = Parse.Chars('\r', '\n').Many().Named("End of line"),
+			LineEnd = Newlines.Many().Named("End of line"),
 			LineTerminator = Parse.Return("").End()
 				.Or(LineEnd.End())
 				.Or(LineEnd)

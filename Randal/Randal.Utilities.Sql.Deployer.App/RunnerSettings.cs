@@ -15,49 +15,45 @@ using Randal.Logging;
 
 namespace Randal.Sql.Deployer.App
 {
-	public sealed class RunnerSettings
+	public interface IRunnerSettings
 	{
-		public RunnerSettings(string scriptProjectFolder, string logFolder, string server, bool rollback = false,
-			bool noTransaction = false)
+		FileLoggerSettings FileLoggerSettings { get; }
+		string ScriptProjectFolder { get; }
+		string Server { get; }
+		bool NoTransaction { get; }
+		bool UseTransaction { get; }
+		bool ShouldRollback { get; }
+		bool CheckFilesOnly { get; }
+	}
+
+	public sealed class RunnerSettings : IRunnerSettings
+	{
+		public RunnerSettings(string scriptProjectFolder, string logFolder, string server, 
+			bool rollback = false, bool noTransaction = false, bool checkFilesOnly = false)
 		{
 			_scriptProjectFolder = scriptProjectFolder;
 			_server = server;
 			_noTransaction = noTransaction;
 			_rollback = rollback;
+			_checkFilesOnly = checkFilesOnly;
 			_fileLoggerSettings = new FileLoggerSettings(logFolder, "SqlScriptDeployer");
 		}
 
-		public FileLoggerSettings FileLoggerSettings
-		{
-			get { return _fileLoggerSettings; }
-		}
+		public FileLoggerSettings FileLoggerSettings { get { return _fileLoggerSettings; } }
 
-		public string ScriptProjectFolder
-		{
-			get { return _scriptProjectFolder; }
-		}
+		public string ScriptProjectFolder { get { return _scriptProjectFolder; } }
 
-		public string Server
-		{
-			get { return _server; }
-		}
+		public string Server { get { return _server; } }
 
-		public bool NoTransaction
-		{
-			get { return _noTransaction; }
-		}
+		public bool NoTransaction { get { return _noTransaction; } }
 
-		public bool UseTransaction
-		{
-			get { return _noTransaction == false; }
-		}
+		public bool UseTransaction { get { return _noTransaction == false; } }
 
-		public bool ShouldRollback
-		{
-			get { return _rollback; }
-		}
+		public bool ShouldRollback { get { return _rollback; } }
 
-		private readonly bool _noTransaction, _rollback;
+		public bool CheckFilesOnly { get { return _checkFilesOnly; } }
+
+		private readonly bool _noTransaction, _checkFilesOnly, _rollback;
 		private readonly FileLoggerSettings _fileLoggerSettings;
 		private readonly string _scriptProjectFolder, _server;
 	}

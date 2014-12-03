@@ -24,16 +24,19 @@ namespace Randal.Sql.Deployer.App
 			if (options == null)
 				return 2;
 
-			var settings = new RunnerSettings(
+			IRunnerSettings settings = new RunnerSettings(
 				options.ProjectFolder, 
 				options.LogFolder, 
 				options.Server, 
 				options.Rollback,
-				options.NoTransaction
+				options.NoTransaction,
+				options.CheckFilesOnly
 			);
 
-			using(var logger = new AsyncFileLogger(settings.FileLoggerSettings))
-			new Runner(settings, logger).Go();
+			using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
+			{
+				new Runner(settings, logger).Go();
+			}
 
 			return -1;
 		}

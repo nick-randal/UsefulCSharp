@@ -24,6 +24,8 @@ namespace Randal.Sql.Deployer.App
 
 		public string Server { get; set; }
 
+		public bool CheckFilesOnly { get; set; }
+
 		public bool NoTransaction { get; set; }
 
 		public bool Rollback { get; set; }
@@ -59,6 +61,11 @@ namespace Randal.Sql.Deployer.App
 				.As('r', "rollback")
 				.WithDescription(RollbackHelptText)
 				.SetDefault(false);
+
+			Setup(x => x.CheckFilesOnly)
+				.As('c', "checkOnly")
+				.WithDescription(CheckFilesOnlyText)
+				.SetDefault(false);
 		}
 
 		public const string
@@ -66,7 +73,8 @@ namespace Randal.Sql.Deployer.App
 			ServerHelpText = @"The SQL Server that the project will be deployed against.",
 			LogFolderHelpText = @"Directory where the log file will be written.",
 			NoTransactionHelpText = "Do not use a transaction to execute scripts.",
-			RollbackHelptText = "Rollback the transaction, even if there were no errors."
+			RollbackHelptText = "Rollback the transaction, even if there were no errors.",
+			CheckFilesOnlyText = "Checks the scripts and no scripts will be deployed."
 		;
 	}
 }

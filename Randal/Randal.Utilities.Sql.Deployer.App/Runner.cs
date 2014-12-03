@@ -12,10 +12,7 @@
 // GNU General Public License for more details.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
@@ -29,7 +26,7 @@ namespace Randal.Sql.Deployer.App
 {
 	public sealed class Runner
 	{
-		public Runner(RunnerSettings settings, ILogger logger = null)
+		public Runner(IRunnerSettings settings, ILogger logger = null)
 		{
 			if (settings == null)
 				throw new ArgumentNullException("settings");
@@ -62,6 +59,8 @@ namespace Randal.Sql.Deployer.App
 					}
 
 					var project = LoadProject(CreateParser(), CreateChecker());
+					if (_settings.CheckFilesOnly)
+						return;
 
 					DeployScripts(_config, project, connectionManager);
 
@@ -96,11 +95,12 @@ namespace Randal.Sql.Deployer.App
 		private void LogOptions()
 		{
 			_logger.AddEntry("runner options");
-			_logger.AddEntryNoTimestamp("server          :  {0}", _settings.Server);
-			_logger.AddEntryNoTimestamp("project folder  :  {0}", _settings.ScriptProjectFolder);
-			_logger.AddEntryNoTimestamp("log folder      :  {0}", _settings.FileLoggerSettings.BasePath);
-			_logger.AddEntryNoTimestamp("use transaction :  {0}", _settings.UseTransaction);
-			_logger.AddEntryNoTimestamp("rollback trans  :  {0}", _settings.ShouldRollback);
+			_logger.AddEntryNoTimestamp("server . . . . . . :  {0}", _settings.Server);
+			_logger.AddEntryNoTimestamp("project folder . . :  {0}", _settings.ScriptProjectFolder);
+			_logger.AddEntryNoTimestamp("log folder . . . . :  {0}", _settings.FileLoggerSettings.BasePath);
+			_logger.AddEntryNoTimestamp("use transaction  . :  {0}", _settings.UseTransaction);
+			_logger.AddEntryNoTimestamp("rollback trans . . :  {0}", _settings.ShouldRollback);
+			_logger.AddEntryNoTimestamp("check scripts only :  {0}", _settings.CheckFilesOnly);
 		}
 
 		private static IScriptParserConsumer CreateParser()
@@ -156,6 +156,6 @@ namespace Randal.Sql.Deployer.App
 
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly IScriptDeployerConfig _config;
-		private readonly RunnerSettings _settings;
+		private readonly IRunnerSettings _settings;
 	}
 }
