@@ -18,6 +18,7 @@ using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Tests.Sql.Deployer.IO
 {
@@ -80,7 +81,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Has.Should().Be(Returned.Success);
 			Then.Object.Configuration.Should().NotBeNull();
 			Then.Object.Configuration.Project.Should().Be("Conmigo");
-			Then.Object.Configuration.Version.Should().Be("14.06.03.01");
+			Then.Object.Configuration.Version.Should().Be("14.12.01.02");
 			Then.Object.AllScripts.Should().HaveCount(3);
 		}
 

@@ -31,7 +31,7 @@ GNU General Public License for more details.</s:String>
 	
 	<s:Boolean x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=DC72F1B250094A1E8277DE89EC9578AB/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=DC72F1B250094A1E8277DE89EC9578AB/BuildPolicy/@EntryValue">WholeSolution</s:String>
-	<s:Int64 x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=DC72F1B250094A1E8277DE89EC9578AB/GroupingIndex/@EntryValue">3</s:Int64>
+	
 	
 	
 	

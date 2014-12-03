@@ -16,6 +16,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Tests.Sql.Deployer.Scripts
 {

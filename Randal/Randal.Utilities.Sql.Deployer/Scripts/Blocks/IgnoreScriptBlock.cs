@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-namespace Randal.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public sealed class IgnoreScriptBlock : BaseScriptBlock
 	{

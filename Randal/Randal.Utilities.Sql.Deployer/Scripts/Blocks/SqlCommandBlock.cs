@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Randal.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public interface ISqlCommandBlock
 	{

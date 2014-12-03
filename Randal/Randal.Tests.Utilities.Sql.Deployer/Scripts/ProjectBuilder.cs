@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Tests.Sql.Deployer.Scripts
 {

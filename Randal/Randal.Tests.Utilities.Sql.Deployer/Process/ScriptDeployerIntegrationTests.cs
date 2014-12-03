@@ -11,7 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
@@ -21,6 +20,7 @@ using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Tests.Sql.Deployer.Process
 {
@@ -29,12 +29,32 @@ namespace Randal.Tests.Sql.Deployer.Process
 	{
 		protected override void OnSetup()
 		{
+			var config = new ScriptDeployerConfig
+			{
+				DatabaseLookup = "select 'model' [name]",
+				ProjectsTableConfig = new ProjectsTableConfig
+				{
+					Database = "master", CreateTable = "print 'done'", Insert = "print 'done'",
+					Read = "select '14.12.01.01' -- {0}"
+				},
+				ValidationFilterConfig = new ValidationFilterConfig()
+			};
+
+			Given.Config = config;
+
 			Then.Logger = new StringLogger();
-			var manager = new SqlConnectionManager(ScriptDeployerConfig.Default.DatabaseLookup);
-			manager.OpenConnection(".", "master");
+			var manager = new SqlConnectionManager(Given.Config.DatabaseLookup);
+			manager.OpenConnection(".", "model");
 			manager.BeginTransaction();
 
 			Then.Manager = manager;
+		}
+
+		protected override void OnTeardown()
+		{
+			Then.Manager.RollbackTransaction();
+			Then.Manager.Dispose();
+			Then.Logger.Dispose();
 		}
 
 		[TestMethod, PositiveTest]
@@ -72,6 +92,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			var loader = new ProjectLoader(Given.Path, parser, null, Then.Logger);
 			loader.Load();
 			var config = Given.Config ?? ScriptDeployerConfig.Default;
+			
 			var project = new Project(loader.Configuration, loader.AllScripts);
 
 			Then.Deployer = new ScriptDeployer(config, project, Then.Manager, Then.Logger);
@@ -88,19 +109,12 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 	}
 
-	public sealed class ScriptDeployerIntegrationThens : IDisposable
+	public sealed class ScriptDeployerIntegrationThens
 	{
 		public ISqlConnectionManager Manager;
 		public StringLogger Logger;
 		public ScriptDeployer Deployer;
 		public Returned DeployReturned;
 		public bool CanUpgrade;
-
-		public void Dispose()
-		{
-			Manager.RollbackTransaction();
-			Manager.Dispose();
-			Logger.Dispose();
-		}
 	}
 }

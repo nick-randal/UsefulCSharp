@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Sql.Deployer.Scripts
 {

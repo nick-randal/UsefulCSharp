@@ -24,7 +24,11 @@ namespace Randal.Core.Testing.UnitTest
 		[TestInitialize]
 		public void Setup()
 		{
-			Given = Given ?? new DynamicEntity(MissingMemberBehavior.ReturnsNull);
+			if(Given == null)
+				Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
+			else
+				Given.Clear();
+			
 			Then = new TThens();
 
 			OnSetup();
@@ -41,7 +45,6 @@ namespace Randal.Core.Testing.UnitTest
 			if (disposeMe != null)
 				disposeMe.Dispose();
 
-			Given.Clear();
 			Then = null;
 		}
 

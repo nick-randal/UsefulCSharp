@@ -23,6 +23,7 @@ using Randal.Sql.Deployer.Configuration;
 using Randal.Sql.Deployer.IO;
 using Randal.Sql.Deployer.Process;
 using Randal.Sql.Deployer.Scripts;
+using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Sql.Deployer.App
 {

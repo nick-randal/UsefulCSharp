@@ -61,8 +61,8 @@ END",
 
 			ValidationFilterConfig = new ValidationFilterConfig
 			{
-				WarnOn = { @"(?<=[\s^.\[]*)exec\s*\(" },
-				HaltOn = { @"create\s+\w", @"drop\s+\w", @"truncate\s+table" }
+				WarnOn = new[] { @"(?<=[\s^.\[]*)exec\s*\(" },
+				HaltOn = new[] { @"create\s+\w", @"drop\s+\w", @"truncate\s+table" }
 			}
 		};
 	}

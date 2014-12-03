@@ -13,7 +13,7 @@
 
 using System.Collections.Generic;
 
-namespace Randal.Sql.Deployer.Scripts
+namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public interface IScriptBlock
 	{
