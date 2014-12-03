@@ -8,6 +8,6 @@
     "databaseLookup": "select [name] from master.sys.databases where [name] not in ('master', 'msdb', 'tempdb')",
     "validationFilterConfig": {
         "warnOn": [ "(?<=[\\s^.\\[]*)exec\\s*\\(" ],
-        "haltOn": [ "create\\s+\\w", "drop\\s+\\w", "truncate\\s+table" ]
+        "haltOn": [ "create\\s+\\w+\\s+[^#]", "drop\\s+\\w+\\s+[^#]", "truncate\\s+table" ]
     }
 }

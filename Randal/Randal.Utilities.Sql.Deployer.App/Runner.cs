@@ -54,7 +54,7 @@ namespace Randal.Sql.Deployer.App
 
 					if (_settings.UseTransaction)
 					{
-						_logger.AddEntry("beginning transaction");
+						_logger.AddEntry("BEGINNING TRANSACTION");
 						connectionManager.BeginTransaction();
 					}
 

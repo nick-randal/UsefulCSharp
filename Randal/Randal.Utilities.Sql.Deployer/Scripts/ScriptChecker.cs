@@ -64,13 +64,13 @@ namespace Randal.Sql.Deployer.Scripts
 				return ScriptCheck.Fatal;
 			}
 
-			var validationState = EvaluatePatterns(input, sanitizedInput, tempMessages);
+			var validationState = EvaluatePatterns(sanitizedInput, sanitizedInput, tempMessages);
 
 			messages = tempMessages;
 			return validationState;
 		}
 
-		private ScriptCheck EvaluatePatterns(string orignalInput, string sanitizedInput, ICollection<string> tempMessages)
+		private ScriptCheck EvaluatePatterns(string input, string sanitizedInput, ICollection<string> tempMessages)
 		{
 			var validationState = ScriptCheck.Passed;
 			
@@ -88,7 +88,7 @@ namespace Randal.Sql.Deployer.Scripts
 				{
 					string text;
 					int line;
-					lastIndex = FindTextLocation(orignalInput, lastIndex, match.Value, out line, out text);
+					lastIndex = FindTextLocation(input, lastIndex, match.Value, out line, out text);
 					tempMessages.Add(string.Format("{0}: Line {1}, found \"{2}\".", filter.Item2, line, text));
 				}
 			}
@@ -126,7 +126,7 @@ namespace Randal.Sql.Deployer.Scripts
 		{
 			try
 			{
-				return string.Join(string.Empty, Sql.Parse(input).Where(s => s != string.Empty));
+				return string.Join(string.Empty, Sql.Parse(input));
 			}
 			catch (ParseException pe)
 			{
@@ -166,8 +166,8 @@ namespace Randal.Sql.Deployer.Scripts
 				from leadingWs in SimpleWhitespace.Many()
 				from head in SlCommentHead.Text()
 				from comment in Parse.AnyChar.Except(Newlines).Many().Text()
-				from tail in LineTerminator
-				select string.Empty
+				from tail in LineTerminator.Text()
+				select tail
 			)
 			.Named("Single Line Comment");
 
@@ -177,14 +177,14 @@ namespace Randal.Sql.Deployer.Scripts
 				from head in MlCommentHead
 				from comment in Parse.AnyChar.Except(MlCommentTail).Many().Text()
 				from tail in MlCommentTail
-				select string.Empty
+				select string.Empty.PadLeft(comment.Count(c => c == '\n'), '\n')
 			)
 			.Named("Multi-line Comment");
 
 		private static readonly Parser<string>
 			Code = Parse.AnyChar.Except(SlCommentHead.Or(MlCommentHead)).Many().Text().Named("Code"),
-			Comments = SingleLineComment.XOr(MultiLineComment).Named("Comments");
+			Comments = SingleLineComment.Or(MultiLineComment).Named("Comments");
 
-		private static readonly Parser<IEnumerable<string>> Sql = Comments.XOr(Code).XMany().End().Named("T-SQL");
+		private static readonly Parser<IEnumerable<string>> Sql = Comments.Or(Code).XMany().End().Named("T-SQL");
 	}
 }

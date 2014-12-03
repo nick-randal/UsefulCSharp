@@ -87,7 +87,7 @@ namespace Randal.Sql.Deployer.IO
 
 					result = Returned.Failure;
 					errors++;
-					LogScriptIssues(file.Name, checkMessages, validationMessages);
+					LogScriptIssues(file.FullName, checkMessages, validationMessages);
 				}
 			}
 
