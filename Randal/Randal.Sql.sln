@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core", "Randal.Core\Randal.Core.csproj", "{FB6276E2-09A0-419E-8346-280297FF6C69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer.UI", "Randal.Sql.Deployer.UI\Randal.Sql.Deployer.UI.csproj", "{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,12 @@ Global
 		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|x64.ActiveCfg = Release|x64
 		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|x64.Build.0 = Release|x64
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +104,6 @@ Global
 		{914F0EB2-03A0-4945-908B-36A789EA13B0} = {DE62AC3E-903B-4265-8E49-0A2C395873D1}
 		{F15D39B9-2E8F-4A8F-9A31-78A96D981B6F} = {DE62AC3E-903B-4265-8E49-0A2C395873D1}
 		{319DCCFA-76FB-402D-A61E-356E008A291B} = {DE62AC3E-903B-4265-8E49-0A2C395873D1}
+		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2} = {DA5BF4DD-8451-429B-943B-1504ADD64D2D}
 	EndGlobalSection
 EndGlobal
