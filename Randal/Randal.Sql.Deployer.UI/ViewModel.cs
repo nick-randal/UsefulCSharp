@@ -11,16 +11,54 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.SqlServer.Management.Smo;
+using Randal.Sql.Deployer.UI.Support;
 
 namespace Randal.Sql.Deployer.UI
 {
 	public sealed class ViewModel : INotifyPropertyChanged
 	{
-		public ViewModel()
+		private readonly IWindowWrapper _windowWrapper;
+
+		public ViewModel(IDeploymentAppSettings appSettings, IWindowWrapper windowWrapper)
 		{
+			_windowWrapper = windowWrapper;
 			IsBusy = false;
+
+			ProjectFolder = appSettings.ProjectFolder;
+			LogFolder = appSettings.LogFolder;
+			SqlServer = appSettings.SqlServer;
+			NoTransaction = appSettings.NoTransaction;
+			ForceRollback = appSettings.ForceRollback;
+			CheckFilesOnly = appSettings.CheckFilesOnly;
+			BypassCheck = appSettings.BypassCheck;
+
+			_serversList = new List<string> { "searching..." };
+
+			_projectFolderCommand = new DelegateCommand<string>(s =>
+			{
+				string selectedPath;
+				if (_windowWrapper.ShowFolderDialog("Select Project Folder", s, out selectedPath))
+					ProjectFolder = selectedPath;
+			}, s => IsAvailable);
+
+			_logFolderCommand = new DelegateCommand<string>(s =>
+			{
+				string selectedPath;
+				if (_windowWrapper.ShowFolderDialog("Select Log Folder", s, out selectedPath))
+					LogFolder = selectedPath;
+
+			}, s => IsAvailable);
 		}
+
+		public DelegateCommand<string> ProjectFolderSelectCommand { get { return _projectFolderCommand; } }
+
+		public DelegateCommand<string> LogFolderSelectCommand { get { return _logFolderCommand; } }
 
 		public bool IsBusy
 		{
@@ -38,6 +76,21 @@ namespace Randal.Sql.Deployer.UI
 		public bool IsAvailable
 		{
 			get { return !_isBusy; }
+		}
+
+		public List<string> ServersList
+		{
+			get { return _serversList; }
+			set
+			{
+				if (value == null)
+					return;
+
+				_serversList = value;
+				//_serversList.Clear();
+				//_serversList.AddRange(value);
+				NotifyPropertyChanged("ServersList");
+			}
 		}
 
 		public string ProjectFolder
@@ -150,6 +203,15 @@ namespace Randal.Sql.Deployer.UI
 			}
 		}
 
+		public async Task FindServersAsync()
+		{
+			await Task.Run(() =>
+			{
+				var dataTable = SmoApplication.EnumAvailableSqlServers(false);
+				ServersList = dataTable.Rows.Cast<DataRow>().Select(row => (string)row["Name"]).ToList();
+			});
+		}
+
 		private void NotifyPropertyChanged(params string[] propNames)
 		{
 			var handler = PropertyChanged;
@@ -162,6 +224,7 @@ namespace Randal.Sql.Deployer.UI
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		/*
 		public static explicit operator ViewModel(DeploymentAppSettings input)
 		{
 			return new ViewModel
@@ -174,7 +237,7 @@ namespace Randal.Sql.Deployer.UI
 				CheckFilesOnly = input.CheckFilesOnly,
 				BypassCheck = input.BypassCheck
 			};
-		}
+		}*/
 
 		public static explicit operator DeploymentAppSettings(ViewModel input)
 		{
@@ -190,7 +253,9 @@ namespace Randal.Sql.Deployer.UI
 			};
 		}
 
+		private readonly DelegateCommand<string> _projectFolderCommand, _logFolderCommand;
 		private string _projectFolder, _logFolder, _sqlServer;
 		private bool _isBusy, _noTransaction, _forceRollback, _checkFilesOnly, _bypassCheck;
+		private  List<string> _serversList;
 	}
 }

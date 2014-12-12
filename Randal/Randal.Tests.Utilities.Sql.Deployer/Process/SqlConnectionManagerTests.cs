@@ -22,18 +22,13 @@ namespace Randal.Tests.Sql.Deployer.Process
 	[TestClass]
 	public sealed class SqlConnectionManagerTests : BaseUnitTest<ScriptDeployerThens>
 	{
-		protected override void OnSetup()
-		{
-			Then.CommandFactory = null;
-		}
-		
 		protected override void OnTeardown()
 		{
 			Then.Manager.Dispose();
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidConnectionmanagerWhenCreating()
+		public void ShouldHaveValidConnectionmanager_WhenCreating()
 		{
 			When(Creating);
 			Then.Manager.Server.Should().BeEmpty();
@@ -41,7 +36,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveCommandWrapperWhenCreatingCommand()
+		public void ShouldHaveCommandWrapper_WhenCreatingCommand()
 		{
 			Given.CommandText = "Select 1";
 			When(CreatingCommand);
@@ -49,13 +44,15 @@ namespace Randal.Tests.Sql.Deployer.Process
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldRollbackTransactionWhenExecutingAndRollingBack()
+		public void ShouldRollbackTransaction_WhenExecutingAndRollingBack()
 		{
 			Given.Server = ".";
 			Given.Database = "master";
 			Given.CommandText = "Select 1";
 
 			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, RollingBack);
+
+			// Then no exceptions are thrown
 		}
 
 		[TestMethod, PositiveTest]
@@ -66,31 +63,37 @@ namespace Randal.Tests.Sql.Deployer.Process
 			Given.CommandText = "Select 1";
 
 			When(OpenningConnection, BeginningTransaction, CreatingCommand, ExecutingCommand, Committing);
+
+			// Then no exceptions are thrown
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldThrowExceptionWhenBeginningTransactionWithoutAnOpenConnection()
+		public void ShouldThrowException_WhenBeginningTransaction_GivenNoOpenConnection()
 		{
 			ThrowsExceptionWhen(BeginningTransaction);
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldTakeNoActionWhenCommittingTransactionAndNoTransactionWasStarted()
+		public void ShouldTakeNoAction_WhenCommittingTransaction_GivenNoTransactionWasStarted()
 		{
 			Given.Server = ".";
 			Given.Database = "master";
 
 			When(OpenningConnection, Committing);
+
+			// Then no exceptions are thrown
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldTakeNoAction_WhenRollingBackTransactionAndNoTransactionWasStarted()
+		public void ShouldTakeNoAction_WhenRollingBackTransaction_GivenNoTransactionWasStarted()
 		{
 			Given.Server = ".";
 			Given.Database = "master";
 
 			When(OpenningConnection, RollingBack);
+
+			// Then no exceptions are thrown
 		}
 
 		protected override void Creating()

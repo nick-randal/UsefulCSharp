@@ -6,7 +6,8 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
 		Title="SQL Script Deployer UI" Height="400" Width="600" ResizeMode="CanResizeWithGrip" 
 		MinWidth="500" MinHeight="300"
-		Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing" 
+		Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing" WindowStartupLocation="CenterScreen"
+		WindowStyle="SingleBorderWindow" WindowState="Normal"
 		d:DataContext="{d:DesignInstance Type=local:ViewModel}">
 	<Window.Resources> 
 		<local:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
@@ -27,6 +28,7 @@
 			<Setter Property="Margin" Value="5,3,12,3" />
 			<Setter Property="Grid.ColumnSpan" Value="3" />
 			<Setter Property="Background" Value="White" />
+			<Setter Property="FontFamily" Value="Consolas" />
 			<Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
 		</Style>
 		<Style TargetType="Label">
@@ -52,9 +54,9 @@
 		</StatusBar>
 		<Grid DockPanel.Dock="Top">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" MinHeight="10"></RowDefinition>
-				<RowDefinition Height="Auto"></RowDefinition>
-				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="40"></RowDefinition>
+				<RowDefinition Height="40"></RowDefinition>
+				<RowDefinition Height="40"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="*"></RowDefinition>
@@ -64,11 +66,22 @@
 				<ColumnDefinition Width="*"></ColumnDefinition>
 				<ColumnDefinition Width="40"></ColumnDefinition>
 				<ColumnDefinition Width="*"></ColumnDefinition>
+				<ColumnDefinition Width="40"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 			
 			<TextBox Grid.Row="0" Grid.Column="1" Name="ProjectFolder" TextChanged="ProjectFolder_OnTextChanged" Text="{Binding ProjectFolder}" />
 			<TextBox Grid.Row="1" Grid.Column="1" Name="LogFolder" TextChanged="LogFolder_OnTextChanged" Text="{Binding LogFolder}" />
-			<TextBox Grid.Row="2" Grid.Column="1" Name="SqlServer" TextChanged="SqlServer_OnTextChanged" Text="{Binding SqlServer}" />
+			<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Height="26" Name="SqlServer" IsEditable="True" 
+					  Text="{Binding SqlServer}" ItemsSource="{Binding ServersList}" >
+			</ComboBox>
+			<Button Grid.Row="0" Grid.Column="4" Command="{Binding ProjectFolderSelectCommand}" CommandParameter="{Binding ProjectFolder}"
+					Background="White" BorderThickness="0" BorderBrush="Transparent">
+				<Image Height="30" Width="30" Source="Images\open_folder.png"/>
+			</Button>
+			<Button Grid.Row="1" Grid.Column="4" Command="{Binding LogFolderSelectCommand}" CommandParameter="{Binding LogFolder}"
+					Background="White" BorderThickness="0" BorderBrush="Transparent">
+				<Image Height="30" Width="30" Source="Images\open_folder.png"/>
+			</Button>
 			<Label Grid.Row="0" Grid.Column="0" Content="Project Folder" />
 			<Label Grid.Row="1" Grid.Column="0"  Content="Log Folder" />
 			<Label Grid.Row="2" Grid.Column="0" Content="SQL Server" />
@@ -76,13 +89,13 @@
 			<CheckBox Grid.Row="3" Grid.Column="3" Content="Force Rollback" HorizontalAlignment="Left" Name="ForceRollback" IsChecked="{Binding ForceRollback}" />
 			<CheckBox Grid.Row="4" Grid.Column="1" Content="Check Files Only" Name="CheckFilesOnly" IsChecked="{Binding CheckFilesOnly}" />
 			<CheckBox Grid.Row="4" Grid.Column="3" Content="Bypass Check" HorizontalAlignment="Left" Name="BypassCheck" IsChecked="{Binding BypassCheck}"/>
-			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
+			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 				<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
 					   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" />
 			</Border>
 			<Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Deploy" HorizontalAlignment="Center" Margin="0,0,0,0" 
 					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick"/>
-			<Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="4"
+			<Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="5"
 					Visibility="{Binding IsBusy, Converter={StaticResource BoolVisibilityConverter}}">
 				<Grid>
 					<TextBlock Margin="0" TextWrapping="Wrap" Text="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#7EFFFFFF"/>

@@ -22,6 +22,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
+using Randal.Sql.Deployer.UI.Support;
 
 namespace Randal.Sql.Deployer.UI
 {
@@ -30,6 +31,10 @@ namespace Randal.Sql.Deployer.UI
 	/// </summary>
 	public partial class MainWindow
 	{
+		public static RoutedCommand
+			ProjectFolderCommand = new RoutedCommand(),
+			LogFolderCommand = new RoutedCommand();
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -39,7 +44,8 @@ namespace Randal.Sql.Deployer.UI
 		{
 			var settings = await DeploymentAppSettings.Load();
 
-			Model = (ViewModel)settings;
+			Model =  new ViewModel(settings, this.CreateWrapper());
+			await Model.FindServersAsync();
 
 			Status.Content = string.Empty;
 		}
@@ -84,7 +90,7 @@ namespace Randal.Sql.Deployer.UI
 			if (dialog.ShowDialog(this) == false)
 				return;
 
-			Model = (ViewModel)await DeploymentAppSettings.Load(dialog.FileName);
+			Model = new ViewModel(await DeploymentAppSettings.Load(dialog.FileName), this.CreateWrapper());
 		}
 
 		private async void DeployButton_OnClick(object sender, RoutedEventArgs e)
