@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 			
 			var project = new Project(loader.Configuration, loader.AllScripts);
 
-			Then.Deployer = new ScriptDeployer(config, project, Then.Manager, Then.Logger);
+			Then.Deployer = new SqlServerDeployer(config, project, Then.Manager, Then.Logger);
 		}
 
 		private void CheckingCanUpgrade()
@@ -113,7 +113,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 	{
 		public ISqlConnectionManager Manager;
 		public StringLogger Logger;
-		public ScriptDeployer Deployer;
+		public SqlServerDeployer Deployer;
 		public Returned DeployReturned;
 		public bool CanUpgrade;
 	}

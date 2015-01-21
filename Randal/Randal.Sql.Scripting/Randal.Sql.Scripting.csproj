@@ -70,6 +70,8 @@
     <Compile Include="ScriptFileManager.cs" />
     <Compile Include="ScriptFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptFormatterConstants.cs" />
+    <Compile Include="ScriptFormatterExtensions.cs" />
     <Compile Include="ScriptingSource.cs" />
     <Compile Include="ServerWrapper.cs" />
     <Compile Include="ClassExtensions.cs" />

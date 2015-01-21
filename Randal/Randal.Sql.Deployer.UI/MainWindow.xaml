@@ -72,7 +72,7 @@
 			<TextBox Grid.Row="0" Grid.Column="1" Name="ProjectFolder" TextChanged="ProjectFolder_OnTextChanged" Text="{Binding ProjectFolder}" />
 			<TextBox Grid.Row="1" Grid.Column="1" Name="LogFolder" TextChanged="LogFolder_OnTextChanged" Text="{Binding LogFolder}" />
 			<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Height="26" Name="SqlServer" IsEditable="True" 
-					  Text="{Binding SqlServer}" ItemsSource="{Binding ServersList}" >
+					  Text="{Binding SqlServer}" ItemsSource="{Binding ServersList}" IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True" >
 			</ComboBox>
 			<Button Grid.Row="0" Grid.Column="4" Command="{Binding ProjectFolderSelectCommand}" CommandParameter="{Binding ProjectFolder}"
 					Background="White" BorderThickness="0" BorderBrush="Transparent">

@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,24 +44,24 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveText_WhenFormatting_GivenUserDefinedFunction()
 		{
-			Given.Function = "Test";
+			Given.Function = "'Test'";
 			When(Formatting);
 			Then.Text.Should()
 				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
-				"exec coreCreateFunction 'Test', 'dbo', 'scalar'\r\nGO\r\n\r\n--:: main\r\n" + 
-				"ALTER FUNCTION [dbo].[Test]()\r\nRETURNS [int] AS \r\nreturn -1\r\n\r\n/*\r\n	select dbo.Test()\r\n*/");
+				"exec coreCreateFunction '''Test''', 'dbo', 'scalar'\r\nGO\r\n\r\n--:: main\r\n" + 
+				"ALTER FUNCTION [dbo].['Test']()\r\nRETURNS [int] AS \r\nbegin return -1 end\r\n\r\n/*\r\n	select [dbo].['Test']()\r\n*/");
 		}
 
 		protected override void Creating()
 		{
-			var server = MockRepository.GenerateMock<IServer>();
-			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new DependencyCollectionNode[0]);
-			Then.Formatter = new ScriptFormatter(server);
+			Then.Formatter = new ScriptFormatter();
 		}
 
 		private void Formatting()
 		{
 			ScriptSchemaObjectBase schemaObject;
+			var server = MockRepository.GenerateMock<IServer>();
+			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new DependencyCollectionNode[0]);
 
 			if (GivensDefined("Function"))
 			{
@@ -69,13 +69,9 @@ namespace Randal.Tests.Sql.Scripting
 				{
 					TextMode = false,
 					DataType = DataType.Int,
-					//ExecutionContext = ExecutionContext.Caller,
 					FunctionType = UserDefinedFunctionType.Scalar,
 					ImplementationType = ImplementationType.TransactSql,
-					//Schema = "dbo",
-					//TextHeader = "create function spTest",
-					
-					TextBody = "return -1"
+					TextBody = "begin return -1 end"
 				};
 			}
 			else
@@ -88,7 +84,7 @@ namespace Randal.Tests.Sql.Scripting
 				};
 			}
 
-			Then.Text = Then.Formatter.Format(schemaObject);
+			Then.Text = Then.Formatter.Format(new ScriptableObject(null, schemaObject));
 		}
 	}
 

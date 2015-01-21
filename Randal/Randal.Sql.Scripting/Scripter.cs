@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
@@ -30,7 +32,7 @@ namespace Randal.Sql.Scripting
 			_includeTheseDatabases = new List<string>();
 			_excludeTheseDatabases = new List<string>();
 			_sources = new List<ScriptingSource>();
-			_formatter = formatter ?? new ScriptFormatter(_server);
+			_formatter = formatter ?? new ScriptFormatter();
 			_logger = new LoggerStringFormatWrapper(logger);
 		}
 
@@ -108,11 +110,11 @@ namespace Randal.Sql.Scripting
 		{
 			_scriptFileManager.SetupDatabaseDirectory(database.Name);
 			var processed = 0;
-			var scriptableObjects = new List<ScriptableObject>();
-
+			
 			SetupScriptFolders(database);
 
-			LoadAndValidateObjects(database, scriptableObjects);
+			var scriptableObjects = LoadScriptObjects(database);
+			CheckForNameCollisions(scriptableObjects);
 
 			foreach (var scriptableObject in scriptableObjects)
 			{
@@ -135,8 +137,8 @@ namespace Randal.Sql.Scripting
 					database.Name,
 					scriptableObject.ScriptingSource.SubFolder,
 					so.ScriptFileName(),
-					_formatter.Format(so)
-					);
+					_formatter.Format(scriptableObject)
+				);
 				
 				processed++;
 			}
@@ -144,20 +146,47 @@ namespace Randal.Sql.Scripting
 			return processed;
 		}
 
-		private void LoadAndValidateObjects(Database database, List<ScriptableObject> scriptableObjects)
+		private List<ScriptableObject> LoadScriptObjects(Database database)
 		{
-			_logger.AddEntry("Loading scriptable objects.");
-			foreach (var source in _sources)
-			{
-				scriptableObjects.AddRange(
-					source
-						.GetScriptableObjects(_server, database)
-						.Select(so => new ScriptableObject(source, so))
-					);
-			}
+			var scriptableObjects = new List<ScriptableObject>();
 
-			_logger.AddEntry("Found {0} schema objects.", scriptableObjects.Count);
-			CheckForNameCollisions(scriptableObjects);
+			_logger.AddEntry("Loading scriptable objects.");
+
+			var cancellation = new CancellationTokenSource();
+
+			var tasks = _sources.Select(source => 
+				Task.Factory.StartNew(state =>
+					{
+						var temp = new List<ScriptableObject>();
+						var src = (ScriptingSource) state;
+
+						var server = new Server(_server.Name);
+						var db = new Database(server, database.Name);
+						db.Refresh();
+
+						src
+							.GetScriptableObjects(new ServerWrapper(server), db)
+							.Select(so => new ScriptableObject(source, so)).ToList().ForEach(temp.Add);
+
+						_logger.AddEntry("Found {0} {1}.", temp.Count, src.SubFolder);
+
+						return temp;
+					}, 
+					source, 
+					cancellation.Token, 
+					TaskCreationOptions.None, 
+					TaskScheduler.Default
+				)
+			)
+			.ToList();
+
+			Task.WhenAll(tasks).Wait(cancellation.Token);
+
+			tasks.ForEach(t => scriptableObjects.AddRange(t.Result));
+
+			_logger.AddEntry("Found {0} total schema objects.", scriptableObjects.Count);
+
+			return scriptableObjects;
 		}
 
 		private void SetupScriptFolders(IDatabaseOptions database)

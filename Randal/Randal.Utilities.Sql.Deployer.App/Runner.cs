@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -147,14 +147,15 @@ namespace Randal.Sql.Deployer.App
 
 		private void DeployScripts(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager)
 		{
-			
-			var deployer = new ScriptDeployer(config, project, connectionManager, _logger.BaseLogger);
+			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger.BaseLogger))
+			//using (var deployer = new ScriptFileDeployer(config, project, connectionManager, _logger.BaseLogger))
+			{
+				if (deployer.CanUpgrade() == false)
+					throw new RunnerException("Cannot upgrade project");
 
-			if (deployer.CanUpgrade() == false)
-				throw new RunnerException("Cannot upgrade project");
-
-			if (deployer.DeployScripts() == Returned.Failure)
-				throw new RunnerException("Deploy scripts failed.");
+				if (deployer.DeployScripts() == Returned.Failure)
+					throw new RunnerException("Deploy scripts failed.");
+			}
 		}
 
 		private readonly ILoggerStringFormatWrapper _logger;

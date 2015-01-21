@@ -23,22 +23,6 @@ namespace Randal.Tests.Logging
 	[TestClass, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
 	public sealed class LogFileManagerTests : BaseUnitTest<LogFileManagerThens>
 	{
-		protected override void OnSetup()
-		{
-			Given.Size = 1024;
-			Given.NullSettings = false;
-		}
-
-		protected override void OnTeardown()
-		{
-			if (Then.Manager == null)
-				return;
-
-			Then.Manager.Dispose();
-			Then.Writer = null;
-			Then.Manager = null;
-		}
-
 		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{
@@ -62,7 +46,7 @@ namespace Randal.Tests.Logging
 			When(GettingStreamWriter);
 
 			Then.Writer.Should().NotBeNull();
-			Then.Manager.LogFileName.Should().EndWith("_001.log");
+			Then.Manager.LogFileName.Should().EndWith("_002.log");
 		}
 
 		[TestMethod, PositiveTest]
@@ -98,6 +82,22 @@ namespace Randal.Tests.Logging
 		private void WritingText()
 		{
 			Then.Writer.WriteLine(Given.TextToWrite);
+		}
+
+		protected override void OnSetup()
+		{
+			Given.Size = 1024;
+			Given.NullSettings = false;
+		}
+
+		protected override void OnTeardown()
+		{
+			if (Then.Manager == null)
+				return;
+
+			Then.Manager.Dispose();
+			Then.Writer = null;
+			Then.Manager = null;
 		}
 	}
 

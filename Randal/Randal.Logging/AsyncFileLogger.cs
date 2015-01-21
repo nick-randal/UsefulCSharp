@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Data;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,12 +32,12 @@ namespace Randal.Logging
 			_logWriterManager = logWriterManager ??
 			                    new LogFileManager(settings, new LogFolder(settings.BasePath, settings.BaseFileName));
 
-			_logQueue = new ConcurrentQueue<ILogEntry>();
-			_signal = new ManualResetEventSlim(false);
-			_token = new CancellationTokenSource();
+			_queuedEntries = new BlockingCollection<ILogEntry>();
+			_tokenSource = new CancellationTokenSource();
 			_settingsLock = new ReaderWriterLockSlim();
+			_verbosity = Verbosity.All;
 
-			_task = Task.Run(() => RunAsync(settings), _token.Token);
+			_task = Task.Run(() => RunAsync(settings), _tokenSource.Token);
 		}
 
 		public Verbosity VerbosityThreshold
@@ -70,37 +71,39 @@ namespace Randal.Logging
 
 		public void Add(ILogEntry entry)
 		{
-			if (_token.IsCancellationRequested)
+			if (_tokenSource.IsCancellationRequested || _queuedEntries.IsAddingCompleted || entry.VerbosityLevel < VerbosityThreshold )
 				return;
 
-			_logQueue.Enqueue(entry);
-			_signal.Set();
+			_queuedEntries.TryAdd(entry, Timeout.Infinite, _tokenSource.Token);
 		}
 
 		public void Dispose()
 		{
-			if (_disposed)
-				return;
+			lock (_queuedEntries)
+			{	
+				if (_disposed)
+					return;
 
-			_token.Cancel();
+				_queuedEntries.CompleteAdding();
+				Monitor.Wait(_queuedEntries, 2500);
+				_tokenSource.Cancel();
 
-			try
-			{
-				DisposeOfTask();
+				try
+				{
+					DisposeOfTask();
 
-				DisposeOfManualEvent();
+					DisposeOfCancellationToken();
 
-				DisposeOfCancellationToken();
-
-				DisposeOfReaderWriterLock();
-			}
-			catch (Exception ex)
-			{
-				EventLog.WriteEntry(TextResources.ApplicationEventLog, ex.ToString(), EventLogEntryType.Error);
-			}
-			finally
-			{
-				_disposed = true;
+					DisposeOfReaderWriterLock();
+				}
+				catch (Exception ex)
+				{
+					EventLog.WriteEntry(TextResources.ApplicationEventLog, ex.ToString(), EventLogEntryType.Error);
+				}
+				finally
+				{
+					_disposed = true;
+				}
 			}
 		}
 
@@ -121,31 +124,16 @@ namespace Randal.Logging
 
 		private void DisposeOfCancellationToken()
 		{
-			if (_token == null)
+			if (_tokenSource == null)
 				return;
 
 			try
 			{
-				_token.Dispose();
+				_tokenSource.Dispose();
 			}
 			finally
 			{
-				_token = null;
-			}
-		}
-
-		private void DisposeOfManualEvent()
-		{
-			if (_signal == null)
-				return;
-
-			try
-			{
-				_signal.Dispose();
-			}
-			finally
-			{
-				_signal = null;
+				_tokenSource = null;
 			}
 		}
 
@@ -165,26 +153,11 @@ namespace Randal.Logging
 			}
 		}
 
-		private bool HasEntriesAndIsNotCancelled(out ILogEntry entry)
-		{
-			try
-			{
-				if (_logQueue.TryDequeue(out entry))
-					return true;
-
-				_signal.Reset();
-				_signal.Wait(_token.Token);
-				_logQueue.TryDequeue(out entry);
-			}
-			catch (OperationCanceledException)
-			{
-				entry = null;
-				return false;
-			}
-
-			return true;
-		}
-
+		/// <summary>
+		/// Wraps the entire Queue process so that if the final log entries are repeats and have not been written to the log, the log can output that final entry.
+		/// </summary>
+		/// <param name="settings"></param>
+		/// <returns></returns>
 		private async Task RunAsync(IFileLoggerSettings settings)
 		{
 			try
@@ -193,7 +166,10 @@ namespace Randal.Logging
 
 				await WriteRepetitionInfo(repetitionCount);
 
-				await _logWriterManager.GetStreamWriter().WriteLineAsync();
+				if (string.IsNullOrEmpty(settings.ClosingText))
+					return;
+
+				await _logWriterManager.GetStreamWriter().WriteLineAsync(settings.ClosingText);
 			}
 			catch (Exception ex)
 			{
@@ -202,6 +178,8 @@ namespace Randal.Logging
 			}
 			finally
 			{
+				lock(_queuedEntries)
+					Monitor.Pulse(_queuedEntries);
 				_logWriterManager.Dispose();
 			}
 		}
@@ -210,10 +188,21 @@ namespace Randal.Logging
 		{
 			string lastRepeatedText = null;
 			var repetitionCount = 1;
-			ILogEntry entry;
 
-			while (HasEntriesAndIsNotCancelled(out entry))
+			while (true)
 			{
+				ILogEntry entry;
+
+				try
+				{
+					if (_queuedEntries.TryTake(out entry, Timeout.Infinite, _tokenSource.Token) == false || entry == null)
+						return repetitionCount;
+				}
+				catch (OperationAbortedException)
+				{
+					return 0;
+				}
+
 				if (truncateRepetition)
 				{
 					if (string.Compare(lastRepeatedText, entry.Message, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -230,8 +219,6 @@ namespace Randal.Logging
 
 				await _logWriterManager.GetStreamWriter().WriteAsync(_formatter.Format(entry));
 			}
-
-			return repetitionCount;
 		}
 
 		private async Task WriteRepetitionInfo(int repetitionCount)
@@ -248,10 +235,9 @@ namespace Randal.Logging
 
 		private volatile bool _disposed;
 		private Task _task;
-		private ManualResetEventSlim _signal;
 		private ReaderWriterLockSlim _settingsLock;
-		private CancellationTokenSource _token;
-		private readonly ConcurrentQueue<ILogEntry> _logQueue;
+		private CancellationTokenSource _tokenSource;
+		private readonly BlockingCollection<ILogEntry> _queuedEntries;
 		private readonly ILogEntryFormatter _formatter;
 		private readonly ILogFileManager _logWriterManager;
 		private volatile Verbosity _verbosity;

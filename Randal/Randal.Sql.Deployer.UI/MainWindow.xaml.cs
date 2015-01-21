@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,10 +44,12 @@ namespace Randal.Sql.Deployer.UI
 		{
 			var settings = await DeploymentAppSettings.Load();
 
-			Model =  new ViewModel(settings, this.CreateWrapper());
-			await Model.FindServersAsync();
+			Model = new ViewModel(settings, this.CreateWrapper());
+			var findServers = Model.FindServersAsync();
 
-			Status.Content = string.Empty;
+			UpdateStatus();
+
+			await findServers;
 		}
 
 		private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
@@ -58,8 +60,8 @@ namespace Randal.Sql.Deployer.UI
 				return;
 			}
 
-			Status.Content = "Saving...";
-			await ((DeploymentAppSettings)Model).Save();
+			UpdateStatus("Saving...");
+			await ((DeploymentAppSettings)Model).Save().ConfigureAwait(false);
 		}
 		
 		private void Window_OnClose(object sender, ExecutedRoutedEventArgs e)
@@ -77,7 +79,7 @@ namespace Randal.Sql.Deployer.UI
 			if (dialog.ShowDialog(this) == false)
 				return;
 
-			await ((DeploymentAppSettings)Model).Save(dialog.FileName);
+			await ((DeploymentAppSettings)Model).Save(dialog.FileName).ConfigureAwait(false);
 		}
 
 		private async void Window_LoadSettings(object sender, ExecutedRoutedEventArgs e)
@@ -90,13 +92,13 @@ namespace Randal.Sql.Deployer.UI
 			if (dialog.ShowDialog(this) == false)
 				return;
 
-			Model = new ViewModel(await DeploymentAppSettings.Load(dialog.FileName), this.CreateWrapper());
+			var settings = await DeploymentAppSettings.Load(dialog.FileName);
+			Model = new ViewModel(settings, this.CreateWrapper());
 		}
 
 		private async void DeployButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			Status.Content = "Deploying...";
-			Model.IsBusy = true;
+			UpdateStatus("Deploying...", true);
 
 			using (var task = Task.Factory.StartNew(() => Thread.Sleep(10000)))
 			{
@@ -109,12 +111,13 @@ namespace Randal.Sql.Deployer.UI
 			var settings = (DeploymentAppSettings)Model;
 			settings.ApplicationPath = DeployerPath;
 			if (settings.ApplicationPath != null)
+			{
 				await new ScriptDeploymentProcess().Run(progressOutput, progressError, settings);
+			}
 			else
 				LogLine("Deployer application not found.");
 
-			Model.IsBusy = false;
-			Status.Content = string.Empty;
+			UpdateStatus();
 		}
 
 		private void LogLine(string message, params object[] values)
@@ -134,11 +137,6 @@ namespace Randal.Sql.Deployer.UI
 			UpdateBackground(ProjectFolder, Directory.Exists(ProjectFolder.Text));
 		}
 
-		private void SqlServer_OnTextChanged(object sender, TextChangedEventArgs e)
-		{
-			UpdateBackground(SqlServer, string.IsNullOrWhiteSpace(SqlServer.Text) == false);
-		}
-
 		private void LogFolder_OnTextChanged(object sender, TextChangedEventArgs e)
 		{
 			UpdateBackground(LogFolder, Directory.Exists(LogFolder.Text));
@@ -147,6 +145,12 @@ namespace Randal.Sql.Deployer.UI
 		private static void UpdateBackground(Control control, bool isValid)
 		{
 			control.Background = isValid ? Brushes.White : Brushes.LightPink;
+		}
+
+		private void UpdateStatus(string text = "", bool isBusy = false)
+		{
+			Model.IsBusy = isBusy;
+			Status.Content = text;
 		}
 
 		public string DeployerPath

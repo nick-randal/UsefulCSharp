@@ -21,12 +21,13 @@ namespace Randal.Logging
 		string BasePath { get; }
 		string BaseFileName { get; }
 		bool ShouldTruncateRepeatingLines { get; }
+		string ClosingText { get; }
 	}
 
 	public sealed class FileLoggerSettings : IFileLoggerSettings
 	{
 		public FileLoggerSettings(string basePath, string baseFileName, long fileSize = FiveMegabytes,
-			bool truncateRepeatingLines = true)
+			bool truncateRepeatingLines = true, string closingText = "\r\n")
 		{
 			if (string.IsNullOrWhiteSpace(basePath))
 				throw new ArgumentException("basePath");
@@ -36,6 +37,7 @@ namespace Randal.Logging
 			_basePath = basePath;
 			_baseFileName = baseFileName ?? string.Empty;
 			_truncateRepeatingLines = truncateRepeatingLines;
+			_closingText = closingText;
 		}
 
 		public long FileSize
@@ -58,7 +60,12 @@ namespace Randal.Logging
 			get { return _truncateRepeatingLines; }
 		}
 
-		private readonly string _basePath, _baseFileName;
+		public string ClosingText
+		{
+			get { return _closingText; }
+		}
+
+		private readonly string _basePath, _baseFileName, _closingText;
 		private readonly long _fileSizeBytes;
 		private readonly bool _truncateRepeatingLines;
 

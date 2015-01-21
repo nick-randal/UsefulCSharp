@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		protected override void Creating()
 		{
 			var config = Given.Config ?? new ScriptDeployerConfig();
-			Then.Deployer = new ScriptDeployer(config, Given.Project, Given.ConnectionManager, new StringLogger());
+			Then.Deployer = new SqlServerDeployer(config, Given.Project, Given.ConnectionManager, new StringLogger());
 			Then.Manager = Given.ConnectionManager;
 		}
 
@@ -94,7 +94,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 	public sealed class SqlDeployerThens
 	{
-		public ScriptDeployer Deployer;
+		public SqlServerDeployer Deployer;
 		public ISqlConnectionManager Manager;
 	}
 }

@@ -13,6 +13,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,6 +66,28 @@ namespace Randal.Tests.Logging
 		}
 
 		[TestMethod]
+		public void ShouldNotHaveText_WhenLogging_GivenLowerVerbosityThanThreshold()
+		{
+			Given.Verbosity = Verbosity.Important;
+			Given.Entries = new[] { new LogEntry("Just informational.", new DateTime(1891, 3, 15, 4, 30, 00)) };
+
+			When(SettingVerbosity, Logging, Disposing);
+
+			Then.Text.Should().Be("");
+		}
+
+		[TestMethod]
+		public void ShouldHaveText_WhenLogging_GivenEqualVerbosityToThreshold()
+		{
+			Given.Verbosity = Verbosity.Important;
+			Given.Entries = new[] { new LogEntry("This is important.", new DateTime(1891, 3, 15, 4, 30, 00), Verbosity.Important) };
+
+			When(SettingVerbosity, Logging, Disposing);
+
+			Then.Text.Should().Be("910315 043000    This is important.\r\n");
+		}
+
+		[TestMethod]
 		public void ShouldHaveTruncatedText_WhenLogging_GivenDuplicateEntries()
 		{
 			Given.Entries = new[]
@@ -81,26 +104,15 @@ namespace Randal.Tests.Logging
 					"                     Can you hear me now?\r\nATTENTION: The previous line was repeated 2 times.\r\n                     Good\r\n");
 		}
 
-		private void Logging()
+		[TestMethod]
+		public void ShouldHaveTruncatedText_WhenLogging_GivenDuplicateEntries2()
 		{
-			foreach (ILogEntry entry in Given.Entries)
-				Then.Logger.Add(entry);
-			Thread.Sleep(50);
-		}
+			Given.AllowRepeats = false;
+			Given.Entries = Enumerable.Repeat(new LogEntryNoTimestamp(new string('X', 1000)), 100).ToArray();
 
-		private void Disposing()
-		{
-			Then.Writer.Flush();
-			Then.Writer.BaseStream.Position = 0;
+			When(Logging, Disposing);
 
-			using (var reader = new StreamReader(Then.Writer.BaseStream))
-			{
-				Then.Text = reader.ReadToEnd();
-			}
-
-			Then.Writer = null;
-
-			Then.Logger.Dispose();
+			Then.Text.Length.Should().Be(102300);
 		}
 
 		private void SettingVerbosity()
@@ -110,14 +122,13 @@ namespace Randal.Tests.Logging
 
 		protected override void Creating()
 		{
-			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024);
+			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024, 
+				Given.AllowRepeats == null || Given.AllowRepeats, null);
 
 			if (GivensDefined("NullSettings") && Given.NullSettings == true)
 				Then.Logger = new AsyncFileLogger(null);
 			else
 				Then.Logger = new AsyncFileLogger(settings, GetMockLogFileManager());
-
-			Thread.Sleep(50);
 		}
 
 		private ILogFileManager GetMockLogFileManager()
@@ -127,6 +138,27 @@ namespace Randal.Tests.Logging
 			Then.Writer = new StreamWriter(new MemoryStream());
 			logFileManager.Stub(x => x.GetStreamWriter()).Return(Then.Writer);
 			return logFileManager;
+		}
+
+		private void Logging()
+		{
+			foreach (ILogEntry entry in Given.Entries)
+				Then.Logger.Add(entry);
+		}
+
+		private void Disposing()
+		{
+			Then.Logger.Dispose();
+
+			Then.Writer.Flush();
+			Then.Writer.BaseStream.Position = 0;
+
+			using (var reader = new StreamReader(Then.Writer.BaseStream))
+			{
+				Then.Text = reader.ReadToEnd();
+			}
+
+			Then.Writer = null;
 		}
 	}
 

@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -48,6 +48,16 @@ namespace Randal.Sql.Scripting
 				return _udf != null && _udf.IsEncrypted;
 			}
 		}
+
+		public bool IsTable { get { return _table != null; } }
+		public bool IsView { get { return _view != null; } }
+		public bool IsSproc { get { return _sproc != null; } }
+		public bool IsUdf { get { return _udf != null; } }
+
+		public Table Table { get { return _table; } }
+		public View View { get { return _view; } }
+		public StoredProcedure Sproc { get { return _sproc; } }
+		public UserDefinedFunction Udf { get { return _udf; } }
 
 		private readonly Table _table;
 		private readonly View _view;

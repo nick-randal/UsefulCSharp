@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -11,11 +11,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Sql.Deployer.UI.Support;
 
@@ -38,7 +41,11 @@ namespace Randal.Sql.Deployer.UI
 			CheckFilesOnly = appSettings.CheckFilesOnly;
 			BypassCheck = appSettings.BypassCheck;
 
-			_serversList = new List<string> { "searching..." };
+			_serversList = new List<ComboBoxItem>
+			{
+				new ComboBoxItem { Content = "localhost" },
+				new ComboBoxItem { Content = "searching for servers...", IsEnabled = false}
+			};
 
 			_projectFolderCommand = new DelegateCommand<string>(s =>
 			{
@@ -78,7 +85,7 @@ namespace Randal.Sql.Deployer.UI
 			get { return !_isBusy; }
 		}
 
-		public List<string> ServersList
+		public List<ComboBoxItem> ServersList
 		{
 			get { return _serversList; }
 			set
@@ -87,8 +94,6 @@ namespace Randal.Sql.Deployer.UI
 					return;
 
 				_serversList = value;
-				//_serversList.Clear();
-				//_serversList.AddRange(value);
 				NotifyPropertyChanged("ServersList");
 			}
 		}
@@ -205,11 +210,22 @@ namespace Randal.Sql.Deployer.UI
 
 		public async Task FindServersAsync()
 		{
-			await Task.Run(() =>
+			var results = await Task.Factory.StartNew(() =>
 			{
 				var dataTable = SmoApplication.EnumAvailableSqlServers(false);
-				ServersList = dataTable.Rows.Cast<DataRow>().Select(row => (string)row["Name"]).ToList();
+				return dataTable.Rows.Cast<DataRow>().Select(row => (string)row["Name"]).ToList();
 			});
+
+			var serverList = results.Select(name => 
+				new ComboBoxItem
+				{
+					Content = name,
+					Foreground = name == Environment.MachineName ? Brushes.SteelBlue : Brushes.Black
+				})
+				.ToList();
+
+			serverList.Insert(0, new ComboBoxItem { Content = "localhost"} );
+			ServersList = serverList;
 		}
 
 		private void NotifyPropertyChanged(params string[] propNames)
@@ -223,21 +239,6 @@ namespace Randal.Sql.Deployer.UI
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		/*
-		public static explicit operator ViewModel(DeploymentAppSettings input)
-		{
-			return new ViewModel
-			{
-				ProjectFolder = input.ProjectFolder,
-				LogFolder = input.LogFolder,
-				SqlServer = input.SqlServer,
-				NoTransaction = input.NoTransaction,
-				ForceRollback = input.ForceRollback,
-				CheckFilesOnly = input.CheckFilesOnly,
-				BypassCheck = input.BypassCheck
-			};
-		}*/
 
 		public static explicit operator DeploymentAppSettings(ViewModel input)
 		{
@@ -256,6 +257,6 @@ namespace Randal.Sql.Deployer.UI
 		private readonly DelegateCommand<string> _projectFolderCommand, _logFolderCommand;
 		private string _projectFolder, _logFolder, _sqlServer;
 		private bool _isBusy, _noTransaction, _forceRollback, _checkFilesOnly, _bypassCheck;
-		private  List<string> _serversList;
+		private List<ComboBoxItem> _serversList;
 	}
 }

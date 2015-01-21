@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,26 +25,27 @@ namespace Randal.Sql.Scripting
 		IEnumerable<View> GetViews(Database database);
 		IEnumerable<Table> GetTables(Database database);
 		IEnumerable<DependencyCollectionNode> GetDependencies(SqlSmoObject smo);
+		SqlSmoObject GetSchemaObject(string urn);
+		string Name { get; }
 	}
 
 	public sealed class ServerWrapper : IServer
 	{
-		public ServerWrapper(string serverInstance)
-			: this(new Server(serverInstance))
-		{}
-
-		public ServerWrapper(Server server) : this(server, new DependencyWalker(server))
-		{}
-
-		public ServerWrapper(Server server, DependencyWalker dependencyWalker)
+		public ServerWrapper(Server server)
 		{
 			_server = server;
-			_dependencyWalker = dependencyWalker;
 		}
+
+		public string Name { get { return _server.Name; } }
 
 		public IEnumerable<Database> GetDatabases()
 		{
 			return _server.Databases.Cast<Database>().ToList();
+		}
+
+		public SqlSmoObject GetSchemaObject(string urn)
+		{
+			return _server.GetSmoObject(urn);
 		}
 
 		public IEnumerable<StoredProcedure> GetStoredProcedures(Database database)
@@ -85,12 +86,12 @@ namespace Randal.Sql.Scripting
 
 		public IEnumerable<DependencyCollectionNode> GetDependencies(SqlSmoObject smo)
 		{
-			var depTree = _dependencyWalker.DiscoverDependencies(new[] { smo }, true);
+			var dependencyWalker = new DependencyWalker(_server);
+			var depTree = dependencyWalker.DiscoverDependencies(new[] { smo }, true);
 
-			return _dependencyWalker.WalkDependencies(depTree);
+			return dependencyWalker.WalkDependencies(depTree);
 		}
 
-		private readonly DependencyWalker _dependencyWalker;
 		private readonly Server _server;
 	}
 }

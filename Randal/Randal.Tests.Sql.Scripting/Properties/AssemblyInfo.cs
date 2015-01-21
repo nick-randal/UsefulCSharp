@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Randal.Tests.Sql.Scripting")]
-[assembly: AssemblyCopyright("Copyright © 2014 Nicholas Randal, All Rights Reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2014-2015 Nicholas Randal, All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

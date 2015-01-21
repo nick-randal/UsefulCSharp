@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
 namespace Randal.Sql.Scripting.App
@@ -35,7 +36,7 @@ namespace Randal.Sql.Scripting.App
 				SetupFolders(options.LogFolder, options.OutputFolder);
 
 				var scriptFileManager = new ScriptFileManager(Path.Combine(options.OutputFolder, options.Server));
-				var server = new ServerWrapper(options.Server);
+				var server = new ServerWrapper(new Server(options.Server));
 
 				var scripter =
 					new Scripter(server, scriptFileManager, logger)

@@ -74,6 +74,7 @@
     <Compile Include="Process\SqlCommandWrapper.cs" />
     <Compile Include="Process\SqlCommandWrapperFactory.cs" />
     <Compile Include="Process\SqlConnectionManager.cs" />
+    <Compile Include="Process\ScriptFileDeployery.cs" />
     <Compile Include="Scripts\Blocks\BaseScriptBlock.cs" />
     <Compile Include="Scripts\Blocks\CatalogBlock.cs" />
     <Compile Include="Scripts\Blocks\OptionsBlock.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="Scripts\Blocks\SqlCommandBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Blocks\UnexpectedBlock.cs" />
-    <Compile Include="Process\ScriptDeployer.cs" />
+    <Compile Include="Process\SqlServerDeployer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />

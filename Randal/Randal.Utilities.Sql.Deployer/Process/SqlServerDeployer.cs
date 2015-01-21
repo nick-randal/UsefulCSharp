@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@ using Randal.Sql.Deployer.Scripts;
 
 namespace Randal.Sql.Deployer.Process
 {
-	public interface IScriptDeployer
+	public interface IScriptDeployer : IDisposable
 	{
 		bool CanUpgrade();
 		Returned DeployScripts();
 		IScriptDeployerConfig Config { get; }
 	}
 
-	public sealed class ScriptDeployer : IScriptDeployer
+	public sealed class SqlServerDeployer : IScriptDeployer
 	{
-		public ScriptDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
+		public SqlServerDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
 		{
 			if (project == null)
 				throw new ArgumentNullException("project");
@@ -179,7 +179,8 @@ namespace Randal.Sql.Deployer.Process
 			_logger.AddEntry("adding project record.");
 
 			var values = new object[]
-			{_project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName};
+				{ _project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName };
+
 			using (var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.Insert, values))
 			{
 				command.Execute(_config.ProjectsTableConfig.Database);
@@ -218,6 +219,10 @@ namespace Randal.Sql.Deployer.Process
 
 			_logger.AddEntry("project is newer than what is currently deployed, continuing.");
 			return true;
+		}
+
+		public void Dispose()
+		{
 		}
 
 		private readonly IScriptDeployerConfig _config;
