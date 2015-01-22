@@ -11,11 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.T4;
@@ -24,46 +21,49 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.T4
 {
 	[TestClass]
-	public sealed class EnumCodeGeneratorIntegrationTests : BaseUnitTest<EnumCodeGeneratorIntegrationThens>
+	public sealed class CodeGeneratorTests : BaseUnitTest<CodeGeneratorThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
 		{
 			When(Creating);
 
-			Then.Target.Should().NotBeNull().And.BeAssignableTo<IEnumCodeGenerator>();
+			Then.Target.Should().NotBeNull().And.BeAssignableTo<ICodeGenerator>();
 		}
 
 		[TestMethod, PositiveTest]
 		public void ShouldHaveListOfCodeDefintions_WhenGeneratingList()
 		{
-			Given.SqlCommand = "select system_type_id, name, name as display, name as [description] from sys.types order by name";
-			Given.CommandType = CommandType.Text;
+			Given.CodeDefinitions = new[]
+			{
+				new DbCodeDefinition("1", "Visible", "Component Visible", "Now you see it."),
+				new DbCodeDefinition("0", "Hidden", "Component Hidden", "Now you don't.")
+			};
 
 			When(GeneratingList);
 
-			Then.Lines.Should().NotBeEmpty();
-			Then.Lines[0].Should().NotBe("/*", "should not have thrown exception, but found {0}", string.Join(Environment.NewLine, Then.Lines));
-			Then.Lines[0].Should().Be("[Display(Name = \"bigint\", Description = \"bigint\")]");
-			Then.Lines[1].Should().Be("Bigint = 127,");
+			Then.Lines.Should().HaveCount(5);
+			Then.Lines[0].Should().Be("[Display(Name = \"Component Visible\", Description = \"Now you see it.\")]");
+			Then.Lines[1].Should().Be("Visible = 1,");
 			Then.Lines.Last().Should().NotBeEmpty();
 			Then.Lines.Last().Should().NotEndWith(",");
 		}
 
 		private void GeneratingList()
 		{
-			Then.Lines = Then.Target.GetDefinitionList(Given.SqlCommand, Given.CommandType);
+			IReadOnlyList<DbCodeDefinition> codes = Given.CodeDefinitions;
+			Then.Lines = codes.ToCodeLines();
 		}
 
 		protected override void Creating()
 		{
-			Then.Target = new EnumCodeGenerator("Data Source=.;Integrated Security=true;Initial Catalog=master;");
+			Then.Target = new CodeGenerator("Data Source=.;Integrated Security=true;Initial Catalog=master;");
 		}
 	}
 
-	public sealed class EnumCodeGeneratorIntegrationThens
+	public sealed class CodeGeneratorThens
 	{
-		public EnumCodeGenerator Target;
+		public CodeGenerator Target;
 		public IReadOnlyList<string> Lines;
 	}
 }

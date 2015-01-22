@@ -68,7 +68,8 @@
     <Compile Include="Dynamic\NullConverterTests.cs" />
     <Compile Include="Dynamic\DictionaryConverterTests.cs" />
     <Compile Include="Dynamic\DynamicEntityConverterTests.cs" />
-    <Compile Include="T4\EnumCodeGeneratorIntegrationTests.cs" />
+    <Compile Include="T4\CodeGeneratorTests.cs" />
+    <Compile Include="T4\CodeGeneratorIntegrationTests.cs" />
     <Compile Include="T4\StringExtensionTests.cs" />
     <Compile Include="Xml\XmlCollectionTests.cs" />
   </ItemGroup>

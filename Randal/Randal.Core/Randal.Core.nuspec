@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Randal.Core Coding Support</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.Core/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Changed signature for code generation of enums for T4.</releaseNotes>
+    <copyright>Copyright 2014-2015 Nicholas Randal</copyright>
+    <tags>coding</tags>
+  </metadata>
+</package>

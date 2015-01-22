@@ -10,11 +10,14 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Added Child Builder interface.</releaseNotes>
+		<releaseNotes>Changed Randal.Core dependency project reference to nuget package.</releaseNotes>
 		<copyright>Copyright 2014 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net40" />
 		</frameworkAssemblies>
+		<dependencies>
+			<dependency id="Randal.Core" version="1.0.0.4" />
+		</dependencies>
 	</metadata>
 </package>

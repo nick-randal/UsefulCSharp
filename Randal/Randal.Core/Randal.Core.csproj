@@ -70,16 +70,20 @@
     <Compile Include="T4\BaseCodeDefinition.cs" />
     <Compile Include="T4\Constants.cs" />
     <Compile Include="T4\DbCodeDefinition.cs" />
-    <Compile Include="T4\EnumCodeGenerator.cs" />
+    <Compile Include="T4\CodeGenerator.cs" />
+    <Compile Include="T4\CodeGeneratorExtensions.cs" />
     <Compile Include="T4\IDatabaseCode.cs" />
-    <Compile Include="T4\IEnumCodeGenerator.cs" />
+    <Compile Include="T4\ICodeGenerator.cs" />
     <Compile Include="T4\StringExtensions.cs" />
     <Compile Include="Threading\ObjectPool.cs" />
     <Compile Include="Xml\XmlCollection.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
+    <None Include="Randal.Core.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,7 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -19,14 +18,14 @@ using System.IO;
 
 namespace Randal.Core.T4
 {
-	public class EnumCodeGenerator : IEnumCodeGenerator
+	public class CodeGenerator : ICodeGenerator
 	{
-		public EnumCodeGenerator(string connectionString)
+		public CodeGenerator(string connectionString)
 		{
 			_connectionString = connectionString;
 		}
 
-		public IReadOnlyList<DbCodeDefinition> GetCodes(string commandText, CommandType commandType)
+		public IReadOnlyList<DbCodeDefinition> GetCodeDefinitions(string commandText, CommandType commandType)
 
 		{
 			var codes = new List<DbCodeDefinition>();
@@ -50,47 +49,6 @@ namespace Randal.Core.T4
 			}
 
 			return codes.AsReadOnly();
-		}
-
-		public IReadOnlyList<string> GetDefinitionList(string commandText, CommandType commandType)
-		{
-			var lines = new List<String>();
-
-			try
-			{
-				var codes = GetCodes(commandText, commandType);
-
-				foreach (var code in codes)
-				{
-					lines.Add(FormattedAttribute(code));
-					lines.Add(FormattedDefinition(code));
-					lines.Add(string.Empty);
-				}
-
-				if (lines.Count > 2)
-				{
-					lines.RemoveAt(lines.Count - 1);
-					lines[lines.Count - 1] = lines[lines.Count - 1].TrimEnd(',');
-				}
-			}
-			catch (Exception ex)
-			{
-				lines.Add("/*");
-				lines.Add(ex.ToString());
-				lines.Add("*/");
-			}
-
-			return lines.AsReadOnly();
-		}
-
-		private static string FormattedDefinition(DbCodeDefinition code)
-		{
-			return string.Format("{0} = {1},", code.NameAsCSharpProperty, code.Code);
-		}
-
-		private static string FormattedAttribute(DbCodeDefinition code)
-		{
-			return string.Format(@"[Display(Name = ""{0}"", Description = ""{1}"")]", code.DisplayName, code.Description);
 		}
 
 		private SqlConnection OpenConnection()

@@ -13,13 +13,11 @@
 
 using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace Randal.Core.T4
 {
-	public interface IEnumCodeGenerator
+	public interface ICodeGenerator
 	{
-		IReadOnlyList<DbCodeDefinition> GetCodes(string commandText, CommandType commandType);
-		IReadOnlyList<string> GetDefinitionList(string commandText, CommandType commandType);
+		IReadOnlyList<DbCodeDefinition> GetCodeDefinitions(string commandText, CommandType commandType);
 	}
 }

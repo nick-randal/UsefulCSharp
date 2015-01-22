@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core", "Randal.Core\Randal.Core.csproj", "{FB6276E2-09A0-419E-8346-280297FF6C69}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{DFF7C383-F47E-458B-AA52-499776579BEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core.Testing", "Randal.Core.Testing\Randal.Core.Testing.csproj", "{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Core.Testing", "Randal.Tests.Core.Testing\Randal.Tests.Core.Testing.csproj", "{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +37,5 @@ Global
 		{FB6276E2-09A0-419E-8346-280297FF6C69} = {DFF7C383-F47E-458B-AA52-499776579BEC}
 		{BCCC5815-0945-4363-AB8E-706E51E0A0AF} = {DFF7C383-F47E-458B-AA52-499776579BEC}
 		{7E3C2598-AD31-4A85-93D1-89B7D835A9DE} = {DFF7C383-F47E-458B-AA52-499776579BEC}
-		{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA} = {DFF7C383-F47E-458B-AA52-499776579BEC}
 	EndGlobalSection
 EndGlobal
