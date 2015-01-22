@@ -21,16 +21,18 @@ namespace Someplace
 	{
 		protected override void OnSetup()
 		{
-			// Optional : test setup, this is to avoid the extra noise of Attributes
+			// Optional : test setup, this is to avoid the extra noise of Attributes,
+			// and there are some common setup tasks handled by the base class
 		}
 
 		protected override void OnTeardown()
 		{
-			// Optional : test teardown, this is to avoid the extra noise of Attributes
+			// Optional : test teardown, this is to avoid the extra noise of Attributes,
+			// and there are some common cleanup tasks handled by the base class
 		}
 		
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidInstanceWithValueWhenCreatingObjectGivenValue123()
+		public void ShouldHaveValidInstanceWithValue_WhenCreatingObject_GivenValue123()
 		{
 			Given.NeededValue = 123;	// Given is a dynamic object, create any number of property values on the fly
 			
@@ -40,7 +42,7 @@ namespace Someplace
 		}
 		
 		[TestMethod, PositiveTest]
-		public void ShouldHaveFormattedTextWhenFormattingGivenInstanceWithValue123()
+		public void ShouldHaveFormattedText_WhenFormatting_GivenInstanceWithValue123()
 		{
 			Given.NeededValue = 123;
 			
@@ -50,7 +52,7 @@ namespace Someplace
 		}
 		
 		[TestMethod, NegativeTest]
-		public void ShouldThrowFormatExcpetionWhenFormattingWithUnescapedOpeningBrace()
+		public void ShouldThrowFormatExcpetion_WhenFormatting_GivenUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
 
@@ -59,6 +61,22 @@ namespace Someplace
 			ThenLastAction.ShouldThrow<FormatException>("Oops");
 		}
 		
+		[TestMethod, PositiveTest]
+		public void ShouldRepeatAction_WhenRepeatIncrementing()
+		{
+			When(Repeat(Incrementing, 10));
+
+			Then.Repetitions.Should().Be(10);
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldAwaitAsynchronousFunction_WhenTestingAsyncMethod()
+		{
+			When(Await(Processing));
+
+			Then.DelayedValue.Should().Be(4567);
+		}
+
 		protected override Creating()
 		{
 			// can check if a dynamic value is defined through  GivensDefined("NeededValue",...)
@@ -70,12 +88,26 @@ namespace Someplace
 		{
 			Then.Text = Then.Target.Format();
 		}
+
+		private void Incrementing()
+		{
+			Then.Repetitions++;
+		}
+
+		private async Task Processing()
+		{
+			await Task.Delay(1000);
+
+			Then.DelayedValue = 4567;
+		}
 	}
 
 	public sealed class TestObjectThens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
 	{
 		public TestObject Target;
 		public string Text;
+		public int Repetitions;
+		public int DelayedValue;
 
 		public void Dispose()
 		{

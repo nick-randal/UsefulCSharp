@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Changed Randal.Core dependency project reference to nuget package.</releaseNotes>
+		<releaseNotes>Added functions to simplify When repeating actions and awaiting asynchronous methods.</releaseNotes>
 		<copyright>Copyright 2014 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>

@@ -13,6 +13,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
 
@@ -100,6 +101,23 @@ namespace Randal.Core.Testing.UnitTest
 				listOfActions[n]();
 
 			ThenLastAction = listOfActions.Last();
+		}
+
+		protected Action Repeat(Action action, int repeatX)
+		{
+			if (repeatX < 1)
+				repeatX = 1;
+
+			return () =>
+			{
+				for (var n = 0; n < repeatX; n++)
+					action();
+			};
+		}
+
+		protected Action Await(Func<Task> asyncFunc)
+		{
+			return () => asyncFunc().GetAwaiter().GetResult();
 		}
 
 		protected abstract void Creating();
