@@ -48,13 +48,13 @@
     <Reference Include="mscorlib.4.0.0.0.Fakes">
       <HintPath>FakesAssemblies\mscorlib.4.0.0.0.Fakes.dll</HintPath>
     </Reference>
-    <Reference Include="Randal.Core, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Randal.Core, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Randal.Core.1.0.0.4\lib\net45\Randal.Core.dll</HintPath>
+      <HintPath>..\packages\Randal.Core.1.0.0.6\lib\net45\Randal.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Randal.Core.Testing, Version=1.0.0.10, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Randal.Core.Testing, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.10\lib\net45\Randal.Core.Testing.dll</HintPath>
+      <HintPath>..\packages\Randal.Core.Testing.1.0.0.12\lib\net45\Randal.Core.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
@@ -104,6 +104,7 @@
     <Compile Include="TextWriterLoggerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
     <None Include="packages.config" />
     <Content Include="TestFiles\Logs\Test_004.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

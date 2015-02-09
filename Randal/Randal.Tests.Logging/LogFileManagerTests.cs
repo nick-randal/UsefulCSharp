@@ -27,7 +27,7 @@ namespace Randal.Tests.Logging
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{
 			Given.NullSettings = true;
-			ThrowsExceptionWhen(Creating);
+			DeferLastActionWhen(Creating);
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 

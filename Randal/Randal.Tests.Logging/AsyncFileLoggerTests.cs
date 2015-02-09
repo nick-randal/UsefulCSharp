@@ -14,7 +14,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -50,7 +49,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.NullSettings = true;
 
-			ThrowsExceptionWhen(Creating);
+			DeferLastActionWhen(Creating);
 
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
