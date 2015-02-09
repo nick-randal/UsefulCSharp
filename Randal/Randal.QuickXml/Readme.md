@@ -2,7 +2,7 @@ Author xml faster by leaving out all the redundancy and noisy syntax.
 Quick XML uses leading whitespace to define how the document hierarchy is built.
 Attributes, inner text and CData are defined after the element they belong to.
 
-- Attributes - key<space>value<eol>
+- Attributes - key[space]value
 - Inner text - enclosed in "text"
 - CData - enclosed in [data]
 - Comments - marked with !comment
