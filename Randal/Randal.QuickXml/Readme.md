@@ -1,8 +1,8 @@
 Author xml faster by leaving out all the redundancy and noisy syntax.  
-Quick XML uses leading whitespace to define how the document hierarchy is built.
-Attributes, inner text and CData are defined after the element they belong to.
+Quick XML uses *leading whitespace* to define how the document hierarchy is built.  The number of whitespace (tabs or spaces) is up to you, as long as the child items have more than the parent.
+Attributes, inner text and CData are defined after the element they belong to at the same indentation level.
 
-- Attributes - key<space>value<eol>
+- Attributes - key[space]value
 - Inner text - enclosed in "text"
 - CData - enclosed in [data]
 - Comments - marked with !comment
