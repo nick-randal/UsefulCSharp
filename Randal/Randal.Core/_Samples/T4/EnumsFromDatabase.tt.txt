@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data" #>
 <#@ assembly name="$(TargetDir)Randal.Core.dll" #>
@@ -10,7 +10,7 @@
 <#@ output extension=".cs" #>
 <#
 	var namespaceHint = System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("NamespaceHint");
-	var generator = new EnumCodeGenerator("Data Source=.;Integrated Security=true;Initial Catalog=master;");
+	var generator = new CodeGenerator("Data Source=.;Integrated Security=true;Initial Catalog=master;");
 	var command = "select system_type_id, name, name as display, name as [description] from sys.types order by name";
 	var lines = generator.GetCodeDefinitions(command, CommandType.Text).ToCodeLines();
 #>
