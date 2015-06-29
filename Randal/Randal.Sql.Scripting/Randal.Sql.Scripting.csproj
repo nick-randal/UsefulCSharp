@@ -52,6 +52,10 @@
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SqlServer.SqlEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Randal.Core, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Core.1.0.0.7\lib\net45\Randal.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Randal.Logging, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Randal.Logging.1.0.0.4\lib\net45\Randal.Logging.dll</HintPath>
@@ -81,10 +85,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
-      <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>
-      <Name>Randal.Core</Name>
-    </ProjectReference>
+    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

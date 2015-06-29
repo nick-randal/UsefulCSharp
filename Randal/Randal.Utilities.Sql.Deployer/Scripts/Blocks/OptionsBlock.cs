@@ -18,7 +18,7 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public sealed class OptionsBlock : BaseScriptBlock
 	{
-		public OptionsBlock(string json = null) : base("options", json)
+		public OptionsBlock(string json = null) : base(ScriptConstants.Blocks.Options, json)
 		{
 			if (json != null)
 				return;

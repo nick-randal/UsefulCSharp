@@ -110,13 +110,13 @@ namespace Randal.Sql.Deployer.App
 		{
 			var parser = new ScriptParser();
 
-			parser.AddRule(ScriptParser.StandardKeys.Catalog, txt => new CatalogBlock(txt));
-			parser.AddRule(ScriptParser.StandardKeys.Options, txt => new OptionsBlock(txt));
-			parser.AddRule(ScriptParser.StandardKeys.Need, txt => new NeedBlock(txt));
-			parser.AddRule(ScriptParser.StandardKeys.Ignore, txt => new IgnoreScriptBlock(txt));
-			parser.AddRule(ScriptParser.StandardKeys.Pre, txt => new SqlCommandBlock("pre", txt, SqlScriptPhase.Pre));
-			parser.AddRule(ScriptParser.StandardKeys.Main, txt => new SqlCommandBlock("main", txt, SqlScriptPhase.Main));
-			parser.AddRule(ScriptParser.StandardKeys.Post, txt => new SqlCommandBlock("post", txt, SqlScriptPhase.Post));
+			parser.AddRule(ScriptConstants.Blocks.Catalog, txt => new CatalogBlock(txt));
+			parser.AddRule(ScriptConstants.Blocks.Options, txt => new OptionsBlock(txt));
+			parser.AddRule(ScriptConstants.Blocks.Need, txt => new NeedBlock(txt));
+			parser.AddRule(ScriptConstants.Blocks.Ignore, txt => new IgnoreScriptBlock(txt));
+			parser.AddRule(ScriptConstants.Blocks.Pre, txt => new SqlCommandBlock(ScriptConstants.Blocks.Pre, txt, SqlScriptPhase.Pre));
+			parser.AddRule(ScriptConstants.Blocks.Main, txt => new SqlCommandBlock(ScriptConstants.Blocks.Main, txt, SqlScriptPhase.Main));
+			parser.AddRule(ScriptConstants.Blocks.Post, txt => new SqlCommandBlock(ScriptConstants.Blocks.Post, txt, SqlScriptPhase.Post));
 
 			parser.SetFallbackRule((kw, txt) => new UnexpectedBlock(kw, txt));
 
@@ -148,7 +148,6 @@ namespace Randal.Sql.Deployer.App
 		private void DeployScripts(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager)
 		{
 			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger.BaseLogger))
-			//using (var deployer = new ScriptFileDeployer(config, project, connectionManager, _logger.BaseLogger))
 			{
 				if (deployer.CanUpgrade() == false)
 					throw new RunnerException("Cannot upgrade project");

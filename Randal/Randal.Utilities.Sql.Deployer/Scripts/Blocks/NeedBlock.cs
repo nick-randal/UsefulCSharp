@@ -20,7 +20,7 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public sealed class NeedBlock : CsvParameterBlock
 	{
-		public NeedBlock(string text) : base("need", text)
+		public NeedBlock(string text) : base(ScriptConstants.Blocks.Need, text)
 		{
 			_files = new List<string>();
 		}
@@ -44,8 +44,8 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 					continue;
 				}
 
-				if (temp.EndsWith(SqlExtension, StringComparison.InvariantCultureIgnoreCase))
-					_files.Add(temp.Replace(SqlExtension, string.Empty));
+				if (temp.EndsWith(ScriptConstants.SqlExtension, StringComparison.InvariantCultureIgnoreCase))
+					_files.Add(temp.Replace(ScriptConstants.SqlExtension, string.Empty));
 				else
 					_files.Add(temp);
 			}
@@ -56,8 +56,6 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 		}
 
 		private readonly List<string> _files;
-
-		private const string SqlExtension = ".sql";
 
 		private static readonly Regex InvalidFileName =
 			new Regex("[" + Regex.Escape(string.Join(string.Empty, Path.GetInvalidFileNameChars())) + "]",

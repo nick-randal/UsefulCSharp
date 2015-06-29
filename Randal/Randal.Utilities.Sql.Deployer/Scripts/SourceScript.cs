@@ -40,7 +40,7 @@ namespace Randal.Sql.Deployer.Scripts
 			{
 				_name = value.Trim();
 
-				if (_name.EndsWith(".sql", StringComparison.OrdinalIgnoreCase))
+				if (_name.EndsWith(ScriptConstants.SqlExtension, StringComparison.OrdinalIgnoreCase))
 					_name = _name.Remove(_name.Length - 4);
 			}
 		}

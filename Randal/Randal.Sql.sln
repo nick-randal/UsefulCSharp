@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Sql.Deployer", "Randal.Tests.Utilities.Sql.Deployer\Randal.Tests.Sql.Deployer.csproj", "{A6B19F04-1365-4234-9FD4-B9B49529DE47}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{DE62AC3E-903B-4265-8E49-0A2C395873D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{DA5BF4DD-8451-429B-943B-1504ADD64D2D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core", "Randal.Core\Randal.Core.csproj", "{FB6276E2-09A0-419E-8346-280297FF6C69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer.UI", "Randal.Sql.Deployer.UI\Randal.Sql.Deployer.UI.csproj", "{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}"
 EndProject
@@ -79,14 +77,6 @@ Global
 		{319DCCFA-76FB-402D-A61E-356E008A291B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{319DCCFA-76FB-402D-A61E-356E008A291B}.Release|x64.ActiveCfg = Release|x64
 		{319DCCFA-76FB-402D-A61E-356E008A291B}.Release|x64.Build.0 = Release|x64
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Debug|x64.ActiveCfg = Debug|x64
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Debug|x64.Build.0 = Debug|x64
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|x64.ActiveCfg = Release|x64
-		{FB6276E2-09A0-419E-8346-280297FF6C69}.Release|x64.Build.0 = Release|x64
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Debug|x64.ActiveCfg = Debug|Any CPU

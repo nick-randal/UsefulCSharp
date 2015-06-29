@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2015 Nicholas Randal
+// Copyright (C) 2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -10,14 +10,23 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
-namespace Randal.Sql.Deployer.Scripts.Blocks
+namespace Randal.Sql.Deployer.Scripts
 {
-	public sealed class IgnoreScriptBlock : BaseScriptBlock
+	public static class ScriptConstants
 	{
-		public IgnoreScriptBlock(string text) : base(ScriptConstants.Blocks.Ignore, text)
+		public const string SqlExtension = ".sql";
+
+		public static class Blocks
 		{
-			IsValid = true;
+			public const string 
+				Catalog = "catalog",
+				Ignore = "ignore",
+				Main = "main",
+				Need = "need",
+				Options = "options",
+				Pre = "pre",
+				Post = "post"
+			;
 		}
 	}
 }

@@ -92,18 +92,5 @@ namespace Randal.Sql.Deployer.Scripts
 		private static readonly Regex ScriptBlockRegex = new Regex(@"--::[\s\t]*(?<keyword>[\w\d]+)(?<text>.+?)(?=--::|$)",
 			RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase |
 			RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-
-		public static class StandardKeys
-		{
-			public const string
-				Catalog = "catalog",
-				Options = "options",
-				Need = "need",
-				Ignore = "ignore",
-				Pre = "pre",
-				Main = "main",
-				Post = "post"
-			;
-		}
 	}
 }

@@ -11,10 +11,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Randal.Sql.Deployer.Scripts
 {
+	[DataContract]
 	public sealed class ScriptSettings
 	{
 		public ScriptSettings() : this(30)
@@ -26,7 +28,7 @@ namespace Randal.Sql.Deployer.Scripts
 			Timeout = timeout;
 		}
 
-		[JsonProperty(Required = Required.Default)]
+		[DataMember, JsonProperty(Required = Required.Default)]
 		public int Timeout { get; private set; }
 	}
 }

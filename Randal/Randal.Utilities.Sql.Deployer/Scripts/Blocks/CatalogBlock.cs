@@ -19,7 +19,7 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 {
 	public sealed class CatalogBlock : CsvParameterBlock
 	{
-		public CatalogBlock(string text) : base("catalog", text)
+		public CatalogBlock(string text) : base(ScriptConstants.Blocks.Catalog, text)
 		{
 			_catalogPatterns = new List<string>();
 		}
