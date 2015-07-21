@@ -49,7 +49,7 @@ namespace Randal.Sql.Deployer.Scripts
 		public void AddValidationPattern(string pattern, ScriptCheck shouldIssue)
 		{
 			_patterns.Add(
-				new Pattern(new Regex(pattern, StandardOptions), shouldIssue, pattern)
+				new Pattern(new Regex(pattern, RegexStandardOptions), shouldIssue, pattern)
 			);
 		}
 
@@ -144,7 +144,7 @@ namespace Randal.Sql.Deployer.Scripts
 
 		private readonly List<Pattern> _patterns;
 
-		private const RegexOptions StandardOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline;
+		public const RegexOptions RegexStandardOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline;
 
 		private static readonly Parser<char> 
 			Newlines = Parse.Chars('\r', '\n').Named("CR or NL");

@@ -22,32 +22,25 @@ using Randal.Sql.Deployer.Scripts;
 
 namespace Randal.Sql.Deployer.Process
 {
-	public interface IScriptDeployer : IDisposable
-	{
-		bool CanUpgrade();
-		Returned DeployScripts();
-		IScriptDeployerConfig Config { get; }
-	}
-
-	public sealed class SqlServerDeployer : IScriptDeployer
+	public sealed class SqlServerDeployer : ScriptDeployerBase
 	{
 		public SqlServerDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
+			: base(config, project)
 		{
 			if (project == null)
 				throw new ArgumentNullException("project");
 			if (connectionManager == null)
 				throw new ArgumentNullException("connectionManager");
 
-			_config = config;
-			_project = project;
+			
+			
 			_connectionManager = connectionManager;
 			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 			_patternLookup = new CatalogPatternLookup();
 		}
 
-		public IScriptDeployerConfig Config { get { return _config; } }
 
-		public bool CanUpgrade()
+		public override bool CanUpgrade()
 		{
 			CreateProjectsTable();
 
@@ -59,7 +52,7 @@ namespace Randal.Sql.Deployer.Process
 			return valid;
 		}
 
-		public Returned DeployScripts()
+		public override Returned DeployScripts()
 		{
 			var phases = new[] {SqlScriptPhase.Pre, SqlScriptPhase.Main, SqlScriptPhase.Post};
 
@@ -74,7 +67,7 @@ namespace Randal.Sql.Deployer.Process
 		{
 			_logger.AddEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
 
-			foreach (var script in _project.PriorityScripts)
+			foreach (var script in Project.PriorityScripts)
 			{
 				_logger.AddEntry(Verbosity.Important, script.Name);
 
@@ -104,7 +97,7 @@ namespace Randal.Sql.Deployer.Process
 			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
 				sqlScriptPhase);
 
-			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
+			foreach (var script in Project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
 				_logger.AddEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
 
@@ -130,6 +123,8 @@ namespace Randal.Sql.Deployer.Process
 			var sql = script.RequestSqlScriptPhase(phase);
 			if (sql == null)
 				return;
+
+			sql = PhaseDeploymentComment + sql;
 
 			var configuration = script.GetConfiguration();
 
@@ -168,9 +163,9 @@ namespace Randal.Sql.Deployer.Process
 		{
 			_logger.AddEntry("creating Projects table.");
 
-			using (var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.CreateTable))
+			using (var command = _connectionManager.CreateCommand(DeployerConfig.ProjectsTableConfig.CreateTable))
 			{
-				command.Execute(_config.ProjectsTableConfig.Database);
+				command.Execute(DeployerConfig.ProjectsTableConfig.Database);
 			}
 		}
 
@@ -179,26 +174,26 @@ namespace Randal.Sql.Deployer.Process
 			_logger.AddEntry("adding project record.");
 
 			var values = new object[]
-				{ _project.Configuration.Project, _project.Configuration.Version, Environment.MachineName, Environment.UserName };
+				{ Project.Configuration.Project, Project.Configuration.Version, Environment.MachineName, Environment.UserName };
 
-			using (var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.Insert, values))
+			using (var command = _connectionManager.CreateCommand(DeployerConfig.ProjectsTableConfig.Insert, values))
 			{
-				command.Execute(_config.ProjectsTableConfig.Database);
+				command.Execute(DeployerConfig.ProjectsTableConfig.Database);
 			}
 		}
 
 		private bool IsProjectValidUpgrade()
 		{
 			Version databaseVersion;
-			var projectConfig = _project.Configuration;
+			var projectConfig = Project.Configuration;
 
 			var projectVersion = new Version(projectConfig.Version);
 
 			_logger.AddEntry("Looking up project '{0}'", projectConfig.Project);
 
 			using (
-				var command = _connectionManager.CreateCommand(_config.ProjectsTableConfig.Read, projectConfig.Project, projectConfig.Version))
-			using (var reader = command.ExecuteReader(_config.ProjectsTableConfig.Database))
+				var command = _connectionManager.CreateCommand(DeployerConfig.ProjectsTableConfig.Read, projectConfig.Project, projectConfig.Version))
+			using (var reader = command.ExecuteReader(DeployerConfig.ProjectsTableConfig.Database))
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))
 				{
@@ -221,12 +216,6 @@ namespace Randal.Sql.Deployer.Process
 			return true;
 		}
 
-		public void Dispose()
-		{
-		}
-
-		private readonly IScriptDeployerConfig _config;
-		private readonly IProject _project;
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 		private readonly CatalogPatternLookup _patternLookup;

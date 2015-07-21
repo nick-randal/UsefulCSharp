@@ -76,6 +76,8 @@
     <Compile Include="Configuration\ProjectConfig.cs" />
     <Compile Include="Helpers\CatalogPatternLookup.cs" />
     <Compile Include="IO\ProjectLoader.cs" />
+    <Compile Include="Process\IScriptDeployer.cs" />
+    <Compile Include="Process\ScriptDeployerBase.cs" />
     <Compile Include="Process\SqlCommandWrapper.cs" />
     <Compile Include="Process\SqlCommandWrapperFactory.cs" />
     <Compile Include="Process\SqlConnectionManager.cs" />

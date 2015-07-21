@@ -1,0 +1,13 @@
+﻿{
+    "projectsTableConfig": {
+        "database": "TCStoredProcs",
+        "createTable": "IF NOT EXISTS (select * from sys.tables where name = 'ProjectsDeployed')\r\nBEGIN\r\n\tCREATE TABLE ProjectsDeployed (\r\n\t\tProject\t\t\t\tVARCHAR(128)\tNOT NULL,\r\n\t\tVersion\t\t\t\tVARCHAR(15)\t\tNOT NULL,\r\n\t\tFromMachine\t\t\tSYSNAME\t\t\tNOT NULL,\r\n\t\tFromUser\t\t\tSYSNAME\t\t\tNOT NULL,\r\n\t\tInstalledOn\t\t\tDATETIME\t\tNOT NULL DEFAULT GETDATE(),\r\n\t\tInstalledBy\t\t\tSYSNAME\t\t\tNOT NULL DEFAULT SUSER_NAME(),\r\n\r\n\t\tPRIMARY KEY CLUSTERED (Project, Version)\r\n\t)\r\n\r\n\tALTER TABLE [dbo].[ProjectsDeployed]  WITH CHECK ADD  CONSTRAINT [CK_ProjectsDeployed_Version] CHECK  (([Version] like '[0-9][0-9].[0-9][0-9].[0-9][0-9].[0-9][0-9]'))\r\n\r\nEND",
+        "insert": "INSERT ProjectsDeployed (Project, Version, FromMachine, FromUser) VALUES ('{0}', '{1}', '{2}', '{3}')",
+        "read": "SELECT MAX(Version) FROM ProjectsDeployed WHERE Project = '{0}'"
+    },
+    "databaseLookup": "select [name] from master.sys.databases where [name] not in ('master', 'msdb', 'tempdb')",
+    "validationFilterConfig": {
+        "warnOn": [ "\\bcreate\\s+(?!type)\\w+\\s+[^#@]", "(?<=[\\s^.\\[]*)exec\\s*\\(" ],
+        "haltOn": [ "\\bdrop\\s+(?!type)\\w+\\s+[^\\s#]", "\\btruncate\\s+table\\s+[^#@]" ]
+    }
+}

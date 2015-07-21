@@ -23,15 +23,14 @@ using Randal.Sql.Deployer.Scripts;
 
 namespace Randal.Sql.Deployer.Process
 {
-	public sealed class ScriptFileDeployer : IScriptDeployer
+	public sealed class ScriptFileDeployer : ScriptDeployerBase
 	{
 		public ScriptFileDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
+			: base(config, project)
 		{
 			if (project == null)
 				throw new ArgumentNullException("project");
 
-			_config = config;
-			_project = project;
 			_connectionManager = connectionManager;
 			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
 			_patternLookup = new CatalogPatternLookup();
@@ -43,9 +42,7 @@ namespace Randal.Sql.Deployer.Process
 			_writer.WriteLine("-- Generated {0} on {1} by {2}", DateTime.Now, Environment.MachineName, Environment.UserName);
 		}
 
-		public IScriptDeployerConfig Config { get { return _config; } }
-
-		public bool CanUpgrade()
+		public override bool CanUpgrade()
 		{
 			WriteBeginTransaction();
 			
@@ -71,7 +68,7 @@ namespace Randal.Sql.Deployer.Process
 			_writer.WriteLine("commit");
 		}
 
-		public Returned DeployScripts()
+		public override Returned DeployScripts()
 		{
 			WriteBeginTransaction();
 
@@ -107,7 +104,7 @@ namespace Randal.Sql.Deployer.Process
 		{
 			_logger.AddEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
 
-			foreach (var script in _project.PriorityScripts)
+			foreach (var script in Project.PriorityScripts)
 			{
 				_logger.AddEntry(Verbosity.Important, script.Name);
 
@@ -131,7 +128,7 @@ namespace Randal.Sql.Deployer.Process
 			_writer.WriteLine("-- deploying {0}", sqlScriptPhase);
 			_writer.WriteLine();
 
-			foreach (var script in _project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
+			foreach (var script in Project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
 				_logger.AddEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
 				WriteScript(script, sqlScriptPhase);
@@ -146,6 +143,8 @@ namespace Randal.Sql.Deployer.Process
 			var sql = script.RequestSqlScriptPhase(phase);
 			if (sql == null)
 				return;
+
+			sql = PhaseDeploymentComment + sql;
 
 			foreach (var catalog in GetCatalogs(script))
 			{
@@ -176,7 +175,7 @@ namespace Randal.Sql.Deployer.Process
 		{
 			_logger.AddEntry("creating Projects table.");
 
-			WriteCommand(_config.ProjectsTableConfig.Database, _config.ProjectsTableConfig.CreateTable);
+			WriteCommand(DeployerConfig.ProjectsTableConfig.Database, DeployerConfig.ProjectsTableConfig.CreateTable);
 		}
 
 		private void AddProject()
@@ -184,10 +183,10 @@ namespace Randal.Sql.Deployer.Process
 			_logger.AddEntry("adding project record.");
 
 			WriteCommand(
-				_config.ProjectsTableConfig.Database, 
-				_config.ProjectsTableConfig.Insert, 
-				_project.Configuration.Project, 
-				_project.Configuration.Version, 
+				DeployerConfig.ProjectsTableConfig.Database, 
+				DeployerConfig.ProjectsTableConfig.Insert, 
+				Project.Configuration.Project, 
+				Project.Configuration.Version, 
 				Environment.MachineName, 
 				Environment.UserName
 			);
@@ -195,13 +194,13 @@ namespace Randal.Sql.Deployer.Process
 
 		private void IsProjectValidUpgrade()
 		{
-			var readDbVersion = string.Format(_config.ProjectsTableConfig.Read, _project.Configuration.Project, _project.Configuration.Version);
+			var readDbVersion = string.Format(DeployerConfig.ProjectsTableConfig.Read, Project.Configuration.Project, Project.Configuration.Version);
 
-			_logger.AddEntry("Looking up project '{0}'", _project.Configuration.Project);
+			_logger.AddEntry("Looking up project '{0}'", Project.Configuration.Project);
 
-			_writer.WriteLine("Use " + _config.ProjectsTableConfig.Database);
+			_writer.WriteLine("Use " + DeployerConfig.ProjectsTableConfig.Database);
 
-			_writer.WriteLine("if( ({0}) >= '{1}') begin", readDbVersion, _project.Configuration.Version);
+			_writer.WriteLine("if( ({0}) >= '{1}') begin", readDbVersion, Project.Configuration.Version);
 			_writer.WriteLine("\traiserror('Project is older than current database version.', 17, 1)");
 			_writer.WriteLine("\treturn");
 			_writer.WriteLine("end{0}{0}", Environment.NewLine);
@@ -215,15 +214,13 @@ namespace Randal.Sql.Deployer.Process
 			_writer.WriteLine();
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			_writer.Flush();
 			_writer.Close();
 			_writer.Dispose();
 		}
 		
-		private readonly IScriptDeployerConfig _config;
-		private readonly IProject _project;
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 		private readonly CatalogPatternLookup _patternLookup;

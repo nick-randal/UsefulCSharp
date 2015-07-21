@@ -30,7 +30,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 			Then.Target.Should().NotBeNull().And.BeAssignableTo<IValidationFilterConfig>();
 			Then.Target.HaltOn.Should().BeNull();
 			Then.Target.WarnOn.Should().BeNull();
-			}
+		}
 
 		[TestMethod, PositiveTest]
 		public void ShouldHaveFilters_WhenCreating_GivenFilters()
