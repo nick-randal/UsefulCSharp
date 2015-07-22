@@ -36,8 +36,8 @@ namespace Randal.Sql.Deployer.App
 			if(checkFilesOnly && bypassCheck)
 				throw new ArgumentException("bypassCheck and checkFilesOnly cannot both be true.", "bypassCheck");
 
-			if(checkFilesOnly && (noTransaction == true || rollback == false))
-				throw new ArgumentException("When 'checkFilesOnly' is True, then 'noTransaction' must be False and 'rollback' must be True.", "checkFilesOnly");
+			if(checkFilesOnly && (noTransaction || rollback == false))
+				throw new ArgumentException("When 'checkFilesOnly' is True, then 'noTran' must be False and 'rollback' must be True.", "checkFilesOnly");
 
 			_scriptProjectFolder = scriptProjectFolder;
 			_server = server;
