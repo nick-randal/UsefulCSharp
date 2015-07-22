@@ -42,13 +42,7 @@ namespace Randal.Sql.Deployer.UI
 
 		private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			var settings = await DeploymentAppSettings.Load();
-			if (settings == null)
-			{
-				MessageBox.Show(this, "Failed to load configuration. Config.json file not found.");
-				Close();
-				return;
-			}
+			var settings = await DeploymentAppSettings.Load() ?? new DeploymentAppSettings();
 
 			Model = new ViewModel(settings, this.CreateWrapper());
 			var findServers = Model.FindServersAsync();
