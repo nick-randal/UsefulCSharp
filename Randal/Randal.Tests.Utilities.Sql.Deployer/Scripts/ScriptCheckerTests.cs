@@ -90,7 +90,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		private void Validating()
 		{
-			IEnumerable<string> messages;
+			IList<string> messages;
 			Then.Validation = Then.Target.Validate(Given.Script, out messages);
 			Then.Messages = messages;
 		}

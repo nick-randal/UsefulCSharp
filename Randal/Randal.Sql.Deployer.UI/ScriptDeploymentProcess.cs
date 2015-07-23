@@ -37,9 +37,9 @@ namespace Randal.Sql.Deployer.UI
 						using (var taskReadError = Task.Factory.StartNew(state => ReadFromStreamAsync(state, progressError), process.StandardError))
 						{
 							process.WaitForExit();
-							Task.WaitAll(new Task[] { taskReadOutput, taskReadError }, 1000);
+							Task.WaitAll(new Task[] { taskReadOutput, taskReadError }, 10000);
 
-							progressOutput.Report(Environment.NewLine + "Process exited with code : " + process.ExitCode);
+							progressOutput.Report(Environment.NewLine + "Deployer exited : " + process.ExitCode);
 							progressOutput.Report("Check log for information.");
 						}
 					}

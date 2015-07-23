@@ -31,7 +31,7 @@ namespace Randal.Sql.Deployer.Scripts
 
 	public interface IScriptCheckerConsumer
 	{
-		ScriptCheck Validate(string input, out IEnumerable<string> messages);
+		ScriptCheck Validate(string input, out IList<string> messages);
 	}
 
 	public interface IScriptChecker : IScriptCheckerConsumer
@@ -53,7 +53,7 @@ namespace Randal.Sql.Deployer.Scripts
 			);
 		}
 
-		public ScriptCheck Validate(string input, out IEnumerable<string> messages)
+		public ScriptCheck Validate(string input, out IList<string> messages)
 		{
 			var tempMessages = new List<string>();
 

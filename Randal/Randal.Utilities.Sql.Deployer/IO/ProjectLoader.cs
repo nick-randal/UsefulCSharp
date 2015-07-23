@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -70,7 +71,7 @@ namespace Randal.Sql.Deployer.IO
 			{
 				using (var reader = file.OpenText())
 				{
-					IEnumerable<string> checkMessages = null;
+					IList<string> checkMessages = null;
 
 					var text = reader.ReadToEnd();
 
@@ -96,7 +97,7 @@ namespace Randal.Sql.Deployer.IO
 			return result;
 		}
 
-		private void LogScriptIssues(string name, IEnumerable<string> checkMessages, IEnumerable<string> validationMessages)
+		private void LogScriptIssues(string name, IList<string> checkMessages, IReadOnlyList<string> validationMessages)
 		{
 			if ((checkMessages == null || checkMessages.Any() == false) && validationMessages.Any() == false)
 				return;
@@ -137,7 +138,13 @@ namespace Randal.Sql.Deployer.IO
 			{
 				try
 				{
+					IList<string> messages;
 					Configuration = JsonConvert.DeserializeObject<ProjectConfig>(reader.ReadToEnd());
+					if(Configuration.Validate(out messages) == false)
+						throw new InvalidOperationException("Errors found validating project configuration. " 
+							+ Environment.NewLine
+							+ string.Join(Environment.NewLine, messages)
+						);
 				}
 				catch (JsonReaderException jre)
 				{

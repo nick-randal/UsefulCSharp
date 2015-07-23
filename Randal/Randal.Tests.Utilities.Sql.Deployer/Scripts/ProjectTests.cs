@@ -80,7 +80,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenMissingScriptForPriorityList()
 		{
-			Given.Configuration = new ProjectConfig("Test", "14.06.08.01", new[] {"ScriptA"});
+			Given.Configuration = new ProjectConfig("Test", "14.06.08.01", new[] {"ScriptA"}, null);
 			Given.Scripts = new List<SourceScript>();
 
 			ThrowsExceptionWhen(Creating);

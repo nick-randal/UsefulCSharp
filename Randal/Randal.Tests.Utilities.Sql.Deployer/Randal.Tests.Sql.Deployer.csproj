@@ -101,7 +101,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Configuration\FilterTests.cs" />
-    <Compile Include="Configuration\InstallerConfigTests.cs" />
+    <Compile Include="Configuration\ProjectConfigTests.cs" />
     <Compile Include="Configuration\FilterConfigTests.cs" />
     <Compile Include="Helpers\CatalogPatternLookupTests.cs" />
     <Compile Include="IO\ProjectLoaderTests.cs" />

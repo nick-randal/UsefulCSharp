@@ -103,10 +103,7 @@ namespace Randal.Sql.Deployer.UI
 		{
 			UpdateStatus("Deploying...", true);
 
-			using (var task = Task.Factory.StartNew(() => Thread.Sleep(10000)))
-			{
-				await task;
-			}
+			await Task.Delay(1000);
 
 			IProgress<string> progressOutput = new Progress<string>(text => LogLine(text));
 			IProgress<string> progressError = new Progress<string>(text => LogErrorLine(text));
@@ -115,6 +112,7 @@ namespace Randal.Sql.Deployer.UI
 			settings.ApplicationPath = DeployerPath;
 			if (settings.ApplicationPath != null)
 			{
+				LogLine("Deployer: " + settings.ApplicationPath);
 				await new ScriptDeploymentProcess().Run(progressOutput, progressError, settings);
 			}
 			else

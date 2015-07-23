@@ -49,10 +49,10 @@
 			</MenuItem>
 		</Menu>
 		<StatusBar DockPanel.Dock="Bottom" MinHeight="20">
-			<Label Content="Loading..." HorizontalAlignment="Stretch" Margin="10,0,0,0" MinWidth="200" HorizontalContentAlignment="Left"
+			<Label Content="Loading..." HorizontalAlignment="Stretch" Margin="12,0,0,0" MinWidth="200" MaxHeight="22" Padding="0,0,0,0" HorizontalContentAlignment="Left"
 				   Foreground="CadetBlue" Name="Status"/>
 		</StatusBar>
-		<Grid DockPanel.Dock="Top">
+		<Grid DockPanel.Dock="Top" Background="SeaShell">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="40"></RowDefinition>
 				<RowDefinition Height="40"></RowDefinition>
@@ -75,11 +75,11 @@
 					  Text="{Binding SqlServer}" ItemsSource="{Binding ServersList}" IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True" >
 			</ComboBox>
 			<Button Grid.Row="0" Grid.Column="4" Command="{Binding ProjectFolderSelectCommand}" CommandParameter="{Binding ProjectFolder}"
-					Background="White" BorderThickness="0" BorderBrush="Transparent">
+					Background="Transparent" BorderThickness="0" BorderBrush="Transparent">
 				<Image Height="30" Width="30" Source="Images\open_folder.png"/>
 			</Button>
 			<Button Grid.Row="1" Grid.Column="4" Command="{Binding LogFolderSelectCommand}" CommandParameter="{Binding LogFolder}"
-					Background="White" BorderThickness="0" BorderBrush="Transparent">
+					Background="Transparent" BorderThickness="0" BorderBrush="Transparent">
 				<Image Height="30" Width="30" Source="Images\open_folder.png"/>
 			</Button>
 			<Label Grid.Row="0" Grid.Column="0" Content="Project Folder" />
@@ -94,7 +94,7 @@
 					   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" />
 			</Border>
 			<Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Deploy" HorizontalAlignment="Center" Margin="0,0,0,0" 
-					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick"/>
+					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick" Background="SteelBlue" Foreground="White"/>
 			<Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="5"
 					Visibility="{Binding IsBusy, Converter={StaticResource BoolVisibilityConverter}}">
 				<Grid>
