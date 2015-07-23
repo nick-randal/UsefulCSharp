@@ -52,7 +52,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		{
 			Given.ProjectPath = @"c:\some folder";
 			When(Creating);
-			Then.Object.ProjectPath.Should().Be(@"c:\some folder");
+			Then.Target.ProjectPath.Should().Be(@"c:\some folder");
 		}
 
 		[TestMethod, NegativeTest]
@@ -79,27 +79,27 @@ namespace Randal.Tests.Sql.Deployer.IO
 			When(Loading);
 
 			Then.Has.Should().Be(Returned.Success);
-			Then.Object.Configuration.Should().NotBeNull();
-			Then.Object.Configuration.Project.Should().Be("Conmigo");
-			Then.Object.Configuration.Version.Should().Be("14.12.01.02");
-			Then.Object.AllScripts.Should().HaveCount(3);
+			Then.Target.Configuration.Should().NotBeNull();
+			Then.Target.Configuration.Project.Should().Be("Conmigo");
+			Then.Target.Configuration.Version.Should().Be("14.12.01.02");
+			Then.Target.AllScripts.Should().HaveCount(3);
 		}
 
 		protected override void Creating()
 		{
 			Then.Logger = new StringLogger();
-			Then.Object = new ProjectLoader(Given.ProjectPath, scriptParser: Given.Parser, logger: Then.Logger);
+			Then.Target = new ProjectLoader(Given.ProjectPath, scriptParser: Given.Parser, logger: Then.Logger);
 		}
 
 		private void Loading()
 		{
-			Then.Has = Then.Object.Load();
+			Then.Has = Then.Target.Load();
 		}
 	}
 
 	public sealed class ProjectLoaderThens
 	{
-		public ProjectLoader Object;
+		public ProjectLoader Target;
 		public Returned Has;
 		public StringLogger Logger;
 	}

@@ -71,15 +71,14 @@ namespace Randal.Sql.Deployer.IO
 			foreach (var file in scriptFiles)
 			{
 				string text;
+				var messages = new List<string>();
 
 				using (var reader = file.OpenText())
 				{
 					text = reader.ReadToEnd();
 				}
 
-				var messages = new List<string>();
 				text = ReplaceVars(text, messages);
-
 
 				if(ScriptChecker != null)
 					check = ScriptChecker.Validate(text, messages);
@@ -107,7 +106,7 @@ namespace Randal.Sql.Deployer.IO
 			return VarReplacementPattern.Replace(text, match =>
 			{
 				string value;
-				var key = match.Groups[0].Value;
+				var key = match.Groups[1].Value;
 				if (Configuration.Vars.TryGetValue(key, out value) == false)
 				{
 					value = string.Empty;
@@ -174,7 +173,7 @@ namespace Randal.Sql.Deployer.IO
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer ScriptParser { get; set; }
 		private IScriptCheckerConsumer ScriptChecker { get; set; }
-		private static readonly Regex VarReplacementPattern = new Regex("$(" + ProjectConfig.ValidVarPattern + ")$",
+		private static readonly Regex VarReplacementPattern = new Regex(@"\$(?<key>" + ProjectConfig.ValidVarPattern + @")\$",
 			RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Singleline);
 	}
 }
