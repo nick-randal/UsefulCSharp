@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,7 +40,9 @@ namespace Randal.Sql.Deployer.Configuration
 			Project = project ?? "Unknown";
 			Version = version ?? "01.01.01.01";
 			_priorityScripts = priorityScripts == null ? new List<string>() : new List<string>(priorityScripts);
-			_vars = vars == null ? new Dictionary<string, string>() : new Dictionary<string, string>(vars);
+			_vars = vars == null 
+				? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) 
+				: new Dictionary<string, string>(vars, StringComparer.OrdinalIgnoreCase);
 		}
 
 		[JsonIgnore]
@@ -51,7 +54,12 @@ namespace Randal.Sql.Deployer.Configuration
 		[JsonIgnore]
 		public IReadOnlyDictionary<string, string> Vars
 		{
-			get { return _vars; }
+			get
+			{
+				if (_vars.Comparer != StringComparer.OrdinalIgnoreCase)
+					_vars = new Dictionary<string, string>(_vars, StringComparer.OrdinalIgnoreCase);
+				return _vars;
+			}
 		}
 
 		[JsonProperty(Required = Required.Always)]
@@ -61,7 +69,7 @@ namespace Randal.Sql.Deployer.Configuration
 		public string Project { get; private set; }
 
 		[JsonProperty(PropertyName = "Vars")] 
-		private readonly Dictionary<string, string> _vars;
+		private Dictionary<string, string> _vars;
 
 		[JsonProperty(PropertyName = "PriorityScripts")] 
 		private readonly List<string> _priorityScripts;
@@ -70,8 +78,8 @@ namespace Randal.Sql.Deployer.Configuration
 		{
 			messages = (
 				from k in _vars.Keys 
-				where k.IndexOf('$') != -1 
-				select "Vars contains key '" + k + "' but keys cannot use '$'."
+				where ValidVarRegex.IsMatch(k) == false
+				select "Vars has key '" + k + "' which contains invalid characters. Allowed: Aa-Zz 0-9 - _"
 			).ToList();
 
 			if(string.IsNullOrWhiteSpace(Project))
@@ -83,6 +91,10 @@ namespace Randal.Sql.Deployer.Configuration
 			return messages.Count == 0;
 		}
 
-		private static readonly Regex VersionRegex = new Regex(@"\d{2}(\.\d{2}){3}", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+		private static readonly Regex 
+			VersionRegex = new Regex(@"\d{2}(\.\d{2}){3}", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture),
+			ValidVarRegex = new Regex(ValidVarPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Singleline);
+
+		internal const string ValidVarPattern = @"[\w\d_-]+";
 	}
 }

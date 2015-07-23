@@ -219,7 +219,9 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		private void Validating()
 		{
-			Then.Messages = Then.Script.Validate();
+			var messages = new List<string>();
+			Then.Script.Validate(messages);
+			Then.Messages = messages;
 		}
 
 		protected override void Creating()

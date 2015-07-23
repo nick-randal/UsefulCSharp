@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
@@ -69,27 +70,31 @@ namespace Randal.Sql.Deployer.IO
 
 			foreach (var file in scriptFiles)
 			{
+				string text;
+
 				using (var reader = file.OpenText())
 				{
-					IList<string> checkMessages = null;
-
-					var text = reader.ReadToEnd();
-
-					if(ScriptChecker != null)
-						check = ScriptChecker.Validate(text, out checkMessages);
-					var script = ScriptParser.Parse(file.Name, text);
-					var validationMessages = script.Validate();
-
-					LogScriptIssues(file.FullName, checkMessages, validationMessages);
-					if ((check == ScriptCheck.Passed || check == ScriptCheck.Warning) && script.IsValid && validationMessages.Count == 0)
-					{
-						_allScripts.Add(script);
-						continue;
-					}
-
-					result = Returned.Failure;
-					errors++;
+					text = reader.ReadToEnd();
 				}
+
+				var messages = new List<string>();
+				text = ReplaceVars(text, messages);
+
+
+				if(ScriptChecker != null)
+					check = ScriptChecker.Validate(text, messages);
+				var script = ScriptParser.Parse(file.Name, text);
+				script.Validate(messages);
+
+				LogScriptIssues(file.FullName, messages);
+				if ((check == ScriptCheck.Passed || check == ScriptCheck.Warning) && script.IsValid && messages.Count == 0)
+				{
+					_allScripts.Add(script);
+					continue;
+				}
+
+				result = Returned.Failure;
+				errors++;
 			}
 
 			_logger.AddEntry("loaded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
@@ -97,20 +102,30 @@ namespace Randal.Sql.Deployer.IO
 			return result;
 		}
 
-		private void LogScriptIssues(string name, IList<string> checkMessages, IReadOnlyList<string> validationMessages)
+		private string ReplaceVars(string text, ICollection<string> validationMessages)
 		{
-			if ((checkMessages == null || checkMessages.Any() == false) && validationMessages.Any() == false)
+			return VarReplacementPattern.Replace(text, match =>
+			{
+				string value;
+				var key = match.Groups[0].Value;
+				if (Configuration.Vars.TryGetValue(key, out value) == false)
+				{
+					value = string.Empty;
+					validationMessages.Add("Failed to find value to replace key '" + key + "'.");
+				}
+
+				return value;
+			});
+		}
+
+		private void LogScriptIssues(string name, IEnumerable<string> messages)
+		{
+			if (messages == null)
 				return;
 
 			_logger.AddEntry(name);
 
-			if (checkMessages != null)
-			{
-				foreach (var message in checkMessages)
-					_logger.AddEntryNoTimestamp(message);
-			}
-
-			foreach (var message in validationMessages)
+			foreach (var message in messages)
 				_logger.AddEntryNoTimestamp(message);
 		}
 
@@ -159,5 +174,7 @@ namespace Randal.Sql.Deployer.IO
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer ScriptParser { get; set; }
 		private IScriptCheckerConsumer ScriptChecker { get; set; }
+		private static readonly Regex VarReplacementPattern = new Regex("$(" + ProjectConfig.ValidVarPattern + ")$",
+			RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Singleline);
 	}
 }

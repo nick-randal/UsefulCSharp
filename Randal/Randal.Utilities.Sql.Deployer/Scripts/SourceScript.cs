@@ -52,12 +52,11 @@ namespace Randal.Sql.Deployer.Scripts
 
 		public bool IsValid { get; private set; }
 
-		public IReadOnlyList<string> Validate()
+		public bool Validate(IList<string> messages)
 		{
-			var messages = new List<string>();
-			foreach (var block in _scriptBlocks)
+			foreach (var msg in _scriptBlocks.SelectMany(block => block.Parse()))
 			{
-				messages.AddRange(block.Parse());
+				messages.Add(msg);
 			}
 
 			if (HasBlockOfType<OptionsBlock>() == false)
@@ -67,9 +66,7 @@ namespace Randal.Sql.Deployer.Scripts
 				messages.Add(
 					"Sql Text Blocks have been defined but no Catalog Block defined to specify which databases to execute against.");
 
-			IsValid = messages.Count == 0;
-
-			return messages;
+			return IsValid = messages.Count == 0;
 		}
 
 		public bool HasSqlScriptPhase(SqlScriptPhase requestedPhase)

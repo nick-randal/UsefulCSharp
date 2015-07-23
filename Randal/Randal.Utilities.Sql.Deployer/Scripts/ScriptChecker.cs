@@ -31,7 +31,7 @@ namespace Randal.Sql.Deployer.Scripts
 
 	public interface IScriptCheckerConsumer
 	{
-		ScriptCheck Validate(string input, out IList<string> messages);
+		ScriptCheck Validate(string input, IList<string> messages);
 	}
 
 	public interface IScriptChecker : IScriptCheckerConsumer
@@ -53,20 +53,16 @@ namespace Randal.Sql.Deployer.Scripts
 			);
 		}
 
-		public ScriptCheck Validate(string input, out IList<string> messages)
+		public ScriptCheck Validate(string input, IList<string> messages)
 		{
-			var tempMessages = new List<string>();
-
-			var sanitizedInput = SanitizeCode(input, tempMessages);
+			var sanitizedInput = SanitizeCode(input, messages);
 			if (sanitizedInput == null)
 			{
-				messages = tempMessages;
 				return ScriptCheck.Fatal;
 			}
 
-			var validationState = EvaluatePatterns(sanitizedInput, sanitizedInput, tempMessages);
+			var validationState = EvaluatePatterns(sanitizedInput, sanitizedInput, messages);
 
-			messages = tempMessages;
 			return validationState;
 		}
 

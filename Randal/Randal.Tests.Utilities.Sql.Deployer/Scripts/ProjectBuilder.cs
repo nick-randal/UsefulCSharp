@@ -53,7 +53,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		private readonly List<SourceScript> _scripts;
 	}
 
-	public sealed class ScriptBuilder : ITestObjectBuilder<SourceScript>
+	public sealed class ScriptBuilder
 	{
 		public ScriptBuilder(string name)
 		{
@@ -75,16 +75,11 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 			return this;
 		}
 
-		public SourceScript Build()
+		public SourceScript Build(IList<string> validationMessages)
 		{
 			var script = new SourceScript(_name, _blocks);
-			script.Validate();
+			script.Validate(validationMessages);
 			return script;
-		}
-
-		public static explicit operator SourceScript(ScriptBuilder builder)
-		{
-			return builder.Build();
 		}
 
 		private readonly string _name;
