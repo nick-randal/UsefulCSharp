@@ -2,5 +2,5 @@
 	"Project": "Conmigo",
 	"Version": "14.12.01.02",
 	"PriorityScripts": [ "ScriptA" ],
-	"Vars": { "A": "de" }
+	"Vars": { "A": "de", "OPTIONS":  "{ timeout: 30, transaction : false }" }
 }

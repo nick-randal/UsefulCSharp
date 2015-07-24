@@ -22,8 +22,11 @@ namespace Randal.Sql.Deployer.Configuration
 	public interface IProjectConfig
 	{
 		IReadOnlyList<string> PriorityScripts { get; }
+		
 		string Version { get; }
+		
 		string Project { get; }
+
 		IReadOnlyDictionary<string, string> Vars { get; }
 
 		bool Validate(out IList<string> messages);
@@ -56,7 +59,7 @@ namespace Randal.Sql.Deployer.Configuration
 		{
 			get
 			{
-				if (_vars.Comparer != StringComparer.OrdinalIgnoreCase)
+				if (!Equals(_vars.Comparer, StringComparer.OrdinalIgnoreCase))
 					_vars = new Dictionary<string, string>(_vars, StringComparer.OrdinalIgnoreCase);
 				return _vars;
 			}
@@ -86,14 +89,14 @@ namespace Randal.Sql.Deployer.Configuration
 				messages.Add("A project name must be specified in the configuration.");
 
 			if(VersionRegex.IsMatch(Version) == false)
-				messages.Add("A valid version number in the format xx.xx.xx.xx must be provided.");
+				messages.Add("A valid version number in the format YY.MM.DD.II must be provided.");
 
 			return messages.Count == 0;
 		}
 
 		private static readonly Regex 
 			VersionRegex = new Regex(@"\d{2}(\.\d{2}){3}", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture),
-			ValidVarRegex = new Regex(ValidVarPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Singleline);
+			ValidVarRegex = new Regex("^" + ValidVarPattern + "$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Singleline);
 
 		internal const string ValidVarPattern = @"[\w\d_-]+";
 	}

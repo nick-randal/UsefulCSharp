@@ -1,5 +1,5 @@
 ﻿--:: catalog model
---:: options { timeout: 30, transaction : false }
+--:: options $options$
 
 --:: ignore
 use model

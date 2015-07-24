@@ -42,11 +42,11 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 		[TestMethod, NegativeTest]
 		public void ShouldHaveValidationMessages_WhenValidating_GivenInvalidJson()
 		{
-			Given.Json = "{ Version: '', Project: '', Vars: { 'mo$': '' } }";
+			Given.Json = "{ Version: '', Project: '', Vars: { 'mo$': '', 'a.b': '', 'az-45_': 'valid' } }";
 
 			When(Validating);
 
-			Then.Messages.Should().HaveCount(3);
+			Then.Messages.Should().HaveCount(4, string.Join(Environment.NewLine, Then.Messages));
 		}
 
 		[TestMethod, PositiveTest]
