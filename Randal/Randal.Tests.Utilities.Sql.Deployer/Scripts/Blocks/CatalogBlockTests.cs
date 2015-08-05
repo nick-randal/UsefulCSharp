@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -23,60 +24,73 @@ namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 	public sealed class CatalogBlockTests : BaseUnitTest<CatalogBlockThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveInvalidBlockWhenCreating()
+		public void ShouldHaveInvalidBlock_WhenCreating()
 		{
 			Given.Text = " master ";
 
 			When(Creating);
 
-			Then.Object.Should().NotBeNull().And.BeAssignableTo<IScriptBlock>();
-			Then.Object.IsValid.Should().BeFalse();
-			Then.Object.Keyword.Should().Be("catalog");
-			Then.Object.Text.Should().Be("master");
-			Then.Object.CatalogPatterns.Should().HaveCount(0);
+			Then.Target.Should().NotBeNull().And.BeAssignableTo<IScriptBlock>();
+			Then.Target.IsValid.Should().BeFalse();
+			Then.Target.Keyword.Should().Be("catalog");
+			Then.Target.Text.Should().Be("master");
+			Then.Target.CatalogPatterns.Should().HaveCount(0);
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidBlockWhenParsingGivenValidInput()
+		public void ShouldHaveValidBlock_WhenParsing_GivenValidInput()
 		{
 			Given.Text = "master, DB123, X_%";
 
 			When(Parsing);
 
-			Then.Object.IsValid.Should().BeTrue();
+			Then.Target.IsValid.Should().BeTrue();
 			Then.Messages.Should().HaveCount(0);
-			Then.Object.CatalogPatterns.Should().HaveCount(3);
-			Then.Object.CatalogPatterns[0].Should().Be("master");
-			Then.Object.CatalogPatterns[1].Should().Be("DB123");
-			Then.Object.CatalogPatterns[2].Should().Be(@"X_%");
+			Then.Target.CatalogPatterns.Should().HaveCount(3);
+			Then.Target.CatalogPatterns[0].Should().Be("master");
+			Then.Target.CatalogPatterns[1].Should().Be("DB123");
+			Then.Target.CatalogPatterns[2].Should().Be(@"X_%");
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldHaveErrorMessagesWhenParsingGivenInvalidInput()
+		public void ShouldHaveErrorMessages_WhenParsing_GivenInvalidInput()
 		{
 			Given.Text = "t-d?, P&E, t;";
 
 			When(Parsing);
 
-			Then.Object.IsValid.Should().BeFalse();
-			Then.Object.CatalogPatterns.Should().HaveCount(0);
+			Then.Target.IsValid.Should().BeFalse();
+			Then.Target.CatalogPatterns.Should().HaveCount(0);
 			Then.Messages.Should().HaveCount(3);
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldIgnoreAnythingOnNextLine_WhenParsing_GivenMultipleLines()
+		{
+			Given.Text = @"master
+-- this should be ignored";
+
+			When(Parsing);
+
+			Then.Target.IsValid.Should().BeTrue();
+			Then.Target.CatalogPatterns.Should().HaveCount(1);
+			Then.Target.CatalogPatterns.First().Should().Be("master");
 		}
 
 		private void Parsing()
 		{
-			Then.Messages = Then.Object.Parse();
+			Then.Messages = Then.Target.Parse();
 		}
 
 		protected override void Creating()
 		{
-			Then.Object = new CatalogBlock(Given.Text);
+			Then.Target = new CatalogBlock(Given.Text);
 		}
 	}
 
 	public sealed class CatalogBlockThens
 	{
-		public CatalogBlock Object;
+		public CatalogBlock Target;
 		public IReadOnlyList<string> Messages;
 	}
 }

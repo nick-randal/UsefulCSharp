@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -23,55 +24,68 @@ namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 	public sealed class NeedBlockTests : BaseUnitTest<NeedBlockThens>
 	{
 		[TestMethod, PositiveTest]
-		public void ShouldHaveInvalidBlockWhenCreating()
+		public void ShouldHaveInvalidBlock_WhenCreating()
 		{
 			When(Creating);
 
-			Then.Object.Should().BeAssignableTo<BaseScriptBlock>();
-			Then.Object.IsValid.Should().BeFalse();
-			Then.Object.Keyword.Should().Be("need");
+			Then.Target.Should().BeAssignableTo<BaseScriptBlock>();
+			Then.Target.IsValid.Should().BeFalse();
+			Then.Target.Keyword.Should().Be("need");
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValidBlockWhenParsingGivenValidInput()
+		public void ShouldHaveValidBlock_WhenParsing_GivenValidInput()
 		{
 			Given.Text = "A, B, C.sql,,D";
 
-			When(WhenParsing);
+			When(Parsing);
 
-			Then.Object.IsValid.Should().BeTrue();
-			Then.Object.Files.Should().HaveCount(4);
-			Then.Object.Files[0].Should().Be("A");
-			Then.Object.Files[1].Should().Be("B");
-			Then.Object.Files[2].Should().Be("C");
-			Then.Object.Files[3].Should().Be("D");
+			Then.Target.IsValid.Should().BeTrue();
+			Then.Target.Files.Should().HaveCount(4);
+			Then.Target.Files[0].Should().Be("A");
+			Then.Target.Files[1].Should().Be("B");
+			Then.Target.Files[2].Should().Be("C");
+			Then.Target.Files[3].Should().Be("D");
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldBeInvalidWhenParsingGivenListOfInvalidFileNames()
+		public void ShouldBeInvalid_WhenParsing_GivenListOfInvalidFileNames()
 		{
 			Given.Text = "File*A, File?B, Procedures\\ReadAll";
 
-			When(WhenParsing);
+			When(Parsing);
 
-			Then.Object.IsValid.Should().BeFalse();
+			Then.Target.IsValid.Should().BeFalse();
 			Then.Messages.Should().HaveCount(3);
 		}
 
-		private void WhenParsing()
+		[TestMethod, PositiveTest]
+		public void ShouldIgnoreAnythingOnNextLine_WhenParsing_GivenMultipleLines()
 		{
-			Then.Messages = Then.Object.Parse();
+			Given.Text = @"ScriptA
+-- this should be ignored";
+
+			When(Parsing);
+
+			Then.Target.IsValid.Should().BeTrue();
+			Then.Target.Files.Should().HaveCount(1);
+			Then.Target.Files.First().Should().Be("ScriptA");
+		}
+
+		private void Parsing()
+		{
+			Then.Messages = Then.Target.Parse();
 		}
 
 		protected override void Creating()
 		{
-			Then.Object = new NeedBlock(GivensDefined("Text") ? Given.Text : string.Empty);
+			Then.Target = new NeedBlock(GivensDefined("Text") ? Given.Text : string.Empty);
 		}
 	}
 
 	public sealed class NeedBlockThens
 	{
-		public NeedBlock Object;
+		public NeedBlock Target;
 		public IReadOnlyList<string> Messages;
 	}
 }

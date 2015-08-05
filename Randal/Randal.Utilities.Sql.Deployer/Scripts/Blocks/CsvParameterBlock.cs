@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Randal.Sql.Deployer.Scripts.Blocks
 {
@@ -25,9 +26,14 @@ namespace Randal.Sql.Deployer.Scripts.Blocks
 
 		public override IReadOnlyList<string> Parse()
 		{
-			return Text.Split(CatalogSplit, StringSplitOptions.RemoveEmptyEntries);
+			var index = Text.IndexOfAny(EndOfLine);
+
+			var text = index < 0 ? Text : Text.Substring(0, index);
+
+			return text.Split(CatalogSplit, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
 		}
 
 		private static readonly char[] CatalogSplit = {','};
+		private static readonly char[] EndOfLine = {'\r', '\n'};
 	}
 }
