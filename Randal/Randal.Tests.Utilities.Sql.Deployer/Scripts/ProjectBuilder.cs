@@ -28,7 +28,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 
 		public ProjectBuilder WithConfiguration(string project, string version, params string[] priorityScripts)
 		{
-			_config = new ProjectConfig(project, version, priorityScripts, null);
+			_config = new ProjectConfigJson(project, version, priorityScripts, null);
 			return this;
 		}
 

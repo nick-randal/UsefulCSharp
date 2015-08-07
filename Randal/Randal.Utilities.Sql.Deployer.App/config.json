@@ -7,7 +7,7 @@
     },
     "databaseLookup": "select [name] from master.sys.databases where [name] not in ('master', 'msdb', 'tempdb')",
     "validationFilterConfig": {
-        "warnOn": [ "\\bcreate\\s+\\w+\\s+[^\\s#@]", "(?<=[\\s^.\\[]*)exec\\s*\\(" ],
-        "haltOn": [ "\\bdrop\\s+\\w+\\s+[^\\s#]", "\\btruncate\\s+table\\s+[^\\s#@]" ]
+        "warnOn": [ "\\bcreate\\s+(?!type)\\w+\\s+[^#@]", "(?<=[\\s^.\\[]*)exec\\s*\\(" ],
+        "haltOn": [ "\\bdrop\\s+(?!type)\\w+\\s+[^\\s#]", "\\btruncate\\s+table\\s+[^#@]" ]
     }
 }

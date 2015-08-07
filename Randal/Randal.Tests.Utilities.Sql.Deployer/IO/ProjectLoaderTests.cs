@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Enums;
@@ -42,13 +43,8 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Given.Parser = parser;
 		}
 
-		protected override void OnTeardown()
-		{
-			Then.Logger.Dispose();
-		}
-
 		[TestMethod, PositiveTest]
-		public void ShouldHaveValuesSetWhenCreatingGivenValidValues()
+		public void ShouldHaveValuesSet_WhenCreating_GivenValidValues()
 		{
 			Given.ProjectPath = @"c:\some folder";
 			When(Creating);
@@ -56,7 +52,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldIndicateInvalidPathWhenLoadProjectFromInvalidPath()
+		public void ShouldIndicateInvalidPath_WhenLoading_GivneInvalidPath()
 		{
 			Given.ProjectPath = @"c:\some folder";
 			When(Loading);
@@ -64,7 +60,7 @@ namespace Randal.Tests.Sql.Deployer.IO
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldIndicateMissingConfigurationWhenLoadProjectFromWrongFolder()
+		public void ShouldIndicateMissingConfiguration_WhenLoading_GivenWrongFolder()
 		{
 			Given.ProjectPath = @".";
 			When(Loading);
@@ -72,7 +68,18 @@ namespace Randal.Tests.Sql.Deployer.IO
 		}
 
 		[TestMethod, PositiveTest]
-		public void ShouldHaveConfigurationAndSourceFilesWhenLoadingProjectGivenValidFiles()
+		public void ShouldIndicateAmbiguousConfiguration_WhenLoading_GivenMultipleConfigs()
+		{
+			Given.ProjectPath = @".\TestFiles\ProjectB";
+
+			When(Loading);
+
+			Then.Has.Should().Be(Returned.Failure);
+			Then.Has.Should().Be(Returned.Failure, "because there are multiple config files.");
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveConfigurationAndSourceFiles_WhenLoading_GivenValidFiles()
 		{
 			Given.ProjectPath = @".\TestFiles\ProjectA";
 
@@ -82,7 +89,24 @@ namespace Randal.Tests.Sql.Deployer.IO
 			Then.Target.Configuration.Should().NotBeNull();
 			Then.Target.Configuration.Project.Should().Be("Conmigo");
 			Then.Target.Configuration.Version.Should().Be("14.12.01.02");
+			Then.Target.Configuration.PriorityScripts.Should().HaveCount(1);
+			Then.Target.Configuration.Vars.Should().HaveCount(2);
 			Then.Target.AllScripts.Should().HaveCount(3);
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveConfiguration_WhenLoading_GivenValidConfiguration()
+		{
+			Given.ProjectPath = @".\TestFiles\ProjectC";
+
+			When(Loading);
+
+			Then.Has.Should().Be(Returned.Success);
+			Then.Target.Configuration.Should().NotBeNull();
+			Then.Target.Configuration.Project.Should().Be("Conmigo");
+			Then.Target.Configuration.Version.Should().Be("14.12.01.02");
+			Then.Target.Configuration.PriorityScripts.Should().HaveCount(2);
+			Then.Target.Configuration.Vars.Should().HaveCount(2);
 		}
 
 		protected override void Creating()
@@ -97,10 +121,16 @@ namespace Randal.Tests.Sql.Deployer.IO
 		}
 	}
 
-	public sealed class ProjectLoaderThens
+	public sealed class ProjectLoaderThens : IDisposable
 	{
 		public ProjectLoader Target;
 		public Returned Has;
 		public StringLogger Logger;
+
+		public void Dispose()
+		{
+			if(Logger != null)
+				Logger.Dispose();
+		}
 	}
 }

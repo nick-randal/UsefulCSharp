@@ -68,12 +68,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IProjectConfig.cs" />
+    <Compile Include="Configuration\ProjectConfigJson.cs" />
+    <Compile Include="Configuration\ProjectConfigXml.cs" />
     <Compile Include="Configuration\ValidationFilterConfig.cs" />
     <Compile Include="Configuration\ProjectsTableConfig.cs" />
     <Compile Include="Configuration\ScriptDeployerConfig.cs" />
-    <Compile Include="Configuration\ProjectConfig.cs" />
+    <Compile Include="Configuration\ProjectConfigBase.cs" />
+    <Compile Include="Configuration\Var.cs" />
     <Compile Include="Helpers\CatalogPatternLookup.cs" />
     <Compile Include="IO\ProjectLoader.cs" />
     <Compile Include="Process\IScriptDeployer.cs" />

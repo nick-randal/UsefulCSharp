@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Randal.Core.Enums;
 using Randal.Logging;
@@ -38,7 +39,7 @@ namespace Randal.Sql.Deployer.IO
 
 		public string ProjectPath { get; private set; }
 
-		public ProjectConfig Configuration { get; private set; }
+		public IProjectConfig Configuration { get; private set; }
 
 		public IReadOnlyList<SourceScript> AllScripts
 		{
@@ -130,11 +131,12 @@ namespace Randal.Sql.Deployer.IO
 
 		private Returned LoadConfiguration(DirectoryInfo projectDirectory)
 		{
-			FileInfo configFile;
+			FileInfo configFileJson, configFileXml;
 
 			try
 			{
-				configFile = projectDirectory.GetFiles("config.json", SearchOption.TopDirectoryOnly).FirstOrDefault();
+				configFileJson = projectDirectory.GetFiles("config.json", SearchOption.TopDirectoryOnly).FirstOrDefault();
+				configFileXml = projectDirectory.GetFiles("config.xml", SearchOption.TopDirectoryOnly).FirstOrDefault();
 			}
 			catch (DirectoryNotFoundException ex)
 			{
@@ -142,38 +144,60 @@ namespace Randal.Sql.Deployer.IO
 				return Returned.Failure;
 			}
 
-			if (configFile == null)
+			if (configFileJson == null && configFileXml == null)
 			{
-				_logger.AddEntry(Verbosity.Vital, "no 'config.json' configuration file found for project.");
+				_logger.AddEntry(Verbosity.Vital, "no configuration file found for project (config.json or config.xml).");
 				return Returned.Failure;
 			}
 
-			using (var reader = configFile.OpenText())
+			if (configFileJson != null && configFileXml != null)
 			{
-				try
-				{
-					IList<string> messages;
-					Configuration = JsonConvert.DeserializeObject<ProjectConfig>(reader.ReadToEnd());
-					if(Configuration.Validate(out messages) == false)
-						throw new InvalidOperationException("Errors found validating project configuration. " 
-							+ Environment.NewLine
-							+ string.Join(Environment.NewLine, messages)
-						);
-				}
-				catch (JsonReaderException jre)
-				{
-					throw new JsonReaderException("error loading config.json file, see inner exception details.", jre);
-				}
+				_logger.AddEntry(Verbosity.Vital, "ambiguous configuration files found for project (config.json and config.xml).");
+				return Returned.Failure;
 			}
 
+			ReadProjectConfigurationFile(configFileJson ?? configFileXml);
+
 			return Returned.Success;
+		}
+
+		private void ReadProjectConfigurationFile(FileInfo configFile)
+		{
+			try
+			{
+				using (var reader = configFile.OpenText())
+				{
+					if (configFile.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+					{
+							Configuration = JsonConvert.DeserializeObject<ProjectConfigJson>(reader.ReadToEnd());
+					}
+					else
+					{
+						var xs = new XmlSerializer(typeof(ProjectConfigXml));
+						Configuration = (ProjectConfigXml)xs.Deserialize(reader.BaseStream);
+					}
+				}
+			}
+			catch (JsonReaderException jre)
+			{
+				throw new JsonReaderException("error loading config.json file, see inner exception details.", jre);
+			}
+
+			IList<string> messages;
+
+			if (Configuration.Validate(out messages) == false)
+			{
+				throw new InvalidOperationException("Errors found validating project configuration. "
+				                                    + Environment.NewLine
+				                                    + string.Join(Environment.NewLine, messages));
+			}
 		}
 
 		private readonly ILoggerStringFormatWrapper _logger;
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer ScriptParser { get; set; }
 		private IScriptCheckerConsumer ScriptChecker { get; set; }
-		private static readonly Regex VarReplacementPattern = new Regex(@"\$(?<key>" + ProjectConfig.ValidVarPattern + @")\$",
+		private static readonly Regex VarReplacementPattern = new Regex(@"\$(?<key>" + ProjectConfigBase.ValidVarPattern + @")\$",
 			RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Singleline);
 	}
 }

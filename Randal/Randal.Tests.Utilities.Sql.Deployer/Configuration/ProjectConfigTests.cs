@@ -72,7 +72,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 
 		protected override void Creating()
 		{
-			Then.Target = JsonConvert.DeserializeObject<ProjectConfig>(Given.Json);
+			Then.Target = JsonConvert.DeserializeObject<ProjectConfigJson>(Given.Json);
 		}
 
 		private void Validating()
