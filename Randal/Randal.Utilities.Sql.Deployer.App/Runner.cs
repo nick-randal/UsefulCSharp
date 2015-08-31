@@ -39,12 +39,14 @@ namespace Randal.Sql.Deployer.App
 				_config = JsonConvert.DeserializeObject<ScriptDeployerConfig>(reader.ReadToEnd());
 		}
 
-		public void Go()
+		public RunnerResolution Go()
 		{
 			var commit = false;
 
 			using (var connectionManager = new SqlConnectionManager(_config.DatabaseLookup))
 			{
+				RunnerResolution resolution;
+
 				try
 				{
 					LogOptions();
@@ -61,7 +63,7 @@ namespace Randal.Sql.Deployer.App
 					var checker = _settings.BypassCheck ? null : CreateChecker();
 					var project = LoadProject(CreateParser(), checker);
 					if (_settings.CheckFilesOnly)
-						return;
+						return RunnerResolution.ValidationOnly;
 
 					DeployScripts(_config, project, connectionManager);
 
@@ -70,15 +72,18 @@ namespace Randal.Sql.Deployer.App
 				catch (Exception ex)
 				{
 					_logger.AddException(ex);
+					return RunnerResolution.ExceptionThrown;
 				}
 				finally
 				{
-					ResolveTransaction(commit, connectionManager);
+					resolution = ResolveTransaction(commit, connectionManager);
 				}
+
+				return resolution;
 			}
 		}
 
-		private void ResolveTransaction(bool commit, ISqlConnectionManager connectionManager)
+		private RunnerResolution ResolveTransaction(bool commit, ISqlConnectionManager connectionManager)
 		{
 			_logger.AddEntryNoTimestamp(string.Empty);
 
@@ -86,11 +91,12 @@ namespace Randal.Sql.Deployer.App
 			{
 				_logger.AddEntry(Verbosity.Vital, "~~~~~~~~~~ COMMITTING ~~~~~~~~~~{0}", Environment.NewLine);
 				connectionManager.CommitTransaction();
-				return;
+				return RunnerResolution.Committed;
 			}
 
 			_logger.AddEntry(Verbosity.Vital, "~~~~~~~~~~ ROLLING BACK ~~~~~~~~~~{0}", Environment.NewLine);
 			connectionManager.RollbackTransaction();
+			return RunnerResolution.RolledBack;
 		}
 
 		private void LogOptions()

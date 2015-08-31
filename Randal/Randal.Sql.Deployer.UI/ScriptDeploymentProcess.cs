@@ -12,9 +12,12 @@
 // GNU General Public License for more details.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
+using Randal.Sql.Deployer.Shared;
 
 namespace Randal.Sql.Deployer.UI
 {
@@ -39,7 +42,7 @@ namespace Randal.Sql.Deployer.UI
 							process.WaitForExit();
 							Task.WaitAll(new Task[] { taskReadOutput, taskReadError }, 10000);
 
-							progressOutput.Report(Environment.NewLine + "Deployer exited : " + process.ExitCode);
+							progressOutput.Report(Environment.NewLine + "Deployer exited : " + DeployerResolution(process.ExitCode));
 							progressOutput.Report("Check log for information.");
 						}
 					}
@@ -49,6 +52,24 @@ namespace Randal.Sql.Deployer.UI
 					progressError.Report("Error: " + ex.Message);
 				}
 			});
+		}
+
+		private static string DeployerResolution(int exitCode)
+		{
+			string appendMessage;
+
+			if (Enum.IsDefined(typeof (RunnerResolution), exitCode) == false)
+				appendMessage = "Unexpected process exit code";
+			else
+			{
+				var resolution = (RunnerResolution) exitCode;
+
+				var type = resolution.GetType();
+				var da = type.GetField(type.GetEnumName(resolution)).GetCustomAttribute<DisplayAttribute>();
+				appendMessage = da.Name + " - " + da.Description;
+			}
+
+			return "(" + exitCode + ") " + appendMessage;
 		}
 
 		private static ProcessStartInfo CreateProcessStartInfo(IDeploymentAppSettings settings)

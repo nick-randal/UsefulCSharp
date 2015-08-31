@@ -39,6 +39,7 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -109,6 +110,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\open_folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Randal.Sql.Deployer.Shared\Randal.Sql.Deployer.Shared.csproj">
+      <Project>{c38bbdbb-41f8-4a29-ac44-bdf309ec0979}</Project>
+      <Name>Randal.Sql.Deployer.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

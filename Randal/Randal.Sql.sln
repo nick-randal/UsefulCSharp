@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Sql.Deployer", "Randal.Tests.Utilities.Sql.Deployer\Randal.Tests.Sql.Deployer.csproj", "{A6B19F04-1365-4234-9FD4-B9B49529DE47}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{DA5BF4DD-8451-429B-943B-1504ADD64D2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer.UI", "Randal.Sql.Deployer.UI\Randal.Sql.Deployer.UI.csproj", "{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Sql.Deployer.Shared", "Randal.Sql.Deployer.Shared\Randal.Sql.Deployer.Shared.csproj", "{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,12 @@ Global
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +103,7 @@ Global
 		{F15D39B9-2E8F-4A8F-9A31-78A96D981B6F} = {DE62AC3E-903B-4265-8E49-0A2C395873D1}
 		{319DCCFA-76FB-402D-A61E-356E008A291B} = {DE62AC3E-903B-4265-8E49-0A2C395873D1}
 		{EFC214CD-3B13-4620-B7E9-D3A3A7531BB2} = {DA5BF4DD-8451-429B-943B-1504ADD64D2D}
+		{C38BBDBB-41F8-4A29-AC44-BDF309EC0979} = {DA5BF4DD-8451-429B-943B-1504ADD64D2D}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

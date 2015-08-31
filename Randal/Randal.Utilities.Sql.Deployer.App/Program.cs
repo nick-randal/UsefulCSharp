@@ -38,16 +38,15 @@ namespace Randal.Sql.Deployer.App
 
 				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
 				{
-					new Runner(settings, logger).Go();
+					var runner = new Runner(settings, logger);
+					return (int)runner.Go();
 				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
-				return 1;
+				return (int)RunnerResolution.ExceptionThrown;
 			}
-
-			return -1;
 		}
 
 		private static AppOptions ParseCommandLineArguments(string[] args)
