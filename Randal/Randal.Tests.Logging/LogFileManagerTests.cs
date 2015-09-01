@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace Randal.Tests.Logging
 			When(GettingStreamWriter);
 
 			Then.Writer.Should().NotBeNull();
-			Then.Manager.LogFileName.Should().EndWith("_002.log");
+			Then.Manager.LogFileName.Should().EndWith("_001.log");
 		}
 
 		[TestMethod, PositiveTest]

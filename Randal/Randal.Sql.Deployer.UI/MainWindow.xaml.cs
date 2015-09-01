@@ -14,6 +14,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +23,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
+using Randal.Sql.Deployer.Shared;
 using Randal.Sql.Deployer.UI.Support;
 
 namespace Randal.Sql.Deployer.UI
@@ -49,6 +51,8 @@ namespace Randal.Sql.Deployer.UI
 
 			UpdateStatus();
 
+			StartLogExchangeHost();
+
 			await findServers;
 		}
 
@@ -69,6 +73,9 @@ namespace Randal.Sql.Deployer.UI
 		
 		private void Window_OnClose(object sender, ExecutedRoutedEventArgs e)
 		{
+			using(_host)
+				_host.Close();
+
 			Close();
 		}
 
@@ -154,6 +161,15 @@ namespace Randal.Sql.Deployer.UI
 			Status.Content = text;
 		}
 
+		private void StartLogExchangeHost()
+		{
+			_host = new ServiceHost(typeof (LogExchange), new Uri("net.pipe://localhost"));
+
+			_host.AddServiceEndpoint(typeof(ILogExchange), new NetNamedPipeBinding(), "LogExchange");
+
+			_host.Open();
+		}
+
 		public string DeployerPath
 		{
 			get
@@ -191,6 +207,7 @@ namespace Randal.Sql.Deployer.UI
 		}
 
 		private string _deployerPath;
+		private ServiceHost _host;
 
 		private const string
 			DeployerExeName = "Randal.Sql.Deployer.App.exe",

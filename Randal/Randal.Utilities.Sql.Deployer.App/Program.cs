@@ -12,7 +12,9 @@
 // GNU General Public License for more details.
 
 using System;
+using System.ServiceModel;
 using Randal.Logging;
+using Randal.Sql.Deployer.Shared;
 
 namespace Randal.Sql.Deployer.App
 {
@@ -36,8 +38,10 @@ namespace Randal.Sql.Deployer.App
 					options.BypassCheck
 				);
 
+
 				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
 				{
+					var logExchange = ConnectToLogExchange(logger, settings);
 					var runner = new Runner(settings, logger);
 					return (int)runner.Go();
 				}
@@ -46,6 +50,22 @@ namespace Randal.Sql.Deployer.App
 			{
 				Console.WriteLine(ex);
 				return (int)RunnerResolution.ExceptionThrown;
+			}
+		}
+
+		private static void ConnectToLogExchange(AsyncFileLogger logger, IRunnerSettings settings)
+		{
+			try
+			{
+				
+				var endPoint = new EndpointAddress("net.pipe://localhost/PipeReverse");
+				var pipeFactory = new ChannelFactory<ILogExchange>(new NetNamedPipeBinding(), endPoint);
+				var logExchange = pipeFactory.CreateChannel();
+
+			}
+			catch(Exception ex)
+			{
+				logger.Add(ex.ToLogEntryException());
 			}
 		}
 
