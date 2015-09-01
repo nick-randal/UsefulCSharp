@@ -1,13 +1,14 @@
-﻿using System;
-using Randal.Sql.Deployer.Shared;
+﻿using Randal.Sql.Deployer.Shared;
 
 namespace Randal.Sql.Deployer.UI
 {
 	public sealed class LogExchange : ILogExchange
 	{
+		public static string LogFilePath;
+
 		public void ReportLogFilePath(string logFilePath)
 		{
-			var x = 23;
+			LogFilePath = logFilePath;
 		}
 	}
 }

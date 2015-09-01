@@ -13,7 +13,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -129,7 +131,13 @@ namespace Randal.Sql.Deployer.UI
 
 		private void LogLine(string message, params object[] values)
 		{
-			Output.Inlines.Add(new Run(string.Format(message, values)));
+			var text = string.Format(message, values);
+
+			Output.Inlines.AddRange(new TextBlockParser(text).Inlines);
+
+			//Output.Inlines.Add(new Run() { TextDecorations = TextDecorations.Underline });
+
+			//Output.Inlines.Add(new Run(string.Format(message, values)));
 			Output.Inlines.Add(new LineBreak());
 		}
 
@@ -213,5 +221,17 @@ namespace Randal.Sql.Deployer.UI
 			ConfigFileDialogFilter = "Config file|*.cfg",
 			DeployerFileDialogFilter = "Deployer App|*.exe"
 		;
+
+		private void Output_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			var element = Output.InputHitTest(e.MouseDevice.GetPosition(Output)) as Run;
+			if (element == null)
+				return;
+
+			if (element.TextDecorations.Count(td => td.Location == TextDecorationLocation.Underline) == 0)
+				return;
+
+			Process.Start(element.Text);
+		}
 	}
 }

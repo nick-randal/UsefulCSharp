@@ -91,7 +91,7 @@
 			<CheckBox Grid.Row="4" Grid.Column="3" Content="Bypass Check" HorizontalAlignment="Left" Name="BypassCheck" IsChecked="{Binding BypassCheck}"/>
 			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 				<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
-					   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" />
+					   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" />
 			</Border>
 			<Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Deploy" HorizontalAlignment="Center" Margin="0,0,0,0" 
 					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick" Background="SteelBlue" Foreground="White"/>

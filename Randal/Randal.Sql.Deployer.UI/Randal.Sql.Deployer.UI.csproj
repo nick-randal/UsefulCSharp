@@ -69,6 +69,7 @@
     <Compile Include="Support\DelegateCommand.cs" />
     <Compile Include="Support\WindowExtensions.cs" />
     <Compile Include="Support\WindowWraper.cs" />
+    <Compile Include="TextBlockParser.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

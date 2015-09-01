@@ -43,7 +43,11 @@ namespace Randal.Sql.Deployer.UI
 							Task.WaitAll(new Task[] { taskReadOutput, taskReadError }, 10000);
 
 							progressOutput.Report(Environment.NewLine + "Deployer exited : " + DeployerResolution(process.ExitCode));
-							progressOutput.Report("Check log for information.");
+
+							if(string.IsNullOrWhiteSpace(LogExchange.LogFilePath))
+								progressOutput.Report("Check log for information.");
+							else
+								progressOutput.Report("Check log file at link:[" + LogExchange.LogFilePath + ']');
 						}
 					}
 				}
