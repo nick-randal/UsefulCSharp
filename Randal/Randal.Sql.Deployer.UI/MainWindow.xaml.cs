@@ -15,7 +15,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.ServiceModel;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -163,9 +162,9 @@ namespace Randal.Sql.Deployer.UI
 
 		private void StartLogExchangeHost()
 		{
-			_host = new ServiceHost(typeof (LogExchange), new Uri("net.pipe://localhost"));
+			_host = new ServiceHost(typeof (LogExchange), new Uri(SharedConst.NetPipe));
 
-			_host.AddServiceEndpoint(typeof(ILogExchange), new NetNamedPipeBinding(), "LogExchange");
+			_host.AddServiceEndpoint(typeof(ILogExchange), new NetNamedPipeBinding(), SharedConst.EndPointBinding);
 
 			_host.Open();
 		}

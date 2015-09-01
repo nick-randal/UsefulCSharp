@@ -7,7 +7,7 @@ namespace Randal.Sql.Deployer.UI
 	{
 		public void ReportLogFilePath(string logFilePath)
 		{
-			throw new NotImplementedException();
+			var x = 23;
 		}
 	}
 }

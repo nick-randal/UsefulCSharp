@@ -41,7 +41,7 @@ namespace Randal.Sql.Deployer.App
 
 				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
 				{
-					var logExchange = ConnectToLogExchange(logger, settings);
+					SendLogFilePathToExchange(logger);
 					var runner = new Runner(settings, logger);
 					return (int)runner.Go();
 				}
@@ -53,17 +53,20 @@ namespace Randal.Sql.Deployer.App
 			}
 		}
 
-		private static void ConnectToLogExchange(AsyncFileLogger logger, IRunnerSettings settings)
+		private static void SendLogFilePathToExchange(AsyncFileLogger logger)
 		{
 			try
 			{
-				
-				var endPoint = new EndpointAddress("net.pipe://localhost/PipeReverse");
+				logger.Add(("Attempting connect to UI Host '" + SharedConst.LogExchangeNetPipe + "'.").ToLogEntry());
+
+				var endPoint = new EndpointAddress(SharedConst.LogExchangeNetPipe);
 				var pipeFactory = new ChannelFactory<ILogExchange>(new NetNamedPipeBinding(), endPoint);
 				var logExchange = pipeFactory.CreateChannel();
 
+				logExchange.ReportLogFilePath(logger.CurrentLogFilePath ?? "Path not found.");
+
 			}
-			catch(Exception ex)
+			catch(EndpointNotFoundException ex)
 			{
 				logger.Add(ex.ToLogEntryException());
 			}

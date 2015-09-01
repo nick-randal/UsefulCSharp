@@ -52,7 +52,7 @@ namespace Randal.Sql.Deployer.App
 					LogOptions();
 
 					_logger.AddEntry("opening connection to server", _settings.Server);
-					connectionManager.OpenConnection(_settings.Server, TextResources.Sql.Database.Master);
+					connectionManager.OpenConnection(_settings.Server, "master");
 
 					if (_settings.UseTransaction)
 					{
