@@ -170,11 +170,19 @@ namespace Randal.Sql.Deployer.UI
 
 		private void StartLogExchangeHost()
 		{
-			_host = new ServiceHost(typeof (LogExchange), new Uri(SharedConst.NetPipe));
+			try
+			{
+				_host = new ServiceHost(typeof (LogExchange), new Uri(SharedConst.NetPipe));
 
-			_host.AddServiceEndpoint(typeof(ILogExchange), new NetNamedPipeBinding(), SharedConst.EndPointBinding);
+				_host.AddServiceEndpoint(typeof (ILogExchange), new NetNamedPipeBinding(), SharedConst.EndPointBinding);
 
-			_host.Open();
+				_host.Open();
+			}
+			catch (Exception ex)
+			{
+				LogErrorLine(ex.Message);
+				LogErrorLine(ex.StackTrace);
+			}
 		}
 
 		public string DeployerPath
