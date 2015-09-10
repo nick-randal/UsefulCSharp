@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014 Nicholas Randal
+// Copyright (C) 2014-2015 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,10 +65,7 @@ namespace Randal.Core.Testing.UnitTest
 		/// <returns>True if all properties specified are defined, otherwise False.</returns>
 		protected bool GivensDefined(params string[] members)
 		{
-			if (members.Length == 0)
-				return true;
-
-			return members.All(member => Given.TestForMember(member));
+			return members.Length == 0 || members.All(member => Given.TestForMember(member));
 		}
 
 		/// <summary>
@@ -91,6 +88,11 @@ namespace Randal.Core.Testing.UnitTest
 		/// </summary>
 		/// <param name="actions"></param>
 		protected void ThrowsExceptionWhen(params Action[] actions)
+		{
+			DeferLastActionWhen(actions);
+		}
+
+		protected void DeferLastActionWhen(params Action[] actions)
 		{
 			var listOfActions = actions.ToList();
 

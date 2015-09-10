@@ -11,7 +11,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
 		<releaseNotes>Added functions to simplify When repeating actions and awaiting asynchronous methods.</releaseNotes>
-		<copyright>Copyright 2014 Nicholas Randal</copyright>
+		<copyright>Copyright 2014-2015 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net40" />
