@@ -17,6 +17,8 @@ namespace Randal.Core.Testing.Factory
 {
 	public interface IValueFactory
 	{
+		void Reset();
+
 		char GetChar(string fieldName);
 		string GetString(string fieldName);
 

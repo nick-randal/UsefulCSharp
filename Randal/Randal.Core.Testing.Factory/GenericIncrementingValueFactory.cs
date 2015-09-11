@@ -17,16 +17,37 @@ namespace Randal.Core.Testing.Factory
 {
 	public class GenericIncrementingValueFactory : IValueFactory
 	{
-		protected char CurrentChar = 'A';
-		protected byte CurrentByte = 1;
-		protected short CurrentShort = 1;
-		protected int CurrentString = 1, CurrentInt = 1;
-		protected long CurrentLong = 1;
+		protected byte CurrentByte;
+		protected char CurrentChar;
+		protected DateTime CurrentDateTime;
+		protected double CurrentDouble;
 		protected bool CurrentFlag;
-		protected DateTime CurrentDateTime = DateTime.Today;
-		protected decimal CurrentDecimal = 1m;
-		protected float CurrentFloat = 1f;
-		protected double CurrentDouble = 1d;
+		protected float CurrentFloat;
+		protected int CurrentInt;
+		protected long CurrentLong;
+		protected decimal CurrentDecimal;
+		protected short CurrentShort;
+		protected int CurrentString;
+
+		public GenericIncrementingValueFactory ()
+		{
+			Reset();
+		}
+
+		public void Reset()
+		{
+			CurrentByte = 1;
+			CurrentChar = 'A';
+			CurrentDateTime = DateTime.Today;
+			CurrentDecimal = 1m;
+			CurrentDouble = 1d;
+			CurrentFlag = false;
+			CurrentFloat = 1f;
+			CurrentInt = 1;
+			CurrentLong = 1;
+			CurrentShort = 1;
+			CurrentString = 1;
+		}
 
 		public char GetChar(string fieldName)
 		{

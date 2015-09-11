@@ -49,6 +49,37 @@ namespace Randal.Core.Testing.Factory
 			_state = State.Prepared;
 		}
 
+		public TModel Create()
+		{
+			if (_state != State.Prepared)
+				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
+
+			return _createModel(_haveValues);
+		}
+
+		public IEnumerable<TModel> Create(int howMany)
+		{
+			if (_state != State.Prepared)
+				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
+
+			var models = new List<TModel>();
+
+			for (var n = 0; n < howMany; n++)
+				models.Add(_createModel(_haveValues));
+
+			return models;
+		}
+
+		public object CreateObject()
+		{
+			return Create();
+		}
+
+		public IEnumerable<object> CreateObject(int howMany)
+		{
+			return Create(howMany);
+		}
+
 		private void CreateLambdaFunction(ICollection<Expression> expressions, ParameterExpression modelVariable,
 			ParameterExpression havingVariable)
 		{
@@ -161,37 +192,6 @@ namespace Randal.Core.Testing.Factory
 				.Union(modelType.GetFields(fieldBindingFlags))
 				.OrderBy(p => p.Name)
 				.ToList();
-		}
-
-		public TModel Create()
-		{
-			if(_state != State.Prepared)
-				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
-			
-			return _createModel(_haveValues);
-		}
-
-		public IEnumerable<TModel> Create(int howMany)
-		{
-			if (_state != State.Prepared)
-				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
-
-			var models = new List<TModel>();
-
-			for(var n = 0; n < howMany; n++)
-				models.Add(_createModel(_haveValues));
-
-			return models;
-		}
-
-		public object CreateObject()
-		{
-			return Create();
-		}
-
-		public IEnumerable<object> CreateObject(int howMany)
-		{
-			return Create(howMany);
 		}
 
 		private readonly IValueFactory _haveValues;
