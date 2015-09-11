@@ -25,6 +25,8 @@ namespace Randal.Core.Testing.Factory
 		protected bool CurrentFlag;
 		protected DateTime CurrentDateTime = DateTime.Today;
 		protected decimal CurrentDecimal = 1m;
+		protected float CurrentFloat = 1f;
+		protected double CurrentDouble = 1d;
 
 		public char GetChar(string fieldName)
 		{
@@ -68,7 +70,6 @@ namespace Randal.Core.Testing.Factory
 			return capture;
 		}
 
-
 		public DateTime GetDateTime(string fieldName)
 		{
 			var capture = CurrentDateTime;
@@ -79,6 +80,16 @@ namespace Randal.Core.Testing.Factory
 		public decimal GetDecimal(string fieldName)
 		{
 			return CurrentDecimal++;
+		}
+
+		public float GetFloat(string fieldName)
+		{
+			return CurrentFloat++;
+		}
+
+		public double GetDouble(string fieldName)
+		{
+			return CurrentDouble++;
 		}
 	}
 }

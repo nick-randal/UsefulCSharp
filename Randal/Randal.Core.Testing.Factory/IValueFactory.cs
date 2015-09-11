@@ -30,5 +30,7 @@ namespace Randal.Core.Testing.Factory
 		DateTime GetDateTime(string fieldName);
 
 		decimal GetDecimal(string fieldName);
+		float GetFloat(string fieldName);
+		double GetDouble(string fieldName);
 	}
 }

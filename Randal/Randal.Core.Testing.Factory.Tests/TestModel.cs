@@ -52,5 +52,13 @@ namespace Randal.Core.Testing.Factory.Tests
 		public short SquareFeet { get; set; }
 
 		public short Acreage;
+
+		public float Longitude { get; set; }
+
+		public float Latitude { get; set; }
+
+		public int? TempId1 { get; set; }
+
+		public int? TempId2;
 	}
 }

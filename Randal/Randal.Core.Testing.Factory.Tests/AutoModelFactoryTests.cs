@@ -59,7 +59,9 @@ namespace Randal.Core.Testing.Factory.Tests
 				Flags1 = 1, Flags2 = 2,
 				CreatedOn = new DateTime(2000, 1, 1, 1, 0, 0), ChangedOn = new DateTime(2000, 1, 1),
 				SquareFeet = 2, Acreage = 1,
-				Salary = 2m, Bonus = 1m
+				Salary = 2m, Bonus = 1m,
+				Longitude = 2f, Latitude = 1f,
+				TempId1 = 3, TempId2 = 4
 			});
 		}
 
@@ -73,7 +75,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Models.Should().HaveCount(5001);
 			Then.Models.Last().ShouldBeEquivalentTo(new
 			{
-				PrimaryId = 10002, Age = 10001,
+				PrimaryId = 20002, Age = 20001,
 				FirstName = "value10001", LastName = "value10002",
 				SecondaryId = 10002L, OtherId = 10001L,
 				IsSomething = false, WasSomething = true,
@@ -81,7 +83,9 @@ namespace Randal.Core.Testing.Factory.Tests
 				Flags1 = 17, Flags2 = 18,
 				CreatedOn = new DateTime(2001, 2, 20, 17, 0, 0), ChangedOn = new DateTime(2001, 2, 20, 16, 0, 0),
 				SquareFeet = 10002, Acreage = 10001,
-				Salary = 10002m, Bonus = 10001m
+				Salary = 10002m, Bonus = 10001m,
+				Longitude = 10002f, Latitude = 10001f,
+				TempId1 = 20003, TempId2 = 20004
 			});
 		}
 

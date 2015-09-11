@@ -22,21 +22,13 @@ namespace Randal.Core.Testing.Factory
 	public sealed class AutoModelFactory<TModel> : IGenericAutoModelFactory<TModel>
 		where TModel : class, new()
 	{
-		private readonly IValueFactory _haveValues;
-		private State _state;
-		private Func<IValueFactory, TModel> _createModel;
-
 		public AutoModelFactory(IValueFactory haveValues = null)
 		{
 			_haveValues = haveValues ?? new GenericIncrementingValueFactory();
 			_state = State.Constructed;
 		}
 
-		public void Prepare(
-			IDictionary<Type, IUntypedAutoModelFactory> factoryLookup = null,
-			bool includePrivateProperties = false, bool includePrivateFields = false
-			
-			)
+		public void Prepare(IDictionary<Type, IUntypedAutoModelFactory> factoryLookup = null, PrepareOptions options = PrepareOptions.Default)
 		{
 			if(_state != State.Constructed)
 				throw new InvalidOperationException("The factory has already been prepared for creating models.");
@@ -44,7 +36,7 @@ namespace Randal.Core.Testing.Factory
 			var modelVariable = Expression.Variable(typeof (TModel), "model");
 			var havingVariable = Expression.Variable(typeof (IValueFactory), "haveValues");
 
-			var props = GetMemberInformation(includePrivateProperties, includePrivateFields);
+			var props = GetMemberInformation(options);
 			
 			var expressions = new List<Expression>();
 
@@ -75,67 +67,35 @@ namespace Randal.Core.Testing.Factory
 				var propertyInfo = memberInfo as PropertyInfo;
 				var fieldInfo = memberInfo as FieldInfo;
 
-				Type valueType;
+				var typeInfo = GetTypeFor(propertyInfo, fieldInfo);
 				MethodInfo getValueMethodInfo;
 
-				if (propertyInfo != null)
-				{
-					valueType = propertyInfo.PropertyType;
-				}
-				else if (fieldInfo != null)
-				{
-					valueType = fieldInfo.FieldType;
-				}
-				else
-				{
+				if(TypeMethodInfoLookup.TryGetValue(typeInfo.BaseType, out getValueMethodInfo) == false)
 					continue;
-				}
-
-				if (valueType == typeof (string))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetString(null));
-				}
-				else if (valueType == typeof (int))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetInt32(null));
-				}
-				else if (valueType == typeof (long))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetInt64(null));
-				}
-				else if (valueType == typeof (bool))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetBool(null));
-				}
-				else if (valueType == typeof (char))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetChar(null));
-				}
-				else if (valueType == typeof (byte))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetByte(null));
-				}
-				else if (valueType == typeof(DateTime))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetDateTime(null));
-				}
-				else if (valueType == typeof(short))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetInt16(null));
-				}
-				else if (valueType == typeof(decimal))
-				{
-					getValueMethodInfo = GetMethodInfo(h => h.GetDecimal(null));
-				}
-				else
-				{
-					continue;
-				}
-
+				
 				expressions.Add(
-					CreateSetter(modelVariable, havingVariable, propertyInfo, fieldInfo, getValueMethodInfo)
+					CreateSetter(typeInfo, modelVariable, havingVariable, propertyInfo, fieldInfo, getValueMethodInfo)
 				);
 			}
+		}
+
+		private static TypeInfo GetTypeFor(PropertyInfo propertyInfo, FieldInfo fieldInfo)
+		{
+			var ogType = propertyInfo != null ? propertyInfo.PropertyType : fieldInfo.FieldType;
+
+			var typeInfo = new TypeInfo {BaseType = ogType, OriginalType = ogType, IsNullable = false};
+
+			if (!ogType.IsGenericType)
+				return typeInfo;
+
+
+			if (ogType.GetGenericTypeDefinition() != typeof (Nullable<>)) 
+				return typeInfo;
+
+			typeInfo.BaseType = ogType.GenericTypeArguments[0];
+			typeInfo.IsNullable = true;
+
+			return typeInfo;
 		}
 
 		private static void AddNewObjectExpression(ICollection<Expression> expressions, Expression modelVariable)
@@ -156,7 +116,7 @@ namespace Randal.Core.Testing.Factory
 			return me.Method;
 		}
 
-		private static Expression CreateSetter(
+		private static Expression CreateSetter(TypeInfo typeInfo,
 			Expression modelVariable, Expression valuesVariable, 
 			PropertyInfo propertyInfo, FieldInfo fieldInfo, 
 			MethodInfo getValueMethodInfo)
@@ -180,18 +140,20 @@ namespace Randal.Core.Testing.Factory
 			}
 
 			var callGetValue = Expression.Call(valuesVariable, getValueMethodInfo, memberName);
+			var convertToType = Expression.Convert(callGetValue, typeInfo.OriginalType);
 
-			return Expression.Assign(memberExpression, callGetValue);
+			return Expression.Assign(memberExpression, convertToType);
 		}
-		
-		private static IEnumerable<MemberInfo> GetMemberInformation(bool includePrivateFields, bool includePrivateProperties)
+
+		private static IEnumerable<MemberInfo> GetMemberInformation(PrepareOptions options)
 		{
 			var fieldBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetField;
-			if (includePrivateFields)
+			var propertyBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetField;
+
+			if (options.HasFlag(PrepareOptions.IncludePrivateFields))
 				fieldBindingFlags |= BindingFlags.NonPublic;
 
-			var propertyBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetField;
-			if (includePrivateProperties)
+			if (options.HasFlag(PrepareOptions.IncludePrivateProperties))
 				propertyBindingFlags |= BindingFlags.NonPublic;
 
 			var modelType = typeof (TModel);
@@ -231,6 +193,25 @@ namespace Randal.Core.Testing.Factory
 		{
 			return Create(howMany);
 		}
+
+		private readonly IValueFactory _haveValues;
+		private State _state;
+		private Func<IValueFactory, TModel> _createModel;
+
+		private static readonly IDictionary<Type, MethodInfo> TypeMethodInfoLookup = new Dictionary<Type, MethodInfo>()
+		{
+			{ typeof(string), GetMethodInfo(h => h.GetString(null)) },
+			{ typeof(bool), GetMethodInfo(h => h.GetBool(null)) },
+			{ typeof(short), GetMethodInfo(h => h.GetInt16(null)) },
+			{ typeof(int), GetMethodInfo(h => h.GetInt32(null)) },
+			{ typeof(long), GetMethodInfo(h => h.GetInt64(null)) },
+			{ typeof(char), GetMethodInfo(h => h.GetChar(null)) },
+			{ typeof(byte), GetMethodInfo(h => h.GetByte(null)) },
+			{ typeof(DateTime), GetMethodInfo(h => h.GetDateTime(null)) },
+			{ typeof(decimal), GetMethodInfo(h => h.GetDecimal(null)) },
+			{ typeof(float), GetMethodInfo(h => h.GetFloat(null)) },
+			{ typeof(double), GetMethodInfo(h => h.GetDouble(null)) }
+		}; 
 
 		private enum State
 		{
