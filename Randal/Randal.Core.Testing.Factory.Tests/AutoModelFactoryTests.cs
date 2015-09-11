@@ -51,41 +51,41 @@ namespace Randal.Core.Testing.Factory.Tests
 
 			Then.Model.ShouldBeEquivalentTo(new
 			{
-				PrimaryId = 2, Age = 1,
-				FirstName = "value1", LastName = "value2",
-				SecondaryId = 2L, OtherId = 1L,
-				IsSomething = false, WasSomething = true,
-				MiddleInitial = 'A', Status = 'B',
-				Flags1 = 1, Flags2 = 2,
-				CreatedOn = new DateTime(2000, 1, 1, 1, 0, 0), ChangedOn = new DateTime(2000, 1, 1),
-				SquareFeet = 2, Acreage = 1,
-				Salary = 2m, Bonus = 1m,
-				Longitude = 2f, Latitude = 1f,
-				TempId1 = 3, TempId2 = 4
+				PrimaryId = 1, Age = 1,
+				FirstName = "FirstName1", LastName = "LastName1",
+				SecondaryId = 1L, OtherId = 1L,
+				IsSomething = true, WasSomething = true,
+				MiddleInitial = 'A', Status = 'A',
+				Flags1 = 1, Flags2 = 1,
+				CreatedOn = new DateTime(2000, 1, 1), ChangedOn = new DateTime(2000, 1, 1),
+				SquareFeet = 1, Acreage = 1,
+				Salary = 1m, Bonus = 1m,
+				Longitude = 1f, Latitude = 1f,
+				TempId1 = 1, TempId2 = 1
 			});
 		}
 
 		[TestMethod, PositiveTest]
 		public void ShouldHaveListOfModels_WhenCreatingModels_GivenGenericIncrementingValues()
 		{
-			Given.HowMany = 5001;
+			Given.HowMany = 1234;
 
 			When(Preparing, CreatingModels);
 
-			Then.Models.Should().HaveCount(5001);
+			Then.Models.Should().HaveCount(1234);
 			Then.Models.Last().ShouldBeEquivalentTo(new
 			{
-				PrimaryId = 20002, Age = 20001,
-				FirstName = "value10001", LastName = "value10002",
-				SecondaryId = 10002L, OtherId = 10001L,
-				IsSomething = false, WasSomething = true,
-				MiddleInitial = 'Q', Status = 'R',
-				Flags1 = 17, Flags2 = 18,
-				CreatedOn = new DateTime(2001, 2, 20, 17, 0, 0), ChangedOn = new DateTime(2001, 2, 20, 16, 0, 0),
-				SquareFeet = 10002, Acreage = 10001,
-				Salary = 10002m, Bonus = 10001m,
-				Longitude = 10002f, Latitude = 10001f,
-				TempId1 = 20003, TempId2 = 20004
+				PrimaryId = 1234, Age = 1234,
+				FirstName = "FirstName1234", LastName = "LastName1234",
+				SecondaryId = 1234L, OtherId = 1234L,
+				IsSomething = false, WasSomething = false,
+				MiddleInitial = 'L', Status = 'L',
+				Flags1 = 210, Flags2 = 210,
+				CreatedOn = new DateTime(2000, 2, 21, 9, 0, 0), ChangedOn = new DateTime(2000, 2, 21, 9, 0, 0),
+				SquareFeet = 1234, Acreage = 1234,
+				Salary = 1234m, Bonus = 1234m,
+				Longitude = 1234f, Latitude = 1234f,
+				TempId1 = 1234, TempId2 = 1234
 			});
 		}
 

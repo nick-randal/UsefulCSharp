@@ -10,14 +10,8 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing.Factory</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Initial release.</releaseNotes>
+		<releaseNotes>Initial release - Removed dependencies.</releaseNotes>
 		<copyright>Copyright 2014-2015 Nicholas Randal</copyright>
 		<tags>Testing Factory</tags>
-		<frameworkAssemblies>
-			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net40" />
-		</frameworkAssemblies>
-		<dependencies>
-			<dependency id="Randal.Core" version="1.0.0.4" />
-		</dependencies>
 	</metadata>
 </package>

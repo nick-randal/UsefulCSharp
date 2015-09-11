@@ -19,6 +19,8 @@ namespace Randal.Core.Testing.Factory
 	{
 		void Reset();
 
+		void Increment();
+
 		char GetChar(string fieldName);
 		string GetString(string fieldName);
 

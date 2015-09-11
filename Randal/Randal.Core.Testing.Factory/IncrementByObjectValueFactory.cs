@@ -15,7 +15,7 @@ using System;
 
 namespace Randal.Core.Testing.Factory
 {
-	public class GenericIncrementingValueFactory : IValueFactory
+	public class IncrementByObjectValueFactory : IValueFactory
 	{
 		protected byte CurrentByte;
 		protected char CurrentChar;
@@ -29,7 +29,7 @@ namespace Randal.Core.Testing.Factory
 		protected short CurrentShort;
 		protected int CurrentString;
 
-		public GenericIncrementingValueFactory ()
+		public IncrementByObjectValueFactory ()
 		{
 			Reset();
 		}
@@ -41,7 +41,7 @@ namespace Randal.Core.Testing.Factory
 			CurrentDateTime = DateTime.Today;
 			CurrentDecimal = 1m;
 			CurrentDouble = 1d;
-			CurrentFlag = false;
+			CurrentFlag = true;
 			CurrentFloat = 1f;
 			CurrentInt = 1;
 			CurrentLong = 1;
@@ -49,68 +49,77 @@ namespace Randal.Core.Testing.Factory
 			CurrentString = 1;
 		}
 
-		public char GetChar(string fieldName)
+		public void Increment()
 		{
-			var capture = CurrentChar++;
-			
-			if(CurrentChar > 90)
+			CurrentChar++;
+			if (CurrentChar > 90)
 				CurrentChar = 'A';
 
-			return capture;
+			CurrentString++;
+			CurrentByte++;
+			CurrentShort++;
+			CurrentInt++;
+			CurrentLong++;
+			CurrentDecimal++;
+			CurrentFloat++;
+			CurrentDouble++;
+			CurrentFlag = !CurrentFlag;
+			CurrentDateTime = CurrentDateTime.AddHours(1);
+		}
+
+		public char GetChar(string fieldName)
+		{
+			return CurrentChar;
 		}
 
 		public string GetString(string fieldName)
 		{
-			return "value" + CurrentString++;
+			return fieldName + CurrentString;
 		}
 
 		public byte GetByte(string fieldName)
 		{
-			return CurrentByte++;
+			return CurrentByte;
 		}
 
 		public short GetInt16(string fieldName)
 		{
-			return CurrentShort++;
+			return CurrentShort;
 		}
 
 		public int GetInt32(string fieldName)
 		{
-			return CurrentInt++;
+			return CurrentInt;
 		}
 
 		public long GetInt64(string fieldName)
 		{
-			return CurrentLong++;
+			return CurrentLong;
 		}
 
 		public bool GetBool(string fieldName)
 		{
-			var capture = CurrentFlag;
-			CurrentFlag = !CurrentFlag;
-			return capture;
+			return CurrentFlag;
 		}
 
 		public DateTime GetDateTime(string fieldName)
 		{
-			var capture = CurrentDateTime;
-			CurrentDateTime = CurrentDateTime.AddHours(1);
-			return capture;
+			return CurrentDateTime;
 		}
 
 		public decimal GetDecimal(string fieldName)
 		{
-			return CurrentDecimal++;
+			return CurrentDecimal;
 		}
 
 		public float GetFloat(string fieldName)
 		{
-			return CurrentFloat++;
+			return CurrentFloat;
 		}
 
 		public double GetDouble(string fieldName)
 		{
-			return CurrentDouble++;
+			return CurrentDouble;
 		}
 	}
 }

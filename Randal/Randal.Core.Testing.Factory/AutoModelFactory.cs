@@ -24,7 +24,7 @@ namespace Randal.Core.Testing.Factory
 	{
 		public AutoModelFactory(IValueFactory haveValues = null)
 		{
-			_haveValues = haveValues ?? new GenericIncrementingValueFactory();
+			_haveValues = haveValues ?? new IncrementByObjectValueFactory();
 			_state = State.Constructed;
 		}
 
@@ -83,6 +83,7 @@ namespace Randal.Core.Testing.Factory
 		private void CreateLambdaFunction(ICollection<Expression> expressions, ParameterExpression modelVariable,
 			ParameterExpression havingVariable)
 		{
+			expressions.Add(Expression.Call(havingVariable, "Increment", new Type[0]));
 			expressions.Add(modelVariable);
 
 			var block = Expression.Block(new[] {modelVariable}, expressions);
