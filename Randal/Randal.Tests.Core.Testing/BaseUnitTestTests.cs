@@ -39,6 +39,16 @@ namespace Randal.Tests.Core.Testing
 			ThrowsExceptionWhen(Exploding);
 
 			ThenLastAction.Should().NotBeNull();
+			ThenLastAction.ShouldThrow<Exception>("Did I do that?");
+		}
+
+		[TestMethod, NegativeTest]
+		public void ShouldHaveGivensDefined_GivenValues()
+		{
+			Given.FirstName = "Bob";
+			Given.LastName = "Jones";
+
+			GivensDefined("FirstName", "LastName").Should().BeTrue();
 		}
 
 		protected override void Creating()
@@ -58,7 +68,7 @@ namespace Randal.Tests.Core.Testing
 			Then.DelayedValue = 4567;
 		}
 
-		private void Exploding()
+		private static void Exploding()
 		{
 			throw new Exception("Did I do that?");
 		}

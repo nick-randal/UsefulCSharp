@@ -57,8 +57,12 @@ namespace Randal.Core.Testing.Factory.Tests
 
 		public float Latitude { get; set; }
 
+		public double BigPrecision { get; set; }
+
 		public int? TempId1 { get; set; }
 
 		public int? TempId2;
+
+		public object ChildObject;
 	}
 }

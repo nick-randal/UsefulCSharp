@@ -141,9 +141,7 @@ namespace Randal.Core.Testing.Factory
 
 		private static MethodInfo GetMethodInfo<TValue>(Expression<Func<IValueFactory, TValue>> getMethodExpression)
 		{
-			var me = getMethodExpression.Body as MethodCallExpression;
-			if (me == null)
-				throw new ArgumentException("Expcted a method call signature from IHaveValues", "getMethodExpression");
+			var me = (MethodCallExpression)getMethodExpression.Body;
 
 			return me.Method;
 		}

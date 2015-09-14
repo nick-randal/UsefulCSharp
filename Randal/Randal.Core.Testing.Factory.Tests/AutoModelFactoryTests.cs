@@ -61,7 +61,9 @@ namespace Randal.Core.Testing.Factory.Tests
 				SquareFeet = 1, Acreage = 1,
 				Salary = 1m, Bonus = 1m,
 				Longitude = 1f, Latitude = 1f,
-				TempId1 = 1, TempId2 = 1
+				TempId1 = 1, TempId2 = 1,
+				BigPrecision = 1d,
+				ChildObject = (object)null
 			});
 		}
 
@@ -85,14 +87,44 @@ namespace Randal.Core.Testing.Factory.Tests
 				SquareFeet = 1234, Acreage = 1234,
 				Salary = 1234m, Bonus = 1234m,
 				Longitude = 1234f, Latitude = 1234f,
-				TempId1 = 1234, TempId2 = 1234
+				TempId1 = 1234, TempId2 = 1234,
+				BigPrecision = 1234d,
+				ChildObject = (object)null
 			});
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveModel_WhenCreatingObject()
+		{
+			When(Preparing, CreatingObject);
+
+			Then.Model.Should().NotBeNull();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveListOfModels_WhenCreatingObjects()
+		{
+			Given.HowMany = 10;
+
+			When(Preparing, CreatingObjects);
+
+			Then.Models.Should().HaveCount(10);
 		}
 
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenCreatingModel_GivenDidNotCallPrepare()
 		{
 			DeferLastActionWhen(CreatingModel);
+
+			ThenLastAction.ShouldThrow<InvalidOperationException>();
+		}
+
+		[TestMethod, NegativeTest]
+		public void ShouldThrowException_WhenCreatingModels_GivenDidNotCallPrepare()
+		{
+			Given.HowMany = 10;
+
+			DeferLastActionWhen(CreatingModels);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
@@ -119,6 +151,17 @@ namespace Randal.Core.Testing.Factory.Tests
 		private void CreatingModels()
 		{
 			Then.Models = Then.Target.Create((int)Given.HowMany);
+		}
+
+		private void CreatingObject()
+		{
+			Then.Model = (TestModel)Then.Target.CreateObject();
+			
+		}
+
+		private void CreatingObjects()
+		{
+			Then.Models = (IEnumerable<TestModel>)Then.Target.CreateObject((int)Given.HowMany);
 		}
 
 		public sealed class Thens
