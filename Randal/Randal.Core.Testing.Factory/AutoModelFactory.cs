@@ -28,7 +28,7 @@ namespace Randal.Core.Testing.Factory
 			_state = State.Constructed;
 		}
 
-		public void Prepare(IDictionary<Type, IUntypedAutoModelFactory> factoryLookup = null, PrepareOptions options = PrepareOptions.Default)
+		public void Prepare(PrepareOptions options = PrepareOptions.Default)
 		{
 			if(_state != State.Constructed)
 				throw new InvalidOperationException("The factory has already been prepared for creating models.");
@@ -36,13 +36,11 @@ namespace Randal.Core.Testing.Factory
 			var modelVariable = Expression.Variable(typeof (TModel), "model");
 			var havingVariable = Expression.Variable(typeof (IValueFactory), "haveValues");
 
-			var props = GetMemberInformation(options);
+			var modelMembers = GetMemberInformation(options);
 			
-			var expressions = new List<Expression>();
+			var expressions = CreateExpressionList(modelVariable);
 
-			AddNewObjectExpression(expressions, modelVariable);
-
-			AddSetterExpressions(props, modelVariable, havingVariable, expressions);
+			AddSetterExpressions(modelMembers, modelVariable, havingVariable, expressions);
 
 			CreateLambdaFunction(expressions, modelVariable, havingVariable);
 
@@ -102,12 +100,12 @@ namespace Randal.Core.Testing.Factory
 				var typeInfo = GetTypeFor(propertyInfo, fieldInfo);
 				MethodInfo getValueMethodInfo;
 
-				if(TypeMethodInfoLookup.TryGetValue(typeInfo.BaseType, out getValueMethodInfo) == false)
-					continue;
-				
-				expressions.Add(
-					CreateSetter(typeInfo, modelVariable, havingVariable, propertyInfo, fieldInfo, getValueMethodInfo)
-				);
+				if (TypeMethodInfoLookup.TryGetValue(typeInfo.BaseType, out getValueMethodInfo))
+				{
+					expressions.Add(
+						CreateSetter(typeInfo, modelVariable, havingVariable, propertyInfo, fieldInfo, getValueMethodInfo)
+					);
+				}
 			}
 		}
 
@@ -120,7 +118,6 @@ namespace Randal.Core.Testing.Factory
 			if (!ogType.IsGenericType)
 				return typeInfo;
 
-
 			if (ogType.GetGenericTypeDefinition() != typeof (Nullable<>)) 
 				return typeInfo;
 
@@ -130,13 +127,16 @@ namespace Randal.Core.Testing.Factory
 			return typeInfo;
 		}
 
-		private static void AddNewObjectExpression(ICollection<Expression> expressions, Expression modelVariable)
+		private static List<Expression> CreateExpressionList(Expression modelVariable)
 		{
+			var expressions = new List<Expression>();
 			var constructorInfo = typeof (TModel).GetConstructor(new Type[0]);
 
 			// ReSharper disable once AssignNullToNotNullAttribute
 			// default constructor must exist because of generic where conditional
 			expressions.Add(Expression.Assign(modelVariable, Expression.New(constructorInfo)));
+
+			return expressions;
 		}
 
 		private static MethodInfo GetMethodInfo<TValue>(Expression<Func<IValueFactory, TValue>> getMethodExpression)

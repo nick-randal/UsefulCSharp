@@ -64,5 +64,9 @@ namespace Randal.Core.Testing.Factory.Tests
 		public int? TempId2;
 
 		public object ChildObject;
+
+		public OtherModel ChildModel1 { get; set; }
+
+		public OtherModel ChildModel2;
 	}
 }

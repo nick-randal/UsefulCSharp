@@ -63,7 +63,9 @@ namespace Randal.Core.Testing.Factory.Tests
 				Longitude = 1f, Latitude = 1f,
 				TempId1 = 1, TempId2 = 1,
 				BigPrecision = 1d,
-				ChildObject = (object)null
+				ChildObject = (object)null,
+				ChildModel1 = (OtherModel)null,
+				ChildModel2 = (OtherModel)null
 			});
 		}
 
@@ -89,7 +91,9 @@ namespace Randal.Core.Testing.Factory.Tests
 				Longitude = 1234f, Latitude = 1234f,
 				TempId1 = 1234, TempId2 = 1234,
 				BigPrecision = 1234d,
-				ChildObject = (object)null
+				ChildObject = (object)null,
+				ChildModel1 = (OtherModel)null,
+				ChildModel2 = (OtherModel)null
 			});
 		}
 
