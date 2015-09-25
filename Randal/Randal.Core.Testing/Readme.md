@@ -1,14 +1,26 @@
-Given When Then unit testing pattern.
+##Given When Then unit testing pattern.
 
-This library provides a base class and DSL to help facilitate and structure the Given When Then test pattern.  
-One of the best features is the use oF the DLR for the Givens.  You can define any Given property on the fly without having previously defined it.
+This library provides a couple base classes to facilitate unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
-The other focus is around composable When statements.
+The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStuio(c).
 
-- Exception assertions closer to the point of being thrown
-- Optional overrides for OnSetup OnTeardown for less typing
+GWT is derives from AAA (Arrange Act Assert) but strives to provide organization and cleanliness in the code.
+
+####Given (Arrange)
+Setup the data and context for the test.
+
+####When (Act)
+
+Make the when actions composable.  The **When** and **WhenLastActionDeferred** methods take params array of Action methods.
+
+####Then (Assert)
+A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions fron NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
+
+####Features
+- Exception assertions closer to the origin of the thrown exception
+- Optional overrides for *OnSetup OnTeardown* for less typing
 - Given and Then automatically cleaned up before each test
-- When assumed Creating action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically
+- When assumes the *Creating* action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically.
 
 ```csharp
 using FluentAssertions;
@@ -56,7 +68,7 @@ namespace Someplace
 		{
 			Given.Text = "Hey {name,";
 
-			ThrowsExceptionWhen(Formatting);
+			WhenLastActionDeferred(Formatting);
 
 			ThenLastAction.ShouldThrow<FormatException>("Oops");
 		}
