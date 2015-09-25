@@ -19,17 +19,15 @@ using Randal.Core.Dynamic;
 
 namespace Randal.Core.Testing.UnitTest
 {
-	[TestClass, Obsolete("Use UnitTestBase<TThens> or UnitTestBase<TThens, TGivens>.")]
-	public abstract class BaseUnitTest<TThens> where TThens : class, new()
+	[TestClass]
+	public abstract class UnitTestBase<TThens, TGivens> 
+		where TThens : class, new()
+		where TGivens : class, new()
 	{
 		[TestInitialize]
 		public void Setup()
 		{
-			if(Given == null)
-				Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
-			else
-				Given.Clear();
-			
+			Given = new TGivens();
 			Then = new TThens();
 
 			OnSetup();
@@ -40,9 +38,12 @@ namespace Randal.Core.Testing.UnitTest
 		{
 			OnTeardown();
 
-			ThenLastAction = null;
 
-			var disposeMe = Then as IDisposable;
+			var disposeMe = Given as IDisposable;
+			if (disposeMe != null)
+				disposeMe.Dispose();
+
+			disposeMe = Then as IDisposable;
 			if (disposeMe != null)
 				disposeMe.Dispose();
 
@@ -53,20 +54,7 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected virtual void OnTeardown() { }
 
-		/// <summary>
-		/// Dyanmic object to receive any necessary Given data for the current test.
-		/// </summary>
-		protected dynamic Given;
-
-		/// <summary>
-		/// Determine if all provided members have been defined as Given values.
-		/// </summary>
-		/// <param name="members">A list of property names</param>
-		/// <returns>True if all properties specified are defined, otherwise False.</returns>
-		protected bool GivensDefined(params string[] members)
-		{
-			return members.Length == 0 || members.All(member => Given.TestForMember(member));
-		}
+		
 
 		/// <summary>
 		/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
@@ -87,12 +75,7 @@ namespace Randal.Core.Testing.UnitTest
 		/// This is done so that the action can be executed in conjunction with an assertion mechanism other than MSTest's ExpectedException attribute.
 		/// </summary>
 		/// <param name="actions"></param>
-		protected void ThrowsExceptionWhen(params Action[] actions)
-		{
-			DeferLastActionWhen(actions);
-		}
-
-		protected void DeferLastActionWhen(params Action[] actions)
+		protected void WhenLastActionDeferred(params Action[] actions)
 		{
 			var listOfActions = actions.ToList();
 
@@ -124,8 +107,10 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected abstract void Creating();
 
+		protected TGivens Given;
+
 		protected TThens Then;
 
-		protected Action ThenLastAction { get; private set; }
+		protected Action ThenLastAction;
 	}
 }

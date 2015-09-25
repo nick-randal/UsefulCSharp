@@ -7,7 +7,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.Testing
 {
 	[TestClass]
-	public sealed class BaseUnitTestTests : BaseUnitTest<BaseUnitTestTests.Thens>
+	public sealed class UnitTestBaseTests : UnitTestBase<UnitTestBaseTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldRepeatAction_WhenRepeatIncrementing()
@@ -36,7 +36,7 @@ namespace Randal.Tests.Core.Testing
 		[TestMethod, NegativeTest]
 		public void ShouldHaveActionActionAvailableThroughProperty_WhenExpectingAnException()
 		{
-			ThrowsExceptionWhen(Exploding);
+			WhenLastActionDeferred(Exploding);
 
 			ThenLastAction.Should().NotBeNull();
 			ThenLastAction.ShouldThrow<Exception>("Did I do that?");
