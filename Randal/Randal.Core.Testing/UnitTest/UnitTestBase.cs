@@ -34,6 +34,8 @@ namespace Randal.Core.Testing.UnitTest
 			OnSetup();
 		}
 
+		public new dynamic Given;
+
 		/// <summary>
 		/// Determine if all provided members have been defined as Given values.
 		/// </summary>

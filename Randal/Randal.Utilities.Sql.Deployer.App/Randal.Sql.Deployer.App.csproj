@@ -93,6 +93,7 @@
     </Content>
     <None Include="LICENSE" />
     <None Include="packages.config" />
+    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Randal.Sql.Deployer.Shared\Randal.Sql.Deployer.Shared.csproj">

@@ -23,7 +23,13 @@ namespace Randal.Core.Dynamic
 		private readonly IDynamicEntityConverter _converter;
 		private readonly MissingMemberBehavior _missingMemberBehavior;
 
-		public DynamicEntity(MissingMemberBehavior missingMemberBehavior = MissingMemberBehavior.ThrowException,
+		public DynamicEntity()
+			: this(MissingMemberBehavior.ThrowException)
+		{
+			
+		}
+
+		public DynamicEntity(MissingMemberBehavior missingMemberBehavior,
 			IDynamicEntityConverter converter = null, IEqualityComparer<string> comparer = null)
 		{
 			_missingMemberBehavior = missingMemberBehavior;

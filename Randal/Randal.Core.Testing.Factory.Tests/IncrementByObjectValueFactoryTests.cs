@@ -8,7 +8,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
 	[TestClass]
-	public sealed class IncrementByObjectValueFactoryTests : BaseUnitTest<IncrementByObjectValueFactoryTests.Thens>
+	public sealed class IncrementByObjectValueFactoryTests : UnitTestBase<IncrementByObjectValueFactoryTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingStringValue()

@@ -26,7 +26,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
 	[TestClass]
-	public sealed class AutoModelFactoryTests : BaseUnitTest<AutoModelFactoryTests.Thens>
+	public sealed class AutoModelFactoryTests : UnitTestBase<AutoModelFactoryTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
@@ -39,7 +39,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		[TestMethod, PositiveTest]
 		public void ShouldNotThrowException_WhenPreparing()
 		{
-			DeferLastActionWhen(Preparing);
+			WhenLastActionDeferred(Preparing);
 
 			ThenLastAction.ShouldNotThrow();
 		}
@@ -118,7 +118,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenCreatingModel_GivenDidNotCallPrepare()
 		{
-			DeferLastActionWhen(CreatingModel);
+			WhenLastActionDeferred(CreatingModel);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
@@ -128,7 +128,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			Given.HowMany = 10;
 
-			DeferLastActionWhen(CreatingModels);
+			WhenLastActionDeferred(CreatingModels);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
