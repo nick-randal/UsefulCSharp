@@ -4,8 +4,8 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:Randal.Sql.Deployer.UI"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-		Title="SQL Script Deployer UI" Height="400" Width="600" ResizeMode="CanResizeWithGrip" 
-		MinWidth="500" MinHeight="300"
+		Title="SQL Script Deployer UI" Height="500" Width="800" ResizeMode="CanResizeWithGrip" 
+		MinWidth="600" MinHeight="400"
 		Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing" WindowStartupLocation="CenterScreen"
 		WindowStyle="SingleBorderWindow" WindowState="Normal"
 		d:DataContext="{d:DesignInstance Type=local:ViewModel}">
@@ -48,11 +48,11 @@
 				<MenuItem Header="_Exit" Command="Close" ></MenuItem>
 			</MenuItem>
 		</Menu>
-		<StatusBar DockPanel.Dock="Bottom" MinHeight="20">
+		<StatusBar DockPanel.Dock="Bottom" MinHeight="20" Background="#7CB2E2">
 			<Label Content="Loading..." HorizontalAlignment="Stretch" Margin="12,0,0,0" MinWidth="200" MaxHeight="22" Padding="0,0,0,0" HorizontalContentAlignment="Left"
-				   Foreground="CadetBlue" Name="Status"/>
+				   Foreground="Black" Name="Status"/>
 		</StatusBar>
-		<Grid DockPanel.Dock="Top" Background="SeaShell">
+		<Grid DockPanel.Dock="Top" Background="#D7EAFC">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="40"></RowDefinition>
 				<RowDefinition Height="40"></RowDefinition>
@@ -90,15 +90,19 @@
 			<CheckBox Grid.Row="4" Grid.Column="1" Content="Check Files Only" Name="CheckFilesOnly" IsChecked="{Binding CheckFilesOnly}" />
 			<CheckBox Grid.Row="4" Grid.Column="3" Content="Bypass Check" HorizontalAlignment="Left" Name="BypassCheck" IsChecked="{Binding BypassCheck}"/>
 			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
-				<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
-					   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" />
+				<ScrollViewer>
+					<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
+						   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" 
+						ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+				</ScrollViewer>
 			</Border>
 			<Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Deploy" HorizontalAlignment="Center" Margin="0,0,0,0" 
-					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick" Background="SteelBlue" Foreground="White"/>
-			<Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="5"
+					VerticalAlignment="Center" Width="100" Height="28" FontSize="14px" Click="DeployButton_OnClick" Background="#5693C9" Foreground="White"/>
+			<Border BorderBrush="Black" BorderThickness="1" Background="#90D7EAFC" Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="5"
 					Visibility="{Binding IsBusy, Converter={StaticResource BoolVisibilityConverter}}">
 				<Grid>
-					<TextBlock Margin="0" TextWrapping="Wrap" Text="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#7EFFFFFF"/>
+					<TextBlock Margin="0" TextWrapping="Wrap" Text="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#D7EAFC"
+							   />
 				</Grid>
 			</Border>
 		</Grid>
