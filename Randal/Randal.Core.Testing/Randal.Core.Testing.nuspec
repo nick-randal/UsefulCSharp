@@ -10,14 +10,14 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Added functions to simplify When repeating actions and awaiting asynchronous methods.</releaseNotes>
+		<releaseNotes>Bumped minimum core version.</releaseNotes>
 		<copyright>Copyright 2014-2015 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net40" />
 		</frameworkAssemblies>
 		<dependencies>
-			<dependency id="Randal.Core" version="1.0.0.4" />
+			<dependency id="Randal.Core" version="1.0.2" />
 		</dependencies>
 	</metadata>
 </package>

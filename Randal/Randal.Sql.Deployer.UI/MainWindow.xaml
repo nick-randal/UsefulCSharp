@@ -92,7 +92,7 @@
 			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 				<ScrollViewer>
 					<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
-						   Background="Black" Foreground="Beige" FontFamily="Segoe UI" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" 
+						   Background="Black" Foreground="Beige" FontFamily="Consolas" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" 
 						ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 				</ScrollViewer>
 			</Border>

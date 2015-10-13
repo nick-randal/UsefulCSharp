@@ -110,6 +110,7 @@ namespace Randal.Sql.Deployer.UI
 		private async void DeployButton_OnClick(object sender, RoutedEventArgs e)
 		{
 			UpdateStatus("Deploying...", true);
+			LogLine(string.Empty);
 
 			await Task.Delay(1000);
 
