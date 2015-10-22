@@ -136,21 +136,14 @@ namespace Randal.Sql.Deployer.Process
 
 		private static SqlConnection GetNewSqlConnection(DbConnectionStringBuilder builder)
 		{
-			try
-			{
-				var connection = new SqlConnection(builder.ConnectionString);
+			var connection = new SqlConnection(builder.ConnectionString);
 
-				connection.Open();
-				if (connection.State == ConnectionState.Open)
-					return connection;
+			connection.Open();
+			if (connection.State == ConnectionState.Open)
+				return connection;
 
-				connection.Dispose();
-				return null;
-			}
-			catch (SqlException)
-			{
-				return null;
-			}
+			connection.Dispose();
+			return null;
 		}
 
 		private void GetDatabaseNames()
