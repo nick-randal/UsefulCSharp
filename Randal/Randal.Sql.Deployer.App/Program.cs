@@ -57,7 +57,7 @@ namespace Randal.Sql.Deployer.App
 		{
 			try
 			{
-				logger.Add(("Attempting connect to UI Host '" + SharedConst.LogExchangeNetPipe + "'.").ToLogEntry());
+				logger.Add(("Attempting connection to UI Host '" + SharedConst.LogExchangeNetPipe + "'.").ToLogEntry());
 
 				var endPoint = new EndpointAddress(SharedConst.LogExchangeNetPipe);
 				var pipeFactory = new ChannelFactory<ILogExchange>(new NetNamedPipeBinding(), endPoint);

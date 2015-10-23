@@ -76,7 +76,7 @@ namespace Randal.Sql.Deployer.App
 		}
 
 		public const string
-			ProjectFolderHelpText = @"The project folder containg the config.json an all associated SQL files.",
+			ProjectFolderHelpText = @"The project folder containg the config.json or config.xml and all associated SQL scripts.",
 			ServerHelpText = @"The SQL Server that the project will be deployed against.",
 			LogFolderHelpText = @"Directory where the log file will be written.",
 			NoTransactionHelpText = "Do not use a transaction to execute scripts.",
