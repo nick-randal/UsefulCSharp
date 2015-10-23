@@ -14,6 +14,15 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("SQL Script Deployer Shared Library")]
-[assembly: AssemblyDescription("SQL Script Deployer Shared Library")]
-[assembly: Guid("46ebcb76-205a-4100-b56d-a8cc7744ab2f")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Nicholas Randal")]
+[assembly: AssemblyProduct("SQL Script Deployer Suite")]
+[assembly: AssemblyCopyright("Copyright © 2014-2015 Nicholas Randal, All Rights Reserved.")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+[assembly: ComVisible(false)]
+
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]
+[assembly: AssemblyInformationalVersion("1.2.0")]

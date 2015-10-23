@@ -36,6 +36,9 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Randal.Sql.Deployer\Properties\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ILogExchange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunnerResolution.cs" />

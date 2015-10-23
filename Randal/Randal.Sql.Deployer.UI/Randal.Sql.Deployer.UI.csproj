@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\Randal.Sql.Deployer\Properties\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="BoolVisibilityConverter.cs" />
     <Compile Include="DeploymentAppSettings.cs" />
     <Compile Include="LogExchange.cs" />

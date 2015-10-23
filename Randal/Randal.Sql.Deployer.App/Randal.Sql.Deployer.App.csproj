@@ -78,6 +78,9 @@
     <Reference Include="System.ServiceModel.Channels" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Randal.Sql.Deployer\Properties\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AppOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

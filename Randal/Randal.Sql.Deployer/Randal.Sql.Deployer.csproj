@@ -88,6 +88,7 @@
     <Compile Include="Process\SqlCommandWrapperFactory.cs" />
     <Compile Include="Process\SqlConnectionManager.cs" />
     <Compile Include="Process\ScriptFileDeployery.cs" />
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Scripts\Blocks\BaseScriptBlock.cs" />
     <Compile Include="Scripts\Blocks\CatalogBlock.cs" />
     <Compile Include="Scripts\Blocks\OptionsBlock.cs" />
