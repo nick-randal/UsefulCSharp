@@ -87,7 +87,6 @@
     <Compile Include="RunnerSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
     <None Include="App.config" />
     <Content Include="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
