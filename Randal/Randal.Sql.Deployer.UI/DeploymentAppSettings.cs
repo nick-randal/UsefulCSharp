@@ -17,6 +17,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Randal.Sql.Deployer.Shared;
 
 namespace Randal.Sql.Deployer.UI
 {
@@ -63,7 +64,8 @@ namespace Randal.Sql.Deployer.UI
 		{
 			var text = new StringBuilder();
 
-			text.AppendFormat(@"-p ""{0}"" -l ""{1}"" -s ""{2}""", ProjectFolder, LogFolder, SqlServer);
+			text.AppendFormat(@"-p ""{0}"" -l ""{1}"" -s ""{2}"" -e ""{3}""", 
+				ProjectFolder, LogFolder, SqlServer, SharedConst.LogExchangeNetPipe);
 
 			if (NoTransaction)
 				text.Append(" -n");

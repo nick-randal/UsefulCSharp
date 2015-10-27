@@ -31,6 +31,21 @@ namespace Randal.Sql.Deployer.App
 		public bool CheckFilesOnly { get; set; }
 
 		public bool BypassCheck { get; set; }
+
+		public string ExchangePath { get; set; }
+
+		public static explicit operator RunnerSettings(AppOptions options)
+		{
+			return new RunnerSettings(
+					options.ProjectFolder,
+					options.LogFolder,
+					options.Server,
+					options.Rollback,
+					options.NoTransaction,
+					options.CheckFilesOnly,
+					options.BypassCheck
+				);
+		}
 	}
 
 	public sealed class AppOptionsParser : FluentCommandLineParser<AppOptions>
@@ -73,6 +88,11 @@ namespace Randal.Sql.Deployer.App
 				.As('b', "bypassCheck")
 				.WithDescription(CheckFilesOnlyText)
 				.SetDefault(false);
+
+			Setup(x => x.ExchangePath)
+				.As('e', "exchangePath")
+				.WithDescription(ExchangePathText)
+				.SetDefault(null);
 		}
 
 		public const string
@@ -82,7 +102,10 @@ namespace Randal.Sql.Deployer.App
 			NoTransactionHelpText = "Do not use a transaction to execute scripts.",
 			RollbackHelptText = "Rollback the transaction, even if there were no errors.",
 			CheckFilesOnlyText = "Checks the scripts against provided patterns and no scripts will be deployed.  Cannot be used with noTrans.",
-			BypassCheckText = "Bypasses the pattern checker for scripts."
+			BypassCheckText = "Bypasses the pattern checker for scripts.",
+			ExchangePathText = "The data exchange channel path."
 		;
+
+		
 	}
 }

@@ -28,20 +28,11 @@ namespace Randal.Sql.Deployer.App
 				if (options == null)
 					return 2;
 
-				IRunnerSettings settings = new RunnerSettings(
-					options.ProjectFolder, 
-					options.LogFolder, 
-					options.Server, 
-					options.Rollback,
-					options.NoTransaction,
-					options.CheckFilesOnly,
-					options.BypassCheck
-				);
-
-
+				IRunnerSettings settings = (RunnerSettings) options;
+					
 				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
 				{
-					SendLogFilePathToExchange(logger);
+					SendLogFilePathToExchange(logger, options);
 					var runner = new Runner(settings, logger);
 					return (int)runner.Go();
 				}
@@ -53,10 +44,16 @@ namespace Randal.Sql.Deployer.App
 			}
 		}
 
-		private static void SendLogFilePathToExchange(AsyncFileLogger logger)
+		private static void SendLogFilePathToExchange(AsyncFileLogger logger, AppOptions options)
 		{
 			try
 			{
+				if (string.IsNullOrWhiteSpace(options.ExchangePath))
+				{
+					logger.Add("Exchange -e option not set, skipping.".ToLogEntry());
+					return;
+				}
+
 				logger.Add(("Attempting connection to UI Host '" + SharedConst.LogExchangeNetPipe + "'.").ToLogEntry());
 
 				var endPoint = new EndpointAddress(SharedConst.LogExchangeNetPipe);
