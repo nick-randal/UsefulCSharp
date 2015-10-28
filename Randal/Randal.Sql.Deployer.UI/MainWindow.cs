@@ -110,43 +110,27 @@ namespace Randal.Sql.Deployer.UI
 		private async void DeployButton_OnClick(object sender, RoutedEventArgs e)
 		{
 			UpdateStatus("Deploying...", true);
-			LogLine(string.Empty);
+			Output.WriteLine(string.Empty);
 
 			await Task.Delay(1000);
 
-			IProgress<string> progressOutput = new Progress<string>(text => LogLine(text));
-			IProgress<string> progressError = new Progress<string>(text => LogErrorLine(text));
+			IProgress<string> progressOutput = new Progress<string>(text => Output.WriteLine(text));
+			IProgress<string> progressError = new Progress<string>(text => Output.WriteLine(Brushes.LightPink, text));
 
 			var settings = (DeploymentAppSettings)Model;
 			settings.ApplicationPath = DeployerPath;
 			if (settings.ApplicationPath != null)
 			{
-				LogLine("Deployer: " + settings.ApplicationPath);
+				Output.WriteLine("Deployer: " + settings.ApplicationPath);
 				await new ScriptDeploymentProcess().Run(progressOutput, progressError, settings);
 			}
 			else
-				LogLine("Deployer application not found.");
+				Output.WriteLine("Deployer application not found.");
 
 			UpdateStatus();
 		}
 
-		private void LogLine(string message, params object[] values)
-		{
-			var text = string.Format(message, values);
-
-			Output.Inlines.AddRange(new TextBlockParser(text).Inlines);
-
-			//Output.Inlines.Add(new Run() { TextDecorations = TextDecorations.Underline });
-
-			//Output.Inlines.Add(new Run(string.Format(message, values)));
-			Output.Inlines.Add(new LineBreak());
-		}
-
-		private void LogErrorLine(string message, params object[] values)
-		{
-			Output.Inlines.Add(new Run(string.Format(message, values)) { Foreground = Brushes.LightPink });
-			Output.Inlines.Add(new LineBreak());
-		}
+		
 
 		private void ProjectFolder_OnTextChanged(object sender, TextChangedEventArgs e)
 		{
@@ -156,6 +140,20 @@ namespace Randal.Sql.Deployer.UI
 		private void LogFolder_OnTextChanged(object sender, TextChangedEventArgs e)
 		{
 			UpdateBackground(LogFolder, Directory.Exists(LogFolder.Text));
+		}
+
+
+		private void Output_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			var element = Output.InputHitTest(e.MouseDevice.GetPosition(Output)) as Run;
+			if (element == null)
+				return;
+
+			if (element.TextDecorations.Count(td => td.Location == TextDecorationLocation.Underline) == 0)
+				return;
+
+			Output.WriteLine(Brushes.MediumSpringGreen, "-> Opening log...");
+			Process.Start(element.Text);
 		}
 
 		private static void UpdateBackground(Control control, bool isValid)
@@ -181,8 +179,7 @@ namespace Randal.Sql.Deployer.UI
 			}
 			catch (Exception ex)
 			{
-				LogErrorLine(ex.Message);
-				LogErrorLine(ex.StackTrace);
+				Output.WriteLine(Brushes.LightPink, ex.Message);
 			}
 		}
 
@@ -230,17 +227,5 @@ namespace Randal.Sql.Deployer.UI
 			ConfigFileDialogFilter = "Config file|*.cfg",
 			DeployerFileDialogFilter = "Deployer App|*.exe"
 		;
-
-		private void Output_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-		{
-			var element = Output.InputHitTest(e.MouseDevice.GetPosition(Output)) as Run;
-			if (element == null)
-				return;
-
-			if (element.TextDecorations.Count(td => td.Location == TextDecorationLocation.Underline) == 0)
-				return;
-
-			Process.Start(element.Text);
-		}
 	}
 }

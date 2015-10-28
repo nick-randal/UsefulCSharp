@@ -4,7 +4,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:Randal.Sql.Deployer.UI"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-		Title="SQL Script Deployer UI" Height="500" Width="800" ResizeMode="CanResizeWithGrip" 
+		Title="SQL Script Deployer UI" Height="600" Width="800" ResizeMode="CanResizeWithGrip" 
 		MinWidth="600" MinHeight="400"
 		Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing" WindowStartupLocation="CenterScreen"
 		WindowStyle="SingleBorderWindow" WindowState="Normal"
@@ -92,7 +92,7 @@
 			<Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BorderThickness="1" BorderBrush="LightSlateGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 				<ScrollViewer>
 					<TextBlock HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch" Height="Auto"
-						   Background="Black" Foreground="Beige" FontFamily="Consolas" FontSize="12px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" 
+						   Background="Black" Foreground="GhostWhite" FontFamily="Consolas" FontSize="13px" Name="Output" MouseLeftButtonUp="Output_OnMouseLeftButtonUp" 
 						ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 				</ScrollViewer>
 			</Border>

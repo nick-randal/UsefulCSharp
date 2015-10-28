@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media;
 using Cursors = System.Windows.Input.Cursors;
 
@@ -29,7 +26,7 @@ namespace Randal.Sql.Deployer.UI
 			var matches = LinkPattern.Matches(text);
 
 			var index = 0;
-			var len = 0;
+			int len;
 
 			foreach (Match m in matches)
 			{
