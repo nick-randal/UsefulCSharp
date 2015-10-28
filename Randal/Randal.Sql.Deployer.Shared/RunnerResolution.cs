@@ -26,7 +26,7 @@ namespace Randal.Sql.Deployer.Shared
 		[Display(Name = "Rollback", Description = "Changes Rolled Back!")]
 		RolledBack		= -3,
 
-		[Display(Name = "Exception Thrown", Description = "An unexpected exception was thrown!")]
+		[Display(Name = "Execution Failed", Description = "An error occurred during deployment!")]
 		ExceptionThrown = -999
 	}
 }

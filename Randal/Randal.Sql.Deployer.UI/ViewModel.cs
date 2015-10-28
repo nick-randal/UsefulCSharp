@@ -210,22 +210,31 @@ namespace Randal.Sql.Deployer.UI
 
 		public async Task FindServersAsync()
 		{
-			var results = await Task.Factory.StartNew(() =>
+			var defaultItem = new ComboBoxItem {Content = "localhost"};
+
+			try
 			{
-				var dataTable = SmoApplication.EnumAvailableSqlServers(false);
-				return dataTable.Rows.Cast<DataRow>().Select(row => (string)row["Name"]).ToList();
-			});
-
-			var serverList = results.Select(name => 
-				new ComboBoxItem
+				var results = await Task.Factory.StartNew(() =>
 				{
-					Content = name,
-					Foreground = name == Environment.MachineName ? Brushes.SteelBlue : Brushes.Black
-				})
-				.ToList();
+					var dataTable = SmoApplication.EnumAvailableSqlServers(false);
+					return dataTable.Rows.Cast<DataRow>().Select(row => (string) row["Name"]).ToList();
+				});
 
-			serverList.Insert(0, new ComboBoxItem { Content = "localhost"} );
-			ServersList = serverList;
+				var serverList = results.Select(name =>
+					new ComboBoxItem
+					{
+						Content = name,
+						Foreground = name == Environment.MachineName ? Brushes.SteelBlue : Brushes.Black
+					})
+					.ToList();
+
+				serverList.Insert(0, defaultItem);
+				ServersList = serverList;
+			}
+			catch
+			{
+				ServersList = new List<ComboBoxItem> { defaultItem };
+			}
 		}
 
 		private void NotifyPropertyChanged(params string[] propNames)
