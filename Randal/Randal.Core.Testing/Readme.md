@@ -29,7 +29,7 @@ using Randal.Core.Testing.UnitTest;
 
 namespace Someplace
 {
-	public sealed class TestObjectTests : BaseUnitTest<TestObjectThens>
+	public sealed class TestObjectTests : UnitTestBase<TestObjectThens>
 	{
 		protected override void OnSetup()
 		{
