@@ -14,7 +14,7 @@ Setup the data and context for the test.
 Make the when actions composable.  The **When** and **WhenLastActionDeferred** methods take params array of Action methods.
 
 ####Then (Assert)
-A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions fron NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
+A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions from NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
 
 ####Features
 - Exception assertions closer to the origin of the thrown exception
