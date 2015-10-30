@@ -2,7 +2,7 @@
 
 This library provides a couple base classes to facilitate unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
-The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStuio(c).
+The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStduio(c).
 
 GWT is derives from AAA (Arrange Act Assert) but strives to provide organization and cleanliness in the code.
 
