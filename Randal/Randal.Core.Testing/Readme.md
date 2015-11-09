@@ -2,7 +2,7 @@
 
 This library provides a couple base classes to facilitate unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
-The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStuio(c).
+The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStduio(c).
 
 GWT is derives from AAA (Arrange Act Assert) but strives to provide organization and cleanliness in the code.
 
@@ -14,7 +14,7 @@ Setup the data and context for the test.
 Make the when actions composable.  The **When** and **WhenLastActionDeferred** methods take params array of Action methods.
 
 ####Then (Assert)
-A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions fron NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
+A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions from NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
 
 ####Features
 - Exception assertions closer to the origin of the thrown exception
@@ -29,7 +29,7 @@ using Randal.Core.Testing.UnitTest;
 
 namespace Someplace
 {
-	public sealed class TestObjectTests : BaseUnitTest<TestObjectThens>
+	public sealed class TestObjectTests : UnitTestBase<TestObjectThens>
 	{
 		protected override void OnSetup()
 		{
