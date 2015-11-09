@@ -1,4 +1,4 @@
-﻿--:: need ScriptC
+﻿--:: need scriptc
 --:: catalog model
 
 --:: ignore

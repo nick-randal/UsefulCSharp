@@ -95,7 +95,13 @@
     <Compile Include="Scripts\Blocks\CsvParameterBlock.cs" />
     <Compile Include="Scripts\Blocks\IgnoreScriptBlock.cs" />
     <Compile Include="Scripts\Blocks\NeedBlock.cs" />
+    <Compile Include="Scripts\IProject.cs" />
+    <Compile Include="Scripts\IScriptChecker.cs" />
+    <Compile Include="Scripts\IScriptCheckerConsumer.cs" />
+    <Compile Include="Scripts\IScriptParser.cs" />
+    <Compile Include="Scripts\IScriptParserConsumer.cs" />
     <Compile Include="Scripts\Project.cs" />
+    <Compile Include="Scripts\ScriptCheck.cs" />
     <Compile Include="Scripts\ScriptChecker.cs" />
     <Compile Include="Scripts\ScriptConstants.cs" />
     <Compile Include="Scripts\ScriptParser.cs" />

@@ -19,15 +19,6 @@ using Randal.Sql.Deployer.Configuration;
 
 namespace Randal.Sql.Deployer.Scripts
 {
-	public interface IProject
-	{
-		IProjectConfig Configuration { get; }
-		IReadOnlyList<SourceScript> NonPriorityScripts { get; }
-		IReadOnlyList<SourceScript> PriorityScripts { get; }
-
-		SourceScript TryGetScript(string scriptName);
-	}
-
 	public sealed class Project : IProject
 	{
 		private readonly Dictionary<string, SourceScript> _allScriptsLookup;
@@ -45,7 +36,7 @@ namespace Randal.Sql.Deployer.Scripts
 
 			Configuration = config;
 			_nonPriorityScripts = allScripts.ToList();
-			_allScriptsLookup = allScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.InvariantCultureIgnoreCase);
+			_allScriptsLookup = allScripts.ToDictionary(s => s.Name.ToLower(), s => s, StringComparer.OrdinalIgnoreCase);
 			_priorityScripts = new List<SourceScript>();
 			SetupPriorityScripts();
 

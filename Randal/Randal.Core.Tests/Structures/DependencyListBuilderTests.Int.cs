@@ -24,7 +24,7 @@ namespace Randal.Tests.Core.Structures
 	using ItemWithDependcies = Tuple<int, List<int>>;
 
 	[TestClass]
-	public sealed class DependencyListBuilderTests : BaseUnitTest<DependencyListBuilderThens>
+	public sealed class DependencyListBuilderOfIntsTests : UnitTestBase<DependencyListBuilderOfIntsTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveEmptyList_WhenCreatingNewObject()
@@ -85,7 +85,7 @@ namespace Randal.Tests.Core.Structures
 				.WithItem(5).IsDepedentOn(4, 1)
 				.WithItems(3, 4).Build();
 
-			ThrowsExceptionWhen(BuildingDependencies);
+			WhenLastActionDeferred(BuildingDependencies);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>("a circular reference was defined.")
 				.WithMessage("a circular reference was detected.  Circular path: \r\n1 -> 2 -> 5 -> 1");
@@ -96,7 +96,7 @@ namespace Randal.Tests.Core.Structures
 		{
 			Given.Values = new Builder().WithItem(1).IsDepedentOn(2).Build();
 
-			ThrowsExceptionWhen(BuildingDependencies);
+			WhenLastActionDeferred(BuildingDependencies);
 
 			ThenLastAction.ShouldThrow<KeyNotFoundException>();
 		}
@@ -106,7 +106,7 @@ namespace Randal.Tests.Core.Structures
 		{
 			Given.Values = null;
 
-			ThrowsExceptionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
@@ -151,11 +151,11 @@ namespace Randal.Tests.Core.Structures
 
 			private readonly List<ItemWithDependcies> _list = new List<ItemWithDependcies>();
 		}
-	}
 
-	public sealed class DependencyListBuilderThens
-	{
-		public DependencyListBuilder<int, ItemWithDependcies> DependencyListBuilder;
-		public List<ItemWithDependcies> OrderedList;
+		public sealed class Thens
+		{
+			public DependencyListBuilder<int, ItemWithDependcies> DependencyListBuilder;
+			public List<ItemWithDependcies> OrderedList;
+		}
 	}
 }

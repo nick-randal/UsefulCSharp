@@ -17,12 +17,6 @@ using System.Linq;
 
 namespace Randal.Core.Structures
 {
-	public interface IDependency<in TKey, TValue>
-	{
-		IReadOnlyList<TValue> OriginalValues { get; }
-		List<TValue> BuildDependencyList(Func<TValue, TKey> getKeyFunc, Func<TValue, IEnumerable<TKey>> getDependenciesFunc);
-	}
-
 	public sealed class DependencyListBuilder<TKey, TValue> : IDependency<TKey, TValue>
 	{
 		public DependencyListBuilder(IEnumerable<TValue> values)
@@ -34,9 +28,12 @@ namespace Randal.Core.Structures
 		}
 
 		public List<TValue> BuildDependencyList(Func<TValue, TKey> getKeyItemFunc,
-			Func<TValue, IEnumerable<TKey>> getDependenciesFunc)
+			Func<TValue, IEnumerable<TKey>> getDependenciesFunc, IEqualityComparer<TKey> comparer = null)
 		{
-			var dependencyLookup = _values.ToDictionary(getKeyItemFunc);
+			var dependencyLookup = comparer == null 
+				? _values.ToDictionary(getKeyItemFunc) 
+				: _values.ToDictionary(getKeyItemFunc, comparer);
+
 			var orderedItems = new List<TValue>();
 
 			foreach (var currentItem in _values)

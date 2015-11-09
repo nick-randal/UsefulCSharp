@@ -19,19 +19,6 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 
 namespace Randal.Sql.Deployer.Scripts
 {
-	public interface IScriptParserConsumer
-	{
-		bool HasFallbackRule { get; }
-		IReadOnlyList<string> RegisteredKeywords();
-		SourceScript Parse(string name, string text);
-	}
-
-	public interface IScriptParser : IScriptParserConsumer
-	{
-		void AddRule(string keyword, Func<string, IScriptBlock> blockRule);
-		void SetFallbackRule(Func<string, string, IScriptBlock> fallbackRule);
-	}
-
 	public sealed class ScriptParser : IScriptParser
 	{
 		public ScriptParser()

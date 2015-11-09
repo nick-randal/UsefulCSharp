@@ -20,25 +20,6 @@ using Pattern = System.Tuple<System.Text.RegularExpressions.Regex, Randal.Sql.De
 
 namespace Randal.Sql.Deployer.Scripts
 {
-	[Flags]
-	public enum ScriptCheck
-	{
-		Passed = 0,
-		Warning = 1,
-		Failed = 2,
-		Fatal = 4
-	}
-
-	public interface IScriptCheckerConsumer
-	{
-		ScriptCheck Validate(string input, IList<string> messages);
-	}
-
-	public interface IScriptChecker : IScriptCheckerConsumer
-	{
-		void AddValidationPattern(string pattern, ScriptCheck shouldIssue);
-	}
-
 	public class ScriptChecker : IScriptChecker
 	{
 		public ScriptChecker()

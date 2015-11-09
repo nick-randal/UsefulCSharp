@@ -63,7 +63,8 @@
     <Compile Include="Strings\StringFormatHelperTests.cs" />
     <Compile Include="Strings\NamedFieldFormatterTests.cs" />
     <Compile Include="Strings\TextTests.cs" />
-    <Compile Include="Structures\DependencyListBuilderTests.cs" />
+    <Compile Include="Structures\DependencyListBuilderTests.String.cs" />
+    <Compile Include="Structures\DependencyListBuilderTests.Int.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dynamic\NullConverterTests.cs" />
     <Compile Include="Dynamic\DictionaryConverterTests.cs" />

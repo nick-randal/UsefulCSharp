@@ -67,6 +67,7 @@
     <Compile Include="Strings\StringFormatterExtensions.cs" />
     <Compile Include="Strings\Text.cs" />
     <Compile Include="Structures\DependencyListBuilder.cs" />
+    <Compile Include="Structures\IDependency.cs" />
     <Compile Include="T4\BaseCodeDefinition.cs" />
     <Compile Include="T4\Constants.cs" />
     <Compile Include="T4\DbCodeDefinition.cs" />
