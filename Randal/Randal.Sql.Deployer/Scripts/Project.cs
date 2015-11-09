@@ -40,8 +40,9 @@ namespace Randal.Sql.Deployer.Scripts
 			_priorityScripts = new List<SourceScript>();
 			SetupPriorityScripts();
 
-			var builder = new DependencyListBuilder<string, SourceScript>(_nonPriorityScripts.OrderBy(x => x.Name));
-			_nonPriorityScripts = builder.BuildDependencyList(script => script.Name, script => script.GetNeeds());
+			var orderedList = _nonPriorityScripts.OrderBy(x => x.Name).ToList();
+			var builder = new DependencyListBuilder<string, SourceScript>(orderedList);
+			_nonPriorityScripts = builder.BuildDependencyList(script => script.Name, script => script.GetNeeds(), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public IProjectConfig Configuration { get; private set; }
