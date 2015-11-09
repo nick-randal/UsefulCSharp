@@ -67,8 +67,8 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Randal.Core, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Randal.Core.1.0.2\lib\net45\Randal.Core.dll</HintPath>
+    <Reference Include="Randal.Core, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Core.1.0.3\lib\net45\Randal.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Randal.Core.Testing, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
