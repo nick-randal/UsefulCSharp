@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2015 Nicholas Randal
+// Copyright (C) 2014-2016 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ using Scripter = Randal.Sql.Scripting.Scripter;
 namespace Randal.Tests.Sql.Scripting
 {
 	[TestClass]
-	public sealed class ScripterTests : BaseUnitTest<ScripterThens>
+	public sealed class ScripterTests : UnitTestBase<ScripterThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
@@ -94,7 +94,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenDumpingScripts_GivenNoSources()
 		{
-			ThrowsExceptionWhen(DumpingScripts);
+			WhenLastActionDeferred(DumpingScripts);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>("Sources need to be setup prior to dumping scripts.");
 		}
