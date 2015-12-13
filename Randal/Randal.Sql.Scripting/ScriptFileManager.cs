@@ -105,7 +105,8 @@ namespace Randal.Sql.Scripting
 			ConfigFileFormat = @"{{
 	""Project"": ""{0}"",
 	""Version"": ""{1}"",
-	""PriorityScripts"": [  ]
+	""PriorityScripts"": [ ],
+    ""Vars"": [ ]
 }}";
 
 	}

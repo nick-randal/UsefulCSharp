@@ -1,4 +1,4 @@
-﻿// Useful C#
+﻿ // Useful C#
 // Copyright (C) 2014-2016 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify

@@ -122,11 +122,6 @@ namespace Randal.Sql.Scripting
 
 				_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
 
-				if (so.Schema != "dbo")
-				{
-					_logger.AddEntry("WARNING: schema not dbo, but '{0}'", so.Schema);
-				}
-
 				if (scriptableObject.IsEncrypted)
 				{
 					_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);

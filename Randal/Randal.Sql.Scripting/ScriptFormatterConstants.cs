@@ -120,11 +120,11 @@ if(dbo.coreTableExists('{nameEsc}', '{schema}') = 0) begin
 end
 
 --:: main
-if(dbo.coreGetTableVersion('{nameEsc}') < '{version}') begin
+if(dbo.coreGetTableVersion('{schema}.{nameEsc}') < '{version}') begin
 
 	{main}
 
-	exec coreSetTableVersion '{nameEsc}', '{version}'
+	exec coreSetTableVersion '{schema}.{nameEsc}', '{version}'
 end
 
 /*
