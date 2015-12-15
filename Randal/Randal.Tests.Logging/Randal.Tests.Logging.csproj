@@ -104,7 +104,6 @@
     <Compile Include="TextWriterLoggerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
     <None Include="packages.config" />
     <Content Include="TestFiles\Logs\Test_004.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
