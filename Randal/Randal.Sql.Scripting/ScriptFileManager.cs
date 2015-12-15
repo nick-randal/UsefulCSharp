@@ -11,6 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using Newtonsoft.Json;
+using Randal.Sql.Deployer.Configuration;
 using System;
 using System.IO;
 using System.Linq;
@@ -66,14 +68,12 @@ namespace Randal.Sql.Scripting
 
 		private static void CreateConfigFile(string dbPath, string databaseName)
 		{
-			var file = new FileInfo(Path.Combine(dbPath, ConfigFileName));
+			var filePath = Path.Combine(dbPath, ConfigFileName);
 			var version = DateTime.Today.ToString(VersionFormat);
 
-			using (var stream = new StreamWriter(file.Exists ? file.OpenWrite() : file.Create()))
-			{
-				stream.Write(ConfigFileFormat, databaseName, version);
-				stream.Flush();
-			}
+			var config = new ProjectConfigJson(databaseName, version, null, null);
+			string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+			File.WriteAllText(filePath, json);
 		}
 
 		public IScriptFileManager DeleteAllFiles()
@@ -101,13 +101,6 @@ namespace Randal.Sql.Scripting
 			SqlExtension = ".sql", 
 			Wildcard = "*",
 			VersionFormat = "yy.MM.dd.01",
-			ConfigFileName = "config.json",
-			ConfigFileFormat = @"{{
-	""Project"": ""{0}"",
-	""Version"": ""{1}"",
-	""PriorityScripts"": [ ],
-    ""Vars"": [ ]
-}}";
-
+			ConfigFileName = "config.json";
 	}
 }

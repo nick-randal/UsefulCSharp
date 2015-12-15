@@ -28,8 +28,11 @@ namespace Randal.Sql.Deployer.Configuration
 			_vars = new List<Var>();
 		}
 
-		[XmlIgnore]
-		public override IReadOnlyList<string> PriorityScripts { get { return _priorityScripts; } }
+		[XmlElement]
+		public override string Project { get; set; }
+
+		[XmlElement]
+		public override string Version { get; set; }
 
 		[XmlArray(ElementName = "PriorityScripts"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
 		[XmlArrayItem("Script")]
@@ -39,23 +42,20 @@ namespace Randal.Sql.Deployer.Configuration
 			set { _priorityScripts = value; }
 		}
 
-		[XmlElement]
-		public override string Version { get; set; }
-
-		[XmlElement]
-		public override string Project { get; set; }
-
-		[XmlIgnore]
-		public override IReadOnlyDictionary<string, string> Vars
-		{
-			get { return _vars.ToDictionary(v => v.Name, v => v.Value, StringComparer.OrdinalIgnoreCase); }
-		}
-
 		[XmlArray(ElementName = "Vars"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
 		public List<Var> VarsInternal
 		{
 			get { return _vars; }
 			set { _vars = value; }
+		}
+
+		[XmlIgnore]
+		public override IReadOnlyList<string> PriorityScripts { get { return _priorityScripts; } }
+
+		[XmlIgnore]
+		public override IReadOnlyDictionary<string, string> Vars
+		{
+			get { return _vars.ToDictionary(v => v.Name, v => v.Value, StringComparer.OrdinalIgnoreCase); }
 		}
 
 		private List<string> _priorityScripts;

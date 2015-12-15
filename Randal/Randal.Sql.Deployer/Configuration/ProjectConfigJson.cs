@@ -20,11 +20,21 @@ namespace Randal.Sql.Deployer.Configuration
 	[DataContract]
 	public sealed class ProjectConfigJson : ProjectConfigBase
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public ProjectConfigJson() : this(null, null, null, null)
 		{
 		}
 
-		public ProjectConfigJson(string project, string version, IEnumerable<string> priorityScripts, IDictionary<string, string> vars)
+		/// <summary>
+		/// Project with priority scripts and optional vars
+		/// </summary>
+		/// <param name="project">A project name that uniquely identifies the collection of scripts.</param>
+		/// <param name="version">The current version of the project.</param>
+		/// <param name="priorityScripts">A list of priority script file names (without extension) or NULL.</param>
+		/// <param name="vars">A valid dictionary of replacement variable names and values or NULL.</param>
+		public ProjectConfigJson(string project, string version, IEnumerable<string> priorityScripts, IDictionary<string, string> vars = null)
 			:base(project, version)
 		{
 			_priorityScripts = priorityScripts == null ? new List<string>() : new List<string>(priorityScripts);
@@ -32,6 +42,12 @@ namespace Randal.Sql.Deployer.Configuration
 				? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) 
 				: new Dictionary<string, string>(vars, StringComparer.OrdinalIgnoreCase);
 		}
+
+		[DataMember(Name = "PriorityScripts")]
+		private readonly List<string> _priorityScripts;
+
+		[DataMember(Name = "Vars")]
+		private Dictionary<string, string> _vars;
 
 		[IgnoreDataMember]
 		public override IReadOnlyList<string> PriorityScripts
@@ -49,11 +65,5 @@ namespace Randal.Sql.Deployer.Configuration
 				return _vars;
 			}
 		}
-
-		[DataMember(Name = "Vars")] 
-		private Dictionary<string, string> _vars;
-
-		[DataMember(Name = "PriorityScripts")] 
-		private readonly List<string> _priorityScripts;
 	}
 }

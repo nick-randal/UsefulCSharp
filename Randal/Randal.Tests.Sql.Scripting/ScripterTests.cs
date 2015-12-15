@@ -22,6 +22,7 @@ using Randal.Logging;
 using Randal.Sql.Scripting;
 using Rhino.Mocks;
 using Scripter = Randal.Sql.Scripting.Scripter;
+using Randal.Tests.Sql.Scripting.Support;
 
 namespace Randal.Tests.Sql.Scripting
 {
@@ -42,7 +43,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveListItems_WhenAddingSources()
 		{
-			Given.Sources = new[] { new ScriptingSource("Temp", (srvr, db) => new ScriptSchemaObjectBase[0] ) };
+			Given.Sources = new[] { new ScriptingSource("Temp", (srvr, db) => new ScriptSchemaObjectBase[0]) };
 
 			When(AddingSources);
 
@@ -54,7 +55,7 @@ namespace Randal.Tests.Sql.Scripting
 		public void ShouldHaveListItems_WhenAddingDatabases_ExcludedDatabases()
 		{
 			Given.ExcludedDatabases = new[] { "tempdb", "msdb" };
-			
+
 			When(AddingDatabases);
 
 			Then.Target.ExcludedDatabases.Should().HaveCount(2);
@@ -82,11 +83,11 @@ namespace Randal.Tests.Sql.Scripting
 					new StoredProcedure(db, "mySp") { TextMode = false, IsEncrypted = false }
 				})
 			};
-			Given.Databases = new[] { new Database(new Server(), "master") };
+			Given.Databases = new[] { new Database(new Server("."), "Test_Randal_Sql") };
 
 			When(AddingSources, DumpingScripts);
 
-			Then.MockScriptFileManager.AssertWasCalled(x => 
+			Then.MockScriptFileManager.AssertWasCalled(x =>
 				x.WriteScriptFile(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Equal("mySp"), Arg<string>.Is.Anything)
 			);
 		}
@@ -99,9 +100,14 @@ namespace Randal.Tests.Sql.Scripting
 			ThenLastAction.ShouldThrow<InvalidOperationException>("Sources need to be setup prior to dumping scripts.");
 		}
 
+		protected override void OnSetup()
+		{
+			ServerSetup.Go();
+		}
+
 		private void DumpingScripts()
 		{
-			Then.MockServer.Stub(x => x.GetDatabases()).Return(new List<Database> { new Database(new Server(), "Test") }.AsEnumerable());
+			Then.MockServer.Stub(x => x.GetDatabases()).Return(new List<Database> { new Database(new Server(), "Test_Randal_Sql") }.AsEnumerable());
 
 			Then.Target.DumpScripts();
 		}
@@ -127,6 +133,8 @@ namespace Randal.Tests.Sql.Scripting
 				Database[] databases = Given.Databases;
 				Then.MockServer.Stub(x => x.GetDatabases()).Return(databases.ToList().AsEnumerable());
 			}
+
+			Then.MockServer.Stub(x => x.Name).Return(".");
 
 			Then.MockScriptFileManager = MockRepository.GenerateMock<IScriptFileManager>();
 			Then.MockLogger = MockRepository.GenerateMock<ILogger>();

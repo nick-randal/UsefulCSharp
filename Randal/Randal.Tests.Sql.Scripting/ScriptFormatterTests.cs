@@ -16,12 +16,13 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Scripting;
+using Randal.Tests.Sql.Scripting.Support;
 using Rhino.Mocks;
 
 namespace Randal.Tests.Sql.Scripting
 {
 	[TestClass]
-	public sealed class ScriptFormatterTests : BaseUnitTest<ScriptFormatterThens>
+	public sealed class ScriptFormatterTests : UnitTestBase<ScriptFormatterTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidScriptFormatterWhenCreatingInstace()
@@ -33,23 +34,32 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveText_WhenFormatting_GivenStoredProcedure()
 		{
-			Given.Procedure = "spTest";
+			Given.Procedure = "mySp";
+
 			When(Formatting);
+
 			Then.Text.Should()
-				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
-					"exec coreCreateProcedure 'spTest', 'dbo'\r\nGO\r\n\r\n--:: main\r\n" +
-					"ALTER procedure [dbo].[spTest]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[spTest] \r\n*/");
+				.Be("--:: catalog Test_Randal_Sql\r\n\r\n--:: ignore\r\nuse Test_Randal_Sql\r\n\r\n--:: pre\r\n" + 
+					"exec coreCreateProcedure 'mySp', 'dbo'\r\nGO\r\n\r\n--:: main\r\n" +
+					"ALTER procedure [dbo].[mySp]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[mySp] \r\n*/");
 		}
 
 		[TestMethod, PositiveTest]
 		public void ShouldHaveText_WhenFormatting_GivenUserDefinedFunction()
 		{
-			Given.Function = "'Test'";
+			Given.Function = "'myFunc'";
+
 			When(Formatting);
+
 			Then.Text.Should()
-				.Be("--:: catalog Test\r\n\r\n--:: ignore\r\nuse Test\r\n\r\n--:: pre\r\n" + 
-				"exec coreCreateFunction '''Test''', 'dbo', 'scalar'\r\nGO\r\n\r\n--:: main\r\n" + 
-				"ALTER FUNCTION [dbo].['Test']()\r\nRETURNS [int] AS \r\nbegin return -1 end\r\n\r\n/*\r\n	select [dbo].['Test']()\r\n*/");
+				.Be("--:: catalog Test_Randal_Sql\r\n\r\n--:: ignore\r\nuse Test_Randal_Sql\r\n\r\n--:: pre\r\n" +
+				"exec coreCreateFunction 'myFunc', 'dbo', 'scalar'\r\nGO\r\n\r\n--:: main\r\n" +
+				"ALTER FUNCTION [dbo].[myFunc]()\r\nRETURNS [int] WITH EXECUTE AS CALLER\r\nAS \r\n\r\nbegin return(-1); end\r\n\r\n/*\r\n	select [dbo].[myFunc]()\r\n*/");
+		}
+
+		protected override void OnSetup()
+		{
+			ServerSetup.Go();
 		}
 
 		protected override void Creating()
@@ -60,12 +70,13 @@ namespace Randal.Tests.Sql.Scripting
 		private void Formatting()
 		{
 			ScriptSchemaObjectBase schemaObject;
-			var server = MockRepository.GenerateMock<IServer>();
-			server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new DependencyCollectionNode[0]);
+			//var server = MockRepository.GenerateMock<IServer>();
+			//server.Stub(x => x.GetDependencies(Arg<SqlSmoObject>.Is.NotNull)).Return(new DependencyCollectionNode[0]);
 
+			/*
 			if (GivensDefined("Function"))
 			{
-				schemaObject = new UserDefinedFunction(new Database(new Server(), "Test"), Given.Function)
+				schemaObject = new UserDefinedFunction(new Database(new Server("."), "Test_Randal_Sql"), Given.Function)
 				{
 					TextMode = false,
 					DataType = DataType.Int,
@@ -76,21 +87,29 @@ namespace Randal.Tests.Sql.Scripting
 			}
 			else
 			{
-				schemaObject = new StoredProcedure(new Database(new Server(), "Test"), Given.Procedure)
+				schemaObject = new StoredProcedure(new Database(new Server("."), "Test_Randal_Sql"), Given.Procedure)
 				{
 					Schema = "dbo",
 					TextHeader = "create procedure getTest",
 					TextBody = "return -1"
 				};
-			}
+			}*/
+
+			var server = new Server(".");
+			var database = server.Databases["Test_Randal_Sql"];
+			
+			if (GivensDefined("Function"))
+				schemaObject = database.UserDefinedFunctions["myFunc", "dbo"];
+			else
+				schemaObject = database.StoredProcedures["mySp", "dbo"];
 
 			Then.Text = Then.Formatter.Format(new ScriptableObject(null, schemaObject));
 		}
-	}
 
-	public sealed class ScriptFormatterThens
-	{
-		public ScriptFormatter Formatter;
-		public string Text;
+		public sealed class Thens
+		{
+			public ScriptFormatter Formatter;
+			public string Text;
+		}
 	}
 }

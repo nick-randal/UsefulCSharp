@@ -28,8 +28,12 @@ namespace Randal.Sql.Deployer.Configuration
 			_version = version ?? "01.01.01.01";
 		}
 
-		
-		public abstract IReadOnlyList<string> PriorityScripts { get; }
+		[DataMember(IsRequired = true), XmlIgnore]
+		public virtual string Project
+		{
+			get { return _project; } 
+			set { _project = (value ?? string.Empty).Trim(); }
+		}
 
 		[DataMember(IsRequired = true), XmlIgnore]
 		public virtual string Version
@@ -38,12 +42,7 @@ namespace Randal.Sql.Deployer.Configuration
 			set { _version = (value ?? string.Empty).Trim(); }
 		}
 
-		[DataMember(IsRequired = true), XmlIgnore]
-		public virtual string Project
-		{
-			get { return _project; } 
-			set { _project = (value ?? string.Empty).Trim(); }
-		}
+		public abstract IReadOnlyList<string> PriorityScripts { get; }
 
 		public abstract IReadOnlyDictionary<string, string> Vars { get; }
 

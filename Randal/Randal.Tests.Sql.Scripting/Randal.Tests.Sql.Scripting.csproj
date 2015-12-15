@@ -113,6 +113,7 @@
     <Compile Include="ScriptFileManagerTests.cs" />
     <Compile Include="ScriptingSourceTests.cs" />
     <Compile Include="ScripterTests.cs" />
+    <Compile Include="Support\ServerSetup.cs" />
     <Compile Include="VersionExtensionTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -18,11 +18,12 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Sql.Scripting;
+using Randal.Tests.Sql.Scripting.Support;
 
 namespace Randal.Tests.Sql.Scripting
 {
 	[TestClass]
-	public sealed class ServerWrapperIntegrationTests : BaseUnitTest<ServerWrapperThens>
+	public sealed class ServerWrapperIntegrationTests : UnitTestBase<ServerWrapperIntegrationTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidWrapper_WhenCreatingInstance()
@@ -41,7 +42,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingProcedures()
 		{
-			Given.Database = "model";
+			Given.Database = "Test_Randal_Sql";
 			When(GettingDatabases, GettingProcedures);
 			Then.Procedures.Should().NotBeEmpty();
 		}
@@ -49,7 +50,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingViews()
 		{
-			Given.Database = "model";
+			Given.Database = "Test_Randal_Sql";
 			When(GettingDatabases, GettingViews);
 			Then.Views.Should().NotBeEmpty();
 		}
@@ -57,7 +58,7 @@ namespace Randal.Tests.Sql.Scripting
 		[TestMethod, PositiveTest]
 		public void ShouldHaveList_WhenGettingFunctions()
 		{
-			Given.Database = "model";
+			Given.Database = "Test_Randal_Sql";
 			When(GettingDatabases, GettingFunctions);
 			Then.Functions.Should().NotBeEmpty();
 		}
@@ -99,15 +100,20 @@ namespace Randal.Tests.Sql.Scripting
 		{
 			Then.Server = new ServerWrapper(new Server("."));
 		}
-	}
 
-	public sealed class ServerWrapperThens
-	{
-		public ServerWrapper Server;
-		public IEnumerable<Database> Databases;
-		public IEnumerable<UserDefinedFunction> Functions;
-		public IEnumerable<StoredProcedure> Procedures;
-		public IEnumerable<Table> Tables;
-		public IEnumerable<View> Views;
+		protected override void OnSetup()
+		{
+			ServerSetup.Go();
+		}
+
+		public sealed class Thens
+		{
+			public ServerWrapper Server;
+			public IEnumerable<Database> Databases;
+			public IEnumerable<UserDefinedFunction> Functions;
+			public IEnumerable<StoredProcedure> Procedures;
+			public IEnumerable<Table> Tables;
+			public IEnumerable<View> Views;
+		}
 	}
 }
