@@ -142,7 +142,7 @@ namespace Randal.Sql.Scripting
 					dependencyTypeList.Contains(x.Urn.Type) && 
 					sqlSmoObject.InSameDatabase(x)
 				)
-				.Select(x => x.Urn.GetNameForType(x.Urn.Type))
+				.Select(x => x.Urn.GetAttribute("Schema") + '.' + x.Urn.GetNameForType(x.Urn.Type) )
 				.ToList();
 
 			if (dependencies.Count == 0)

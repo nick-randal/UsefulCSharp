@@ -100,6 +100,8 @@ namespace Randal.Logging
 					DisposeOfCancellationToken();
 
 					DisposeOfReaderWriterLock();
+
+					_queuedEntries.Dispose();
 				}
 				catch (Exception ex)
 				{

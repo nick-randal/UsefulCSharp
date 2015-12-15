@@ -41,7 +41,7 @@ namespace Randal.Tests.Sql.Scripting
 			Then.Text.Should()
 				.Be("--:: catalog Test_Randal_Sql\r\n\r\n--:: ignore\r\nuse Test_Randal_Sql\r\n\r\n--:: pre\r\n" + 
 					"exec coreCreateProcedure 'mySp', 'dbo'\r\nGO\r\n\r\n--:: main\r\n" +
-					"ALTER procedure [dbo].[mySp]\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[mySp] \r\n*/");
+					"ALTER PROCEDURE [dbo].[mySp]\r\nAS\r\n\r\nbegin\r\n\treturn -1\r\nend\r\n\r\n/*\r\n	exec [dbo].[mySp] \r\n*/");
 		}
 
 		[TestMethod, PositiveTest]
