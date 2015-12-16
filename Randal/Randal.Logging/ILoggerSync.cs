@@ -12,14 +12,17 @@
 // GNU General Public License for more details.
 
 using System;
-using System.Threading.Tasks;
 
 namespace Randal.Logging
 {
-	public interface ILogger : ILoggerSync, ILoggerAsync
+	public interface ILoggerSync
 	{
-		void AddLogSink(ILogSink logSink);
-
-		Task CompleteAllAsync(int attemptsToComplete = 3, TimeSpan? delayBetweenAttempts = null);
+		void PostEntry(string message, params object[] values);
+		void PostEntry(Verbosity verbosity, string message, params object[] values);
+		void PostBlank(Verbosity verbosity = Verbosity.Info);
+		void PostEntryNoTimestamp(string message, params object[] values);
+		void PostEntryNoTimestamp(Verbosity verbosity, string message, params object[] values);
+		void PostException(Exception ex);
+		void PostException(Exception ex, string message, params object[] values);
 	}
 }

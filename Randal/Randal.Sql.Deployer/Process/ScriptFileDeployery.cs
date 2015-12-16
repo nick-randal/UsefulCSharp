@@ -102,18 +102,18 @@ namespace Randal.Sql.Deployer.Process
 
 		private void DeployPriorityScripts(SqlScriptPhase[] phases)
 		{
-			_logger.AddEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
+			_logger.PostEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
 
 			foreach (var script in Project.PriorityScripts)
 			{
-				_logger.AddEntry(Verbosity.Important, script.Name);
+				_logger.PostEntry(Verbosity.Important, script.Name);
 
 				foreach (var phase in phases)
 				{
 					if (script.HasSqlScriptPhase(phase) == false)
 						continue;
 
-					_logger.AddEntryNoTimestamp("  {0}", phase);
+					_logger.PostEntryNoTimestamp("  {0}", phase);
 					WriteScript(script, phase);
 					
 				}
@@ -122,7 +122,7 @@ namespace Randal.Sql.Deployer.Process
 
 		private void DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
-			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
+			_logger.PostEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
 				sqlScriptPhase);
 
 			_writer.WriteLine("-- deploying {0}", sqlScriptPhase);
@@ -130,7 +130,7 @@ namespace Randal.Sql.Deployer.Process
 
 			foreach (var script in Project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
-				_logger.AddEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
+				_logger.PostEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
 				WriteScript(script, sqlScriptPhase);
 			}
 		}
@@ -148,7 +148,7 @@ namespace Randal.Sql.Deployer.Process
 
 			foreach (var catalog in GetCatalogs(script))
 			{
-				_logger.AddEntryNoTimestamp("    {0}", catalog);
+				_logger.PostEntryNoTimestamp("    {0}", catalog);
 				WriteCommand(catalog, sql);
 			}
 		}
@@ -173,14 +173,14 @@ namespace Randal.Sql.Deployer.Process
 
 		private void CreateProjectsTable()
 		{
-			_logger.AddEntry("creating Projects table.");
+			_logger.PostEntry("creating Projects table.");
 
 			WriteCommand(DeployerConfig.ProjectsTableConfig.Database, DeployerConfig.ProjectsTableConfig.CreateTable);
 		}
 
 		private void AddProject()
 		{
-			_logger.AddEntry("adding project record.");
+			_logger.PostEntry("adding project record.");
 
 			WriteCommand(
 				DeployerConfig.ProjectsTableConfig.Database, 
@@ -196,7 +196,7 @@ namespace Randal.Sql.Deployer.Process
 		{
 			var readDbVersion = string.Format(DeployerConfig.ProjectsTableConfig.Read, Project.Configuration.Project, Project.Configuration.Version);
 
-			_logger.AddEntry("Looking up project '{0}'", Project.Configuration.Project);
+			_logger.PostEntry("Looking up project '{0}'", Project.Configuration.Project);
 
 			_writer.WriteLine("Use " + DeployerConfig.ProjectsTableConfig.Database);
 
@@ -221,7 +221,7 @@ namespace Randal.Sql.Deployer.Process
 			_writer.Dispose();
 		}
 		
-		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly ILoggerSync _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 		private readonly CatalogPatternLookup _patternLookup;
 		private readonly StreamWriter _writer;

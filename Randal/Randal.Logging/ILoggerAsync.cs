@@ -16,10 +16,20 @@ using System.Threading.Tasks;
 
 namespace Randal.Logging
 {
-	public interface ILogger : ILoggerSync, ILoggerAsync
+	public interface ILoggerAsync
 	{
-		void AddLogSink(ILogSink logSink);
+		Task PostEntryAsync(string message, params object[] values);
 
-		Task CompleteAllAsync(int attemptsToComplete = 3, TimeSpan? delayBetweenAttempts = null);
+		Task PostEntryAsync(Verbosity verbosity, string message, params object[] values);
+
+		Task PostBlankAsync(Verbosity verbosity = Verbosity.Info);
+
+		Task PostEntryNoTimestampAsync(string message, params object[] values);
+
+		Task PostEntryNoTimestampAsync(Verbosity verbosity, string message, params object[] values);
+
+		Task PostExceptionAsync(Exception ex);
+
+		Task PostExceptionAsync(Exception ex, string message, params object[] values);
 	}
 }

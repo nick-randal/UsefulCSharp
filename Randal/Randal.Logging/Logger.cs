@@ -81,6 +81,11 @@ namespace Randal.Logging
 			await PostEntryAsync(Verbosity.Info, message, values);
 		}
 
+		public void PostEntry(string message, params object[] values)
+		{
+			PostEntry(Verbosity.Info, message, values);
+		}
+
 		public async Task PostEntryAsync(Verbosity verbosity, string message, params object[] values)
 		{
 			var formatted = string.Format(message, values);
@@ -88,14 +93,31 @@ namespace Randal.Logging
 			await _buffer.SendAsync(new LogEntry(formatted, verbosity));
 		}
 
+		public void PostEntry(Verbosity verbosity, string message, params object[] values)
+		{
+			var formatted = string.Format(message, values);
+
+			_buffer.Post(new LogEntry(formatted, verbosity));
+		}
+
 		public async Task PostBlankAsync(Verbosity verbosity = Verbosity.Info)
 		{
 			await _buffer.SendAsync(new LogEntryNoTimestamp(string.Empty, verbosity));
 		}
 
+		public void PostBlank(Verbosity verbosity = Verbosity.Info)
+		{
+			_buffer.Post(new LogEntryNoTimestamp(string.Empty, verbosity));
+		}
+
 		public async Task PostEntryNoTimestampAsync(string message, params object[] values)
 		{
 			await PostEntryNoTimestampAsync(Verbosity.Info, message, values);
+		}
+
+		public void PostEntryNoTimestamp(string message, params object[] values)
+		{
+			PostEntryNoTimestamp(Verbosity.Info, message, values);
 		}
 
 		public async Task PostEntryNoTimestampAsync(Verbosity verbosity, string message, params object[] values)
@@ -105,9 +127,21 @@ namespace Randal.Logging
 			await _buffer.SendAsync(new LogEntryNoTimestamp(formatted, verbosity));
 		}
 
+		public void PostEntryNoTimestamp(Verbosity verbosity, string message, params object[] values)
+		{
+			var formatted = string.Format(message, values);
+
+			_buffer.Post(new LogEntryNoTimestamp(formatted, verbosity));
+		}
+
 		public async Task PostExceptionAsync(Exception ex)
 		{
 			await _buffer.SendAsync(new LogExceptionEntry(ex));
+		}
+
+		public void PostException(Exception ex)
+		{
+			_buffer.Post(new LogExceptionEntry(ex));
 		}
 
 		public async Task PostExceptionAsync(Exception ex, string message, params object[] values)
@@ -115,6 +149,13 @@ namespace Randal.Logging
 			var formatted = string.Format(message, values);
 
 			await _buffer.SendAsync(new LogExceptionEntry(ex, formatted));
+		}
+
+		public void PostException(Exception ex, string message, params object[] values)
+		{
+			var formatted = string.Format(message, values);
+
+			_buffer.Post(new LogExceptionEntry(ex, formatted));
 		}
 
 		public void Dispose()

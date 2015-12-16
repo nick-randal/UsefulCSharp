@@ -29,7 +29,7 @@ namespace Randal.Sql.Deployer.IO
 	{
 		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, IScriptCheckerConsumer scriptChecker = null, ILogger logger = null)
 		{
-			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
+			_logger = new Logger();
 
 			ProjectPath = projectPath;
 			ScriptParser = scriptParser;
@@ -50,15 +50,15 @@ namespace Randal.Sql.Deployer.IO
 		{
 			var projectDirectory = new DirectoryInfo(ProjectPath);
 
-			_logger.AddEntry("load configuration");
+			_logger.PostEntry("load configuration");
 
 			if (LoadConfiguration(projectDirectory) == Returned.Failure)
 				return Returned.Failure;
 
-			_logger.AddEntry("project '{0}' : '{1}'", Configuration.Project, Configuration.Version);
-			_logger.AddEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
+			_logger.PostEntry("project '{0}' : '{1}'", Configuration.Project, Configuration.Version);
+			_logger.PostEntry("priority scripts : [{0}]", string.Join(", ", Configuration.PriorityScripts));
 
-			_logger.AddEntry("validating scripts");
+			_logger.PostEntry("validating scripts");
 			return LoadAndValidateScripts(projectDirectory);
 		}
 
@@ -97,7 +97,7 @@ namespace Randal.Sql.Deployer.IO
 				errors++;
 			}
 
-			_logger.AddEntry("loaded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
+			_logger.PostEntry("loaded and parsed {0} file(s), {1} had errors", scriptFiles.Length, errors);
 
 			return result;
 		}
@@ -123,10 +123,10 @@ namespace Randal.Sql.Deployer.IO
 			if (messages == null)
 				return;
 
-			_logger.AddEntry(name);
+			_logger.PostEntry(name);
 
 			foreach (var message in messages)
-				_logger.AddEntryNoTimestamp(message);
+				_logger.PostEntryNoTimestamp(message);
 		}
 
 		private Returned LoadConfiguration(DirectoryInfo projectDirectory)
@@ -146,13 +146,13 @@ namespace Randal.Sql.Deployer.IO
 
 			if (configFileJson == null && configFileXml == null)
 			{
-				_logger.AddEntry(Verbosity.Vital, "no configuration file found for project (config.json or config.xml).");
+				_logger.PostEntry(Verbosity.Vital, "no configuration file found for project (config.json or config.xml).");
 				return Returned.Failure;
 			}
 
 			if (configFileJson != null && configFileXml != null)
 			{
-				_logger.AddEntry(Verbosity.Vital, "ambiguous configuration files found for project (config.json and config.xml).");
+				_logger.PostEntry(Verbosity.Vital, "ambiguous configuration files found for project (config.json and config.xml).");
 				return Returned.Failure;
 			}
 
@@ -193,7 +193,7 @@ namespace Randal.Sql.Deployer.IO
 			}
 		}
 
-		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly ILoggerSync _logger;
 		private readonly List<SourceScript> _allScripts;
 		private IScriptParserConsumer ScriptParser { get; set; }
 		private IScriptCheckerConsumer ScriptChecker { get; set; }

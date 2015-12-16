@@ -65,18 +65,18 @@ namespace Randal.Sql.Deployer.Process
 
 		private Returned DeployPriorityScripts(SqlScriptPhase[] phases)
 		{
-			_logger.AddEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
+			_logger.PostEntryNoTimestamp("{0}    Priority Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine);
 
 			foreach (var script in Project.PriorityScripts)
 			{
-				_logger.AddEntry(Verbosity.Important, script.Name);
+				_logger.PostEntry(Verbosity.Important, script.Name);
 
 				foreach (var phase in phases)
 				{
 					if (script.HasSqlScriptPhase(phase) == false)
 						continue;
 
-					_logger.AddEntryNoTimestamp("  {0}", phase);
+					_logger.PostEntryNoTimestamp("  {0}", phase);
 					try
 					{
 						ExecSql(script, phase);
@@ -94,12 +94,12 @@ namespace Randal.Sql.Deployer.Process
 
 		private Returned DeployPhase(SqlScriptPhase sqlScriptPhase)
 		{
-			_logger.AddEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
+			_logger.PostEntryNoTimestamp("{0}    {1} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{0}", Environment.NewLine,
 				sqlScriptPhase);
 
 			foreach (var script in Project.NonPriorityScripts.Where(s => s.HasSqlScriptPhase(sqlScriptPhase)))
 			{
-				_logger.AddEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
+				_logger.PostEntry(Verbosity.Important, "{0}  {1}", script.Name, sqlScriptPhase);
 
 				try
 				{
@@ -132,7 +132,7 @@ namespace Randal.Sql.Deployer.Process
 			{
 				foreach (var catalog in GetCatalogs(script))
 				{
-					_logger.AddEntryNoTimestamp("    {0}", catalog);
+					_logger.PostEntryNoTimestamp("    {0}", catalog);
 					if (configuration == null)
 						command.Execute(catalog);
 					else
@@ -161,7 +161,7 @@ namespace Randal.Sql.Deployer.Process
 
 		private void CreateProjectsTable()
 		{
-			_logger.AddEntry("creating Projects table.");
+			_logger.PostEntry("creating Projects table.");
 
 			using (var command = _connectionManager.CreateCommand(DeployerConfig.ProjectsTableConfig.CreateTable))
 			{
@@ -171,7 +171,7 @@ namespace Randal.Sql.Deployer.Process
 
 		private void AddProject()
 		{
-			_logger.AddEntry("adding project record.");
+			_logger.PostEntry("adding project record.");
 
 			var values = new object[]
 				{ Project.Configuration.Project, Project.Configuration.Version, Environment.MachineName, Environment.UserName };
@@ -189,7 +189,7 @@ namespace Randal.Sql.Deployer.Process
 
 			var projectVersion = new Version(projectConfig.Version);
 
-			_logger.AddEntry("Looking up project '{0}'", projectConfig.Project);
+			_logger.PostEntry("Looking up project '{0}'", projectConfig.Project);
 
 			using (
 				var command = _connectionManager.CreateCommand(DeployerConfig.ProjectsTableConfig.Read, projectConfig.Project, projectConfig.Version))
@@ -197,26 +197,26 @@ namespace Randal.Sql.Deployer.Process
 			{
 				if (reader.HasRows == false || reader.Read() == false || reader.IsDBNull(0))
 				{
-					_logger.AddEntry("never encountered this project before, continuing.");
+					_logger.PostEntry("never encountered this project before, continuing.");
 					return true;
 				}
 
 				databaseVersion = new Version(reader.GetString(0));
 			}
 
-			_logger.AddEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectConfig.Version);
+			_logger.PostEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectConfig.Version);
 
 			if (databaseVersion >= projectVersion)
 			{
-				_logger.AddEntry("project is older than or equal to what is currently deployed.");
+				_logger.PostEntry("project is older than or equal to what is currently deployed.");
 				return false;
 			}
 
-			_logger.AddEntry("project is newer than what is currently deployed, continuing.");
+			_logger.PostEntry("project is newer than what is currently deployed, continuing.");
 			return true;
 		}
 
-		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly ILoggerSync _logger;
 		private readonly ISqlConnectionManager _connectionManager;
 		private readonly CatalogPatternLookup _patternLookup;
 	}
