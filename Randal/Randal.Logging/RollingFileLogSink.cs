@@ -60,10 +60,12 @@ namespace Randal.Logging
 
 		public void Dispose()
 		{
-			if(string.IsNullOrWhiteSpace(_settings.ClosingText) == false)
+			WriteRepetitionInfo();
+
+			if (string.IsNullOrWhiteSpace(_settings.ClosingText) == false)
 				_logWriterManager.GetStreamWriter().WriteLine(_settings.ClosingText);
-			
-			_logWriterManager.Dispose();		
+
+			_logWriterManager.Dispose();
 		}
 
 		private void WriteRepetitionInfo()

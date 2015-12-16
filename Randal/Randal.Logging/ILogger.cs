@@ -18,6 +18,10 @@ namespace Randal.Logging
 {
 	public interface ILogger
 	{
+		void AddLogSink(ILogSink logSink);
+
+		Task CompleteAllAsync(int attemptsToComplete = 3, TimeSpan? delayBetweenAttempts = null);
+
 		Task PostEntryAsync(string message, params object[] values);
 
 		Task PostEntryAsync(Verbosity verbosity, string message, params object[] values);

@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Removed OWIN to separate library.</releaseNotes>
-    <copyright>Copyright 2014 Nicholas Randal</copyright>
+    <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
     <tags>Log,Logging,Asynchronous</tags>
   </metadata>
 </package>

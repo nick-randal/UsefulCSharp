@@ -35,22 +35,42 @@ namespace Randal.Logging
 
 			_broadcast = new BroadcastBlock<ILogEntry>(entry => entry, new DataflowBlockOptions { CancellationToken = _cancellationSource.Token });
 
-			_buffer.LinkTo(_broadcast, new DataflowLinkOptions { PropagateCompletion = true });
+			LinkDataflowBlocks(_buffer, _broadcast);
 
 			_sinks = new List<ActionBlock<ILogEntry>>();
 		}
 
-		public void AddLogSink(ILogSink logSink)
+		private static void LinkDataflowBlocks<TBlock>(ISourceBlock<TBlock> source, ITargetBlock<TBlock> target)
 		{
-			var block = new ActionBlock<ILogEntry>(entry => logSink.Post(entry), new ExecutionDataflowBlockOptions { CancellationToken = _cancellationSource.Token });
-			_sinks.Add(block);
-			_broadcast.LinkTo(block, new DataflowLinkOptions { PropagateCompletion = true });
+			source.LinkTo(target);
+			source.Completion.ContinueWith(t =>
+			{
+				if (t.IsFaulted) 
+					target.Fault(t.Exception);
+				else 
+					target.Complete();
+			});
 		}
 
-		public async Task CompleteAsync()
+		public void AddLogSink(ILogSink logSink)
+		{
+			var actionBlock = new ActionBlock<ILogEntry>(entry => logSink.Post(entry), new ExecutionDataflowBlockOptions { CancellationToken = _cancellationSource.Token });
+			_sinks.Add(actionBlock);
+
+			LinkDataflowBlocks(_broadcast, actionBlock);
+		}
+
+		public async Task CompleteAllAsync(int attemptsToComplete = 3, TimeSpan? delayBetweenAttempts = null)
 		{
 			try
 			{
+				for (var attempt = 0; _buffer.Count > 0 && attempt < attemptsToComplete; attempt++)
+				{
+					await Task.Delay(delayBetweenAttempts ?? new TimeSpan(0, 0, 1));
+				}
+
+				_buffer.Complete();
+
 				await Task.WhenAll(_sinks.Select(x => x.Completion).ToArray());
 			}
 			catch (OperationCanceledException) { }
@@ -107,9 +127,9 @@ namespace Randal.Logging
 			_cancellationSource.Dispose();
 		}
 
-		private CancellationTokenSource _cancellationSource;
-		private BufferBlock<ILogEntry> _buffer;
-		private BroadcastBlock<ILogEntry> _broadcast;
-		private List<ActionBlock<ILogEntry>> _sinks;
+		private readonly CancellationTokenSource _cancellationSource;
+		private readonly BufferBlock<ILogEntry> _buffer;
+		private readonly BroadcastBlock<ILogEntry> _broadcast;
+		private readonly List<ActionBlock<ILogEntry>> _sinks;
 	}
 }
