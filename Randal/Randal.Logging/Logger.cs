@@ -22,7 +22,7 @@ namespace Randal.Logging
 {
 	public sealed class Logger : ILogger, IDisposable
 	{
-		public Logger(int maxBufferCapacity = 100)
+		public Logger(int maxBufferCapacity = 100, params ILogSink[] sinks)
 		{
 			_cancellationSource = new CancellationTokenSource();
 
@@ -38,6 +38,9 @@ namespace Randal.Logging
 			LinkDataflowBlocks(_buffer, _broadcast);
 
 			_sinks = new List<ActionBlock<ILogEntry>>();
+
+			foreach(var sink in sinks)
+				AddLogSink(sink);
 		}
 
 		private static void LinkDataflowBlocks<TBlock>(ISourceBlock<TBlock> source, ITargetBlock<TBlock> target)

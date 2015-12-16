@@ -22,7 +22,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class SqlCommandBlockTests : BaseUnitTest<SqlCommandBlockThens>
+	public sealed class SqlCommandBlockTests : UnitTestBase<SqlCommandBlockThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveInstanceAfterConstruction()
@@ -87,7 +87,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			ThrowsExceptionWhen(ParsingSqlTextBlock, RequestingForExecution, RequestingForExecution);
+			WhenLastActionDeferred(ParsingSqlTextBlock, RequestingForExecution, RequestingForExecution);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>().WithMessage("Cannot request execution for script block more than once.");
 		}
@@ -99,7 +99,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 			Given.Keyword = "main";
 			Given.Phase = SqlScriptPhase.Main;
 
-			ThrowsExceptionWhen(RequestingForExecution);
+			WhenLastActionDeferred(RequestingForExecution);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>().WithMessage("Cannot execute invalid script block.");
 		}

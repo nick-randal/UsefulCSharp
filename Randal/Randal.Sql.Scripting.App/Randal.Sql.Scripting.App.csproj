@@ -88,8 +88,8 @@
     <Reference Include="Microsoft.SqlServer.SqlEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Randal.Logging, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Randal.Logging.2.1.0\lib\net45\Randal.Logging.dll</HintPath>
+    <Reference Include="Randal.Logging, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Logging.2.2.0\lib\net45\Randal.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

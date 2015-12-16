@@ -20,7 +20,7 @@ using Randal.Sql.Deployer.Helpers;
 namespace Randal.Tests.Sql.Deployer.Helpers
 {
 	[TestClass]
-	public sealed class CatalogPatternLookupTests : BaseUnitTest<CatalogPatternLookupThens>
+	public sealed class CatalogPatternLookupTests : UnitTestBase<CatalogPatternLookupThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveEmptyLookup_WhenCreatingInstance()

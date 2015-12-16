@@ -33,7 +33,7 @@ namespace Randal.Sql.Scripting
 			_excludeTheseDatabases = new List<string>();
 			_sources = new List<ScriptingSource>();
 			_formatter = formatter ?? new ScriptFormatter();
-			_logger = new LoggerStringFormatWrapper(logger);
+			_logger = logger;
 		}
 
 		public IReadOnlyList<string> IncludedDatabases { get { return _includeTheseDatabases.AsReadOnly(); } }
@@ -87,20 +87,20 @@ namespace Randal.Sql.Scripting
 			foreach (var database in GetDatabases())
 			{
 				timeTracker.Start();
-				_logger.AddEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
+				_logger.PostEntryNoTimestamp("~~~~~~~~~~ {0,-20} ~~~~~~~~~~", database.Name);
 				try
 				{
 					processed = DumpAllScripts(database);
 				}
 				catch (Exception ex)
 				{
-					_logger.AddException(ex);
+					_logger.PostException(ex);
 				}
 				finally
 				{
 					timeTracker.Stop();
-					_logger.AddEntry("Elapsed time: {0}", timeTracker.Elapsed);
-					_logger.AddEntryNoTimestamp("~~~~~~~~~~ processed {0} SQL objects ~~~~~~~~~~", processed);
+					_logger.PostEntry("Elapsed time: {0}", timeTracker.Elapsed);
+					_logger.PostEntryNoTimestamp("~~~~~~~~~~ processed {0} SQL objects ~~~~~~~~~~", processed);
 					timeTracker.Reset();
 				}
 			}
@@ -120,11 +120,11 @@ namespace Randal.Sql.Scripting
 			{
 				var so = scriptableObject.SchemaObject;
 
-				_logger.AddEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
+				_logger.PostEntry("{0} {1}.{2}", MapTypeName(so.GetType().Name), so.Schema, so.Name);
 
 				if (scriptableObject.IsEncrypted)
 				{
-					_logger.AddEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);
+					_logger.PostEntry("WARNING: schema object '{0}.{1}' is encrypted. SKIPPING.", so.Schema, so.Name);
 					continue;
 				}
 
@@ -145,7 +145,7 @@ namespace Randal.Sql.Scripting
 		{
 			var scriptableObjects = new List<ScriptableObject>();
 
-			_logger.AddEntry("Loading scriptable objects.");
+			_logger.PostEntry("Loading scriptable objects.");
 
 			var cancellation = new CancellationTokenSource();
 
@@ -163,7 +163,7 @@ namespace Randal.Sql.Scripting
 							.GetScriptableObjects(new ServerWrapper(server), db)
 							.Select(so => new ScriptableObject(source, so)).ToList().ForEach(temp.Add);
 
-						_logger.AddEntry("Found {0} {1}.", temp.Count, src.SubFolder);
+						_logger.PostEntry("Found {0} {1}.", temp.Count, src.SubFolder);
 
 						return temp;
 					}, 
@@ -179,7 +179,7 @@ namespace Randal.Sql.Scripting
 
 			tasks.ForEach(t => scriptableObjects.AddRange(t.Result));
 
-			_logger.AddEntry("Found {0} total schema objects.", scriptableObjects.Count);
+			_logger.PostEntry("Found {0} total schema objects.", scriptableObjects.Count);
 
 			return scriptableObjects;
 		}
@@ -188,7 +188,7 @@ namespace Randal.Sql.Scripting
 		{
 			foreach (var source in _sources)
 			{
-				_logger.AddEntry("Setup script directory '{0}'.", source.SubFolder);
+				_logger.PostEntry("Setup script directory '{0}'.", source.SubFolder);
 				_scriptFileManager.SetupScriptDirectory(database.Name, source.SubFolder);
 			}
 		}
@@ -205,14 +205,14 @@ namespace Randal.Sql.Scripting
 
 			var csvDuplicates = string.Join(", ", duplicates);
 
-			_logger.AddEntry("Duplicate scripts for: {0}", csvDuplicates);
+			_logger.PostEntry("Duplicate scripts for: {0}", csvDuplicates);
 
 			throw new DuplicateNameException(csvDuplicates);
 		}
 
 		private IEnumerable<Database> GetDatabases()
 		{
-			_logger.AddEntry("Getting databases based on options.");
+			_logger.PostEntry("Getting databases based on options.");
 			var databases = _server.GetDatabases().AsQueryable();
 
 			if (_includeTheseDatabases.Count > 0)
@@ -224,7 +224,7 @@ namespace Randal.Sql.Scripting
 
 			var databaseList = databases.ToList();
 
-			_logger.AddEntry("Databases: {0}",
+			_logger.PostEntry("Databases: {0}",
 				string.Join(", ", databaseList.Select(db => db.Name))
 			);
 
@@ -249,7 +249,7 @@ namespace Randal.Sql.Scripting
 		private readonly IServer _server;
 		private readonly IScriptFormatter _formatter;
 		private readonly IScriptFileManager _scriptFileManager;
-		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly ILoggerSync _logger;
 		private readonly List<ScriptingSource> _sources;
 		private readonly List<string> _includeTheseDatabases, _excludeTheseDatabases; 
 	}

@@ -32,7 +32,7 @@ namespace Randal.Sql.Deployer.Process
 				throw new ArgumentNullException("project");
 
 			_connectionManager = connectionManager;
-			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
+			_logger = logger ?? new Logger();
 			_patternLookup = new CatalogPatternLookup();
 
 			var fileName = string.Format("{0}_{1}_v{2}.sql", connectionManager.Server, project.Configuration.Project, project.Configuration.Version.Replace('.', '-'));
@@ -83,7 +83,7 @@ namespace Randal.Sql.Deployer.Process
 			}
 			catch (Exception ex)
 			{
-				_logger.AddException(ex);
+				_logger.PostException(ex);
 
 				_writer.Flush();
 				_writer.BaseStream.Position = 0;

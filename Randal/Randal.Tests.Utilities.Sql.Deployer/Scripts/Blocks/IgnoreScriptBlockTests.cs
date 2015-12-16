@@ -19,7 +19,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class IgnoreScriptBlockTests : BaseUnitTest<IgnoreScriptBlockThens>
+	public sealed class IgnoreScriptBlockTests : UnitTestBase<IgnoreScriptBlockThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidIgnoreScriptBlockWhenCreating()

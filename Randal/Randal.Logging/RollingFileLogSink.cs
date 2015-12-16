@@ -15,7 +15,7 @@ using System;
 
 namespace Randal.Logging
 {
-	public sealed class RollingFileLogSink : ILogSink
+	public sealed class RollingFileLogSink : IRollingFileLogSink
 	{
 		public RollingFileLogSink(IRollingFileSettings settings, IRollingFileManager logWriterManager = null, ILogEntryFormatter formatter = null, Verbosity verbosity = Verbosity.All)
 		{

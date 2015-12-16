@@ -22,7 +22,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	[TestClass]
-	public sealed class SourceScriptTests : BaseUnitTest<SourceScriptThens>
+	public sealed class SourceScriptTests : UnitTestBase<SourceScriptThens>
 	{
 		protected override void OnSetup()
 		{
@@ -150,7 +150,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Name = null;
 
-			ThrowsExceptionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
@@ -182,7 +182,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.RequestedPhase = SqlScriptPhase.Main;
 
-			ThrowsExceptionWhen(Validating, RequestingPhase);
+			WhenLastActionDeferred(Validating, RequestingPhase);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}

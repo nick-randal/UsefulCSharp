@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass]
-	public sealed class ScriptDeployerTests : BaseUnitTest<ScriptDeployerTests.Thens>
+	public sealed class ScriptDeployerTests : UnitTestBase<ScriptDeployerTests.Thens>
 	{
 		protected override void OnSetup()
 		{
@@ -52,7 +52,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenNullProject()
 		{
 			Given.Project = null;
-			ThrowsExceptionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
@@ -60,7 +60,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		public void ShouldThrowExceptionWhenCreatingInstanceGivenNullConnectionManager()
 		{
 			Given.ConnectionManager = null;
-			ThrowsExceptionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
@@ -86,7 +86,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		protected override void Creating()
 		{
 			var config = Given.Config ?? new ScriptDeployerConfig();
-			Then.Deployer = new SqlServerDeployer(config, Given.Project, Given.ConnectionManager, new StringLogger());
+			Then.Deployer = new SqlServerDeployer(config, Given.Project, Given.ConnectionManager, new NullLogger());
 			Then.Manager = Given.ConnectionManager;
 		}
 

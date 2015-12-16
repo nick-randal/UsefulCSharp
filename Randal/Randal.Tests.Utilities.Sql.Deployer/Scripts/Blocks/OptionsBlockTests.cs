@@ -21,7 +21,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class OptionsBlockTests : BaseUnitTest<OptionsBlockThens>
+	public sealed class OptionsBlockTests : UnitTestBase<OptionsBlockThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveTimeoutBlockWhenCreaatingInstance()

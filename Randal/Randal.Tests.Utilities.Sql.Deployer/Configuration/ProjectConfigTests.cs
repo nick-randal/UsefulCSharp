@@ -23,7 +23,7 @@ using Randal.Sql.Deployer.Configuration;
 namespace Randal.Tests.Sql.Deployer.Configuration
 {
 	[TestClass]
-	public sealed class ProjectConfigTests : BaseUnitTest<InstallerConfigThens>
+	public sealed class ProjectConfigTests : UnitTestBase<InstallerConfigThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveInvalidConfig_WhenCreating()

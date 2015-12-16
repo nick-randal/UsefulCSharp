@@ -22,7 +22,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	[TestClass]
-	public sealed partial class ScriptParserTests : BaseUnitTest<ScriptParserThens>
+	public sealed partial class ScriptParserTests : UnitTestBase<ScriptParserThens>
 	{
 		protected override void OnSetup()
 		{
@@ -79,7 +79,7 @@ namespace Randal.Tests.Sql.Deployer.Scripts
 		{
 			Given.Text = "--:: unknown\nselect 1\nGO\n";
 
-			ThrowsExceptionWhen(Parsing);
+			WhenLastActionDeferred(Parsing);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}

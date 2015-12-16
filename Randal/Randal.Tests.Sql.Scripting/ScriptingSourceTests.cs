@@ -23,7 +23,7 @@ using Randal.Sql.Scripting;
 namespace Randal.Tests.Sql.Scripting
 {
 	[TestClass]
-	public sealed class ScriptingSourceTests : BaseUnitTest<ScriptingSourceThens>
+	public sealed class ScriptingSourceTests : UnitTestBase<ScriptingSourceThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveInstance_WhenCreating_GivenValidValues()

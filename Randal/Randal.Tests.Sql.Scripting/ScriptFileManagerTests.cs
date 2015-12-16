@@ -20,7 +20,7 @@ using Randal.Sql.Scripting;
 namespace Randal.Tests.Sql.Scripting
 {
 	[TestClass]
-	public sealed class ScriptFileManagerTests : BaseUnitTest<ScriptFileManagerThens>
+	public sealed class ScriptFileManagerTests : UnitTestBase<ScriptFileManagerThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveDirectory_WhenCreatingDirectory()

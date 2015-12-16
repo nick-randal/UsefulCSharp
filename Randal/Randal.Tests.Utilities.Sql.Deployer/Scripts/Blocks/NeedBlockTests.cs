@@ -21,7 +21,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class NeedBlockTests : BaseUnitTest<NeedBlockThens>
+	public sealed class NeedBlockTests : UnitTestBase<NeedBlockThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveInvalidBlock_WhenCreating()

@@ -18,7 +18,7 @@ namespace Randal.Sql.Deployer.App
 {
 	public interface IRunnerSettings
 	{
-		FileLoggerSettings FileLoggerSettings { get; }
+		IRollingFileSettings FileLoggerSettings { get; }
 		string ScriptProjectFolder { get; }
 		string Server { get; }
 		bool NoTransaction { get; }
@@ -46,10 +46,10 @@ namespace Randal.Sql.Deployer.App
 			_checkFilesOnly = checkFilesOnly;
 			_bypassCheck = bypassCheck;
 
-			_fileLoggerSettings = new FileLoggerSettings(logFolder, "SqlScriptDeployer");
+			_fileLoggerSettings = new RollingFileSettings(logFolder, "SqlScriptDeployer");
 		}
 
-		public FileLoggerSettings FileLoggerSettings { get { return _fileLoggerSettings; } }
+		public IRollingFileSettings FileLoggerSettings { get { return _fileLoggerSettings; } }
 
 		public string ScriptProjectFolder { get { return _scriptProjectFolder; } }
 
@@ -66,7 +66,7 @@ namespace Randal.Sql.Deployer.App
 		public bool BypassCheck { get { return _bypassCheck; } }
 
 		private readonly bool _noTransaction, _checkFilesOnly, _rollback, _bypassCheck;
-		private readonly FileLoggerSettings _fileLoggerSettings;
+		private readonly IRollingFileSettings _fileLoggerSettings;
 		private readonly string _scriptProjectFolder, _server;
 	}
 }

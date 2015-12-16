@@ -25,7 +25,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass, DeploymentItem(Test.Paths.ProjectA, Test.Paths.ProjectA)]
-	public sealed class ScriptDeployerIntegrationTests : BaseUnitTest<ScriptDeployerIntegrationThens>
+	public sealed class ScriptDeployerIntegrationTests : UnitTestBase<ScriptDeployerIntegrationThens>
 	{
 		protected override void OnSetup()
 		{
@@ -42,7 +42,9 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 			Given.Config = config;
 
-			Then.Logger = new StringLogger();
+			Then.Logger = new Logger();
+			Then.LogSink = new StringLogSink();
+			Then.Logger.AddLogSink(Then.LogSink);
 			var manager = new SqlConnectionManager(Given.Config.DatabaseLookup);
 			manager.OpenConnection(".", "model");
 			manager.BeginTransaction();
@@ -112,7 +114,8 @@ namespace Randal.Tests.Sql.Deployer.Process
 	public sealed class ScriptDeployerIntegrationThens
 	{
 		public ISqlConnectionManager Manager;
-		public StringLogger Logger;
+		public StringLogSink LogSink;
+		public Logger Logger;
 		public SqlServerDeployer Deployer;
 		public Returned DeployReturned;
 		public bool CanUpgrade;

@@ -20,7 +20,7 @@ using Randal.Sql.Deployer.Process;
 namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass]
-	public sealed class SqlConnectionManagerTests : BaseUnitTest<ScriptDeployerThens>
+	public sealed class SqlConnectionManagerTests : UnitTestBase<ScriptDeployerThens>
 	{
 		protected override void OnTeardown()
 		{
@@ -70,7 +70,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 		[TestMethod, NegativeTest]
 		public void ShouldThrowException_WhenBeginningTransaction_GivenNoOpenConnection()
 		{
-			ThrowsExceptionWhen(BeginningTransaction);
+			WhenLastActionDeferred(BeginningTransaction);
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 

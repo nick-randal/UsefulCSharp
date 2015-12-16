@@ -46,7 +46,9 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="ILoggerAsync.cs" />
     <Compile Include="ILoggerSync.cs" />
+    <Compile Include="IRollingFileLogSink.cs" />
     <Compile Include="IRollingFileSettings.cs" />
+    <Compile Include="NullLogger.cs" />
     <Compile Include="RollingFileLogSink.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="TextWriterLogSink.cs" />

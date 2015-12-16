@@ -28,7 +28,7 @@ namespace Randal.Tests.Sql.Deployer.Configuration
 	/// Created by nrandal on 7/21/2015 7:51:40 AM
 	/// </summary>
 	[TestClass]
-	public sealed class FilterTests : BaseUnitTest<FilterTests.Thens>
+	public sealed class FilterTests : UnitTestBase<FilterTests.Thens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()

@@ -20,7 +20,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class BaseScriptBlockTests : BaseUnitTest<BaseScriptBlockThens>
+	public sealed class BaseScriptBlockTests : UnitTestBase<BaseScriptBlockThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveNonEmptyTextAfterInstantiation()

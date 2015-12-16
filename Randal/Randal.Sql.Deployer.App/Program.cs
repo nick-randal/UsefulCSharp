@@ -13,6 +13,7 @@
 
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Randal.Logging;
 using Randal.Sql.Deployer.Shared;
 
@@ -29,43 +30,51 @@ namespace Randal.Sql.Deployer.App
 					return 2;
 
 				IRunnerSettings settings = (RunnerSettings) options;
-					
-				using (var logger = new AsyncFileLogger(settings.FileLoggerSettings))
+
+
+				using (var logger = new Logger())
+				using (var rollingFileLogSink = new RollingFileLogSink(settings.FileLoggerSettings))
 				{
-					SendLogFilePathToExchange(logger, options);
+					logger.AddLogSink(rollingFileLogSink);
+
+					SendLogFilePathToExchange(logger, rollingFileLogSink, options);
 					var runner = new Runner(settings, logger);
-					return (int)runner.Go();
+
+					var goValue = (int) runner.Go();
+					
+					logger.CompleteAllAsync().Wait(new TimeSpan(0, 0, 3));
+
+					return goValue;
 				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
-				return (int)RunnerResolution.ExceptionThrown;
+				return (int) RunnerResolution.ExceptionThrown;
 			}
 		}
 
-		private static void SendLogFilePathToExchange(AsyncFileLogger logger, AppOptions options)
+		private static void SendLogFilePathToExchange(ILoggerSync logger, IRollingFileLogSink fileLogSink, AppOptions options)
 		{
 			try
 			{
 				if (string.IsNullOrWhiteSpace(options.ExchangePath))
 				{
-					logger.Add("Exchange -e option not set, skipping.".ToLogEntry());
+					logger.PostEntry("Exchange -e option not set, skipping.");
 					return;
 				}
 
-				logger.Add(("Attempting connection to UI Host '" + SharedConst.LogExchangeNetPipe + "'.").ToLogEntry());
+				logger.PostEntry("Attempting connection to UI Host '" + SharedConst.LogExchangeNetPipe + "'.");
 
 				var endPoint = new EndpointAddress(SharedConst.LogExchangeNetPipe);
 				var pipeFactory = new ChannelFactory<ILogExchange>(new NetNamedPipeBinding(), endPoint);
 				var logExchange = pipeFactory.CreateChannel();
 
-				logExchange.ReportLogFilePath(logger.CurrentLogFilePath ?? "Path not found.");
-
+				logExchange.ReportLogFilePath(fileLogSink.CurrentLogFilePath ?? "Path not found.");
 			}
 			catch(EndpointNotFoundException ex)
 			{
-				logger.Add(ex.ToLogEntryException());
+				logger.PostException(ex);
 			}
 		}
 

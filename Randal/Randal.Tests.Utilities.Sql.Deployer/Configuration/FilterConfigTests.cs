@@ -20,7 +20,7 @@ using Randal.Sql.Deployer.Configuration;
 namespace Randal.Tests.Sql.Deployer.Configuration
 {
 	[TestClass]
-	public sealed class FilterConfigTests : BaseUnitTest<FilterConfigThens>
+	public sealed class FilterConfigTests : UnitTestBase<FilterConfigThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveEmptyFilter_WhenCreating()

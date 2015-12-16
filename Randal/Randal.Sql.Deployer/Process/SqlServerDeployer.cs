@@ -24,7 +24,7 @@ namespace Randal.Sql.Deployer.Process
 {
 	public sealed class SqlServerDeployer : ScriptDeployerBase
 	{
-		public SqlServerDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILogger logger)
+		public SqlServerDeployer(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager, ILoggerSync logger)
 			: base(config, project)
 		{
 			if (project == null)
@@ -35,7 +35,7 @@ namespace Randal.Sql.Deployer.Process
 			
 			
 			_connectionManager = connectionManager;
-			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
+			_logger = logger ?? new Logger();
 			_patternLookup = new CatalogPatternLookup();
 		}
 
@@ -83,7 +83,7 @@ namespace Randal.Sql.Deployer.Process
 					}
 					catch (Exception ex)
 					{
-						_logger.AddException(ex);
+						_logger.PostException(ex);
 						return Returned.Failure;
 					}
 				}
@@ -107,7 +107,7 @@ namespace Randal.Sql.Deployer.Process
 				}
 				catch (Exception ex)
 				{
-					_logger.AddException(ex);
+					_logger.PostException(ex);
 					return Returned.Failure;
 				}
 			}

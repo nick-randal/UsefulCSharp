@@ -19,7 +19,7 @@ using Randal.Sql.Deployer.Process;
 namespace Randal.Tests.Sql.Deployer.Process
 {
 	[TestClass]
-	public sealed class SqlCommandWrapperFactoryTests : BaseUnitTest<SqlCommandWrapperFactoryThens>
+	public sealed class SqlCommandWrapperFactoryTests : UnitTestBase<SqlCommandWrapperFactoryThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidFactoryWhenCreating()

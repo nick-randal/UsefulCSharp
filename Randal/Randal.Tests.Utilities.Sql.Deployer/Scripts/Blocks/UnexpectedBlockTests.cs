@@ -21,7 +21,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.Scripts.Blocks
 {
 	[TestClass]
-	public sealed class UnexpectedBlockTests : BaseUnitTest<UnexpectedBlockThens>
+	public sealed class UnexpectedBlockTests : UnitTestBase<UnexpectedBlockThens>
 	{
 		protected override void OnSetup()
 		{

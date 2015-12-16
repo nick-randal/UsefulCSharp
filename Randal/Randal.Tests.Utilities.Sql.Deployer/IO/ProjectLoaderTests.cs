@@ -24,7 +24,7 @@ using Randal.Sql.Deployer.Scripts.Blocks;
 namespace Randal.Tests.Sql.Deployer.IO
 {
 	[TestClass, DeploymentItem("TestFiles", "TestFiles")]
-	public sealed class ProjectLoaderTests : BaseUnitTest<ProjectLoaderThens>
+	public sealed class ProjectLoaderTests : UnitTestBase<ProjectLoaderTests.Thens>
 	{
 		protected override void OnSetup()
 		{
@@ -111,7 +111,9 @@ namespace Randal.Tests.Sql.Deployer.IO
 
 		protected override void Creating()
 		{
-			Then.Logger = new StringLogger();
+			Then.Logger = new Logger();
+			Then.LogSink = new StringLogSink();
+			Then.Logger.AddLogSink(Then.LogSink);
 			Then.Target = new ProjectLoader(Given.ProjectPath, scriptParser: Given.Parser, logger: Then.Logger);
 		}
 
@@ -119,18 +121,19 @@ namespace Randal.Tests.Sql.Deployer.IO
 		{
 			Then.Has = Then.Target.Load();
 		}
-	}
 
-	public sealed class ProjectLoaderThens : IDisposable
-	{
-		public ProjectLoader Target;
-		public Returned Has;
-		public StringLogger Logger;
-
-		public void Dispose()
+		public sealed class Thens : IDisposable
 		{
-			if(Logger != null)
-				Logger.Dispose();
+			public ProjectLoader Target;
+			public Returned Has;
+			public Logger Logger;
+			public StringLogSink LogSink;
+
+			public void Dispose()
+			{
+				if (Logger != null)
+					Logger.Dispose();
+			}
 		}
 	}
 }

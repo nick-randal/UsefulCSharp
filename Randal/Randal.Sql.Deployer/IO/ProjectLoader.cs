@@ -27,7 +27,7 @@ namespace Randal.Sql.Deployer.IO
 {
 	public sealed class ProjectLoader
 	{
-		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, IScriptCheckerConsumer scriptChecker = null, ILogger logger = null)
+		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, IScriptCheckerConsumer scriptChecker = null, ILoggerSync logger = null)
 		{
 			_logger = new Logger();
 
@@ -140,7 +140,7 @@ namespace Randal.Sql.Deployer.IO
 			}
 			catch (DirectoryNotFoundException ex)
 			{
-				_logger.AddException(ex, "project directory not found at '" + projectDirectory.FullName + "'");
+				_logger.PostException(ex, "project directory not found at '" + projectDirectory.FullName + "'");
 				return Returned.Failure;
 			}
 

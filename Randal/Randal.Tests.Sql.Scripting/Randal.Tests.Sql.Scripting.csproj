@@ -80,8 +80,8 @@
       <HintPath>..\packages\Randal.Core.Testing.2.0.2\lib\net45\Randal.Core.Testing.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Randal.Logging, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Randal.Logging.2.1.0\lib\net45\Randal.Logging.dll</HintPath>
+    <Reference Include="Randal.Logging, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Logging.2.2.0\lib\net45\Randal.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Rhino.Mocks">

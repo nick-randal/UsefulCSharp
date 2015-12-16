@@ -32,7 +32,7 @@ namespace Randal.Sql.Deployer.App
 				throw new ArgumentNullException("settings");
 
 			_settings = settings;
-			_logger = new LoggerStringFormatWrapper(logger ?? new NullLogger());
+			_logger = logger ?? new Logger();
 			var configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
 
 			using (var reader = new FileInfo(configPath).OpenText())
@@ -51,12 +51,12 @@ namespace Randal.Sql.Deployer.App
 				{
 					LogOptions();
 
-					_logger.AddEntry("opening connection to server", _settings.Server);
+					_logger.PostEntry("opening connection to server", _settings.Server);
 					connectionManager.OpenConnection(_settings.Server, "master");
 
 					if (_settings.UseTransaction)
 					{
-						_logger.AddEntry("BEGINNING TRANSACTION");
+						_logger.PostEntry("BEGINNING TRANSACTION");
 						connectionManager.BeginTransaction();
 					}
 
@@ -71,7 +71,7 @@ namespace Randal.Sql.Deployer.App
 				}
 				catch (Exception ex)
 				{
-					_logger.AddException(ex);
+					_logger.PostException(ex);
 					return RunnerResolution.ExceptionThrown;
 				}
 				finally
@@ -85,31 +85,31 @@ namespace Randal.Sql.Deployer.App
 
 		private RunnerResolution ResolveTransaction(bool commit, ISqlConnectionManager connectionManager)
 		{
-			_logger.AddEntryNoTimestamp(string.Empty);
+			_logger.PostEntryNoTimestamp(string.Empty);
 
 			if (commit)
 			{
-				_logger.AddEntry(Verbosity.Vital, "~~~~~~~~~~ COMMITTING ~~~~~~~~~~{0}", Environment.NewLine);
+				_logger.PostEntry(Verbosity.Vital, "~~~~~~~~~~ COMMITTING ~~~~~~~~~~{0}", Environment.NewLine);
 				connectionManager.CommitTransaction();
 				return RunnerResolution.Committed;
 			}
 
-			_logger.AddEntry(Verbosity.Vital, "~~~~~~~~~~ ROLLING BACK ~~~~~~~~~~{0}", Environment.NewLine);
+			_logger.PostEntry(Verbosity.Vital, "~~~~~~~~~~ ROLLING BACK ~~~~~~~~~~{0}", Environment.NewLine);
 			connectionManager.RollbackTransaction();
 			return RunnerResolution.RolledBack;
 		}
 
 		private void LogOptions()
 		{
-			_logger.AddEntry("runner options");
-			_logger.AddEntryNoTimestamp("server . . . . . . :  {0}", _settings.Server);
-			_logger.AddEntryNoTimestamp("project folder . . :  {0}", _settings.ScriptProjectFolder);
-			_logger.AddEntryNoTimestamp("log folder . . . . :  {0}", _settings.FileLoggerSettings.BasePath);
-			_logger.AddEntryNoTimestamp("use transaction  . :  {0}", _settings.UseTransaction);
-			_logger.AddEntryNoTimestamp("rollback trans . . :  {0}", _settings.ShouldRollback);
-			_logger.AddEntryNoTimestamp("check scripts only :  {0}", _settings.CheckFilesOnly);
-			_logger.AddEntryNoTimestamp("bypass check . . . :  {0}", _settings.BypassCheck);
-			_logger.AddBlank();
+			_logger.PostEntry("runner options");
+			_logger.PostEntryNoTimestamp("server . . . . . . :  {0}", _settings.Server);
+			_logger.PostEntryNoTimestamp("project folder . . :  {0}", _settings.ScriptProjectFolder);
+			_logger.PostEntryNoTimestamp("log folder . . . . :  {0}", _settings.FileLoggerSettings.BasePath);
+			_logger.PostEntryNoTimestamp("use transaction  . :  {0}", _settings.UseTransaction);
+			_logger.PostEntryNoTimestamp("rollback trans . . :  {0}", _settings.ShouldRollback);
+			_logger.PostEntryNoTimestamp("check scripts only :  {0}", _settings.CheckFilesOnly);
+			_logger.PostEntryNoTimestamp("bypass check . . . :  {0}", _settings.BypassCheck);
+			_logger.PostBlank();
 		}
 
 		private static IScriptParserConsumer CreateParser()
@@ -144,7 +144,7 @@ namespace Randal.Sql.Deployer.App
 
 		private Project LoadProject(IScriptParserConsumer parser, IScriptCheckerConsumer checker)
 		{
-			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, checker, _logger.BaseLogger);
+			var loader = new ProjectLoader(_settings.ScriptProjectFolder, parser, checker, _logger);
 			if (loader.Load() == Returned.Failure)
 				throw new RunnerException("Issues found loading project.  Review log for error information.");
 
@@ -153,7 +153,7 @@ namespace Randal.Sql.Deployer.App
 
 		private void DeployScripts(IScriptDeployerConfig config, IProject project, ISqlConnectionManager connectionManager)
 		{
-			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger.BaseLogger))
+			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger))
 			{
 				if (deployer.CanUpgrade() == false)
 					throw new RunnerException("Cannot upgrade project");
@@ -163,7 +163,7 @@ namespace Randal.Sql.Deployer.App
 			}
 		}
 
-		private readonly ILoggerStringFormatWrapper _logger;
+		private readonly ILoggerSync _logger;
 		private readonly IScriptDeployerConfig _config;
 		private readonly IRunnerSettings _settings;
 	}

@@ -21,7 +21,7 @@ using Randal.Sql.Deployer.Scripts;
 namespace Randal.Tests.Sql.Deployer.Scripts
 {
 	[TestClass]
-	public sealed class ScriptCheckerTests : BaseUnitTest<ScriptCheckThens>
+	public sealed class ScriptCheckerTests : UnitTestBase<ScriptCheckThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidChecker_WhenCreating()

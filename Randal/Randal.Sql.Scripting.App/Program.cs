@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
@@ -23,43 +24,43 @@ namespace Randal.Sql.Scripting.App
 	{
 		private static int Main(string[] args)
 		{
-			AsyncFileLogger logger = null;
 			var options = ParseCommandLineArguments(args);
 			if (options == null)
 				return ExitCodes.InvalidArguments;
 
-			try
+			using (var logger = new Logger())
+			using(var logSink = new RollingFileLogSink(new RollingFileSettings(options.LogFolder, "SQL Scripter")))
 			{
-				logger = new AsyncFileLogger(new FileLoggerSettings(options.LogFolder, "SQL Scripter"));
-				LogHeader(logger, options);
+				logger.AddLogSink(logSink);
 
-				SetupFolders(options.LogFolder, options.OutputFolder);
+				try
+				{
+					LogHeader(logger, options);
 
-				var scriptFileManager = new ScriptFileManager(Path.Combine(options.OutputFolder, options.Server));
-				var server = new ServerWrapper(new Server(options.Server));
+					SetupFolders(options.LogFolder, options.OutputFolder);
 
-				var scripter =
-					new Scripter(server, scriptFileManager, logger)
-						.IncludeTheseDatabases(options.IncludeDatabases.ToArray())
-						.ExcludedTheseDatabases(options.ExcludeDatabases.ToArray());
+					var scriptFileManager = new ScriptFileManager(Path.Combine(options.OutputFolder, options.Server));
+					var server = new ServerWrapper(new Server(options.Server));
 
-				ConfigureScriptingSources(options, scripter);
+					var scripter =
+						new Scripter(server, scriptFileManager, logger)
+							.IncludeTheseDatabases(options.IncludeDatabases.ToArray())
+							.ExcludedTheseDatabases(options.ExcludeDatabases.ToArray());
 
-				scripter.DumpScripts();
+					ConfigureScriptingSources(options, scripter);
 
-				logger.Add("DONE".ToLogEntry());
-			}
-			catch (Exception ex)
-			{
-				if(logger != null)
-					logger.Add(new LogExceptionEntry(ex));
-				Console.WriteLine(ex);
-				return ExitCodes.UnexpectedException;
-			}
-			finally
-			{
-				if(logger != null)
-					logger.Dispose();
+					scripter.DumpScripts();
+
+					logger.PostEntry("DONE");
+				}
+				catch (Exception ex)
+				{
+					logger.PostException(ex);
+					Console.WriteLine(ex);
+					return ExitCodes.UnexpectedException;
+				}
+
+				logger.CompleteAllAsync().Wait(new TimeSpan(0, 0, 3));
 			}
 
 			return ExitCodes.Ok;
@@ -125,8 +126,8 @@ namespace Randal.Sql.Scripting.App
 
 		private static void LogHeader(ILogger logger, AppOptions options)
 		{
-			logger.Add("SQL Scripting Application".ToLogEntry());
-			logger.Add(typeof (Program).Assembly.GetName().Version.ToString().ToLogEntry());
+			logger.PostEntry("SQL Scripting Application");
+			logger.PostEntry(typeof (Program).Assembly.GetName().Version.ToString());
 
 			var lines = new List<string>
 			{
@@ -141,7 +142,7 @@ namespace Randal.Sql.Scripting.App
 				string.Concat("Script Views     ", options.ScriptViews),
 			};
 
-			lines.ForEach(l => logger.Add(l.ToLogEntryNoTs()));
+			lines.ForEach(l => logger.PostEntryNoTimestamp(l));
 		}
 	}
 
