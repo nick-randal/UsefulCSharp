@@ -28,7 +28,7 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveValidLogEntryWhenCreatingGivenDefaults()
 		{
 			Given.Message = null;
-			Given.DateTimeNow = new DateTime(2014, 6, 9);
+			Given.Timestamp = new DateTime(2014, 6, 9);
 
 			When(Creating);
 
@@ -54,17 +54,10 @@ namespace Randal.Tests.Logging
 
 		protected override void Creating()
 		{
-			if (GivensDefined("Timestamp", "Verbosity"))
-				Then.Entry = new LogEntry(Given.Message, Given.Timestamp, Given.Verbosity);
-			else if (GivensDefined("Timestamp"))
-				Then.Entry = new LogEntry(Given.Message, Given.Timestamp);
-			else
+			using (ShimsContext.Create())
 			{
-				using (ShimsContext.Create())
-				{
-					ShimDateTime.NowGet = () => Given.DateTimeNow;
-					Then.Entry = new LogEntry(Given.Message);
-				}
+				ShimDateTime.NowGet = () => Given.Timestamp;
+				Then.Entry = GivensDefined("Verbosity") ? new LogEntry(Given.Message, Given.Verbosity) : new LogEntry(Given.Message);
 			}
 		}
 	}

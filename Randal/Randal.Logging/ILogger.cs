@@ -18,7 +18,6 @@ namespace Randal.Logging
 	public interface ILogSink : IDisposable
 	{
 		Verbosity VerbosityThreshold { get; }
-		void ChangeVerbosityThreshold(Verbosity newLevel);
 		void Post(ILogEntry entry);
 	}
 }

@@ -34,7 +34,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveSameTextWhenGettingTextGivenValue()
 		{
-			Given.Entry = new LogEntry("Hello world", new DateTime(2014, 6, 11));
+			Given.Entry = new LogEntry("Hello world");
 
 			When(AddingEntry, GettingText);
 
@@ -54,7 +54,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveLoggedTextAvailableWhenGettingTextGivenDisposedLogger()
 		{
-			Given.Entry = new LogEntry("Nothing is ever truly lost", new DateTime(2014, 6, 11));
+			Given.Entry = new LogEntry("Nothing is ever truly lost");
 
 			When(AddingEntry, Disposing, GettingText);
 

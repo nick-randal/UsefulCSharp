@@ -35,16 +35,6 @@ namespace Randal.Tests.Logging
 		}
 
 		[TestMethod]
-		public void ShouldChangeValue_WhenSettingVerbosity_GivenNewVerbosityLevel()
-		{
-			Given.Verbosity = Verbosity.Important;
-
-			When(SettingVerbosity);
-
-			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.Important);
-		}
-
-		[TestMethod]
 		public void ShouldThrowException_WhenCreating_GivenNullSettings()
 		{
 			Given.NullSettings = true;
@@ -57,7 +47,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveText_WhenLogging_GivenEntries()
 		{
-			Given.Entries = new[] {new LogEntry("Yay for logging.", new DateTime(1891, 3, 15, 4, 30, 00))};
+			Given.Entries = new[] { new LogEntry("Yay for logging.") };
 
 			When(Logging, Disposing);
 
@@ -68,9 +58,9 @@ namespace Randal.Tests.Logging
 		public void ShouldNotHaveText_WhenLogging_GivenLowerVerbosityThanThreshold()
 		{
 			Given.Verbosity = Verbosity.Important;
-			Given.Entries = new[] { new LogEntry("Just informational.", new DateTime(1891, 3, 15, 4, 30, 00)) };
+			Given.Entries = new[] { new LogEntry("Just informational.") };
 
-			When(SettingVerbosity, Logging, Disposing);
+			When(Logging, Disposing);
 
 			Then.Text.Should().Be("");
 		}
@@ -79,9 +69,9 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveText_WhenLogging_GivenEqualVerbosityToThreshold()
 		{
 			Given.Verbosity = Verbosity.Important;
-			Given.Entries = new[] { new LogEntry("This is important.", new DateTime(1891, 3, 15, 4, 30, 00), Verbosity.Important) };
+			Given.Entries = new[] { new LogEntry("This is important.", Verbosity.Important) };
 
-			When(SettingVerbosity, Logging, Disposing);
+			When(Logging, Disposing);
 
 			Then.Text.Should().Be("910315 043000    This is important.\r\n");
 		}
@@ -114,20 +104,15 @@ namespace Randal.Tests.Logging
 			Then.Text.Length.Should().Be(102300);
 		}
 
-		private void SettingVerbosity()
-		{
-			Then.Logger.ChangeVerbosityThreshold(Given.Verbosity);
-		}
-
 		protected override void Creating()
 		{
 			var settings = new RollingFileSettings(Test.Paths.LoggingFolder, "Test", 1024, 
 				Given.AllowRepeats == null || Given.AllowRepeats, null);
 
 			if (GivensDefined("NullSettings") && Given.NullSettings == true)
-				Then.Logger = new RollingFileLogSink(null);
+				Then.Logger = new RollingFileLogSink(null, verbosity: Given.Verbosity ?? Verbosity.All);
 			else
-				Then.Logger = new RollingFileLogSink(settings, GetMockLogFileManager());
+				Then.Logger = new RollingFileLogSink(settings, GetMockLogFileManager(), verbosity: Given.Verbosity ?? Verbosity.All);
 		}
 
 		private ILogFileManager GetMockLogFileManager()

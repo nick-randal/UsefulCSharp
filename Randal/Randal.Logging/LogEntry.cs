@@ -25,14 +25,10 @@ namespace Randal.Logging
 
 	public struct LogEntry : ILogEntry
 	{
-		public LogEntry(string message, Verbosity verbosity = Verbosity.Info) : this(message, DateTime.Now, verbosity)
-		{
-		}
-
-		public LogEntry(string message, DateTime timestamp, Verbosity verbosity = Verbosity.Info)
+		public LogEntry(string message, Verbosity verbosity = Verbosity.Info)
 		{
 			VerbosityLevel = verbosity;
-			Timestamp = timestamp;
+			Timestamp = DateTime.Now;
 			Message = message ?? string.Empty;
 		}
 

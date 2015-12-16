@@ -36,7 +36,7 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveValidTextWhenFormattingEntryGivenValidLogEntry()
 		{
-			Given.Entry = new LogEntry("Hello", new DateTime(2014, 1, 31, 7, 0, 0));
+			Given.Entry = new LogEntry("Hello");
 			When(Formatting);
 			Then.Text.Should().Be("140131 070000    Hello\r\n");
 		}
