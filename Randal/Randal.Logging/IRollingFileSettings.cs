@@ -1,4 +1,4 @@
-﻿// Useful C#
+// Useful C#
 // Copyright (C) 2014-2016 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
@@ -11,27 +11,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
-
 namespace Randal.Logging
 {
-	public struct LogExceptionEntry : ILogEntry
+	public interface IRollingFileSettings
 	{
-		public LogExceptionEntry(Exception exception, string additionalMessage = null) : this()
-		{
-			Timestamp = DateTime.Now;
-			Exception = exception;
-			Message = additionalMessage ?? string.Empty;
-		}
-
-		public Exception Exception { get; private set; }
-
-		public string Message { get; private set; }
-
-		public bool ShowTimestamp { get { return true; } }
-
-		public DateTime Timestamp { get; private set; }
-
-		public Verbosity VerbosityLevel { get { return Verbosity.Vital; } }
+		long FileSize { get; }
+		string BasePath { get; }
+		string BaseFileName { get; }
+		bool ShouldTruncateRepeatingLines { get; }
+		string ClosingText { get; }
 	}
 }

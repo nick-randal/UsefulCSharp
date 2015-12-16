@@ -18,13 +18,6 @@ using System.Text.RegularExpressions;
 
 namespace Randal.Logging
 {
-	public interface ILogFolder
-	{
-		bool VerifyOrCreate();
-		string GetNextLogFilePath();
-		string GetFallbackFilePath();
-	}
-
 	public sealed class LogFolder : ILogFolder
 	{
 		public LogFolder(string path, string baseLogFileName)

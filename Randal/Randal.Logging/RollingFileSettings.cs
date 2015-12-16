@@ -15,16 +15,7 @@ using System;
 
 namespace Randal.Logging
 {
-	public interface IFileLoggerSettings
-	{
-		long FileSize { get; }
-		string BasePath { get; }
-		string BaseFileName { get; }
-		bool ShouldTruncateRepeatingLines { get; }
-		string ClosingText { get; }
-	}
-
-	public sealed class RollingFileSettings : IFileLoggerSettings
+	public sealed class RollingFileSettings : IRollingFileSettings
 	{
 		public RollingFileSettings(string basePath, string baseFileName, long fileSize = FiveMegabytes,
 			bool truncateRepeatingLines = true, string closingText = "\r\n")

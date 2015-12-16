@@ -23,7 +23,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class LogFolderTests : BaseUnitTest<LogFolderThens>
+	public sealed class LogFolderTests : UnitTestBase<LogFolderThens>
 	{
 		protected override void OnSetup()
 		{

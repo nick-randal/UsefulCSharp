@@ -22,7 +22,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class LogEntryTests : BaseUnitTest<LogEntryThens>
+	public sealed class LogEntryTests : UnitTestBase<LogEntryThens>
 	{
 		[TestMethod]
 		public void ShouldHaveValidLogEntryWhenCreatingGivenDefaults()

@@ -16,15 +16,9 @@ using System.IO;
 
 namespace Randal.Logging
 {
-	public interface ILogFileManager : IDisposable
+	public sealed class RollingFileManager : IRollingFileManager
 	{
-		StreamWriter GetStreamWriter();
-		string LogFileName { get; }
-	}
-
-	public sealed class LogFileManager : ILogFileManager
-	{
-		public LogFileManager(IFileLoggerSettings settings, ILogFolder logFolder = null)
+		public RollingFileManager(IRollingFileSettings settings, ILogFolder logFolder = null)
 		{
 			if (settings == null)
 				throw new ArgumentNullException("settings");
@@ -117,7 +111,7 @@ namespace Randal.Logging
 			_currentLogFile = null;
 		}
 
-		private readonly IFileLoggerSettings _settings;
+		private readonly IRollingFileSettings _settings;
 		private readonly ILogFolder _logFolder;
 		private ILogFile _currentLogFile;
 		private readonly object _sync;

@@ -19,7 +19,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class LogEntryNoTimestampTests : BaseUnitTest<LogEntryNoTimestampThens>
+	public sealed class LogEntryNoTimestampTests : UnitTestBase<LogEntryNoTimestampThens>
 	{
 		[TestMethod]
 		public void ShouldHaveValidLogEntryWhenCreating()

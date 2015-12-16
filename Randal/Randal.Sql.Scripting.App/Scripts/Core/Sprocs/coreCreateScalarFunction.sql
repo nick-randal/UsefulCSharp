@@ -7,16 +7,16 @@ GO
 
 --:: main
 alter procedure coreCreateScalarFunction
-    @funcName sysname
+	@funcName sysname
 
 as begin
 	
-    if exists (select * from sys.objects where object_id = object_id(@funcName) AND type in (N'IF', N'TF') ) begin
-        exec( 'drop function ' + @funcName )
+	if exists (select 1 from sys.objects where object_id = object_id(@funcName) AND type in (N'IF', N'TF') ) begin
+		exec( 'drop function ' + @funcName )
 	end
 
-    if not exists (select * from sys.objects where object_id = object_id(@funcName) AND type = N'FN' ) begin
-        exec('create function ' + @funcName + '() returns bit as begin return 0 end')
+	if not exists (select 1 from sys.objects where object_id = object_id(@funcName) AND type = N'FN' ) begin
+		exec('create function ' + @funcName + '() returns bit as begin return 0 end')
 	end
 
 	return -1

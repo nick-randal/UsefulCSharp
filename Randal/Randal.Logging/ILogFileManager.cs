@@ -12,26 +12,13 @@
 // GNU General Public License for more details.
 
 using System;
+using System.IO;
 
 namespace Randal.Logging
 {
-	public struct LogExceptionEntry : ILogEntry
+	public interface IRollingFileManager : IDisposable
 	{
-		public LogExceptionEntry(Exception exception, string additionalMessage = null) : this()
-		{
-			Timestamp = DateTime.Now;
-			Exception = exception;
-			Message = additionalMessage ?? string.Empty;
-		}
-
-		public Exception Exception { get; private set; }
-
-		public string Message { get; private set; }
-
-		public bool ShowTimestamp { get { return true; } }
-
-		public DateTime Timestamp { get; private set; }
-
-		public Verbosity VerbosityLevel { get { return Verbosity.Vital; } }
+		StreamWriter GetStreamWriter();
+		string LogFileName { get; }
 	}
 }

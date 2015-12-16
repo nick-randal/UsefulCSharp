@@ -19,7 +19,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class NullLoggerTests : BaseUnitTest<NullLoggerThens>
+	public sealed class NullLoggerTests : UnitTestBase<NullLoggerThens>
 	{
 		protected override void OnTeardown()
 		{

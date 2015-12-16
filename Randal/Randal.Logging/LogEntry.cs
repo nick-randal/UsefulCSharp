@@ -15,17 +15,9 @@ using System;
 
 namespace Randal.Logging
 {
-	public interface ILogEntry
-	{
-		bool ShowTimestamp { get; }
-		DateTime Timestamp { get; }
-		string Message { get; }
-		Verbosity VerbosityLevel { get; }
-	}
-
 	public struct LogEntry : ILogEntry
 	{
-		public LogEntry(string message, Verbosity verbosity = Verbosity.Info)
+		public LogEntry(string message, Verbosity verbosity = Verbosity.Info) : this()
 		{
 			VerbosityLevel = verbosity;
 			Timestamp = DateTime.Now;

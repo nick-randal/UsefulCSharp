@@ -39,6 +39,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogEntry.cs" />
+    <Compile Include="ILogFile.cs" />
+    <Compile Include="ILogFileManager.cs" />
+    <Compile Include="ILogFolder.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="IRollingFileSettings.cs" />
     <Compile Include="RollingFileLogSink.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="TextWriterLogSink.cs" />
@@ -47,7 +53,7 @@
     <Compile Include="LogFileState.cs" />
     <Compile Include="LogFolder.cs" />
     <Compile Include="RollingFileSettings.cs" />
-    <Compile Include="ILogger.cs" />
+    <Compile Include="ILogSink.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogEntryFormatter.cs" />
     <Compile Include="LogEntryNoTimestamp.cs" />

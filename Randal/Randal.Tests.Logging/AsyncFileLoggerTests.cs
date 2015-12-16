@@ -12,9 +12,11 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Fakes;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
@@ -23,7 +25,7 @@ using Rhino.Mocks;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class AsyncFileLoggerTests : BaseUnitTest<AsyncFileLoggerThens>
+	public sealed class AsyncFileLoggerTests : UnitTestBase<AsyncFileLoggerThens>
 	{
 		[TestMethod]
 		public void ShouldHaveFileLogger_WhenCreating()
@@ -39,7 +41,7 @@ namespace Randal.Tests.Logging
 		{
 			Given.NullSettings = true;
 
-			DeferLastActionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
@@ -47,11 +49,11 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveText_WhenLogging_GivenEntries()
 		{
-			Given.Entries = new[] { new LogEntry("Yay for logging.") };
+			Given.Entries = new[] { CreateEntry("Yay for logging.") };
 
 			When(Logging, Disposing);
 
-			Then.Text.Should().Be("910315 043000    Yay for logging.\r\n");
+			Then.Text.Should().Be("151216 000000    Yay for logging.\r\n");
 		}
 
 		[TestMethod]
@@ -69,11 +71,11 @@ namespace Randal.Tests.Logging
 		public void ShouldHaveText_WhenLogging_GivenEqualVerbosityToThreshold()
 		{
 			Given.Verbosity = Verbosity.Important;
-			Given.Entries = new[] { new LogEntry("This is important.", Verbosity.Important) };
+			Given.Entries = new[] { CreateEntry("This is important.", Verbosity.Important) };
 
 			When(Logging, Disposing);
 
-			Then.Text.Should().Be("910315 043000    This is important.\r\n");
+			Then.Text.Should().Be("151216 000000    This is important.\r\n");
 		}
 
 		[TestMethod]
@@ -115,9 +117,9 @@ namespace Randal.Tests.Logging
 				Then.Logger = new RollingFileLogSink(settings, GetMockLogFileManager(), verbosity: Given.Verbosity ?? Verbosity.All);
 		}
 
-		private ILogFileManager GetMockLogFileManager()
+		private IRollingFileManager GetMockLogFileManager()
 		{
-			var logFileManager = MockRepository.GenerateMock<ILogFileManager>();
+			var logFileManager = MockRepository.GenerateMock<IRollingFileManager>();
 
 			Then.Writer = new StreamWriter(new MemoryStream());
 			logFileManager.Stub(x => x.GetStreamWriter()).Return(Then.Writer);
@@ -143,6 +145,15 @@ namespace Randal.Tests.Logging
 			}
 
 			Then.Writer = null;
+		}
+
+		private static ILogEntry CreateEntry(string message, Verbosity verbosity = Verbosity.Info)
+		{
+			using (ShimsContext.Create())
+			{
+				ShimDateTime.NowGet = () => new DateTime(2015, 12, 16, 0, 0, 0);
+				return new LogEntry(message, verbosity);
+			}
 		}
 	}
 

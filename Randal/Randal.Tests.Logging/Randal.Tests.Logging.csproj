@@ -35,13 +35,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=3.2.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FluentAssertions.3.2.2\lib\net45\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.1.1\lib\net45\FluentAssertions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="FluentAssertions.Core, Version=3.2.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FluentAssertions.3.2.2\lib\net45\FluentAssertions.Core.dll</HintPath>
+    <Reference Include="FluentAssertions.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.1.1\lib\net45\FluentAssertions.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -50,13 +50,13 @@
     <Reference Include="mscorlib.4.0.0.0.Fakes">
       <HintPath>FakesAssemblies\mscorlib.4.0.0.0.Fakes.dll</HintPath>
     </Reference>
-    <Reference Include="Randal.Core, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Randal.Core.1.0.0.6\lib\net45\Randal.Core.dll</HintPath>
+    <Reference Include="Randal.Core, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Core.1.0.3\lib\net45\Randal.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Randal.Core.Testing, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Randal.Core.Testing.1.0.0.12\lib\net45\Randal.Core.Testing.dll</HintPath>
+    <Reference Include="Randal.Core.Testing, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Core.Testing.2.0.2\lib\net45\Randal.Core.Testing.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
@@ -108,7 +108,9 @@
     <Compile Include="TextWriterLoggerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
     <Fakes Include="Fakes\System.fakes" />
+    <Fakes Include="Fakes\mscorlib.fakes" />
     <None Include="packages.config" />
     <Content Include="TestFiles\Logs\Test_004.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -122,9 +124,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Fakes Include="Fakes\mscorlib.fakes" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Randal.Logging\Randal.Logging.csproj">
       <Project>{d7dccc7b-e615-4fd4-baf0-dad6d4868f61}</Project>
       <Name>Randal.Logging</Name>
@@ -136,6 +135,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -1,4 +1,4 @@
-﻿// Useful C#
+// Useful C#
 // Copyright (C) 2014-2016 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
@@ -12,12 +12,24 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Threading.Tasks;
 
 namespace Randal.Logging
 {
-	public interface ILogSink : IDisposable
+	public interface ILogger
 	{
-		Verbosity VerbosityThreshold { get; }
-		void Post(ILogEntry entry);
+		Task PostEntryAsync(string message, params object[] values);
+
+		Task PostEntryAsync(Verbosity verbosity, string message, params object[] values);
+
+		Task PostBlankAsync(Verbosity verbosity = Verbosity.Info);
+
+		Task PostEntryNoTimestampAsync(string message, params object[] values);
+
+		Task PostEntryNoTimestampAsync(Verbosity verbosity, string message, params object[] values);
+
+		Task PostExceptionAsync(Exception ex);
+
+		Task PostExceptionAsync(Exception ex, string message, params object[] values);
 	}
 }

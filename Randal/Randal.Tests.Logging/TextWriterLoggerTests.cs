@@ -22,7 +22,7 @@ using Rhino.Mocks;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class TextWriterLoggerTests : BaseUnitTest<TextWriterLoggerThens>
+	public sealed class TextWriterLoggerTests : UnitTestBase<TextWriterLoggerThens>
 	{
 		[TestMethod]
 		public void ShouldHaveTextWriterLoggerWhenCreatingInstanceGivenConsoleOut()

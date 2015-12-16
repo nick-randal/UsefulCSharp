@@ -20,7 +20,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class FileLogSettingsTests : BaseUnitTest<FileLogSettingsThens>
+	public sealed class FileLogSettingsTests : UnitTestBase<FileLogSettingsThens>
 	{
 		[TestMethod, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
 		public void ShouldHaveFileLoggerWhenCreatingGivenValidValues()
@@ -32,7 +32,7 @@ namespace Randal.Tests.Logging
 
 			When(Creating);
 
-			Then.Settings.Should().NotBeNull().And.BeAssignableTo<IFileLoggerSettings>();
+			Then.Settings.Should().NotBeNull().And.BeAssignableTo<IRollingFileSettings>();
 			Then.Settings.BasePath.Should().Be(Test.Paths.LoggingFolder);
 			Then.Settings.BaseFileName.Should().Be("Test");
 			Then.Settings.FileSize.Should().Be(1024);

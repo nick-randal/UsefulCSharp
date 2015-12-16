@@ -16,16 +16,6 @@ using System.IO;
 
 namespace Randal.Logging
 {
-	public interface ILogFile : IDisposable
-	{
-		string FilePath { get; }
-		void Open();
-		LogFileState State { get; }
-		long SizeInBytes { get; }
-		StreamWriter GetStreamWriter();
-		void Close();
-	}
-
 	public sealed class LogFile : ILogFile
 	{
 		public LogFile(string filePath, long sizeInBytes)

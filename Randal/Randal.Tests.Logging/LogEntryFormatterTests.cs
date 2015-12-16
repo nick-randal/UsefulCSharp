@@ -13,8 +13,10 @@
 
 using System;
 using System.Data.SqlClient;
+using System.Fakes;
 using System.Net.Mail;
 using FluentAssertions;
+using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 using Randal.Logging;
@@ -22,7 +24,7 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass]
-	public sealed class LogFormatterTests : BaseUnitTest<LogFormatterThens>
+	public sealed class LogFormatterTests : UnitTestBase<LogFormatterTests.Thens>
 	{
 		[TestMethod]
 		public void ShouldHaveValidLogFormatterWhenCreating()
@@ -36,9 +38,9 @@ namespace Randal.Tests.Logging
 		[TestMethod]
 		public void ShouldHaveValidTextWhenFormattingEntryGivenValidLogEntry()
 		{
-			Given.Entry = new LogEntry("Hello");
+			Given.Entry = Entry("Hello");
 			When(Formatting);
-			Then.Text.Should().Be("140131 070000    Hello\r\n");
+			Then.Text.Should().Be("151216 000000    Hello\r\n");
 		}
 
 		[TestMethod]
@@ -97,7 +99,16 @@ namespace Randal.Tests.Logging
 			Then.Text.Should().Contain("SqlException");
 		}
 
-		private SqlException SqlException()
+		private static LogEntry Entry(string message)
+		{
+			using (ShimsContext.Create())
+			{
+				ShimDateTime.NowGet = () => new DateTime(2015, 12, 16, 0, 0, 0);
+				return new LogEntry(message);
+			}
+		}
+
+		private static SqlException SqlException()
 		{
 			try
 			{
@@ -120,11 +131,11 @@ namespace Randal.Tests.Logging
 		{
 			Then.Formatter = new LogEntryFormatter();
 		}
-	}
 
-	public sealed class LogFormatterThens
-	{
-		public LogEntryFormatter Formatter;
-		public string Text;
+		public sealed class Thens
+		{
+			public LogEntryFormatter Formatter;
+			public string Text;
+		}
 	}
 }

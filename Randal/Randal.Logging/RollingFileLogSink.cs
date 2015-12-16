@@ -17,14 +17,14 @@ namespace Randal.Logging
 {
 	public sealed class RollingFileLogSink : ILogSink
 	{
-		public RollingFileLogSink(IFileLoggerSettings settings, ILogFileManager logWriterManager = null, ILogEntryFormatter formatter = null, Verbosity verbosity = Verbosity.All)
+		public RollingFileLogSink(IRollingFileSettings settings, IRollingFileManager logWriterManager = null, ILogEntryFormatter formatter = null, Verbosity verbosity = Verbosity.All)
 		{
 			if (settings == null)
 				throw new ArgumentNullException("settings");
 
 			_settings = settings;
 			_formatter = formatter ?? new LogEntryFormatter();
-			_logWriterManager = logWriterManager ?? new LogFileManager(settings, new LogFolder(settings.BasePath, settings.BaseFileName));
+			_logWriterManager = logWriterManager ?? new RollingFileManager(settings, new LogFolder(settings.BasePath, settings.BaseFileName));
 
 			_verbosity = verbosity;
 		}
@@ -77,9 +77,9 @@ namespace Randal.Logging
 		}
 
 		private readonly ILogEntryFormatter _formatter;
-		private readonly ILogFileManager _logWriterManager;
+		private readonly IRollingFileManager _logWriterManager;
 		private volatile Verbosity _verbosity;
-		private IFileLoggerSettings _settings;
+		private readonly IRollingFileSettings _settings;
 		private string _lastRepeatedText;
 		private int _repetitionCount;
 	}

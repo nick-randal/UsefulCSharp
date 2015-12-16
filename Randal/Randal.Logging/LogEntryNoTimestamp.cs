@@ -17,8 +17,7 @@ namespace Randal.Logging
 {
 	public struct LogEntryNoTimestamp : ILogEntry
 	{
-		public LogEntryNoTimestamp(string message, Verbosity verbosity = Verbosity.Info)
-			
+		public LogEntryNoTimestamp(string message, Verbosity verbosity = Verbosity.Info) : this()
 		{
 			Message = message;
 			VerbosityLevel = verbosity;

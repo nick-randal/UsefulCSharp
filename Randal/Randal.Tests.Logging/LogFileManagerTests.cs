@@ -21,13 +21,13 @@ using Randal.Logging;
 namespace Randal.Tests.Logging
 {
 	[TestClass, DeploymentItem(Test.Paths.LoggingFolder, Test.Paths.LoggingFolder)]
-	public sealed class LogFileManagerTests : BaseUnitTest<LogFileManagerThens>
+	public sealed class LogFileManagerTests : UnitTestBase<LogFileManagerTests.Thens>
 	{
 		[TestMethod, NegativeTest]
 		public void ShouldThrowExceptionWhenCreatingGivenNullSettings()
 		{
 			Given.NullSettings = true;
-			DeferLastActionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}
 
@@ -36,7 +36,7 @@ namespace Randal.Tests.Logging
 		{
 			When(Creating);
 
-			Then.Manager.Should().NotBeNull().And.BeAssignableTo<ILogFileManager>();
+			Then.Manager.Should().NotBeNull().And.BeAssignableTo<IRollingFileManager>();
 			Then.Manager.LogFileName.Should().BeNull();
 		}
 
@@ -72,11 +72,11 @@ namespace Randal.Tests.Logging
 			if (Then.Manager != null)
 				return;
 
-			IFileLoggerSettings settings = null;
+			IRollingFileSettings settings = null;
 			if (Given.NullSettings == false)
 				settings = new RollingFileSettings(Test.Paths.LoggingFolder, "LFMT", Given.Size, false);
 
-			Then.Manager = new LogFileManager(settings);
+			Then.Manager = new RollingFileManager(settings);
 		}
 
 		private void WritingText()
@@ -95,15 +95,20 @@ namespace Randal.Tests.Logging
 			if (Then.Manager == null)
 				return;
 
+			var fileName = Then.Manager.LogFileName;
+
 			Then.Manager.Dispose();
 			Then.Writer = null;
 			Then.Manager = null;
-		}
-	}
 
-	public sealed class LogFileManagerThens
-	{
-		public LogFileManager Manager;
-		public StreamWriter Writer;
+			if (File.Exists(fileName))
+				File.Delete(fileName);
+		}
+
+		public sealed class Thens
+		{
+			public RollingFileManager Manager;
+			public StreamWriter Writer;
+		}
 	}
 }
