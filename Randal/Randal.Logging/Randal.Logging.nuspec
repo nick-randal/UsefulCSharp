@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>Extensible Asynchronous File Logger</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.Logging/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Logging</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Removed OWIN to separate library.</releaseNotes>
-    <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
-    <tags>Log,Logging,Asynchronous</tags>
+	<id>$id$</id>
+	<version>$version$</version>
+	<title>Extensible Asynchronous File Logger</title>
+	<authors>$author$</authors>
+	<owners>$author$</owners>
+	<licenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/Randal.Logging/LICENSE</licenseUrl>
+	<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Logging</projectUrl>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<description>$description$</description>
+	<releaseNotes>Removed OWIN to separate library.</releaseNotes>
+	<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
+	<tags>Log,Logging,Asynchronous</tags>
+	<dependencies>
+	  <group>
+		<dependency id="Microsoft.Tpl.Dataflow" />
+	  </group>
+	</dependencies>
   </metadata>
 </package>
