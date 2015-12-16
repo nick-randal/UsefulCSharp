@@ -19,13 +19,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.Logging")]
-[assembly: AssemblyCopyright("Copyright © 2014-2015 Nicholas Randal, All Rights Reserved")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016 Nicholas Randal, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 [assembly: Guid("c917de61-1664-4fbb-b13b-1d806af78fa1")]
 
-[assembly: AssemblyVersion("1.0.2.0")]
-[assembly: AssemblyFileVersion("1.0.2.0")]
-[assembly: AssemblyInformationalVersion("1.0.2")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyInformationalVersion("2.0.0")]

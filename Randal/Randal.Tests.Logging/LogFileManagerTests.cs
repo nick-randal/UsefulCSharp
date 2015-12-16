@@ -74,7 +74,7 @@ namespace Randal.Tests.Logging
 
 			IFileLoggerSettings settings = null;
 			if (Given.NullSettings == false)
-				settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "LFMT", Given.Size, false);
+				settings = new RollingFileSettings(Test.Paths.LoggingFolder, "LFMT", Given.Size, false);
 
 			Then.Manager = new LogFileManager(settings);
 		}

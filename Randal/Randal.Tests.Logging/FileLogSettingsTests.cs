@@ -61,18 +61,18 @@ namespace Randal.Tests.Logging
 			When(Creating);
 
 			Then.Settings.BaseFileName.Should().BeEmpty();
-			Then.Settings.FileSize.Should().Be(FileLoggerSettings.FiveMegabytes);
+			Then.Settings.FileSize.Should().Be(RollingFileSettings.FiveMegabytes);
 		}
 
 		protected override void Creating()
 		{
-			Then.Settings = new FileLoggerSettings(Given.BasePath, Given.BaseFileName, Given.FileSize,
+			Then.Settings = new RollingFileSettings(Given.BasePath, Given.BaseFileName, Given.FileSize,
 				Given.TruncateRepeatingLines);
 		}
 	}
 
 	public sealed class FileLogSettingsThens
 	{
-		public FileLoggerSettings Settings;
+		public RollingFileSettings Settings;
 	}
 }

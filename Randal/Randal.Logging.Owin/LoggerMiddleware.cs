@@ -21,11 +21,11 @@ namespace Randal.Logging.Owin
 
 	public sealed class LoggerMiddleware : IDisposable
 	{
-		public LoggerMiddleware(AppFunc next, ILogger logger) : this(next, logger, null)
+		public LoggerMiddleware(AppFunc next, ILogSink logger) : this(next, logger, null)
 		{
 		}
 
-		public LoggerMiddleware(AppFunc next, ILogger logger, IEnvironmentFormatter formatter)
+		public LoggerMiddleware(AppFunc next, ILogSink logger, IEnvironmentFormatter formatter)
 		{
 			_next = next;
 			_logger = logger;
@@ -35,12 +35,12 @@ namespace Randal.Logging.Owin
 		public async Task Invoke(IDictionary<string, object> environment)
 		{
 			if (_formatter.UsePreEntry)
-				_logger.Add(_formatter.GetPreEntry(environment));
+				_logger.Post(_formatter.GetPreEntry(environment));
 
 			await _next.Invoke(environment);
 
 			if (_formatter.UsePostEntry)
-				_logger.Add(_formatter.GetPostEntry(environment));
+				_logger.Post(_formatter.GetPostEntry(environment));
 		}
 
 		public void Dispose()
@@ -48,7 +48,7 @@ namespace Randal.Logging.Owin
 			_logger.Dispose();
 		}
 
-		private readonly ILogger _logger;
+		private readonly ILogSink _logger;
 		private readonly IEnvironmentFormatter _formatter;
 		private readonly AppFunc _next;
 	}

@@ -30,7 +30,7 @@ namespace Randal.Tests.Logging
 		{
 			When(Creating);
 
-			Then.Logger.Should().NotBeNull().And.BeAssignableTo<ILogger>();
+			Then.Logger.Should().NotBeNull().And.BeAssignableTo<ILogSink>();
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.All);
 		}
 
@@ -121,13 +121,13 @@ namespace Randal.Tests.Logging
 
 		protected override void Creating()
 		{
-			var settings = new FileLoggerSettings(Test.Paths.LoggingFolder, "Test", 1024, 
+			var settings = new RollingFileSettings(Test.Paths.LoggingFolder, "Test", 1024, 
 				Given.AllowRepeats == null || Given.AllowRepeats, null);
 
 			if (GivensDefined("NullSettings") && Given.NullSettings == true)
-				Then.Logger = new AsyncFileLogger(null);
+				Then.Logger = new RollingFileLogSink(null);
 			else
-				Then.Logger = new AsyncFileLogger(settings, GetMockLogFileManager());
+				Then.Logger = new RollingFileLogSink(settings, GetMockLogFileManager());
 		}
 
 		private ILogFileManager GetMockLogFileManager()
@@ -142,7 +142,7 @@ namespace Randal.Tests.Logging
 		private void Logging()
 		{
 			foreach (ILogEntry entry in Given.Entries)
-				Then.Logger.Add(entry);
+				Then.Logger.Post(entry);
 		}
 
 		private void Disposing()
@@ -163,7 +163,7 @@ namespace Randal.Tests.Logging
 
 	public sealed class AsyncFileLoggerThens : IDisposable
 	{
-		public AsyncFileLogger Logger;
+		public RollingFileLogSink Logger;
 		public StreamWriter Writer;
 		public string Text;
 

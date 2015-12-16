@@ -15,10 +15,10 @@ using System;
 
 namespace Randal.Logging
 {
-	public interface ILogger : IDisposable
+	public interface ILogSink : IDisposable
 	{
 		Verbosity VerbosityThreshold { get; }
 		void ChangeVerbosityThreshold(Verbosity newLevel);
-		void Add(ILogEntry entry);
+		void Post(ILogEntry entry);
 	}
 }

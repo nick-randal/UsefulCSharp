@@ -15,19 +15,23 @@ using System;
 
 namespace Randal.Logging
 {
-	public sealed class LogExceptionEntry : LogEntry
+	public struct LogExceptionEntry : ILogEntry
 	{
-		public LogExceptionEntry(Exception exception, string message = null)
-			: base(message, DateTime.Now, Verbosity.Vital)
+		public LogExceptionEntry(Exception exception, string additionalMessage = null)
 		{
-			_exception = exception;
+			Timestamp = DateTime.Now;
+			Exception = exception;
+			Message = additionalMessage ?? string.Empty;
 		}
 
-		public Exception Exception
-		{
-			get { return _exception; }
-		}
+		public Exception Exception { get; private set; }
 
-		private readonly Exception _exception;
+		public string Message { get; private set; }
+
+		public bool ShowTimestamp { get { return true; } }
+
+		public DateTime Timestamp { get; private set; }
+
+		public Verbosity VerbosityLevel { get { return Verbosity.Vital; } }
 	}
 }

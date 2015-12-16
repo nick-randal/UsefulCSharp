@@ -19,11 +19,11 @@ namespace Randal.Logging.Owin
 {
 	public sealed class LoggerOwinMiddleware : OwinMiddleware, IDisposable
 	{
-		public LoggerOwinMiddleware(OwinMiddleware next, ILogger logger) : this(next, logger, null)
+		public LoggerOwinMiddleware(OwinMiddleware next, ILogSink logger) : this(next, logger, null)
 		{
 		}
 
-		public LoggerOwinMiddleware(OwinMiddleware next, ILogger logger, IOwinContextFormatter formatter)
+		public LoggerOwinMiddleware(OwinMiddleware next, ILogSink logger, IOwinContextFormatter formatter)
 			: base(next)
 		{
 			_logger = logger;
@@ -33,12 +33,12 @@ namespace Randal.Logging.Owin
 		public override async Task Invoke(IOwinContext context)
 		{
 			if(_formatter.UsePreEntry)
-				_logger.Add(_formatter.GetPreEntry(context));
+				_logger.Post(_formatter.GetPreEntry(context));
 
 			await Next.Invoke(context);
 
 			if(_formatter.UsePostEntry)
-				_logger.Add(_formatter.GetPostEntry(context));
+				_logger.Post(_formatter.GetPostEntry(context));
 		}
 
 		public void Dispose()
@@ -46,7 +46,7 @@ namespace Randal.Logging.Owin
 			_logger.Dispose();
 		}
 
-		private readonly ILogger _logger;
+		private readonly ILogSink _logger;
 		private readonly IOwinContextFormatter _formatter;
 	}
 }

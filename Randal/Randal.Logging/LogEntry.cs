@@ -23,7 +23,7 @@ namespace Randal.Logging
 		Verbosity VerbosityLevel { get; }
 	}
 
-	public class LogEntry : ILogEntry
+	public struct LogEntry : ILogEntry
 	{
 		public LogEntry(string message, Verbosity verbosity = Verbosity.Info) : this(message, DateTime.Now, verbosity)
 		{
@@ -36,15 +36,15 @@ namespace Randal.Logging
 			Message = message ?? string.Empty;
 		}
 
-		public Verbosity VerbosityLevel { get; protected set; }
+		public Verbosity VerbosityLevel { get; private set; }
 
-		public virtual bool ShowTimestamp
+		public bool ShowTimestamp
 		{
 			get { return true; }
 		}
 
-		public string Message { get; protected set; }
+		public string Message { get; private set; }
 
-		public DateTime Timestamp { get; protected set; }
+		public DateTime Timestamp { get; private set; }
 	}
 }

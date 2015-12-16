@@ -27,17 +27,17 @@ namespace Randal.Logging
 	{
 		public string Format(ILogEntry entry)
 		{
-			var exEntry = entry as LogExceptionEntry;
-
-			if (exEntry != null)
-				return FormatException(exEntry);
+			if (entry is LogExceptionEntry)
+			{
+				return FormatException((LogExceptionEntry)entry);
+			}
 
 			return string.Concat(
 				entry.ShowTimestamp ? entry.Timestamp.ToString(TextResources.Timestamp) : TextResources.NoTimestamp,
 				TextResources.Prepend,
 				entry.Message,
 				Environment.NewLine
-				);
+			);
 		}
 
 		private static string FormatException(LogExceptionEntry entry)

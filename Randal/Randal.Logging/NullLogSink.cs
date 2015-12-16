@@ -13,7 +13,7 @@
 
 namespace Randal.Logging
 {
-	public sealed class NullLogger : ILogger
+	public sealed class NullLogSink : ILogSink
 	{
 		public Verbosity VerbosityThreshold
 		{
@@ -24,7 +24,7 @@ namespace Randal.Logging
 		{
 		}
 
-		public void Add(ILogEntry entry)
+		public void Post(ILogEntry entry)
 		{
 		}
 

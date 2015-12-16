@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 
 namespace Randal.Logging
 {
-	public sealed class AsyncFileLogger : ILogger
+	public sealed class RollingFileLogSink : ILogSink
 	{
-		public AsyncFileLogger(IFileLoggerSettings settings, ILogFileManager logWriterManager = null,
+		public RollingFileLogSink(IFileLoggerSettings settings, ILogFileManager logWriterManager = null,
 			ILogEntryFormatter formatter = null)
 		{
 			if (settings == null)
@@ -74,7 +74,7 @@ namespace Randal.Logging
 			get { return _logWriterManager.LogFileName; }
 		}
 
-		public void Add(ILogEntry entry)
+		public void Post(ILogEntry entry)
 		{
 			if (_tokenSource.IsCancellationRequested || _queuedEntries.IsAddingCompleted || entry.VerbosityLevel < VerbosityThreshold )
 				return;

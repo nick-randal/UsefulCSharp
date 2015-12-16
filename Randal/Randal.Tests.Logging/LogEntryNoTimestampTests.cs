@@ -11,7 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
@@ -29,7 +28,6 @@ namespace Randal.Tests.Logging
 
 			Then.Entry.Should().NotBeNull().And.BeAssignableTo<ILogEntry>();
 			Then.Entry.ShowTimestamp.Should().BeFalse();
-			Then.Entry.Timestamp.Should().Be(DateTime.MinValue);
 		}
 
 		[TestMethod]

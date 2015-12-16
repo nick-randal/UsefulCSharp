@@ -24,9 +24,9 @@ namespace Randal.Logging
 		string ClosingText { get; }
 	}
 
-	public sealed class FileLoggerSettings : IFileLoggerSettings
+	public sealed class RollingFileSettings : IFileLoggerSettings
 	{
-		public FileLoggerSettings(string basePath, string baseFileName, long fileSize = FiveMegabytes,
+		public RollingFileSettings(string basePath, string baseFileName, long fileSize = FiveMegabytes,
 			bool truncateRepeatingLines = true, string closingText = "\r\n")
 		{
 			if (string.IsNullOrWhiteSpace(basePath))

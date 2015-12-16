@@ -32,7 +32,7 @@ namespace Randal.Tests.Logging
 		{
 			When(Creating);
 
-			Then.Log.Should().NotBeNull().And.BeAssignableTo<ILogger>();
+			Then.Log.Should().NotBeNull().And.BeAssignableTo<ILogSink>();
 			Then.Log.VerbosityThreshold.Should().Be(Verbosity.All);
 		}
 
@@ -59,17 +59,17 @@ namespace Randal.Tests.Logging
 
 		private void AddingLogEntry()
 		{
-			Then.Log.Add(Given.Entry);
+			Then.Log.Post(Given.Entry);
 		}
 
 		protected override void Creating()
 		{
-			Then.Log = new NullLogger();
+			Then.Log = new NullLogSink();
 		}
 	}
 
 	public sealed class NullLoggerThens
 	{
-		public NullLogger Log;
+		public NullLogSink Log;
 	}
 }

@@ -15,16 +15,24 @@ using System;
 
 namespace Randal.Logging
 {
-	public sealed class LogEntryNoTimestamp : LogEntry
+	public struct LogEntryNoTimestamp : ILogEntry
 	{
 		public LogEntryNoTimestamp(string message, Verbosity verbosity = Verbosity.Info)
-			: base(message, DateTime.MinValue, verbosity)
+			
 		{
+			Message = message;
+			VerbosityLevel = verbosity;
 		}
 
-		public override bool ShowTimestamp
+		public bool ShowTimestamp
 		{
 			get { return false; }
 		}
+
+		public Verbosity VerbosityLevel { get; private set; }
+
+		public string Message { get; private set; }
+
+		public DateTime Timestamp { get { throw new NotSupportedException(); } }
 	}
 }

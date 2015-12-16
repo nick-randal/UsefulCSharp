@@ -15,9 +15,9 @@ using System.IO;
 
 namespace Randal.Logging
 {
-	public sealed class StringLogger : TextWriterLogger
+	public sealed class StringLogSink : TextWriterLogSink
 	{
-		public StringLogger(ILogEntryFormatter formatter = null) : base(new StringWriter(), formatter)
+		public StringLogSink(ILogEntryFormatter formatter = null) : base(new StringWriter(), formatter)
 		{
 			LastText = string.Empty;
 		}

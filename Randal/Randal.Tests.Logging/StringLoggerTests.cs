@@ -27,7 +27,7 @@ namespace Randal.Tests.Logging
 		{
 			When(Creating);
 
-			Then.Logger.Should().NotBeNull().And.BeAssignableTo<ILogger>();
+			Then.Logger.Should().NotBeNull().And.BeAssignableTo<ILogSink>();
 			Then.Logger.VerbosityThreshold.Should().Be(Verbosity.All);
 		}
 
@@ -63,7 +63,7 @@ namespace Randal.Tests.Logging
 
 		protected override void Creating()
 		{
-			Then.Logger = new StringLogger();
+			Then.Logger = new StringLogSink();
 		}
 
 		private void Disposing()
@@ -79,7 +79,7 @@ namespace Randal.Tests.Logging
 
 		private void AddingEntry()
 		{
-			Then.Logger.Add(Given.Entry);
+			Then.Logger.Post(Given.Entry);
 		}
 
 		private void GettingText()
@@ -90,7 +90,7 @@ namespace Randal.Tests.Logging
 
 	public sealed class StringLoggerThens : IDisposable
 	{
-		public StringLogger Logger;
+		public StringLogSink Logger;
 		public string Text;
 		public Verbosity Verbosity;
 

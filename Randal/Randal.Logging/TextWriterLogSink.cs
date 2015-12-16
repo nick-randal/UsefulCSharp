@@ -17,16 +17,16 @@ using System.Threading;
 
 namespace Randal.Logging
 {
-	public class TextWriterLogger : ILogger
+	public class TextWriterLogSink : ILogSink
 	{
-		public TextWriterLogger(Stream stream, ILogEntryFormatter formatter = null)
+		public TextWriterLogSink(Stream stream, ILogEntryFormatter formatter = null)
 			: this(new StreamWriter(stream), formatter)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");
 		}
 
-		public TextWriterLogger(TextWriter writer, ILogEntryFormatter formatter = null)
+		public TextWriterLogSink(TextWriter writer, ILogEntryFormatter formatter = null)
 		{
 			if (writer == null)
 				throw new ArgumentNullException("writer");
@@ -36,7 +36,7 @@ namespace Randal.Logging
 			Formatter = formatter ?? new LogEntryFormatter();
 		}
 
-		public void Add(ILogEntry entry)
+		public void Post(ILogEntry entry)
 		{
 			Lock.EnterUpgradeableReadLock();
 			try
@@ -112,7 +112,7 @@ namespace Randal.Logging
 			GC.SuppressFinalize(this);
 		}
 
-		~TextWriterLogger()
+		~TextWriterLogSink()
 		{
 			Dispose(false);
 		}
