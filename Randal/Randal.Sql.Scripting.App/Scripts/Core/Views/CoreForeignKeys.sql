@@ -1,10 +1,10 @@
 --:: catalog $Catalogs$
 
 --:: ignore
-use TCPLP
+use model
 
 --:: main
-exec coreCreateQueryView 'TcForeignKeys',
+exec coreCreateQueryView 'CoreForeignKeys',
 '
 select
 	name, 

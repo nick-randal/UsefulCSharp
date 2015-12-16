@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Smo;
 using Randal.Logging;
 
@@ -124,7 +123,7 @@ namespace Randal.Sql.Scripting.App
 			return null;
 		}
 
-		private static void LogHeader(ILogger logger, AppOptions options)
+		private static void LogHeader(ILoggerSync logger, AppOptions options)
 		{
 			logger.PostEntry("SQL Scripting Application");
 			logger.PostEntry(typeof (Program).Assembly.GetName().Version.ToString());

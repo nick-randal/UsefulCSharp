@@ -8,7 +8,7 @@ use model
 
 EXEC coreCreateQueryView 'CoreTableColumnsView', 
 'SELECT t.name [TableName], t.object_id [TableId], t.type [ObjectType], t.is_published [IsPublished], t.is_replicated [IsReplicated],
-	c.column_id [ColumnId], c.name [ColumnName], dbo.coreDataTypeName(c.object_id, c.column_id) [TcTypeName], 
+	c.column_id [ColumnId], c.name [ColumnName], dbo.coreDataTypeName(c.object_id, c.column_id) [TypeName], 
 	CASE c.is_nullable 
 		WHEN 1 THEN ''NULL''
 		ELSE ''NOT NULL'' END [NullableText],
@@ -27,7 +27,7 @@ FROM sys.Tables t
 union all
 
 SELECT t.name [TableName], t.object_id [TableId], t.type [ObjectType], t.is_published [IsPublished], t.is_replicated [IsReplicated], 
-	c.column_id [ColumnId], c.name [ColumnName], dbo.coreDataTypeName(c.object_id, c.column_id) [TcTypeName], 
+	c.column_id [ColumnId], c.name [ColumnName], dbo.coreDataTypeName(c.object_id, c.column_id) [TypeName], 
 	CASE c.is_nullable 
 		WHEN 1 THEN ''NULL''
 		ELSE ''NOT NULL'' END [NullableText],
