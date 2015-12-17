@@ -1,6 +1,9 @@
 --:: catalog $Catalogs$
 --:: need coreTrimBrackets
 
+--:: ignore
+use model
+
 --:: pre
 exec coreCreateProcedure 'coreDropTableType'
 go

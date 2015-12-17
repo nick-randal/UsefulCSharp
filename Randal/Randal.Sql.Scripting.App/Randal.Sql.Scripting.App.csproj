@@ -134,6 +134,7 @@
     <Content Include="Scripts\Core\Sprocs\coreDropFunction.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropIndex.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropProcedure.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateTableType.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropTableType.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropView.sql" />
     <Content Include="Scripts\Core\Sprocs\coreFormat.sql" />
