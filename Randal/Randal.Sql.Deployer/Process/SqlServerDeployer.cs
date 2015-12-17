@@ -35,7 +35,7 @@ namespace Randal.Sql.Deployer.Process
 			
 			
 			_connectionManager = connectionManager;
-			_logger = logger ?? new Logger();
+			_logger = logger ?? new NullLogger();
 			_patternLookup = new CatalogPatternLookup();
 		}
 

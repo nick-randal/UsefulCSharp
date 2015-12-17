@@ -1,4 +1,5 @@
 --:: catalog $Catalogs$
+--:: need coreIxType, coreIxColumns, coreIxXmlSecondary
 
 --:: ignore
 use model

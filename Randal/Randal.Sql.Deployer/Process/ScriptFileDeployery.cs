@@ -32,7 +32,7 @@ namespace Randal.Sql.Deployer.Process
 				throw new ArgumentNullException("project");
 
 			_connectionManager = connectionManager;
-			_logger = logger ?? new Logger();
+			_logger = logger ?? new NullLogger();
 			_patternLookup = new CatalogPatternLookup();
 
 			var fileName = string.Format("{0}_{1}_v{2}.sql", connectionManager.Server, project.Configuration.Project, project.Configuration.Version.Replace('.', '-'));

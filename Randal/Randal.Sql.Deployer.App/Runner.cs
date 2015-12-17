@@ -32,7 +32,7 @@ namespace Randal.Sql.Deployer.App
 				throw new ArgumentNullException("settings");
 
 			_settings = settings;
-			_logger = logger ?? new Logger();
+			_logger = logger ?? new NullLogger();
 			var configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
 
 			using (var reader = new FileInfo(configPath).OpenText())

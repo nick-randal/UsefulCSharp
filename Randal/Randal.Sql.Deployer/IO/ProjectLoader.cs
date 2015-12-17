@@ -29,7 +29,7 @@ namespace Randal.Sql.Deployer.IO
 	{
 		public ProjectLoader(string projectPath, IScriptParserConsumer scriptParser, IScriptCheckerConsumer scriptChecker = null, ILoggerSync logger = null)
 		{
-			_logger = new Logger();
+			_logger = logger ?? new NullLogger();
 
 			ProjectPath = projectPath;
 			ScriptParser = scriptParser;
@@ -68,11 +68,12 @@ namespace Randal.Sql.Deployer.IO
 			var result = Returned.Success;
 			var errors = 0;
 			var check = ScriptCheck.Passed;
+			var messages = new List<string>();
 
 			foreach (var file in scriptFiles)
 			{
 				string text;
-				var messages = new List<string>();
+				messages.Clear();
 
 				using (var reader = file.OpenText())
 				{
@@ -83,16 +84,17 @@ namespace Randal.Sql.Deployer.IO
 
 				if(ScriptChecker != null)
 					check = ScriptChecker.Validate(text, messages);
+
 				var script = ScriptParser.Parse(file.Name, text);
 				script.Validate(messages);
 
-				LogScriptIssues(file.FullName, messages);
 				if ((check == ScriptCheck.Passed || check == ScriptCheck.Warning) && script.IsValid && messages.Count == 0)
 				{
 					_allScripts.Add(script);
 					continue;
 				}
 
+				LogScriptIssues(file.FullName, messages);
 				result = Returned.Failure;
 				errors++;
 			}
