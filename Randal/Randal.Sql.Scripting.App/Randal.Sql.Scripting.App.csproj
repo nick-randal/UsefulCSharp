@@ -129,6 +129,7 @@
     <Content Include="Scripts\Core\Sprocs\coreCreateProcedure.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateQueryView.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateScalarFunction.sql" />
+    <Content Include="Scripts\Core\Sprocs\coreCreateSchema.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateView.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropFunction.sql" />
     <Content Include="Scripts\Core\Sprocs\coreDropIndex.sql" />

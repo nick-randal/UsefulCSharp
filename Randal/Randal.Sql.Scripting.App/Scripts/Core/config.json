@@ -1,6 +1,6 @@
 {
 	Project: "Core Support",
-	Version: "15.12.16.01",
+	Version: "15.12.17.01",
 	PriorityScripts: [ "coreCreateProcedure", "coreCreateInlineTableFunction", "coreCreateScalarFunction", "coreCreateMultiStatementFunction", "coreCreateFunction", "coreCreateQueryView" ],
-	"Vars": { "Catalogs": "%" }
+	"Vars": { "Catalogs": "model" }
 }
