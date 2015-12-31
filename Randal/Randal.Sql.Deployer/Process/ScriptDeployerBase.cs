@@ -27,7 +27,7 @@ namespace Randal.Sql.Deployer.Process
 			Project = project;
 		}
 
-		public abstract bool CanUpgrade();
+		public abstract bool CanProceed();
 
 		public abstract Core.Enums.Returned DeployScripts();
 

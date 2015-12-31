@@ -19,7 +19,7 @@ namespace Randal.Sql.Deployer.Process
 {
 	public interface IScriptDeployer : IDisposable
 	{
-		bool CanUpgrade();
+		bool CanProceed();
 		Returned DeployScripts();
 		IScriptDeployerConfig DeployerConfig { get; }
 	}

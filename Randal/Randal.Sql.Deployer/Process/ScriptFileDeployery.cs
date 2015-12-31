@@ -42,7 +42,7 @@ namespace Randal.Sql.Deployer.Process
 			_writer.WriteLine("-- Generated {0} on {1} by {2}", DateTime.Now, Environment.MachineName, Environment.UserName);
 		}
 
-		public override bool CanUpgrade()
+		public override bool CanProceed()
 		{
 			WriteBeginTransaction();
 			

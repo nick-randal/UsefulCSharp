@@ -69,6 +69,12 @@ namespace Randal.Sql.Deployer.App
 
 					commit = _settings.ShouldRollback == false;
 				}
+				catch (RunnerException rex)
+				{
+					_logger.PostEntryNoTimestamp(string.Empty);
+					_logger.PostEntry("<<< ERROR >>> {0}", rex.Message);
+					return RunnerResolution.ExceptionThrown;
+				}
 				catch (Exception ex)
 				{
 					_logger.PostException(ex);
@@ -155,8 +161,8 @@ namespace Randal.Sql.Deployer.App
 		{
 			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger))
 			{
-				if (deployer.CanUpgrade() == false)
-					throw new RunnerException("Cannot upgrade project");
+				if (deployer.CanProceed() == false)
+					throw new RunnerException("Cannot proceed! A more recent version has already been deployed.");
 
 				if (deployer.DeployScripts() == Returned.Failure)
 					throw new RunnerException("Deploy scripts failed.");

@@ -102,7 +102,7 @@ namespace Randal.Tests.Sql.Deployer.Process
 
 		private void CheckingCanUpgrade()
 		{
-			Then.CanUpgrade = Then.Deployer.CanUpgrade();
+			Then.CanUpgrade = Then.Deployer.CanProceed();
 		}
 
 		private void Deploying()

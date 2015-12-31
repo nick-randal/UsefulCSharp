@@ -40,16 +40,16 @@ namespace Randal.Sql.Deployer.Process
 		}
 
 
-		public override bool CanUpgrade()
+		public override bool CanProceed()
 		{
 			CreateProjectsTable();
 
-			var valid = IsProjectValidUpgrade();
+			var canProceed = IsProjectVersionValid();
 
-			if (valid)
+			if (canProceed)
 				AddProject();
 
-			return valid;
+			return canProceed;
 		}
 
 		public override Returned DeployScripts()
@@ -182,7 +182,7 @@ namespace Randal.Sql.Deployer.Process
 			}
 		}
 
-		private bool IsProjectValidUpgrade()
+		private bool IsProjectVersionValid()
 		{
 			Version databaseVersion;
 			var projectConfig = Project.Configuration;
@@ -206,14 +206,7 @@ namespace Randal.Sql.Deployer.Process
 
 			_logger.PostEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectConfig.Version);
 
-			if (databaseVersion >= projectVersion)
-			{
-				_logger.PostEntry("project is older than or equal to what is currently deployed.");
-				return false;
-			}
-
-			_logger.PostEntry("project is newer than what is currently deployed, continuing.");
-			return true;
+			return databaseVersion < projectVersion;
 		}
 
 		private readonly ILoggerSync _logger;

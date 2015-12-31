@@ -25,32 +25,47 @@ namespace Randal.Sql.Deployer.App
 		{
 			try
 			{
+				var start = DateTime.UtcNow;
 				var options = ParseCommandLineArguments(args);
 				if (options == null)
 					return 2;
 
-				IRunnerSettings settings = (RunnerSettings) options;
-
-
-				using (var logger = new Logger())
-				using (var rollingFileLogSink = new RollingFileLogSink(settings.FileLoggerSettings))
-				{
-					logger.AddLogSink(rollingFileLogSink);
-
-					SendLogFilePathToExchange(logger, rollingFileLogSink, options);
-					var runner = new Runner(settings, logger);
-
-					var goValue = (int) runner.Go();
-					
-					logger.CompleteAllAsync().Wait(new TimeSpan(0, 0, 3));
-
-					return goValue;
-				}
+				return RunUnderLogging(options, start);
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
 				return (int) RunnerResolution.ExceptionThrown;
+			}
+		}
+
+		private static int RunUnderLogging(AppOptions options, DateTime start)
+		{
+			IRunnerSettings settings = (RunnerSettings)options;
+
+			using (var logger = new Logger())
+			using (var rollingFileLogSink = new RollingFileLogSink(settings.FileLoggerSettings))
+			{
+				try
+				{
+					logger.AddLogSink(rollingFileLogSink);
+
+					SendLogFilePathToExchange(logger, rollingFileLogSink, options);
+
+					var runner = new Runner(settings, logger);
+
+					return (int)runner.Go();
+				}
+				catch (Exception ex)
+				{
+					logger.PostException(ex);
+					throw ex;
+				}
+				finally
+				{
+					logger.PostEntryNoTimestamp("Elapsed time {0}", DateTime.UtcNow - start);
+					logger.CompleteAllAsync().Wait(new TimeSpan(0, 0, 3));
+				}
 			}
 		}
 
