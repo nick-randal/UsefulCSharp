@@ -23,16 +23,6 @@ namespace Randal.Sql.Scripting.App
 		{
 			SetupHelp("?", "h", "help").Callback(x => Console.WriteLine(x));
 
-			Setup(x => x.ScriptFunctions)
-				.As('f', "functions")
-				.WithDescription(ScriptUdfHelp)
-				.SetDefault(true);
-
-			Setup(x => x.IncludeDatabases)
-				.As('i', "include")
-				.WithDescription(IncludeDatabasesHelpText)
-				.SetDefault(new List<string>());
-
 			Setup(x => x.LogFolder)
 				.As('l', "logFolder")
 				.WithDescription(LogFolderHelpText)
@@ -43,15 +33,20 @@ namespace Randal.Sql.Scripting.App
 				.WithDescription(OutputFolderHelpText)
 				.Required();
 
-			Setup(x => x.ScriptStoredProcedures)
-				.As('p', "procedures")
-				.WithDescription(ScriptSprocsHelp)
-				.SetDefault(true);
-
 			Setup(x => x.Server)
 				.As('s', "server")
 				.WithDescription(ServerHelpText)
 				.Required();
+
+			Setup(x => x.ScriptFunctions)
+				.As('f', "functions")
+				.WithDescription(ScriptUdfHelp)
+				.SetDefault(false);
+
+			Setup(x => x.ScriptStoredProcedures)
+				.As('p', "procedures")
+				.WithDescription(ScriptSprocsHelp)
+				.SetDefault(false);
 
 			Setup(x => x.ScriptTables)
 				.As('t', "tables")
@@ -61,7 +56,12 @@ namespace Randal.Sql.Scripting.App
 			Setup(x => x.ScriptViews)
 				.As('v', "views")
 				.WithDescription(ScriptViewsHelp)
-				.SetDefault(true);
+				.SetDefault(false);
+
+			Setup(x => x.IncludeDatabases)
+				.As('i', "include")
+				.WithDescription(IncludeDatabasesHelpText)
+				.SetDefault(new List<string>());
 
 			Setup(x => x.ExcludeDatabases)
 				.As('x', "exclude")

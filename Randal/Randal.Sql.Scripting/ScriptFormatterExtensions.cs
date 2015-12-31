@@ -21,37 +21,43 @@ namespace Randal.Sql.Scripting
 {
 	public static class ScriptFormatterExtensions
 	{
-		public static string FormatMainSection(this Table table)
-		{
-			var preOptions = new ScriptingOptions
+		private static readonly ScriptingOptions 
+			PrePhaseOptions = new ScriptingOptions
 			{
-				PrimaryObject = false,
+				DriDefaults = true,
+			},
+			MainPhaseOptions = new ScriptingOptions
+			{
+				ClusteredIndexes = true,
+				DriChecks = true,
 				DriForeignKeys = true,
-				DriChecks = true
+				DriClustered = true,
+				DriIndexes = true,
+				DriNonClustered = true,
+				DriPrimaryKey = true,
+				DriUniqueKeys = true,
+				FullTextIndexes = true,
+				Indexes = true,
+				NonClusteredIndexes = true,
+				PrimaryObject = false,
+				Triggers = true,
+				XmlIndexes = true,
 			};
-
-			var main = string.Join(Const.DoubleLineBreak, table.EnumScript(preOptions).Select(x => x.Trim()));
-			main = Const.PatternLineEndings.Replace(main.Trim(), Const.LineBreakTab);
-
-			return main;
-		}
 
 		public static string FormatPreSection(this Table table)
 		{
-			var preOptions = new ScriptingOptions
-			{
-				XmlIndexes = true,
-				Indexes = true,
-				ClusteredIndexes = true,
-				DriPrimaryKey = true,
-				DriIndexes = true,
-				DriClustered = true
-			};
-
-			var sectionText = string.Join(Const.DoubleLineBreak, table.EnumScript(preOptions).Select(x => x.Trim()));
+			var sectionText = string.Join(Const.DoubleLineBreak, table.EnumScript(PrePhaseOptions).Select(x => x.Trim()));
 			sectionText = Const.PatternLineEndings.Replace(sectionText.Trim(), Const.LineBreakTab);
 
 			return sectionText;
+		}
+
+		public static string FormatMainSection(this Table table)
+		{
+			var main = string.Join(Const.DoubleLineBreak, table.EnumScript(MainPhaseOptions).Select(x => x.Trim()));
+			main = Const.PatternLineEndings.Replace(main.Trim(), Const.LineBreakTab);
+
+			return main;
 		}
 
 		public static string EscapeName(this string name)
