@@ -1,5 +1,5 @@
 --:: need coreCreateProcedure, coreCreateInlineTableFunction, coreCreateMultiStatementFunction, coreCreateScalarFunction
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateProcedure 'coreCreateFunction'

@@ -1,5 +1,5 @@
 --:: need coreGetParameterString
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateFunction 'coreGetTableVersion', 'dbo', 'scalar'

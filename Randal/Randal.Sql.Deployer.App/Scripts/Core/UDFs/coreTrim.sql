@@ -1,4 +1,4 @@
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateFunction 'coreTrim', 'dbo', 'scalar'

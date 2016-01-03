@@ -1,5 +1,5 @@
 --:: need coreSetParameter, coreGetTableVersion
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateProcedure 'coreSetTableVersion'

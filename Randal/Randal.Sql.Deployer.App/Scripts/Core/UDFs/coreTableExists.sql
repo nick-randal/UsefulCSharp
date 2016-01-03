@@ -1,5 +1,5 @@
 --:: need coreTrimBrackets
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateFunction 'coreTableExists', 'dbo', 'scalar'

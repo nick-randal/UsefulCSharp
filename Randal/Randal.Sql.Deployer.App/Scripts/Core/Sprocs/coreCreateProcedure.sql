@@ -1,4 +1,4 @@
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 IF NOT EXISTS (SELECT 1 FROM sys.procedures where name = 'coreCreateProcedure')

@@ -1,5 +1,5 @@
 --:: need coreTrimBrackets
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: ignore
 use model

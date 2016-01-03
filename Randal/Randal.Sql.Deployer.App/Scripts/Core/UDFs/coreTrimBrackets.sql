@@ -1,5 +1,5 @@
 --:: need coreTrim
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateFunction 'coreTrimBrackets', 'dbo', 'scalar'

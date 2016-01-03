@@ -1,5 +1,5 @@
 --:: need coreCreateProcedure
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 exec coreCreateProcedure 'coreCreateMultiStatementFunction'

@@ -1,5 +1,5 @@
 
---:: catalog %
+--:: catalog $Catalogs$
 
 --:: pre
 EXEC coreCreateProcedure 'coreSetParameter'
