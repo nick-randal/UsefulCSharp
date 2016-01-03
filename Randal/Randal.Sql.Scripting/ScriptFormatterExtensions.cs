@@ -21,27 +21,21 @@ namespace Randal.Sql.Scripting
 {
 	public static class ScriptFormatterExtensions
 	{
-		private static readonly ScriptingOptions 
+		private static readonly ScriptingOptions
 			PrePhaseOptions = new ScriptingOptions
 			{
 				DriDefaults = true,
+				Indexes = true,
+				FullTextIndexes = true
 			},
+
 			MainPhaseOptions = new ScriptingOptions
 			{
-				ClusteredIndexes = true,
+				PrimaryObject = false,
+
 				DriChecks = true,
 				DriForeignKeys = true,
-				DriClustered = true,
-				DriIndexes = true,
-				DriNonClustered = true,
-				DriPrimaryKey = true,
-				DriUniqueKeys = true,
-				FullTextIndexes = true,
-				Indexes = true,
-				NonClusteredIndexes = true,
-				PrimaryObject = false,
-				Triggers = true,
-				XmlIndexes = true,
+				Triggers = true
 			};
 
 		public static string FormatPreSection(this Table table)

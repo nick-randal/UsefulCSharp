@@ -94,6 +94,7 @@
     <Compile Include="RunnerSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\Core\Sprocs\coreCreateTrigger.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateFunction.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateInlineTableFunction.sql" />
     <Content Include="Scripts\Core\Sprocs\coreCreateMultiStatementFunction.sql" />
