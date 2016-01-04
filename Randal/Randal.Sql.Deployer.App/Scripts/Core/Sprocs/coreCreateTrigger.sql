@@ -1,10 +1,10 @@
 --:: catalog $Catalogs$
 
---:: create
+--:: pre
 EXEC coreCreateProcedure 'coreCreateTrigger'
 GO
 
---:: expand
+--:: main
 ALTER PROCEDURE coreCreateTrigger
 	@TableName		sysname,
 	@SchemaName		sysname,
