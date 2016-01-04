@@ -2,5 +2,5 @@
 	Project: "Core Support",
 	Version: "16.01.01.01",
 	PriorityScripts: [ "coreCreateProcedure", "coreCreateInlineTableFunction", "coreCreateScalarFunction", "coreCreateMultiStatementFunction", "coreCreateFunction", "coreCreateQueryView" ],
-	"Vars": { "Catalogs": "model, CelloSaas" }
+	"Vars": { "Catalogs": "model" }
 }
