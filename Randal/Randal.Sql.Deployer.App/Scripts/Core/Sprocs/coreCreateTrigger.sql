@@ -21,7 +21,7 @@ as begin
 	set @TableName = dbo.coreTrimBrackets(@TableName)
 	set @TriggerName = dbo.coreTrimBrackets(@TriggerName)
 
-	set @FQName = @SchemaName + '.[TRG_' + @TableName + '_' + @TriggerName + ']'
+	set @FQName = '[' + @SchemaName + '].[TRG_' + @TableName + '_' + @TriggerName + ']'
 	
 	SET @cmd = 
 	'IF OBJECT_ID (''' + @FQName + ''',''TR'') IS NOT NULL
@@ -34,11 +34,7 @@ as begin
 		exec(@cmd)
 	end
 
-	SET @cmd = 
-	'CREATE TRIGGER ' + @FQName
-	+ ' ON ' + @SchemaName + '.' + @TableName
-	+ ' ' + @TriggerType
-	+ ' AS ' + @Trigger
+	SET @cmd = 'CREATE TRIGGER ' + @FQName + ' ON [' + @SchemaName + '].[' + @TableName + '] ' + @TriggerType + ' AS ' + @Trigger
 	
 	if @debug = 1 begin
 		PRINT @cmd	
