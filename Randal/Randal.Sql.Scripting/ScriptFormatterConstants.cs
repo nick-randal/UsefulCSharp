@@ -18,11 +18,22 @@ namespace Randal.Sql.Scripting
 {
 	internal static class ScriptFormatterConstants
 	{
-		internal static readonly Regex
-			PatternLineEndings = new Regex(@"[\t ]*\r?\n",
-				RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline),
-			UnescapedSingleQuotes = new Regex(@"'*", RegexOptions.IgnoreCase | RegexOptions.Compiled)
-		;
+		internal static class Patterns
+		{
+			private const RegexOptions Standard = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
+
+			internal static readonly Regex
+
+				LineEndings = new Regex(@"[\t ]*\r?\n", Standard | RegexOptions.Multiline),
+				
+				UnescapedSingleQuotes = new Regex(@"'*", Standard),
+				
+				CreateTrigger = new Regex(@"create\s+trigger\s+(?<name>.+)\s+on\s+(?<table>.+)\s+(?<type>(after|instead).+)\s+as\s+(begin)?(?<body>.+)\s+end[;]?",
+					Standard | RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.ExplicitCapture),
+
+				SchemaName = new Regex(@"\[?(?<schema>.+?)\]?\.\[?(?<name>[^\s\]]+)", Standard | RegexOptions.ExplicitCapture)
+			;
+		}
 
 		internal static readonly MatchEvaluator UnescapedSingleQuotesEvaluator =
 			m => m.Length % 2 == 0 ? m.Value : m.Value + '\'';

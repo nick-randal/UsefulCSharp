@@ -41,7 +41,7 @@ namespace Randal.Sql.Scripting
 		public static string FormatPreSection(this Table table)
 		{
 			var sectionText = string.Join(Const.DoubleLineBreak, table.EnumScript(PrePhaseOptions).Select(x => x.Trim()));
-			sectionText = Const.PatternLineEndings.Replace(sectionText.Trim(), Const.LineBreakTab);
+			sectionText = Const.Patterns.LineEndings.Replace(sectionText.Trim(), Const.LineBreakTab);
 
 			return sectionText;
 		}
@@ -49,19 +49,46 @@ namespace Randal.Sql.Scripting
 		public static string FormatMainSection(this Table table)
 		{
 			var main = string.Join(Const.DoubleLineBreak, table.EnumScript(MainPhaseOptions).Select(x => x.Trim()));
-			main = Const.PatternLineEndings.Replace(main.Trim(), Const.LineBreakTab);
+			main = Const.Patterns.LineEndings.Replace(main.Trim(), Const.LineBreakTab);
 
-			return main;
+			return main.ReplaceCreateTrigger();
+		}
+
+		private static string ReplaceCreateTrigger(this string text)
+		{
+			return Const.Patterns.CreateTrigger.Replace(text, match =>
+			{
+				if (match.Success == false)
+					throw new FormatException("Unexpected Create Trigger format.");
+
+				var tableMatch = Const.Patterns.SchemaName.Match(match.Groups["table"].Value);
+
+				if (tableMatch.Success == false)
+					throw new FormatException("Unexpected table name format in create trigger.");
+
+				var triggerMatch = Const.Patterns.SchemaName.Match(match.Groups["name"].Value);
+
+				if (triggerMatch.Success == false)
+					throw new FormatException("Unexpected trigger name format in create trigger.");
+
+				return string.Format("exec coreCreateTrigger '{0}', '{1}', '{2}', '{3}', '{4}'",
+					tableMatch.Groups["name"].Value,
+					tableMatch.Groups["schema"].Value,
+					triggerMatch.Groups["name"].Value,
+					match.Groups["type"].Value.Trim(),
+					match.Groups["body"].Value.Trim().Replace("'", "''")
+				);
+			});
 		}
 
 		public static string EscapeName(this string name)
 		{
-			return Const.UnescapedSingleQuotes.Replace(name, Const.UnescapedSingleQuotesEvaluator);
+			return Const.Patterns.UnescapedSingleQuotes.Replace(name, Const.UnescapedSingleQuotesEvaluator);
 		}
 
 		public static string NormalizeSprocBody(this string body)
 		{
-			body = Const.PatternLineEndings.Replace(body.Trim(), Const.LineBreakTab);
+			body = Const.Patterns.LineEndings.Replace(body.Trim(), Const.LineBreakTab);
 			if (body.StartsWith(Const.Begin, StringComparison.CurrentCultureIgnoreCase) == false)
 				body = Const.Begin + Const.LineBreakTab + body + Environment.NewLine + Const.End;
 

@@ -17,9 +17,9 @@ as begin
 
 	declare @FQName varchar(256), @cmd nvarchar(max)
 
-	set @SchemaName = dbo.TrimBrackets(@SchemaName)
-	set @TableName = dbo.TrimBrackets(@TableName)
-	set @TriggerName = dbo.TrimBrackets(@TriggerName)
+	set @SchemaName = dbo.coreTrimBrackets(@SchemaName)
+	set @TableName = dbo.coreTrimBrackets(@TableName)
+	set @TriggerName = dbo.coreTrimBrackets(@TriggerName)
 
 	set @FQName = @SchemaName + '.[TRG_' + @TableName + '_' + @TriggerName + ']'
 	
