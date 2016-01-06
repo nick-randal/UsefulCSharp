@@ -28,15 +28,14 @@ namespace Randal.Sql.Deployer.Process
 			: base(config, project)
 		{
 			if (project == null)
-				throw new ArgumentNullException(nameof(project));
+				throw new ArgumentNullException("project");
 			if (connectionManager == null)
-				throw new ArgumentNullException(nameof(connectionManager));
+				throw new ArgumentNullException("connectionManager");
 
 			_connectionManager = connectionManager;
 			_logger = logger ?? new NullLogger();
 			_patternLookup = new CatalogPatternLookup();
 		}
-
 
 		public override bool CanProceed()
 		{
