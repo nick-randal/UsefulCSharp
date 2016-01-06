@@ -18,6 +18,7 @@ namespace Randal.Sql.Deployer.App
 		Committed		= -1,
 		ValidationOnly	= -2,
 		RolledBack		= -3,
+		StaleDeployment = -50,
 		ExceptionThrown = -999
 	}
 }

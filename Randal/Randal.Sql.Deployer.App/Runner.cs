@@ -73,7 +73,7 @@ namespace Randal.Sql.Deployer.App
 				{
 					_logger.PostEntryNoTimestamp(string.Empty);
 					_logger.PostEntry("<<< ERROR >>> {0}", rex.Message);
-					return RunnerResolution.ExceptionThrown;
+					return rex.RunnerResolution;
 				}
 				catch (Exception ex)
 				{
@@ -162,7 +162,7 @@ namespace Randal.Sql.Deployer.App
 			using(var deployer = new SqlServerDeployer(config, project, connectionManager, _logger))
 			{
 				if (deployer.CanProceed() == false)
-					throw new RunnerException("Cannot proceed! A more recent version has already been deployed.");
+					throw new RunnerException("Cannot proceed! A more recent version has already been deployed.", RunnerResolution.StaleDeployment);
 
 				if (deployer.DeployScripts() == Returned.Failure)
 					throw new RunnerException("Deploy scripts failed.");

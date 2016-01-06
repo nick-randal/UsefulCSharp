@@ -18,13 +18,17 @@ namespace Randal.Sql.Deployer.App
 	[Serializable]
 	public sealed class RunnerException : InvalidOperationException
 	{
-		public RunnerException(string message) : base(message)
+		public RunnerException(string message, RunnerResolution resolution = RunnerResolution.ExceptionThrown) : base(message)
 		{
+			RunnerResolution = resolution;
 		}
 
-		public RunnerException(string message, Exception innerException)
+		public RunnerException(string message, RunnerResolution resolution, Exception innerException)
 			: base(message, innerException)
 		{
+			RunnerResolution = resolution;
 		}
+
+		public RunnerResolution RunnerResolution { get; private set; }
 	}
 }

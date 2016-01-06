@@ -28,12 +28,10 @@ namespace Randal.Sql.Deployer.Process
 			: base(config, project)
 		{
 			if (project == null)
-				throw new ArgumentNullException("project");
+				throw new ArgumentNullException(nameof(project));
 			if (connectionManager == null)
-				throw new ArgumentNullException("connectionManager");
+				throw new ArgumentNullException(nameof(connectionManager));
 
-			
-			
 			_connectionManager = connectionManager;
 			_logger = logger ?? new NullLogger();
 			_patternLookup = new CatalogPatternLookup();
@@ -204,7 +202,7 @@ namespace Randal.Sql.Deployer.Process
 				databaseVersion = new Version(reader.GetString(0));
 			}
 
-			_logger.PostEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectConfig.Version);
+			_logger.PostEntry("database version is '{0}' and config version is '{1}'", databaseVersion, projectVersion);
 
 			return databaseVersion < projectVersion;
 		}
