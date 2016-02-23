@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Changed signature for code generation of enums for T4.</releaseNotes>
-    <copyright>Copyright 2014-2015 Nicholas Randal</copyright>
+    <releaseNotes>Updated license info.</releaseNotes>
+    <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
     <tags>coding</tags>
   </metadata>
 </package>
