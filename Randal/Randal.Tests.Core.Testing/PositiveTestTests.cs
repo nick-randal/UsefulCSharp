@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2015 Nicholas Randal
+// Copyright (C) 2014-2016 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.Testing
 {
 	[TestClass]
-	public sealed class PositiveTestTests : BaseUnitTest<PositiveTestThens>
+	public sealed class PositiveTestTests : UnitTestBase<PositiveTestThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveAttributeWithCorrectTraits_WhenCreating()

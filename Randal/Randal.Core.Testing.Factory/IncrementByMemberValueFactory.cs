@@ -15,111 +15,92 @@ using System;
 
 namespace Randal.Core.Testing.Factory
 {
-	public class IncrementByObjectValueFactory : IValueFactory
+	public class IncrementByMemberValueFactory : IValueFactory
 	{
-		protected byte CurrentByte;
 		protected char CurrentChar;
 		protected DateTime CurrentDateTime;
-		protected double CurrentDouble;
-		protected bool CurrentFlag;
-		protected float CurrentFloat;
-		protected int CurrentInt;
-		protected long CurrentLong;
-		protected decimal CurrentDecimal;
-		protected short CurrentShort;
-		protected int CurrentString;
+		protected DateTime _startingDateTime;
 
-		public IncrementByObjectValueFactory ()
+		public IncrementByMemberValueFactory(DateTime startingDateTime)
 		{
+			_startingDateTime = startingDateTime;
 			Reset();
 		}
 
 		public void Reset()
 		{
-			CurrentByte = 1;
+			CurrentDateTime = _startingDateTime;
 			CurrentChar = 'A';
-			CurrentDateTime = DateTime.Today;
-			CurrentDecimal = 1m;
-			CurrentDouble = 1d;
-			CurrentFlag = true;
-			CurrentFloat = 1f;
-			CurrentInt = 1;
-			CurrentLong = 1;
-			CurrentShort = 1;
-			CurrentString = 1;
 		}
 
 		public void Increment()
 		{
-			CurrentChar++;
-			if (CurrentChar > 90)
-				CurrentChar = 'A';
-
-			CurrentString++;
-			CurrentByte++;
-			CurrentShort++;
-			CurrentInt++;
-			CurrentLong++;
-			CurrentDecimal++;
-			CurrentFloat++;
-			CurrentDouble++;
-			CurrentFlag = !CurrentFlag;
-			CurrentDateTime = CurrentDateTime.AddHours(1);
+			CurrentDateTime = CurrentDateTime.AddMonths(1);
 		}
 
 		public char GetChar(string fieldName)
 		{
-			return CurrentChar;
+			var value = CurrentChar;
+
+			CurrentChar++;
+			if (CurrentChar > 90)
+				CurrentChar = 'A';
+
+			return value;
 		}
 
 		public string GetString(string fieldName)
 		{
-			return fieldName + CurrentString;
+			return fieldName;
 		}
 
 		public byte GetByte(string fieldName)
 		{
-			return CurrentByte;
+			return (byte)fieldName.GetHashCode();
 		}
 
 		public short GetInt16(string fieldName)
 		{
-			return CurrentShort;
+			return (short)fieldName.GetHashCode();
 		}
 
 		public int GetInt32(string fieldName)
 		{
-			return CurrentInt;
+			return fieldName.GetHashCode();
 		}
 
 		public long GetInt64(string fieldName)
 		{
-			return CurrentLong;
+			return fieldName.GetHashCode();
 		}
 
 		public bool GetBool(string fieldName)
 		{
-			return CurrentFlag;
+			return true;
 		}
 
 		public DateTime GetDateTime(string fieldName)
 		{
-			return CurrentDateTime;
+			var value = CurrentDateTime;
+
+			CurrentDateTime = value.AddDays(1);
+
+			return value;
 		}
 
 		public decimal GetDecimal(string fieldName)
 		{
-			return CurrentDecimal;
+			return (decimal)fieldName.GetHashCode();
 		}
 
 		public float GetFloat(string fieldName)
 		{
-			return CurrentFloat;
+			return (float)fieldName.GetHashCode();
 		}
 
 		public double GetDouble(string fieldName)
 		{
-			return CurrentDouble;
+			return (double)fieldName.GetHashCode();
 		}
 	}
 }

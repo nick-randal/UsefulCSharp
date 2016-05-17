@@ -69,7 +69,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="UnitTestBaseTests.cs" />
-    <Compile Include="BaseUnitTestTests.cs" />
     <Compile Include="PositiveTestTests.cs" />
     <Compile Include="NegativeTestTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
