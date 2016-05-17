@@ -14,10 +14,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-
 [assembly: AssemblyTitle("Randal.Core.Testing")]
 [assembly: AssemblyDescription("Unit test support for Given When Then test pattern.")]
 [assembly: AssemblyConfiguration("")]

@@ -10,7 +10,12 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Bumped minimum core version.</releaseNotes>
+		<releaseNotes>
+		<![CDATA[
+3.0.0
+	- Remove: Obsolete BaseUnitTest.  Use UnitTestBase
+	- Add: GivenOrDefault method on UnitTestBase.
+		]]></releaseNotes>
 		<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
 		<frameworkAssemblies>
