@@ -10,8 +10,12 @@
 		<projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core.Testing.Factory</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
-		<releaseNotes>Initial release - Removed dependencies.</releaseNotes>
-		<copyright>Copyright 2014-2015 Nicholas Randal</copyright>
+		<releaseNotes>
+	<![CDATA[
+1.2.0
+	- Add: MemberNameValueFactory
+		]]></releaseNotes>
+		<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
 		<tags>Testing Factory</tags>
 	</metadata>
 </package>

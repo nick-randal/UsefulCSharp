@@ -15,7 +15,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Core.Dynamic;
 
 namespace Randal.Core.Testing.UnitTest
 {
@@ -40,12 +39,10 @@ namespace Randal.Core.Testing.UnitTest
 
 
 			var disposeMe = Given as IDisposable;
-			if (disposeMe != null)
-				disposeMe.Dispose();
+			disposeMe?.Dispose();
 
 			disposeMe = Then as IDisposable;
-			if (disposeMe != null)
-				disposeMe.Dispose();
+			disposeMe?.Dispose();
 
 			Then = null;
 		}

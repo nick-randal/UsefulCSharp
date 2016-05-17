@@ -45,5 +45,17 @@ namespace Randal.Core.Testing.UnitTest
 		{
 			return members.Length == 0 || members.All(member => Given.TestForMember(member));
 		}
+
+		/// <summary>
+		/// Return the Given value if defined or default value.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="member"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		protected T GivenOrDefault<T>(string member, T defaultValue)
+		{
+			return Given.TestForMember(member) ? Given[member] : defaultValue;
+		}
 	}
 }
