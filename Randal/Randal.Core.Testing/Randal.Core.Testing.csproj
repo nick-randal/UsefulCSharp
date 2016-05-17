@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
+    <None Include="NuGetPack.ps1" />
     <None Include="packages.config" />
     <None Include="Randal.Core.Testing.nuspec" />
     <None Include="Readme.md" />

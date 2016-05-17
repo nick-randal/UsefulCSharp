@@ -1,0 +1,1 @@
+﻿..\nuget pack .\Randal.Core.Testing.csproj -IncludeReferencedProjects -Prop Configuration=Release
