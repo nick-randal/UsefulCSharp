@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Randal.Core</RootNamespace>
     <AssemblyName>Randal.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -81,7 +81,7 @@
     <Compile Include="Xml\XmlCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
+    <None Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />

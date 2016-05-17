@@ -10,7 +10,10 @@
     <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Updated license info.</releaseNotes>
+    <releaseNotes><![CDATA[
+1.1.0
+	- Change: Compiling against 4.5 framework instead of 4.5.2
+	]]></releaseNotes>
     <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
     <tags>coding</tags>
   </metadata>
