@@ -28,7 +28,7 @@ namespace Randal.Core.Testing.Factory
 			_state = State.Constructed;
 		}
 
-		public void Prepare(PrepareOptions options = PrepareOptions.Default)
+		public AutoModelFactory<TModel> Prepare(PrepareOptions options = PrepareOptions.Default)
 		{
 			if(_state != State.Constructed)
 				throw new InvalidOperationException("The factory has already been prepared for creating models.");
@@ -45,6 +45,8 @@ namespace Randal.Core.Testing.Factory
 			CreateLambdaFunction(expressions, modelVariable, havingVariable);
 
 			_state = State.Prepared;
+
+			return this;
 		}
 
 		public TModel Create()
@@ -111,7 +113,7 @@ namespace Randal.Core.Testing.Factory
 
 		private static TypeInfo GetTypeFor(PropertyInfo propertyInfo, FieldInfo fieldInfo)
 		{
-			var ogType = propertyInfo != null ? propertyInfo.PropertyType : fieldInfo.FieldType;
+			var ogType = propertyInfo?.PropertyType ?? fieldInfo.FieldType;
 
 			var typeInfo = new TypeInfo {BaseType = ogType, OriginalType = ogType, IsNullable = false};
 

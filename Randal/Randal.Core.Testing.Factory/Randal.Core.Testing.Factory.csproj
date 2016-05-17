@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoModelFactory.cs" />
-    <Compile Include="IncrementByMemberValueFactory.cs" />
+    <Compile Include="MemberNameValueFactory.cs" />
     <Compile Include="IncrementByObjectValueFactory.cs" />
     <Compile Include="IGenericAutoModelFactory.cs" />
     <Compile Include="IUntypedAutoModelFactory.cs" />

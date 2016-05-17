@@ -15,38 +15,25 @@ using System;
 
 namespace Randal.Core.Testing.Factory
 {
-	public class IncrementByMemberValueFactory : IValueFactory
+	public class MemberNameValueFactory : IValueFactory
 	{
 		protected char CurrentChar;
 		protected DateTime CurrentDateTime;
-		protected DateTime _startingDateTime;
+		protected DateTime StartingDateTime;
 
-		public IncrementByMemberValueFactory(DateTime startingDateTime)
+		public MemberNameValueFactory(DateTime? startingDateTime = null)
 		{
-			_startingDateTime = startingDateTime;
+			StartingDateTime = startingDateTime ?? new DateTime(2000, 1, 1);
 			Reset();
 		}
 
-		public void Reset()
-		{
-			CurrentDateTime = _startingDateTime;
-			CurrentChar = 'A';
-		}
+		public void Reset() { }
 
-		public void Increment()
-		{
-			CurrentDateTime = CurrentDateTime.AddMonths(1);
-		}
+		public void Increment() { }
 
 		public char GetChar(string fieldName)
 		{
-			var value = CurrentChar;
-
-			CurrentChar++;
-			if (CurrentChar > 90)
-				CurrentChar = 'A';
-
-			return value;
+			return (char)Math.Abs(48 + (fieldName.GetHashCode() % 74));
 		}
 
 		public string GetString(string fieldName)
@@ -76,31 +63,29 @@ namespace Randal.Core.Testing.Factory
 
 		public bool GetBool(string fieldName)
 		{
-			return true;
+			return (fieldName.GetHashCode() % 2) == 0;
 		}
 
 		public DateTime GetDateTime(string fieldName)
 		{
-			var value = CurrentDateTime;
+			var addHours = Math.Abs((long)fieldName.GetHashCode()) % 142000;
 
-			CurrentDateTime = value.AddDays(1);
-
-			return value;
+			return StartingDateTime.AddHours(addHours);
 		}
 
 		public decimal GetDecimal(string fieldName)
 		{
-			return (decimal)fieldName.GetHashCode();
+			return fieldName.GetHashCode();
 		}
 
 		public float GetFloat(string fieldName)
 		{
-			return (float)fieldName.GetHashCode();
+			return fieldName.GetHashCode();
 		}
 
 		public double GetDouble(string fieldName)
 		{
-			return (double)fieldName.GetHashCode();
+			return fieldName.GetHashCode();
 		}
 	}
 }

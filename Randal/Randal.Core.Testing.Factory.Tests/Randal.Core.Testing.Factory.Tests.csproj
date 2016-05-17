@@ -83,7 +83,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AutoModelFactoryTests.cs" />
-    <Compile Include="MemberHashcodeValueFactoryTests.cs" />
+    <Compile Include="MemberNameValueFactoryTests.cs" />
     <Compile Include="OtherModel.cs" />
     <Compile Include="TestModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
