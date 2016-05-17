@@ -33,7 +33,7 @@ namespace Randal.Core.Testing.Factory
 
 		public char GetChar(string fieldName)
 		{
-			return (char)Math.Abs(48 + (fieldName.GetHashCode() % 74));
+			return (char)Math.Abs(48 + (fieldName.ToCrc32() % 74));
 		}
 
 		public string GetString(string fieldName)
@@ -43,49 +43,49 @@ namespace Randal.Core.Testing.Factory
 
 		public byte GetByte(string fieldName)
 		{
-			return (byte)fieldName.GetHashCode();
+			return (byte)fieldName.ToCrc32();
 		}
 
 		public short GetInt16(string fieldName)
 		{
-			return (short)fieldName.GetHashCode();
+			return (short)fieldName.ToCrc32();
 		}
 
 		public int GetInt32(string fieldName)
 		{
-			return fieldName.GetHashCode();
+			return (int)fieldName.ToCrc32();
 		}
 
 		public long GetInt64(string fieldName)
 		{
-			return fieldName.GetHashCode();
+			return fieldName.ToCrc32();
 		}
 
 		public bool GetBool(string fieldName)
 		{
-			return (fieldName.GetHashCode() % 2) == 0;
+			return (fieldName.ToCrc32() % 2) == 0;
 		}
 
 		public DateTime GetDateTime(string fieldName)
 		{
-			var addHours = Math.Abs((long)fieldName.GetHashCode()) % 142000;
+			var addHours = fieldName.ToCrc32() % 142000;
 
 			return StartingDateTime.AddHours(addHours);
 		}
 
 		public decimal GetDecimal(string fieldName)
 		{
-			return fieldName.GetHashCode();
+			return fieldName.ToCrc32();
 		}
 
 		public float GetFloat(string fieldName)
 		{
-			return fieldName.GetHashCode();
+			return fieldName.ToCrc32();
 		}
 
 		public double GetDouble(string fieldName)
 		{
-			return fieldName.GetHashCode();
+			return fieldName.ToCrc32();
 		}
 	}
 }

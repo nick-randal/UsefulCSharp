@@ -48,6 +48,10 @@
       <HintPath>..\packages\Randal.Core.1.1.0\lib\net45\Randal.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Randal.Core.Testing, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Randal.Core.Testing.3.1.0\lib\net45\Randal.Core.Testing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -75,12 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">
-      <Project>{7e3c2598-ad31-4a85-93d1-89b7d835a9de}</Project>
-      <Name>Randal.Core.Testing</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

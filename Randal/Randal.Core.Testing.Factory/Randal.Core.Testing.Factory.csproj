@@ -35,6 +35,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoModelFactory.cs" />
+    <Compile Include="Crc32.cs" />
+    <Compile Include="Crc32Extensions.cs" />
     <Compile Include="MemberNameValueFactory.cs" />
     <Compile Include="IncrementByObjectValueFactory.cs" />
     <Compile Include="IGenericAutoModelFactory.cs" />

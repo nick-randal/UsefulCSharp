@@ -37,7 +37,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(GettingInt);
 
-			Then.IntValue.Should().Be(287061521);
+			Then.IntValue.Should().Be(717046770);
 		}
 
 		[TestMethod, PositiveTest]
@@ -45,7 +45,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(GettingShort);
 
-			Then.ShortValue.Should().Be(7351);
+			Then.ShortValue.Should().Be(-14302);
 		}
 
 		[TestMethod, PositiveTest]
@@ -53,7 +53,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(GettingDecimal);
 
-			Then.DecimalValue.Should().Be(-1123342188);
+			Then.DecimalValue.Should().Be(2478816839);
 		}
 
 		[TestMethod, PositiveTest]
@@ -61,7 +61,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(GettingDateTime);
 
-			Then.DateTimeValue.Should().Be(new DateTime(2004, 10, 5, 15, 0, 0));
+			Then.DateTimeValue.Should().Be(new DateTime(2001, 11, 11, 11, 0, 0));
 		}
 
 		[TestMethod, PositiveTest]
@@ -69,7 +69,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(GettingChar);
 
-			Then.CharValue.Should().Be('g');
+			Then.CharValue.Should().Be('l');
 		}
 
 		protected override void Creating()
@@ -79,32 +79,32 @@ namespace Randal.Core.Testing.Factory.Tests
 
 		private void GettingString()
 		{
-			Then.StringValue = Then.Target.GetString(Given.FieldName ?? "FirstName");
+			Then.StringValue = Then.Target.GetString("FirstName");
 		}
 
 		private void GettingInt()
 		{
-			Then.IntValue = Then.Target.GetInt32(Given.FieldName ?? "Id");
+			Then.IntValue = Then.Target.GetInt32("Id");
 		}
 
 		private void GettingShort()
 		{
-			Then.ShortValue = Then.Target.GetInt16(Given.FieldName ?? "Elevation");
+			Then.ShortValue = Then.Target.GetInt16("Elevation");
 		}
 
 		private void GettingDecimal()
 		{
-			Then.DecimalValue = Then.Target.GetDecimal(Given.FieldName ?? "Salary");
+			Then.DecimalValue = Then.Target.GetDecimal("Salary");
 		}
 
 		private void GettingDateTime()
 		{
-			Then.DateTimeValue = Then.Target.GetDateTime(Given.FieldName ?? "CreatedOn");
+			Then.DateTimeValue = Then.Target.GetDateTime("CreatedOn");
 		}
 
 		private void GettingChar()
 		{
-			Then.CharValue = Then.Target.GetChar(Given.FieldName ?? "Grade");
+			Then.CharValue = Then.Target.GetChar("Grade");
 		}
 
 		public sealed class Thens
