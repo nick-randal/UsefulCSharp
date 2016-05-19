@@ -19,7 +19,7 @@ using Randal.Core.Xml;
 namespace Randal.Tests.Core.Xml
 {
 	[TestClass]
-	public sealed class XmlCollectionTests : BaseUnitTest<XmlCollectionThens>
+	public sealed class XmlCollectionTests : UnitTestBase<XmlCollectionThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveCollection_WhenCreatingInstance_GivenNoItems()

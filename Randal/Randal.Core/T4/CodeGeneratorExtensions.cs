@@ -54,14 +54,15 @@ namespace Randal.Core.T4
 
 		private static string FormattedAttribute(DbCodeDefinition code)
 		{
-			return string.Format(DisplayAttribute2Args, code.DisplayName, code.Description);
+			return string.Format(DisplayAttribute2Args, code.DisplayName, code.Description, code.IsObsolete ? Obsolete : string.Empty);
 		}
 
 		private const string 
 			CommentBegin = "/*",
 			CommendEnd = "*/",
+			Obsolete = "Obsolete, ",
 			EnumDefinition2Args = "{0} = {1},",
-			DisplayAttribute2Args = @"[Display(Name = ""{0}"", Description = ""{1}"")]"
+			DisplayAttribute2Args = @"[{2}Display(Name = ""{0}"", Description = ""{1}"")]"
 		;
 	}
 }

@@ -21,7 +21,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.T4
 {
 	[TestClass]
-	public sealed class CodeGeneratorTests : BaseUnitTest<CodeGeneratorThens>
+	public sealed class CodeGeneratorTests : UnitTestBase<CodeGeneratorThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
@@ -36,15 +36,20 @@ namespace Randal.Tests.Core.T4
 		{
 			Given.CodeDefinitions = new[]
 			{
+				new DbCodeDefinition("2", "Hazy", "Component Hazy", "What were we thinking?", 1),
 				new DbCodeDefinition("1", "Visible", "Component Visible", "Now you see it."),
 				new DbCodeDefinition("0", "Hidden", "Component Hidden", "Now you don't.")
 			};
 
 			When(GeneratingList);
 
-			Then.Lines.Should().HaveCount(5);
-			Then.Lines[0].Should().Be("[Display(Name = \"Component Visible\", Description = \"Now you see it.\")]");
-			Then.Lines[1].Should().Be("Visible = 1,");
+			Then.Lines.Should().HaveCount(8);
+			Then.Lines[0].Should().Be("[Obsolete, Display(Name = \"Component Hazy\", Description = \"What were we thinking?\")]");
+			Then.Lines[1].Should().Be("Hazy = 2,");
+			Then.Lines[2].Should().Be("");
+			Then.Lines[3].Should().Be("[Display(Name = \"Component Visible\", Description = \"Now you see it.\")]");
+			Then.Lines[4].Should().Be("Visible = 1,");
+			
 			Then.Lines.Last().Should().NotBeEmpty();
 			Then.Lines.Last().Should().NotEndWith(",");
 		}

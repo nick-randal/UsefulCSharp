@@ -19,7 +19,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.T4
 {
 	[TestClass]
-	public sealed class StringExtensionTests : BaseUnitTest<StringExtensionThens>
+	public sealed class StringExtensionTests : UnitTestBase<StringExtensionThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldConvertLeadingNumber_WhenConverting()

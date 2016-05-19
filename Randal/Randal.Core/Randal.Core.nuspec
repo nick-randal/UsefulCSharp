@@ -13,6 +13,8 @@
     <releaseNotes><![CDATA[
 1.1.0
 	- Change: Compiling against 4.5 framework instead of 4.5.2
+1.2.0
+	- Change: T4 enum generation from the database now accepts boolean values to mark enums as Obsolete.
 	]]></releaseNotes>
     <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
     <tags>coding</tags>

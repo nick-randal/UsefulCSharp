@@ -23,7 +23,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.T4
 {
 	[TestClass]
-	public sealed class CodeGeneratorIntegrationTests : BaseUnitTest<CodeGeneratorIntegrationThens>
+	public sealed class CodeGeneratorIntegrationTests : UnitTestBase<CodeGeneratorIntegrationThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveListOfCodeDefintions_WhenGeneratingList()

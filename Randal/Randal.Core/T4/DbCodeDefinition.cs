@@ -11,43 +11,33 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+using System;
+
 namespace Randal.Core.T4
 {
 	public sealed class DbCodeDefinition
 	{
-		private readonly object _code, _name, _displayName, _description;
+		private readonly object _code, _name, _displayName, _description, _obsolete;
 
-		public DbCodeDefinition(object code, object name, object displayName, object description)
+		public DbCodeDefinition(object code, object name, object displayName, object description, object obsolete = null)
 		{
 			_code = code;
 			_name = name;
 			_displayName = displayName;
 			_description = description;
+			_obsolete = obsolete ?? false;
 		}
 
-		public string Code
-		{
-			get { return _code.ToString(); }
-		}
+		public string Code => _code?.ToString() ?? string.Empty;
 
-		public string Name
-		{
-			get { return _name.ToString(); }
-		}
+		public string Name => _name?.ToString() ?? string.Empty;
 
-		public string DisplayName
-		{
-			get { return _displayName.ToString(); }
-		}
+		public string DisplayName => _displayName?.ToString() ?? string.Empty;
 
-		public string NameAsCSharpProperty
-		{
-			get { return Name.ToCSharpPropertyName(); }
-		}
+		public string NameAsCSharpProperty => Name?.ToCSharpPropertyName() ?? string.Empty;
 
-		public string Description
-		{
-			get { return _description.ToString(); }
-		}
+		public string Description => _description?.ToString() ?? string.Empty;
+
+		public bool IsObsolete => Convert.ToBoolean(_obsolete);
 	}
 }

@@ -19,7 +19,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.Strings
 {
 	[TestClass]
-	public sealed class TextTests : BaseUnitTest<TextThens>
+	public sealed class TextTests : UnitTestBase<TextThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveNonNullText_WhenCreating_GivenNull()

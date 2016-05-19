@@ -32,18 +32,20 @@ namespace Randal.Core.T4
 
 			using (var connection = OpenConnection())
 			using (var command = new SqlCommand(commandText, connection) { CommandType = commandType })
-			using(var reader = command.ExecuteReader())
+			using (var reader = command.ExecuteReader())
 			{
 				if (reader.HasRows == false)
 					return codes.AsReadOnly();
 
 				if(reader.FieldCount < 4)
-					throw new InvalidDataException("SQL command provided should have returned 4 fields but returned " + reader.FieldCount.ToString());
+					throw new InvalidDataException("SQL command provided should have returned 4 fields but returned " + reader.FieldCount);
 
 				while (reader.Read())
 				{
+					var isObsolete = reader.FieldCount > 4 ? reader.GetValue(4) : null;
+
 					codes.Add(
-						new DbCodeDefinition(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3))
+						new DbCodeDefinition(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), isObsolete)
 					);
 				}
 			}

@@ -14,10 +14,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-
 [assembly: AssemblyTitle("Randal.Core")]
 [assembly: AssemblyDescription("Core coding support for all other libraries and Nuget packages.")]
 [assembly: AssemblyConfiguration("")]
@@ -29,6 +25,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("4fa5329f-1b81-47d2-8bb9-c51db265f4fc")]
 
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
-[assembly: AssemblyInformationalVersionAttribute("1.1.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]
+[assembly: AssemblyInformationalVersionAttribute("1.2.0")]

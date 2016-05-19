@@ -22,7 +22,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.Strings
 {
 	[TestClass]
-	public sealed class StringFormatHelperTests : BaseUnitTest<StringFormatHelperThens>
+	public sealed class StringFormatHelperTests : UnitTestBase<StringFormatHelperThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveFormattedStringWhenFormattingWithNameValueCollection()
@@ -74,7 +74,7 @@ namespace Randal.Tests.Core.Strings
 		public void ShouldThrowArgumentExceptionWhenCreatingInstanceGivenNullString()
 		{
 			Given.Text = null;
-			ThrowsExceptionWhen(Creating);
+			WhenLastActionDeferred(Creating);
 
 			ThenLastAction.ShouldThrow<ArgumentNullException>();
 		}

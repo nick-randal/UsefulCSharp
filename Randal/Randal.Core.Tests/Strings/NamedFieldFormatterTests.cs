@@ -21,7 +21,7 @@ using Randal.Core.Testing.UnitTest;
 namespace Randal.Tests.Core.Strings
 {
 	[TestClass]
-	public sealed class NamedFieldFormatterTests : BaseUnitTest<NamedFieldFormatterThens>
+	public sealed class NamedFieldFormatterTests : UnitTestBase<NamedFieldFormatterThens>
 	{
 		[TestMethod, PositiveTest]
 		public void ShouldHaveValidFormatterWhenCreatingInstance()
@@ -68,7 +68,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey name},";
 
-			ThrowsExceptionWhen(Formatting);
+			WhenLastActionDeferred(Formatting);
 
 			ThenLastAction.ShouldThrow<FormatException>("Unescaped closing brace found at position 9.");
 		}
@@ -78,7 +78,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey {";
 
-			ThrowsExceptionWhen(Formatting);
+			WhenLastActionDeferred(Formatting);
 
 			ThenLastAction.ShouldThrow<FormatException>("Opening brace with no field name specified at position 5.");
 		}
@@ -88,7 +88,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "Hey {name,";
 
-			ThrowsExceptionWhen(Formatting);
+			WhenLastActionDeferred(Formatting);
 
 			ThenLastAction.ShouldThrow<FormatException>("Opening brace with field expression 'name,' has no closing brace at position 10.");
 		}
@@ -98,7 +98,7 @@ namespace Randal.Tests.Core.Strings
 		{
 			Given.Text = "{}";
 
-			ThrowsExceptionWhen(Formatting);
+			WhenLastActionDeferred(Formatting);
 
 			ThenLastAction.ShouldThrow<FormatException>("Opening brace with no field name specified at position 1.");
 		}
