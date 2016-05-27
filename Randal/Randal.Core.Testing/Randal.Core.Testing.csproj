@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTest\XUnitTestBase.cs" />
+    <Compile Include="UnitTest\XUnitTestBase.Givens.cs" />
     <Compile Include="UnitTest\UnitTestBase.Givens.cs" />
     <Compile Include="UnitTest\UnitTestBase.cs" />
     <Compile Include="UnitTest\ITestObjectBuilder.cs" />
