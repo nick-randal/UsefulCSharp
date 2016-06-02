@@ -14,7 +14,7 @@
 using System.Linq;
 using Randal.Core.Dynamic;
 
-namespace Randal.Core.Testing.UnitTest
+namespace Randal.Core.Testing.XUnit
 {
 	public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where TThens : class, new()

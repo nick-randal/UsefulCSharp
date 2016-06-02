@@ -15,7 +15,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Randal.Core.Testing.UnitTest
+namespace Randal.Core.Testing.XUnit
 {
 	public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		where TThens : class, new()
@@ -61,7 +61,7 @@ namespace Randal.Core.Testing.UnitTest
 		{
 			var listOfActions = actions.ToList();
 
-			if (actions.Any(a => a == Creating) == false)
+			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
 				listOfActions.Insert(0, Creating);
 
 			for (var n = 0; n < listOfActions.Count - 1; n++)
@@ -84,10 +84,15 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected Action Await(Func<Task> asyncFunc)
 		{
-			return () => asyncFunc().GetAwaiter().GetResult();
+			return () =>
+			{
+				Task.Run(async () => await asyncFunc()).Wait();
+			};
 		}
 
 		protected abstract void Creating();
+
+		protected Action NotCreating = () => { };
 
 		protected TGivens Given;
 
