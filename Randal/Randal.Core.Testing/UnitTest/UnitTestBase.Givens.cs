@@ -76,7 +76,7 @@ namespace Randal.Core.Testing.UnitTest
 		{
 			var listOfActions = actions.ToList();
 
-			if (actions.Any(a => a == Creating) == false)
+			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
 				listOfActions.Insert(0, Creating);
 
 			for (var n = 0; n < listOfActions.Count - 1; n++)
@@ -99,10 +99,18 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected Action Await(Func<Task> asyncFunc)
 		{
-			return () => asyncFunc().GetAwaiter().GetResult();
+			return () =>
+			{
+				using (var task = Task.Run(async () => await asyncFunc()))
+				{
+					task.Wait();
+				}
+			};
 		}
 
 		protected abstract void Creating();
+
+		protected Action NotCreating = () => { };
 
 		protected TGivens Given;
 

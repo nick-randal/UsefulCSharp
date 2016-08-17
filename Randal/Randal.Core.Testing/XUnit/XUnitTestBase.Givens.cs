@@ -86,7 +86,10 @@ namespace Randal.Core.Testing.XUnit
 		{
 			return () =>
 			{
-				Task.Run(async () => await asyncFunc()).Wait();
+				using (var task = Task.Run(async () => await asyncFunc()))
+				{
+					task.Wait();
+				}
 			};
 		}
 

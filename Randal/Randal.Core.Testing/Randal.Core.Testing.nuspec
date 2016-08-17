@@ -22,8 +22,10 @@
 3.3.0
 	- Add: Added XUnit Traits for Positive and Negative tests
 3.4.0
-	- Change: change Await() to run tasks in their own thread to avoid deadlocks.
+	- Change: change Await() on XUnitTestBase to run tasks in their own thread to avoid deadlocks.
 	- Add: NotCreating action to bypass the Creating method being called.
+3.4.1
+	- Change: change Await() on UnitTestBase to run tasks in their own thread to avoid deadlocks.
 		]]></releaseNotes>
 		<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
