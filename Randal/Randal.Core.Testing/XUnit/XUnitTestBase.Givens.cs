@@ -45,7 +45,7 @@ namespace Randal.Core.Testing.XUnit
 		/// <param name="actions">A list of actions to be performed for the current test</param>
 		protected void When(params Action[] actions)
 		{
-			if (actions.Any(a => a == Creating) == false)
+			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
 				Creating();
 
 			foreach (var action in actions)

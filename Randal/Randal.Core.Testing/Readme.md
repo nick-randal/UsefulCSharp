@@ -29,7 +29,7 @@ using Randal.Core.Testing.UnitTest;
 
 namespace Someplace
 {
-	public sealed class TestObjectTests : UnitTestBase<TestObjectThens>
+	public sealed class TestObjectTests : UnitTestBase<TestObjectTests.Thens>
 	{
 		protected override void OnSetup()
 		{
@@ -112,18 +112,112 @@ namespace Someplace
 
 			Then.DelayedValue = 4567;
 		}
-	}
 
-	public sealed class TestObjectThens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
-	{
-		public TestObject Target;
-		public string Text;
-		public int Repetitions;
-		public int DelayedValue;
-
-		public void Dispose()
+		public sealed class Thens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
 		{
-			// optionally define as IDisposable to have automatic disposal after each test
+			public TestObject Target;
+			public string Text;
+			public int Repetitions;
+			public int DelayedValue;
+
+			public void Dispose()
+			{
+				// optionally define as IDisposable to have automatic disposal after each test
+			}
+		}
+	}
+}
+```
+
+```csharp
+using FluentAssertions;
+using Randal.Core.Testing.XUnit;
+
+namespace Someplace
+{
+	public sealed class TestObjectTests : XUnitTestBase<TestObjectTests.Thens>
+	{		
+		[Fact, PositiveTest]
+		public void ShouldHaveValidInstanceWithValue_WhenCreatingObject_GivenValue123()
+		{
+			Given.NeededValue = 123;	// Given is a dynamic object, create any number of property values on the fly
+			
+			When(Creating);				// 'When' consumes and executes a list of Action
+			
+			Then.Target.Should().NotBeNull();
+		}
+		
+		[Fact, PositiveTest]
+		public void ShouldHaveFormattedText_WhenFormatting_GivenInstanceWithValue123()
+		{
+			Given.NeededValue = 123;
+			
+			When(Formatting);	// Creating can be left out, as it is assumed as our first action
+			
+			Then.Text.Should().Be("Object said, 123");
+		}
+		
+		[Fact, NegativeTest]
+		public void ShouldThrowFormatExcpetion_WhenFormatting_GivenUnescapedOpeningBrace()
+		{
+			Given.Text = "Hey {name,";
+
+			WhenLastActionDeferred(Formatting);
+
+			ThenLastAction.ShouldThrow<FormatException>("Oops");
+		}
+		
+		[Fact, PositiveTest]
+		public void ShouldRepeatAction_WhenRepeatIncrementing()
+		{
+			When(Repeat(Incrementing, 10));
+
+			Then.Repetitions.Should().Be(10);
+		}
+
+		[Fact, PositiveTest]
+		public void ShouldAwaitAsynchronousFunction_WhenTestingAsyncMethod()
+		{
+			When(Await(Processing));
+
+			Then.DelayedValue.Should().Be(4567);
+		}
+
+		protected override Creating()
+		{
+			// can check if a dynamic value is defined through  GivensDefined("NeededValue",...)
+
+			Then.Target = new TestObject(Given.NeededValue);
+		}
+		
+		private void Formatting()
+		{
+			Then.Text = Then.Target.Format();
+		}
+
+		private void Incrementing()
+		{
+			Then.Repetitions++;
+		}
+
+		private async Task Processing()
+		{
+			await Task.Delay(1000);
+
+			Then.DelayedValue = 4567;
+		}
+
+		public sealed class Thens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
+		{
+			public TestObject Target;
+			public string Text;
+			public int Repetitions;
+			public int DelayedValue;
+
+			public void Dispose()
+			{
+				// optionally define as IDisposable to have automatic disposal after each test
+			}
 		}
 	}
 }

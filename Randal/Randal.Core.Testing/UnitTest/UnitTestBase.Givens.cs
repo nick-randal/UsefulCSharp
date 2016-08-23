@@ -51,8 +51,6 @@ namespace Randal.Core.Testing.UnitTest
 
 		protected virtual void OnTeardown() { }
 
-		
-
 		/// <summary>
 		/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
 		/// However, if a Creating is provided then it will not be called automatically and it is assumed that the caller wants full control of actions and the order.
@@ -60,7 +58,7 @@ namespace Randal.Core.Testing.UnitTest
 		/// <param name="actions">A list of actions to be performed for the current test</param>
 		protected void When(params Action[] actions)
 		{
-			if (actions.Any(a => a == Creating) == false)
+			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
 				Creating();
 
 			foreach (var action in actions)
