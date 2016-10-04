@@ -16,7 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Randal.Core.Testing.UnitTest
+namespace GwtUnit.UnitTest
 {
 	[TestClass]
 	public abstract class UnitTestBase<TThens, TGivens> 

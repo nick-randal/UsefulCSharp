@@ -7,8 +7,8 @@
     <ProjectGuid>{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Randal.Core.Testing</RootNamespace>
-    <AssemblyName>Randal.Core.Testing</AssemblyName>
+    <RootNamespace>GwtUnit</RootNamespace>
+    <AssemblyName>GwtUnit</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -74,7 +74,7 @@
     <None Include="LICENSE" />
     <None Include="NuGetPack.ps1" />
     <None Include="packages.config" />
-    <None Include="Randal.Core.Testing.nuspec">
+    <None Include="GwtUnit.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="Readme.md" />

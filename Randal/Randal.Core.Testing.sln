@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core.Testing", "Randal.Core.Testing\Randal.Core.Testing.csproj", "{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwtUnit", "Randal.Core.Testing\GwtUnit.csproj", "{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Tests.Core.Testing", "Randal.Tests.Core.Testing\Randal.Tests.Core.Testing.csproj", "{CF6A84BB-A490-4E42-A9EE-D1F59AA83CDA}"
 EndProject

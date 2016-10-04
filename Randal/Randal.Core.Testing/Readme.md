@@ -1,10 +1,11 @@
-##Given When Then unit testing pattern.
+##GWT Unit - Given When Then unit testing.
 
-This library provides a couple base classes to facilitate unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
+This library provides a base classes for unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
-The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStduio(c).
+The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  
+The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStduio(c).
 
-GWT is derives from AAA (Arrange Act Assert) but strives to provide organization and cleanliness in the code.
+GWT derives from AAA (Arrange Act Assert) but strives to provide organization and readability in the tests.
 
 ####Given (Arrange)
 Setup the data and context for the test.
@@ -21,6 +22,8 @@ A class where all result context can be stored during a test and can be asserted
 - Optional overrides for *OnSetup OnTeardown* for less typing
 - Given and Then automatically cleaned up before each test
 - When assumes the *Creating* action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically.
+- UnitTestBase is agnostic of testing framework.
+- XUnitTestBase is purpose built to accomodate the XUnit framework.
 
 ```csharp
 using FluentAssertions;

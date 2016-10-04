@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Randal.Core.Testing.UnitTest
+namespace GwtUnit.UnitTest
 {
 	public sealed class PositiveTest : TestCategoryBaseAttribute
 	{

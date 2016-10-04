@@ -15,7 +15,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
 
-namespace Randal.Core.Testing.UnitTest
+namespace GwtUnit.UnitTest
 {
 	[TestClass]
 	public abstract class UnitTestBase<TThens> : UnitTestBase<TThens, dynamic>

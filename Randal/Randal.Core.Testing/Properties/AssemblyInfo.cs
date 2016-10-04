@@ -14,17 +14,17 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Randal.Core.Testing")]
-[assembly: AssemblyDescription("Unit test support for Given When Then test pattern.")]
+[assembly: AssemblyTitle("GWT Unit")]
+[assembly: AssemblyDescription("Given When Then unit testing.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
-[assembly: AssemblyProduct("Randal.Core.Testing")]
+[assembly: AssemblyProduct("GWT Unit")]
 [assembly: AssemblyCopyright("Copyright © 2014-2016 Nicholas Randal, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("71d7f319-4b16-4955-8544-8454fc7ad1f1")]
 
-[assembly: AssemblyVersion("3.4.2.0")]
-[assembly: AssemblyFileVersion("3.4.2.0")]
-[assembly: AssemblyInformationalVersion("3.4.2")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0")]

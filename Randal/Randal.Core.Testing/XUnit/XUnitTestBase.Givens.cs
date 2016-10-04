@@ -15,7 +15,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Randal.Core.Testing.XUnit
+namespace GwtUnit.XUnit
 {
 	public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		where TThens : class, new()

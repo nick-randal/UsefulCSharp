@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace Randal.Core.Testing.XUnit
+namespace GwtUnit.XUnit
 {
 	[TraitDiscoverer("Randal.Core.Testing.XUnit.NegativeTestDiscoverer", "Randal.Core.Testing")]
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
