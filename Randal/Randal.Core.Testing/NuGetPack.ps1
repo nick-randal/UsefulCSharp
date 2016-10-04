@@ -1,1 +1,1 @@
-﻿..\nuget pack .\Randal.Core.Testing.csproj -IncludeReferencedProjects -Prop Configuration=Release
+﻿..\nuget pack .\GwtUnit.csproj -IncludeReferencedProjects -Prop Configuration=Release
