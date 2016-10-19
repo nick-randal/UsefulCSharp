@@ -15,9 +15,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using GwtUnit.UnitTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Dynamic;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.UnitTest;
 
 namespace Randal.Tests.Core.Dynamic
 {

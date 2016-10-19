@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Strings;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.UnitTest;
 
 namespace Randal.Tests.Core.Strings
 {

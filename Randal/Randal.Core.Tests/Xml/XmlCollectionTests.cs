@@ -13,7 +13,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.UnitTest;
 using Randal.Core.Xml;
 
 namespace Randal.Tests.Core.Xml

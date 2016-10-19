@@ -10,11 +10,15 @@
     <projectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/Randal.Core</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes><![CDATA[
+    <releaseNotes>
+	<![CDATA[
 1.1.0
 	- Change: Compiling against 4.5 framework instead of 4.5.2
 1.2.0
 	- Change: T4 enum generation from the database now accepts boolean values to mark enums as Obsolete.
+1.3.0
+	- Add: ToFullyFormattedCode provides a full code definition when converting a result set to enumeration.
+	- Change: Added triple / comments support to enum code generation.
 	]]></releaseNotes>
     <copyright>Copyright 2014-2016 Nicholas Randal</copyright>
     <tags>coding</tags>

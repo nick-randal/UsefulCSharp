@@ -14,9 +14,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using GwtUnit.UnitTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.T4;
-using Randal.Core.Testing.UnitTest;
 
 namespace Randal.Tests.Core.T4
 {
@@ -43,12 +43,18 @@ namespace Randal.Tests.Core.T4
 
 			When(GeneratingList);
 
-			Then.Lines.Should().HaveCount(8);
-			Then.Lines[0].Should().Be("[Obsolete, Display(Name = \"Component Hazy\", Description = \"What were we thinking?\")]");
-			Then.Lines[1].Should().Be("Hazy = 2,");
-			Then.Lines[2].Should().Be("");
-			Then.Lines[3].Should().Be("[Display(Name = \"Component Visible\", Description = \"Now you see it.\")]");
-			Then.Lines[4].Should().Be("Visible = 1,");
+			Then.Lines.Should().HaveCount(17);
+			Then.Lines[0].Should().Be("/// <summary>");
+			Then.Lines[1].Should().Be("/// Hazy (2). What were we thinking?");
+			Then.Lines[2].Should().Be("/// </summary>");
+			Then.Lines[3].Should().Be("[Obsolete, Display(Name = \"Component Hazy\", Description = \"What were we thinking?\")]");
+			Then.Lines[4].Should().Be("Hazy = 2,");
+			Then.Lines[5].Should().Be("");
+			Then.Lines[6].Should().Be("/// <summary>");
+			Then.Lines[7].Should().Be("/// Visible (1). Now you see it.");
+			Then.Lines[8].Should().Be("/// </summary>");
+			Then.Lines[9].Should().Be("[Display(Name = \"Component Visible\", Description = \"Now you see it.\")]");
+			Then.Lines[10].Should().Be("Visible = 1,");
 			
 			Then.Lines.Last().Should().NotBeEmpty();
 			Then.Lines.Last().Should().NotEndWith(",");

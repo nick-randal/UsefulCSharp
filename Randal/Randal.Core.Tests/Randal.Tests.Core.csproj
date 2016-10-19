@@ -75,9 +75,9 @@
     <Compile Include="Xml\XmlCollectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Randal.Core.Testing\Randal.Core.Testing.csproj">
+    <ProjectReference Include="..\Randal.Core.Testing\GwtUnit.csproj">
       <Project>{7e3c2598-ad31-4a85-93d1-89b7d835a9de}</Project>
-      <Name>Randal.Core.Testing</Name>
+      <Name>GwtUnit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Randal.Core\Randal.Core.csproj">
       <Project>{fb6276e2-09a0-419e-8346-280297ff6c69}</Project>

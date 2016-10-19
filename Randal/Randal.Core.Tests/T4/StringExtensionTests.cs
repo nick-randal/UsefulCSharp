@@ -14,7 +14,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.T4;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.UnitTest;
 
 namespace Randal.Tests.Core.T4
 {

@@ -17,7 +17,7 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Structures;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.UnitTest;
 
 namespace Randal.Tests.Core.Structures
 {

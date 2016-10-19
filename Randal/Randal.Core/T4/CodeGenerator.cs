@@ -38,7 +38,7 @@ namespace Randal.Core.T4
 					return codes.AsReadOnly();
 
 				if(reader.FieldCount < 4)
-					throw new InvalidDataException("SQL command provided should have returned 4 fields but returned " + reader.FieldCount);
+					throw new InvalidDataException("SQL command provided must have at least 4 fields but returned " + reader.FieldCount);
 
 				while (reader.Read())
 				{
