@@ -81,6 +81,7 @@
     <Compile Include="Xml\XmlCollection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NuGetPack.ps1" />
     <None Include="_Samples\T4\EnumsFromDatabase.tt.txt" />
   </ItemGroup>
   <ItemGroup>
