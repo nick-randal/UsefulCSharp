@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nicholas Randal")]
 [assembly: AssemblyProduct("Randal.Core.Testing.Factory")]
-[assembly: AssemblyCopyright("Copyright © 2014-2016 Nicholas Randal, All Rights Reserved")]
+[assembly: AssemblyCopyright("Copyright © 2014-2017 Nicholas Randal, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
