@@ -86,9 +86,9 @@ namespace GwtUnit.XUnit
 		{
 			return () =>
 			{
-				using (var task = Task.Run(async () => await asyncFunc()))
+				using (ThenLastTask = Task.Run(async () => await asyncFunc()))
 				{
-					task.Wait();
+					ThenLastTask.Wait();
 				}
 			};
 		}
@@ -102,5 +102,7 @@ namespace GwtUnit.XUnit
 		protected TThens Then;
 
 		protected Action ThenLastAction;
+
+		protected Task ThenLastTask;
 	}
 }

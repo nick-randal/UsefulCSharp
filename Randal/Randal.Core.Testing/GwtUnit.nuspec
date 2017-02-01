@@ -14,6 +14,8 @@
 		<![CDATA[
 1.0.0
 	- Release
+1.1.0
+	- Add: XUnitTestBase now exposes the last Task when using the Await() method.
 		]]></releaseNotes>
 		<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
 		<tags>Unit, Test, Given</tags>
