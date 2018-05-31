@@ -45,12 +45,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="mscorlib.4.0.0.0.Fakes">
-      <HintPath>FakesAssemblies\mscorlib.4.0.0.0.Fakes.dll</HintPath>
-    </Reference>
     <Reference Include="Randal.Core, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Randal.Core.1.3.0\lib\net45\Randal.Core.dll</HintPath>
       <Private>True</Private>
@@ -64,9 +58,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.4.0.0.0.Fakes">
-      <HintPath>FakesAssemblies\System.4.0.0.0.Fakes.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -107,8 +98,6 @@
     <Compile Include="IncrementByObjectValueFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Fakes Include="Fakes\System.fakes" />
-    <Fakes Include="Fakes\mscorlib.fakes" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

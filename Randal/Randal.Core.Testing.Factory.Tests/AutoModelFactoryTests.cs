@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2017 Nicholas Randal
+// Copyright (C) 2014-2018 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,10 +13,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Fakes;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
 
@@ -32,6 +30,14 @@ namespace Randal.Core.Testing.Factory.Tests
 		public void ShouldHaveValidInstance_WhenCreating()
 		{
 			When(Creating);
+
+			Then.Target.Should().NotBeNull();
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveValidInstance_WhenCreatingAndPreparing()
+		{
+			When(NotCreating, CreatingAndPreparing);
 
 			Then.Target.Should().NotBeNull();
 		}
@@ -74,7 +80,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			Given.HowMany = 1234;
 
-			When(Preparing, CreatingModels);
+			When(Preparing, CreatingIEnumerable);
 
 			Then.Models.Should().HaveCount(1234);
 			Then.Models.Last().ShouldBeEquivalentTo(new
@@ -95,6 +101,16 @@ namespace Randal.Core.Testing.Factory.Tests
 				ChildModel1 = (OtherModel)null,
 				ChildModel2 = (OtherModel)null
 			});
+		}
+
+		[TestMethod, PositiveTest]
+		public void ShouldHaveList_WhenCreatingList()
+		{
+			Given.HowMany = 100;
+
+			When(Preparing, CreatingList);
+
+			Then.ListOfModels.Should().NotBeNull().And.HaveCount(100);
 		}
 
 		[TestMethod, PositiveTest]
@@ -124,22 +140,23 @@ namespace Randal.Core.Testing.Factory.Tests
 		}
 
 		[TestMethod, NegativeTest]
-		public void ShouldThrowException_WhenCreatingModels_GivenDidNotCallPrepare()
+		public void ShouldThrowException_WhenCreatingIEnumerable_GivenDidNotCallPrepare()
 		{
 			Given.HowMany = 10;
 
-			WhenLastActionDeferred(CreatingModels);
+			WhenLastActionDeferred(CreatingIEnumerable);
 
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
 		protected override void Creating()
 		{
-			using (ShimsContext.Create())
-			{
-				ShimDateTime.TodayGet = () => new DateTime(2000, 1, 1);
-				Then.Target = new AutoModelFactory<TestModel>(Given.Values as IValueFactory);
-			}
+			Then.Target = new AutoModelFactory<TestModel>(Given.Values as IValueFactory);
+		}
+
+		private void CreatingAndPreparing()
+		{
+			Then.Target = AutoModelFactory<TestModel>.CreateAndPrepare();
 		}
 
 		private void Preparing()
@@ -152,9 +169,14 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Model = Then.Target.Create();
 		}
 
-		private void CreatingModels()
+		private void CreatingIEnumerable()
 		{
 			Then.Models = Then.Target.Create((int)Given.HowMany);
+		}
+
+		private void CreatingList()
+		{
+			Then.ListOfModels = Then.Target.CreateList((int)Given.HowMany);
 		}
 
 		private void CreatingObject()
@@ -173,6 +195,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			public AutoModelFactory<TestModel> Target;
 			public TestModel Model;
 			public IEnumerable<TestModel> Models;
+			public List<TestModel> ListOfModels;
 		}
 	}
 }
