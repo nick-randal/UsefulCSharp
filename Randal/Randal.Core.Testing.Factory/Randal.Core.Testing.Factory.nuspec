@@ -16,8 +16,11 @@
 	- Add: MemberNameValueFactory
 1.2.1
 	- Change: MemberNameValueFactory now uses Crc32 instead of HashCode.
+1.3.0
+	- Add: static AutoModelFactory.CreateAndPrepare() to reduce code in simple object creation.
+	- Add: AutoModelFactory.CreateList() and AutoModelFactory.CreateArray() convenience methods.
 		]]></releaseNotes>
-		<copyright>Copyright 2014-2016 Nicholas Randal</copyright>
+		<copyright>Copyright 2014-2018 Nicholas Randal</copyright>
 		<tags>Testing Factory</tags>
 	</metadata>
 </package>

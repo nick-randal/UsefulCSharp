@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2017 Nicholas Randal
+// Copyright (C) 2014-2018 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,8 +30,7 @@ namespace Randal.Core.Testing.Factory
 
 		public AutoModelFactory<TModel> Prepare(PrepareOptions options = PrepareOptions.Default)
 		{
-			if(_state != State.Constructed)
-				throw new InvalidOperationException("The factory has already been prepared for creating models.");
+			GuardConstructred();
 
 			var modelVariable = Expression.Variable(typeof (TModel), "model");
 			var havingVariable = Expression.Variable(typeof (IValueFactory), "haveValues");
@@ -51,23 +50,9 @@ namespace Randal.Core.Testing.Factory
 
 		public TModel Create()
 		{
-			if (_state != State.Prepared)
-				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
+			GuardPrepared();
 
 			return _createModel(_haveValues);
-		}
-
-		public IEnumerable<TModel> Create(int howMany)
-		{
-			if (_state != State.Prepared)
-				throw new InvalidOperationException("The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
-
-			var models = new List<TModel>();
-
-			for (var n = 0; n < howMany; n++)
-				models.Add(_createModel(_haveValues));
-
-			return models;
 		}
 
 		public object CreateObject()
@@ -75,9 +60,36 @@ namespace Randal.Core.Testing.Factory
 			return Create();
 		}
 
+		public IEnumerable<TModel> Create(int howMany)
+		{
+			return CreateArray(howMany);
+		}
+
+		public List<TModel> CreateList(int howMany)
+		{
+			return CreateArray(howMany).ToList();
+		}
+
 		public IEnumerable<object> CreateObject(int howMany)
 		{
-			return Create(howMany);
+			return CreateArray(howMany);
+		}
+
+		public TModel[] CreateArray(int howMany)
+		{
+			GuardPrepared();
+
+			var models = new TModel[howMany];
+
+			for (var n = 0; n < howMany; n++)
+				models[n] = _createModel(_haveValues);
+
+			return models;
+		}
+
+		public static AutoModelFactory<TModel> CreateAndPrepare()
+		{
+			return new AutoModelFactory<TModel>().Prepare();
 		}
 
 		private void CreateLambdaFunction(ICollection<Expression> expressions, ParameterExpression modelVariable,
@@ -100,9 +112,8 @@ namespace Randal.Core.Testing.Factory
 				var fieldInfo = memberInfo as FieldInfo;
 
 				var typeInfo = GetTypeFor(propertyInfo, fieldInfo);
-				MethodInfo getValueMethodInfo;
 
-				if (TypeMethodInfoLookup.TryGetValue(typeInfo.BaseType, out getValueMethodInfo))
+				if (TypeMethodInfoLookup.TryGetValue(typeInfo.BaseType, out var getValueMethodInfo))
 				{
 					expressions.Add(
 						CreateSetter(typeInfo, modelVariable, havingVariable, propertyInfo, fieldInfo, getValueMethodInfo)
@@ -168,7 +179,7 @@ namespace Randal.Core.Testing.Factory
 			}
 			else
 			{
-				throw new ArgumentNullException("propertyInfo", "Neither propertyInfo or fieldInfo were passed with a valid instance.");
+				throw new ArgumentNullException(nameof(propertyInfo), "Neither propertyInfo or fieldInfo were passed with a valid instance.");
 			}
 
 			var callGetValue = Expression.Call(valuesVariable, getValueMethodInfo, memberName);
@@ -195,11 +206,24 @@ namespace Randal.Core.Testing.Factory
 				.ToList();
 		}
 
+		private void GuardConstructred()
+		{
+			if (_state != State.Constructed)
+				throw new InvalidOperationException("The factory has already been prepared for creating models.");
+		}
+
+		private void GuardPrepared()
+		{
+			if (_state != State.Prepared)
+				throw new InvalidOperationException(
+					"The factory has not been prepared for creating models.  Please call Prepare(...) before this method.");
+		}
+
 		private readonly IValueFactory _haveValues;
 		private State _state;
 		private Func<IValueFactory, TModel> _createModel;
 
-		private static readonly IDictionary<Type, MethodInfo> TypeMethodInfoLookup = new Dictionary<Type, MethodInfo>()
+		public static readonly IDictionary<Type, MethodInfo> TypeMethodInfoLookup = new Dictionary<Type, MethodInfo>()
 		{
 			{ typeof(string), GetMethodInfo(h => h.GetString(null)) },
 			{ typeof(bool), GetMethodInfo(h => h.GetBool(null)) },

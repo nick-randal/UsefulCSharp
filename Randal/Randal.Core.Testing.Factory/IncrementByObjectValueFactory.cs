@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2017 Nicholas Randal
+// Copyright (C) 2014-2018 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ namespace Randal.Core.Testing.Factory
 	{
 		protected byte CurrentByte;
 		protected char CurrentChar;
-		protected DateTime CurrentDateTime;
+		protected DateTime CurrentDateTime, ResetDateTime;
 		protected double CurrentDouble;
 		protected bool CurrentFlag;
 		protected float CurrentFloat;
@@ -29,8 +29,9 @@ namespace Randal.Core.Testing.Factory
 		protected short CurrentShort;
 		protected int CurrentString;
 
-		public IncrementByObjectValueFactory ()
+		public IncrementByObjectValueFactory (DateTime? resetDateTime = null)
 		{
+			ResetDateTime = resetDateTime ?? new DateTime(2000, 1, 1);
 			Reset();
 		}
 
@@ -38,7 +39,7 @@ namespace Randal.Core.Testing.Factory
 		{
 			CurrentByte = 1;
 			CurrentChar = 'A';
-			CurrentDateTime = DateTime.Today;
+			CurrentDateTime = ResetDateTime;
 			CurrentDecimal = 1m;
 			CurrentDouble = 1d;
 			CurrentFlag = true;
