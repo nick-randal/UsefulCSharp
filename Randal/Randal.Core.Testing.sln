@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwtUnit", "Randal.Core.Testing\GwtUnit.csproj", "{7E3C2598-AD31-4A85-93D1-89B7D835A9DE}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core.Testing.Factory", "Randal.Core.Testing.Factory\Randal.Core.Testing.Factory.csproj", "{7DC8386A-DB0F-4943-8101-E558E03C7FF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randal.Core.Testing.Factory.Tests", "Randal.Core.Testing.Factory.Tests\Randal.Core.Testing.Factory.Tests.csproj", "{8D66C22E-D27A-432B-A782-624FA351B021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwtUnitTesting", "GwtUnitTesting\GwtUnitTesting.csproj", "{2E5317A4-5D7B-488C-AA25-FDACBF145684}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +35,15 @@ Global
 		{8D66C22E-D27A-432B-A782-624FA351B021}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D66C22E-D27A-432B-A782-624FA351B021}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D66C22E-D27A-432B-A782-624FA351B021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E5317A4-5D7B-488C-AA25-FDACBF145684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E5317A4-5D7B-488C-AA25-FDACBF145684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E5317A4-5D7B-488C-AA25-FDACBF145684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E5317A4-5D7B-488C-AA25-FDACBF145684}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78AD3337-2FD6-4F4A-8D6C-026EA12F84F9}
 	EndGlobalSection
 EndGlobal
