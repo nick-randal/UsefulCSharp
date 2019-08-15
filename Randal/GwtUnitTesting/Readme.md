@@ -47,7 +47,7 @@ namespace Someplace
 			// and there are some common cleanup tasks handled by the base class
 		}
 		
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveValidInstanceWithValue_WhenCreatingObject_GivenValue123()
 		{
 			Given.NeededValue = 123;	// Given is a dynamic object, create any number of property values on the fly
@@ -57,7 +57,7 @@ namespace Someplace
 			Then.Target.Should().NotBeNull();
 		}
 		
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFormattedText_WhenFormatting_GivenInstanceWithValue123()
 		{
 			Given.NeededValue = 123;
@@ -67,7 +67,7 @@ namespace Someplace
 			Then.Text.Should().Be("Object said, 123");
 		}
 		
-		[TestMethod, NegativeTest]
+		[Fact, NegativeTest]
 		public void ShouldThrowFormatExcpetion_WhenFormatting_GivenUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
@@ -77,7 +77,7 @@ namespace Someplace
 			ThenLastAction.ShouldThrow<FormatException>("Oops");
 		}
 		
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldRepeatAction_WhenRepeatIncrementing()
 		{
 			When(Repeat(Incrementing, 10));
@@ -85,7 +85,7 @@ namespace Someplace
 			Then.Repetitions.Should().Be(10);
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldAwaitAsynchronousFunction_WhenTestingAsyncMethod()
 		{
 			When(Await(Processing));

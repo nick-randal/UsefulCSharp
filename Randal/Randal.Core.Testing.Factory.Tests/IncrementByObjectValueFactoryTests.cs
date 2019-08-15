@@ -14,6 +14,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
+using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
 {
@@ -23,7 +24,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	[TestClass]
 	public sealed class IncrementByObjectValueFactoryTests : UnitTestBase<IncrementByObjectValueFactoryTests.Thens>
 	{
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingStringValue()
 		{
 			When(GettingStringValue);
@@ -31,7 +32,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.StringValue.Should().Be("FirstName1");
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveTenthValue_WhenIncrementingAndGettingStringValue()
 		{
 			When(Repeat(Incrementing, 9), GettingStringValue);
@@ -39,7 +40,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.StringValue.Should().Be("FirstName10");
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenIncrementingResettingAndGettingStringValue()
 		{
 			When(Repeat(Incrementing, 9), Resetting, GettingStringValue);

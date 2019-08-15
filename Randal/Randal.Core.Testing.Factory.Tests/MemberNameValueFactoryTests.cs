@@ -15,6 +15,7 @@ using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
+using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
 {
@@ -24,7 +25,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	[TestClass]
 	public sealed class MemberNameValueFactoryTests : UnitTestBase<MemberNameValueFactoryTests.Thens>
 	{
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingString()
 		{
 			When(GettingString);
@@ -32,7 +33,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.StringValue.Should().Be("FirstName");
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingInt()
 		{
 			When(GettingInt);
@@ -40,7 +41,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.IntValue.Should().Be(717046770);
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingShort()
 		{
 			When(GettingShort);
@@ -48,7 +49,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.ShortValue.Should().Be(-14302);
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingDecimal()
 		{
 			When(GettingDecimal);
@@ -56,7 +57,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.DecimalValue.Should().Be(2478816839);
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingDateTime()
 		{
 			When(GettingDateTime);
@@ -64,7 +65,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.DateTimeValue.Should().Be(new DateTime(2001, 11, 11, 11, 0, 0));
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingChar()
 		{
 			When(GettingChar);

@@ -15,18 +15,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Randal.Core.Testing.UnitTest;
+using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
 {
 	/// <summary>
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
-	[TestClass]
 	public sealed class AutoModelFactoryTests : UnitTestBase<AutoModelFactoryTests.Thens>
 	{
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
 		{
 			When(Creating);
@@ -34,7 +33,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Target.Should().NotBeNull();
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreatingAndPreparing()
 		{
 			When(NotCreating, CreatingAndPreparing);
@@ -42,7 +41,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Target.Should().NotBeNull();
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldNotThrowException_WhenPreparing()
 		{
 			WhenLastActionDeferred(Preparing);
@@ -50,7 +49,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			ThenLastAction.ShouldNotThrow();
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveModelWithValues_WhenCreatingModel_GivenGenericIncrementingValues()
 		{
 			When(Preparing, CreatingModel);
@@ -75,7 +74,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			});
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveListOfModels_WhenCreatingModels_GivenGenericIncrementingValues()
 		{
 			Given.HowMany = 1234;
@@ -103,7 +102,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			});
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveList_WhenCreatingList()
 		{
 			Given.HowMany = 100;
@@ -113,7 +112,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.ListOfModels.Should().NotBeNull().And.HaveCount(100);
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveModel_WhenCreatingObject()
 		{
 			When(Preparing, CreatingObject);
@@ -121,7 +120,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Model.Should().NotBeNull();
 		}
 
-		[TestMethod, PositiveTest]
+		[Fact, PositiveTest]
 		public void ShouldHaveListOfModels_WhenCreatingObjects()
 		{
 			Given.HowMany = 10;
@@ -131,7 +130,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			Then.Models.Should().HaveCount(10);
 		}
 
-		[TestMethod, NegativeTest]
+		[Fact, NegativeTest]
 		public void ShouldThrowException_WhenCreatingModel_GivenDidNotCallPrepare()
 		{
 			WhenLastActionDeferred(CreatingModel);
@@ -139,7 +138,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			ThenLastAction.ShouldThrow<InvalidOperationException>();
 		}
 
-		[TestMethod, NegativeTest]
+		[Fact, NegativeTest]
 		public void ShouldThrowException_WhenCreatingIEnumerable_GivenDidNotCallPrepare()
 		{
 			Given.HowMany = 10;
