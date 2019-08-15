@@ -48,9 +48,14 @@ namespace GwtUnit.XUnit
 		/// <param name="member"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected T GivenOrDefault<T>(string member, T defaultValue)
+		protected T GivenOrDefault<T>(string member, T defaultValue = default)
 		{
-			return Given.TestForMember(member) ? Given[member] : defaultValue;
+			if (Given.TestForMember(member))
+			{
+				return Given[member];
+			}
+
+			return defaultValue;
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace GwtUnit.Support
 		public DynamicEntity()
 			: this(MissingMemberBehavior.ThrowException)
 		{
-			
+
 		}
 
 		public DynamicEntity(MissingMemberBehavior missingMemberBehavior,
@@ -60,6 +60,25 @@ namespace GwtUnit.Support
 					return true;
 				default:
 					return false;
+			}
+		}
+
+		public object this[string name]
+		{
+			get
+			{
+				var valueFound = _dataDictionary.TryGetValue(name, out var result);
+
+				if (valueFound)
+					return result;
+
+				switch (_missingMemberBehavior)
+				{
+					case MissingMemberBehavior.ReturnsNull:
+						return null;
+					default:
+						throw new KeyNotFoundException(name);
+				}
 			}
 		}
 

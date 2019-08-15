@@ -27,6 +27,8 @@ namespace GwtUnitTesting.Tests.XUnit
 			When(Repeat(Incrementing, 10));
 
 			Then.Repetitions.Should().Be(10);
+			Then.FirstName.Should().BeNull();
+			Then.FirstNameDefined.Should().BeFalse();
 		}
 
 		[Fact, PositiveTest]
@@ -60,10 +62,18 @@ namespace GwtUnitTesting.Tests.XUnit
 			Given.FirstName = "Bob";
 			Given.LastName = "Jones";
 
+			When(Creating);
+
 			GivensDefined("FirstName", "LastName").Should().BeTrue();
+			Then.FirstName.Should().Be("Bob");
+			Then.FirstNameDefined.Should().BeTrue();
 		}
 
-		protected override void Creating() { }
+		protected override void Creating()
+		{
+			Then.FirstNameDefined = GivensDefined("FirstName");
+			Then.FirstName = GivenOrDefault<string>("FirstName");
+		}
 
 		private void Incrementing()
 		{
@@ -86,6 +96,8 @@ namespace GwtUnitTesting.Tests.XUnit
 		{
 			public int Repetitions;
 			public int DelayedValue;
+			public string FirstName;
+			public bool FirstNameDefined;
 		}
 	}
 
