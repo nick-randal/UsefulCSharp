@@ -13,8 +13,7 @@
 
 using System;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.XUnit;
 using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
@@ -22,8 +21,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	/// <summary>
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
-	[TestClass]
-	public sealed class MemberNameValueFactoryTests : UnitTestBase<MemberNameValueFactoryTests.Thens>
+	public sealed class MemberNameValueFactoryTests : XUnitTestBase<MemberNameValueFactoryTests.Thens>
 	{
 		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingString()

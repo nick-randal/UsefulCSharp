@@ -20,8 +20,4 @@
     <ProjectReference Include="..\GwtUnitTesting\GwtUnitTesting.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="XUnit\" />
-  </ItemGroup>
-
 </Project>

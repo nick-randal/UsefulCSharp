@@ -12,23 +12,33 @@
 // GNU General Public License for more details.
 
 using System;
-using System.Collections.Generic;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using FluentAssertions;
+using GwtUnit.XUnit;
+using Xunit;
 
-namespace GwtUnit.XUnit
+namespace GwtUnitTesting.Tests.XUnit
 {
-	[TraitDiscoverer("GwtUnit.XUnit.PositiveTestDiscoverer", "GwtUnit")]
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-	public class PositiveTestAttribute : Attribute, ITraitAttribute
+	public sealed class PositiveTestTests : XUnitTestBase<PositiveTestThens>
 	{
+		[Fact]
+		public void ShouldHaveAttributeWithCorrectTraits_WhenCreating()
+		{
+			When(Creating);
+
+			Then
+				.Attribute.Should().NotBeNull()
+				.And
+				.BeAssignableTo<Attribute>();
+		}
+
+		protected override void Creating()
+		{
+			Then.Attribute = new PositiveTestAttribute();
+		}
 	}
 
-	public class PositiveTestDiscoverer : ITraitDiscoverer
+	public sealed class PositiveTestThens
 	{
-		public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
-		{
-			yield return new KeyValuePair<string, string>("Category", "Positive");
-		}
+		public PositiveTestAttribute Attribute;
 	}
 }

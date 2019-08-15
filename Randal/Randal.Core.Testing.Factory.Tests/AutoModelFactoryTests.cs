@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Randal.Core.Testing.UnitTest;
+using GwtUnit.XUnit;
 using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
@@ -23,7 +23,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	/// <summary>
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
-	public sealed class AutoModelFactoryTests : UnitTestBase<AutoModelFactoryTests.Thens>
+	public sealed class AutoModelFactoryTests : XUnitTestBase<AutoModelFactoryTests.Thens>
 	{
 		[Fact, PositiveTest]
 		public void ShouldHaveValidInstance_WhenCreating()
@@ -46,7 +46,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			WhenLastActionDeferred(Preparing);
 
-			ThenLastAction.ShouldNotThrow();
+			ThenLastAction.Should().NotThrow();
 		}
 
 		[Fact, PositiveTest]
@@ -54,7 +54,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			When(Preparing, CreatingModel);
 
-			Then.Model.ShouldBeEquivalentTo(new
+			Then.Model.Should().BeEquivalentTo(new
 			{
 				PrimaryId = 1, Age = 1,
 				FirstName = "FirstName1", LastName = "LastName1",
@@ -82,7 +82,7 @@ namespace Randal.Core.Testing.Factory.Tests
 			When(Preparing, CreatingIEnumerable);
 
 			Then.Models.Should().HaveCount(1234);
-			Then.Models.Last().ShouldBeEquivalentTo(new
+			Then.Models.Last().Should().BeEquivalentTo(new
 			{
 				PrimaryId = 1234, Age = 1234,
 				FirstName = "FirstName1234", LastName = "LastName1234",
@@ -135,7 +135,7 @@ namespace Randal.Core.Testing.Factory.Tests
 		{
 			WhenLastActionDeferred(CreatingModel);
 
-			ThenLastAction.ShouldThrow<InvalidOperationException>();
+			ThenLastAction.Should().Throw<InvalidOperationException>();
 		}
 
 		[Fact, NegativeTest]
@@ -145,7 +145,7 @@ namespace Randal.Core.Testing.Factory.Tests
 
 			WhenLastActionDeferred(CreatingIEnumerable);
 
-			ThenLastAction.ShouldThrow<InvalidOperationException>();
+			ThenLastAction.Should().Throw<InvalidOperationException>();
 		}
 
 		protected override void Creating()

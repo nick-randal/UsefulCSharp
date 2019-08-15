@@ -12,8 +12,8 @@
 // GNU General Public License for more details.
 
 using FluentAssertions;
+using GwtUnit.XUnit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randal.Core.Testing.UnitTest;
 using Xunit;
 
 namespace Randal.Core.Testing.Factory.Tests
@@ -22,7 +22,7 @@ namespace Randal.Core.Testing.Factory.Tests
 	/// Created by nrandal on 9/10/2015 10:24:57 AM
 	/// </summary>
 	[TestClass]
-	public sealed class IncrementByObjectValueFactoryTests : UnitTestBase<IncrementByObjectValueFactoryTests.Thens>
+	public sealed class IncrementByObjectValueFactoryTests : XUnitTestBase<IncrementByObjectValueFactoryTests.Thens>
 	{
 		[Fact, PositiveTest]
 		public void ShouldHaveFirstValue_WhenGettingStringValue()
