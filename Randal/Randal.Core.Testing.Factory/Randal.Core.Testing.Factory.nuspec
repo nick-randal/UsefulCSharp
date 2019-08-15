@@ -20,7 +20,7 @@
 	- Add: static AutoModelFactory.CreateAndPrepare() to reduce code in simple object creation.
 	- Add: AutoModelFactory.CreateList() and AutoModelFactory.CreateArray() convenience methods.
 		]]></releaseNotes>
-		<copyright>Copyright 2014-2018 Nicholas Randal</copyright>
+		<copyright>Copyright 2014-2019 Nicholas Randal</copyright>
 		<tags>Testing Factory</tags>
 	</metadata>
 </package>

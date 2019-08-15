@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2018 Nicholas Randal
+// Copyright (C) 2014-2019 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ namespace GwtUnit.UnitTest
 		/// <param name="member"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected T GivenOrDefault<T>(string member, T defaultValue)
+		protected T GivenOrDefault<T>(string member, T defaultValue = default)
 		{
 			return Given.TestForMember(member) ? Given[member] : defaultValue;
 		}
