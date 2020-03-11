@@ -133,7 +133,7 @@ namespace Someplace
 }
 ```
 
-####XUnit suppport
+#### XUnit suppport
 ```csharp
 using FluentAssertions;
 using Randal.Core.Testing.XUnit;
