@@ -1,4 +1,4 @@
-##GWT Unit - Given When Then unit testing.
+## GWT Unit - Given When Then unit testing.
 
 This library provides a base classes for unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
@@ -7,17 +7,17 @@ The dynamic typing allows properties to be created on the the fly without having
 
 GWT derives from AAA (Arrange Act Assert) but strives to provide organization and readability in the tests.
 
-####Given (Arrange)
+#### Given (Arrange)
 Setup the data and context for the test.
 
-####When (Act)
+#### When (Act)
 
 Make the when actions composable.  The **When** and **WhenLastActionDeferred** methods take params array of Action methods.
 
-####Then (Assert)
+#### Then (Assert)
 A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions from NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
 
-####Features
+#### Features
 - Exception assertions closer to the origin of the thrown exception
 - Optional overrides for *OnSetup OnTeardown* for less typing
 - Given and Then automatically cleaned up before each test
