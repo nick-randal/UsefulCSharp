@@ -9,7 +9,7 @@
     <AssemblyName>GwtUnit</AssemblyName>
     <RootNamespace>GwtUnit</RootNamespace>
     <Version>2.0.1</Version>
-    <Copyright>Copyright © 2014-2019 Nicholas Randal, All Rights Reserved</Copyright>
+    <Copyright>Copyright © 2014-2021 Nicholas Randal, All Rights Reserved</Copyright>
 	  <IsPackable>true</IsPackable>
 	  <PackageLicenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnitTesting/LICENSE</PackageLicenseUrl>
 	  <PackageProjectUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnitTesting</PackageProjectUrl>
