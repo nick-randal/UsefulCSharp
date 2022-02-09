@@ -1,4 +1,4 @@
-﻿// Useful C#
+// Useful C#
 // Copyright (C) 2014-2022 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
@@ -13,22 +13,19 @@
 
 using System;
 using System.Collections.Generic;
-using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace GwtUnit.XUnit
 {
-	[TraitDiscoverer("GwtUnit.XUnit.PositiveTestDiscoverer", "GwtUnit")]
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-	public class PositiveTestAttribute : Attribute, ITraitAttribute
+	public sealed class NullConverter : IDynamicEntityConverter
 	{
-	}
+		public int ConverterCount => 0;
 
-	public class PositiveTestDiscoverer : ITraitDiscoverer
-	{
-		public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
+		public bool HasConverters => false;
+
+		public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
 		{
-			yield return new KeyValuePair<string, string>("Category", "Positive");
+			result = null;
+			return false;
 		}
 	}
 }

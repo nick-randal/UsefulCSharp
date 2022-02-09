@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5</TargetFrameworks>
     <PackageId>GwtUnit</PackageId>
     <Authors>Nick Randal</Authors>
     <Company>Nick Randal</Company>
-    <Product>Given When Then Unit Testing</Product>
+    <Product>Given-When-Then Unit Testing</Product>
     <AssemblyName>GwtUnit</AssemblyName>
     <RootNamespace>GwtUnit</RootNamespace>
-    <Version>2.0.1</Version>
-    <Copyright>Copyright © 2014-2021 Nicholas Randal, All Rights Reserved</Copyright>
+    <Version>2.1.0</Version>
+    <Copyright>Copyright © 2014-2022 Nicholas Randal, All Rights Reserved</Copyright>
 	  <IsPackable>true</IsPackable>
 	  <PackageLicenseUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnitTesting/LICENSE</PackageLicenseUrl>
 	  <PackageProjectUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnitTesting</PackageProjectUrl>
@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 

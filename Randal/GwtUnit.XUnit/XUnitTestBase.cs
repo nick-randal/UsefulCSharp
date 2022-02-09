@@ -12,29 +12,19 @@
 // GNU General Public License for more details.
 
 using System.Linq;
-using GwtUnit.Support;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GwtUnit.UnitTest
+namespace GwtUnit.XUnit
 {
-	[TestClass]
-	public abstract class UnitTestBase<TThens> : UnitTestBase<TThens, dynamic>
+	public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where TThens : class, new()
 	{
-		[TestInitialize]
-		public new void Setup()
+		protected XUnitTestBase()
 		{
-			if(Given == null)
-				Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
-			else
-				Given.Clear();
-			
+			Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
 			Then = new TThens();
-
-			OnSetup();
 		}
 
-		public new dynamic Given;
+		public new readonly dynamic Given;
 
 		/// <summary>
 		/// Determine if all provided members have been defined as Given values.
@@ -47,15 +37,34 @@ namespace GwtUnit.UnitTest
 		}
 
 		/// <summary>
+		/// Get the value for a Given.
+		/// </summary>
+		/// <param name="member"></param>
+		/// <param name="value"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <returns>True - if the Given is defined, False - not defined.</returns>
+		protected bool TryGiven<T>(string member, out T? value)
+		{
+			if (Given.TestForMember(member))
+			{
+				value = Given[member];
+				return true;
+			}
+
+			value = default;
+			return false;
+		} 
+
+		/// <summary>
 		/// Return the Given value if defined or default value.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="member"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected T GivenOrDefault<T>(string member, T defaultValue = default)
+		protected T? GivenOrDefault<T>(string member, T? defaultValue = default)
 		{
-			return Given.TestForMember(member) ? Given[member] : defaultValue;
+			return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 		}
 	}
 }

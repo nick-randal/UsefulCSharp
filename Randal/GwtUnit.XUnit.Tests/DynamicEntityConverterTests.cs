@@ -15,13 +15,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using GwtUnit.Support;
-using GwtUnit.UnitTest;
 using Xunit;
 
-namespace GwtUnitTesting.Tests.Support
+namespace GwtUnit.XUnit.Tests
 {
-	
 	public sealed class DynamicEntityConverterTests
 	{
 		public DynamicEntityConverterTests()
@@ -31,7 +28,7 @@ namespace GwtUnitTesting.Tests.Support
 		}
 
 		[Fact, PositiveTest]
-		public void ShouldHaveNoConvertesWhenCreating()
+		public void ShouldHaveNoConverterWhenCreating()
 		{
 			ThenConverter.Should().BeAssignableTo<IDynamicEntityConverter>();
 			ThenConverter.HasConverters.Should().BeFalse();

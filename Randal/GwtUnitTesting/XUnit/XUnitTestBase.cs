@@ -1,5 +1,5 @@
 ﻿// Useful C#
-// Copyright (C) 2014-2019 Nicholas Randal
+// Copyright (C) 2014-2022 Nicholas Randal
 // 
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,15 +21,11 @@ namespace GwtUnit.XUnit
 	{
 		protected XUnitTestBase()
 		{
-			if(Given == null)
-				Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
-			else
-				Given.Clear();
-			
+			Given = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
 			Then = new TThens();
 		}
 
-		public new dynamic Given;
+		public new readonly dynamic Given;
 
 		/// <summary>
 		/// Determine if all provided members have been defined as Given values.
@@ -42,6 +38,25 @@ namespace GwtUnit.XUnit
 		}
 
 		/// <summary>
+		/// Get the value for a Given.
+		/// </summary>
+		/// <param name="member"></param>
+		/// <param name="value"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <returns>True - if the Given is defined, False - not defined.</returns>
+		protected bool TryGiven<T>(string member, out T value)
+		{
+			if (Given.TestForMember(member))
+			{
+				value = Given[member];
+				return true;
+			}
+
+			value = default;
+			return false;
+		} 
+
+		/// <summary>
 		/// Return the Given value if defined or default value.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -50,12 +65,8 @@ namespace GwtUnit.XUnit
 		/// <returns></returns>
 		protected T GivenOrDefault<T>(string member, T defaultValue = default)
 		{
-			if (Given.TestForMember(member))
-			{
-				return Given[member];
-			}
+			return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 
-			return defaultValue;
 		}
 	}
 }

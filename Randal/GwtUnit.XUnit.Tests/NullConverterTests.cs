@@ -13,11 +13,9 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
-using GwtUnit.Support;
-using GwtUnit.UnitTest;
 using Xunit;
 
-namespace GwtUnitTesting.Tests.Support
+namespace GwtUnit.XUnit.Tests
 {
 	
 	public sealed class NullConverterTests

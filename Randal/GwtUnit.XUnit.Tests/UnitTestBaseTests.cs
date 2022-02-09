@@ -14,10 +14,9 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using GwtUnit.XUnit;
 using Xunit;
 
-namespace GwtUnitTesting.Tests.XUnit
+namespace GwtUnit.XUnit.Tests
 {
 	public sealed class XUnitTestBaseTests : XUnitTestBase<XUnitTestBaseTests.Thens>
 	{

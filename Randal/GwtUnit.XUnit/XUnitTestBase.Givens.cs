@@ -14,42 +14,27 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GwtUnit.UnitTest
+namespace GwtUnit.XUnit
 {
-	[TestClass]
-	public abstract class UnitTestBase<TThens, TGivens> 
+	public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		where TThens : class, new()
 		where TGivens : class, new()
 	{
-		[TestInitialize]
-		public void Setup()
+		protected XUnitTestBase()
 		{
 			Given = new TGivens();
 			Then = new TThens();
-
-			OnSetup();
 		}
 
-		[TestCleanup]
-		public void Teardown()
+		public virtual void Dispose()
 		{
-			OnTeardown();
-
-
 			var disposeMe = Given as IDisposable;
 			disposeMe?.Dispose();
 
 			disposeMe = Then as IDisposable;
 			disposeMe?.Dispose();
-
-			Then = null;
 		}
-
-		protected virtual void OnSetup() { }
-
-		protected virtual void OnTeardown() { }
 
 		/// <summary>
 		/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
@@ -99,21 +84,41 @@ namespace GwtUnit.UnitTest
 		{
 			return () =>
 			{
-				using (var task = Task.Run(async () => await asyncFunc()))
+				using (ThenLastTask = Task.Run(async () => await asyncFunc()))
 				{
-					task.Wait();
+					ThenLastTask.Wait();
 				}
 			};
 		}
 
+		protected Action Defer(Action action)
+		{
+			ThenLastAction = action;
+			DeferredAction = action;
+			
+			return NoOp;
+		}
+
 		protected abstract void Creating();
 
-		protected Action NotCreating = () => { };
 
-		protected TGivens Given;
+		protected readonly Action NotCreating = NoOp;
+
+		protected readonly TGivens Given;
 
 		protected TThens Then;
 
-		protected Action ThenLastAction;
+		protected Action? ThenLastAction;
+
+		protected Action? DeferredAction;
+
+		protected Task? ThenLastTask;
+		
+		protected static readonly Action NoOp;
+
+		static XUnitTestBase()
+		{
+			NoOp = () => { };
+		}
 	}
 }

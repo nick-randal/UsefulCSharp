@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace GwtUnit.Support
+namespace GwtUnit.XUnit
 {
 	public sealed class DynamicEntity : DynamicObject
 	{
@@ -23,14 +23,12 @@ namespace GwtUnit.Support
 		private readonly IDynamicEntityConverter _converter;
 		private readonly MissingMemberBehavior _missingMemberBehavior;
 
-		public DynamicEntity()
-			: this(MissingMemberBehavior.ThrowException)
+		public DynamicEntity() : this(MissingMemberBehavior.ThrowException)
 		{
-
 		}
 
 		public DynamicEntity(MissingMemberBehavior missingMemberBehavior,
-			IDynamicEntityConverter converter = null, IEqualityComparer<string> comparer = null)
+			IDynamicEntityConverter? converter = null, IEqualityComparer<string>? comparer = null)
 		{
 			_missingMemberBehavior = missingMemberBehavior;
 			_dataDictionary = new Dictionary<string, object>(comparer ?? StringComparer.InvariantCultureIgnoreCase);
@@ -42,9 +40,12 @@ namespace GwtUnit.Support
 			return _dataDictionary.ContainsKey(name);
 		}
 
-		public int Count()
+		public int Count() =>  _dataDictionary.Count;
+
+		public object this[string member]
 		{
-			return _dataDictionary.Count;
+			get => _dataDictionary[member];
+			set => _dataDictionary[member] = value;
 		}
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -63,32 +64,13 @@ namespace GwtUnit.Support
 			}
 		}
 
-		public object this[string name]
-		{
-			get
-			{
-				var valueFound = _dataDictionary.TryGetValue(name, out var result);
-
-				if (valueFound)
-					return result;
-
-				switch (_missingMemberBehavior)
-				{
-					case MissingMemberBehavior.ReturnsNull:
-						return null;
-					default:
-						throw new KeyNotFoundException(name);
-				}
-			}
-		}
-
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
 			_dataDictionary[binder.Name] = value;
 			return true;
 		}
 
-		public override bool TryConvert(ConvertBinder binder, out object result)
+		public override bool TryConvert(ConvertBinder binder, out object? result)
 		{
 			if (_converter.HasConverters && _converter.TryConversion(binder.Type, _dataDictionary, out result))
 				return true;

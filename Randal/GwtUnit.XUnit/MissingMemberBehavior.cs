@@ -11,24 +11,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
-using System.Collections.Generic;
-using Xunit.Abstractions;
-using Xunit.Sdk;
-
 namespace GwtUnit.XUnit
 {
-	[TraitDiscoverer("GwtUnit.XUnit.PositiveTestDiscoverer", "GwtUnit")]
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-	public class PositiveTestAttribute : Attribute, ITraitAttribute
+	public enum MissingMemberBehavior
 	{
-	}
-
-	public class PositiveTestDiscoverer : ITraitDiscoverer
-	{
-		public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
-		{
-			yield return new KeyValuePair<string, string>("Category", "Positive");
-		}
+		ReturnsNull = 0,
+		ThrowException = 1
 	}
 }

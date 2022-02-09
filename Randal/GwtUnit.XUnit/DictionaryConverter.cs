@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GwtUnit.Support
+namespace GwtUnit.XUnit
 {
 	public sealed class DictionaryConverter : DynamicEntityConverter
 	{

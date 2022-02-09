@@ -14,15 +14,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace GwtUnit.Support
+namespace GwtUnit.XUnit
 {
-	public interface IDynamicEntityConverter
-	{
-		int ConverterCount { get; }
-		bool HasConverters { get; }
-		bool TryConversion(Type type, Dictionary<string, object> data, out object result);
-	}
-
 	public class DynamicEntityConverter : IDynamicEntityConverter
 	{
 		private readonly Dictionary<Type, Func<Dictionary<string, object>, object>> _converters;
@@ -38,11 +31,10 @@ namespace GwtUnit.Support
 
 		protected Dictionary<Type, Func<Dictionary<string, object>, object>> Converters => _converters;
 
-		public bool TryConversion(Type type, Dictionary<string, object> data, out object result)
+		public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
 		{
-			Func<Dictionary<string, object>, object> converter;
 
-			if (Converters.TryGetValue(type, out converter))
+			if (Converters.TryGetValue(type, out var converter))
 			{
 				result = converter(data);
 				return true;
@@ -62,15 +54,14 @@ namespace GwtUnit.Support
 			Converters.Add(type, converter);
 		}
 
-		public Func<Dictionary<string, object>, object> RemoveTypeConverter<TConvertTo>()
+		public Func<Dictionary<string, object>, object>? RemoveTypeConverter<TConvertTo>()
 		{
 			return RemoveTypeConverter(typeof (TConvertTo));
 		}
 
-		public Func<Dictionary<string, object>, object> RemoveTypeConverter(Type type)
+		public Func<Dictionary<string, object>, object>? RemoveTypeConverter(Type type)
 		{
-			Func<Dictionary<string, object>, object> converter;
-			if (Converters.TryGetValue(type, out converter))
+			if (Converters.TryGetValue(type, out var converter))
 			{
 				Converters.Remove(type);
 				return converter;

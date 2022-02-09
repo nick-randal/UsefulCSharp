@@ -14,13 +14,10 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using GwtUnit.Support;
-using GwtUnit.UnitTest;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xunit;
 
-namespace GwtUnitTesting.Tests.Support
+namespace GwtUnit.XUnit.Tests
 {
 	public sealed class DynamicEntityTests
 	{
@@ -65,7 +62,7 @@ namespace GwtUnitTesting.Tests.Support
 				Then.String = entity.Name;
 			};
 
-			f.Should().Throw<RuntimeBinderException>().WithMessage("'GwtUnit.Support.DynamicEntity' does not contain a definition for 'Name'");
+			f.Should().Throw<RuntimeBinderException>().WithMessage("'GwtUnit.XUnit.DynamicEntity' does not contain a definition for 'Name'");
 		}
 
 
@@ -96,7 +93,7 @@ namespace GwtUnitTesting.Tests.Support
 			Then.Count.Should().Be(0);
 		}
 
-		[Fact, ExpectedException(typeof (RuntimeBinderException)), NegativeTest]
+		[Fact, NegativeTest]
 		public void ShouldThrowExceptionWhenConvertingToUnexpectedType()
 		{
 			Action f = () =>
@@ -105,7 +102,7 @@ namespace GwtUnitTesting.Tests.Support
 				Then.String = entity;
 			};
 
-			f.Should().Throw<RuntimeBinderException>().WithMessage("Cannot implicitly convert type 'GwtUnit.Support.DynamicEntity' to 'string'");
+			f.Should().Throw<RuntimeBinderException>().WithMessage("Cannot implicitly convert type 'GwtUnit.XUnit.DynamicEntity' to 'string'");
 		}
 
 		[Fact, PositiveTest]
