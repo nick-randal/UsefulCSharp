@@ -101,9 +101,8 @@ namespace GwtUnit.XUnit
 		}
 
 		protected abstract void Creating();
-
-
-		protected readonly Action NotCreating = NoOp;
+		
+		protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
 
 		protected readonly TGivens Given;
 
