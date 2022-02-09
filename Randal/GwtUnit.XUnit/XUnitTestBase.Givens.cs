@@ -66,6 +66,7 @@ namespace GwtUnit.XUnit
 				listOfActions[n]();
 
 			ThenLastAction = listOfActions.Last();
+			DeferredAction = ThenLastAction;
 		}
 
 		protected Action Repeat(Action action, int repeatX)

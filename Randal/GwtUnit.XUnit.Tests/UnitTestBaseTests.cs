@@ -47,14 +47,23 @@ namespace GwtUnit.XUnit.Tests
 		}
 
 		[Fact, NegativeTest]
-		public void ShouldHaveActionActionAvailableThroughProperty_WhenExpectingAnException()
+		public void ShouldHaveActionAvailableThroughThenLastActionProperty_WhenExpectingAnException()
 		{
 			WhenLastActionDeferred(Exploding);
 
-			ThenLastAction.Should().NotBeNull();
+			ThenLastAction.Should().NotBeNull().And.BeSameAs(DeferredAction);
 			ThenLastAction.Should().Throw<Exception>("Did I do that?");
 		}
 
+		[Fact, NegativeTest]
+		public void ShouldHaveDeferredAction_WhenExpectingAnException()
+		{
+			When(Defer(Exploding));
+
+			DeferredAction.Should().NotBeNull().And.BeSameAs(ThenLastAction);
+			DeferredAction.Should().Throw<Exception>("Did I do that?");
+		}
+		
 		[Fact, NegativeTest]
 		public void ShouldHaveGivensDefined_GivenValues()
 		{

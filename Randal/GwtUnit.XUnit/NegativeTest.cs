@@ -23,7 +23,7 @@ namespace GwtUnit.XUnit
 	public class NegativeTestAttribute : Attribute, ITraitAttribute
 	{
 	}
-
+	
 	public class NegativeTestDiscoverer : ITraitDiscoverer
 	{
 		public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
