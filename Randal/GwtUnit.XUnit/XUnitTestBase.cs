@@ -66,10 +66,10 @@ namespace GwtUnit.XUnit
 
 		protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock) where T : class
 		{
-			Services.TryAddScoped(_ =>
+			Services.TryAddScoped(p =>
 			{
 				var mock = new Mock<T>();
-				setupMock(_serviceProvider, mock);
+				setupMock(p, mock);
 				return mock;
 			});
 			Services.AddScoped(p => p.GetRequiredService<Mock<T>>().Object);
