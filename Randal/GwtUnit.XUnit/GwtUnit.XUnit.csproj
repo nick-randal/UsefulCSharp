@@ -5,6 +5,7 @@
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
         <Version>1.0.0</Version>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
