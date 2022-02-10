@@ -85,9 +85,12 @@ namespace GwtUnit.XUnit
 			return ServiceProvider.GetRequiredService<T>();
 		}
 
-		public T BuildTarget<T>() where T : class
+		public T BuildTarget<T>(Func<IServiceProvider, T>? factory = null) where T : class
 		{
-			_services.AddScoped<T>();
+			if (factory is null)
+				_services.AddScoped<T>();
+			else
+				_services.AddScoped(factory);
 			
 			_rootProvider = _services.BuildServiceProvider();
 			_scopedProvider = _rootProvider.CreateScope();
