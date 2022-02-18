@@ -118,3 +118,31 @@ namespace Someplace
 	}
 }
 ```
+
+### Make use of dependency injection and helper methods
+
+```c#
+public class MyTest : XUnitTestBase<MyTest.Thens>
+{
+    [Fact]
+    public void ShouldHaveMockEngaged_WhenTakingAction()
+    {
+        When(TakingAction);
+        
+        RequireMock<IDidSomething>().Verify(x => x.CallMe());
+        Require<IDidSomething>().Should().NotBeNull();
+    }
+		
+    protected override void Creating()
+    {
+        AddDependency<A>();
+        CreateMock<IDidSomething>(mock =>
+        {
+            if (TryGiven("ThrowException", out bool throwEx))
+                mock.Setup(x => x.CallMe()).Throws<InvalidOperationException>();
+        });
+
+        Then.Target = BuildTarget<B>();
+    }
+}
+```

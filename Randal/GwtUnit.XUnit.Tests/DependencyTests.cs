@@ -67,7 +67,7 @@ namespace GwtUnit.XUnit.Tests
 		
 		protected override void Creating()
 		{
-			Services.AddScoped(_ => new A());
+			AddDependency<A>();
 			CreateMock<IDidSomething>(mock =>
 			{
 				if (TryGiven("ThrowException", out bool throwEx))

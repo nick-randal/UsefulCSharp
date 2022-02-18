@@ -42,6 +42,36 @@ namespace GwtUnit.XUnit
 
 		protected IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
 
+		protected XUnitTestBase<TThens> AddDependency<TService>() where TService : class
+		{
+			Services.AddScoped<TService>();
+			return this;
+		}
+		
+		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>() 
+			where TImplementation : class, TService
+			where TService : class
+		{
+			Services.AddScoped<TService, TImplementation>();
+			return this;
+		}
+		
+		protected XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory) 
+			where TService : class
+		{
+			Services.AddScoped(factory);
+			return this;
+		}
+		
+		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory) 
+			where TImplementation : class, TService
+			where TService : class
+		{
+			Services.AddScoped<TService, TImplementation>(factory);
+			Services.AddScoped(factory);
+			return this;
+		}
+
 		protected void CreateMock<T>(Action<Mock<T>>? setupMock = null) where T : class
 		{
 			Services.TryAddScoped(_ =>
