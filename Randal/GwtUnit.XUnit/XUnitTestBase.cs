@@ -71,9 +71,8 @@ namespace GwtUnit.XUnit
 			Services.AddScoped(factory);
 			return this;
 		}
-
-
-		protected void CreateMock<T>(Action<Mock<T>>? setupMock)
+		
+		protected void CreateMock<T>(Action<Mock<T>>? setupMock = null)
 			where T : class
 		{
 			Services.CreateMock(setupMock);
