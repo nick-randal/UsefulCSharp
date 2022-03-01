@@ -14,7 +14,6 @@
 using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 
 namespace GwtUnit.XUnit
@@ -36,34 +35,35 @@ namespace GwtUnit.XUnit
 
 		public new readonly dynamic Given;
 
-		protected IServiceCollection Services => _serviceProvider is null 
+		protected IServiceCollection Services => _serviceProvider is null
 			? _services
 			: throw new InvalidOperationException("Cannot add to service collection after target is built.");
 
 		protected IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
 
-		protected XUnitTestBase<TThens> AddDependency<TService>() where TService : class
+		protected XUnitTestBase<TThens> AddDependency<TService>()
+			where TService : class
 		{
 			Services.AddScoped<TService>();
 			return this;
 		}
-		
-		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>() 
+
+		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
 			where TImplementation : class, TService
 			where TService : class
 		{
 			Services.AddScoped<TService, TImplementation>();
 			return this;
 		}
-		
-		protected XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory) 
+
+		protected XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
 			where TService : class
 		{
 			Services.AddScoped(factory);
 			return this;
 		}
-		
-		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory) 
+
+		protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
 			where TImplementation : class, TService
 			where TService : class
 		{
@@ -72,60 +72,50 @@ namespace GwtUnit.XUnit
 			return this;
 		}
 
-		protected void CreateMock<T>(Action<Mock<T>>? setupMock = null) where T : class
+
+		protected void CreateMock<T>(Action<Mock<T>>? setupMock)
+			where T : class
 		{
-			Services.TryAddScoped(_ =>
-			{
-				var mock = new Mock<T>();
-				setupMock?.Invoke(mock);
-				return mock;
-			});
-			Services.AddScoped(p => p.GetRequiredService<Mock<T>>().Object);
+			Services.CreateMock(setupMock);
 		}
 
-		protected void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null) where TAs : class where TSource : class
+		protected void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+			where TAs : class
+			where TSource : class
 		{
-			Services.AddScoped(p =>
-			{
-				var mock = p.GetRequiredService<Mock<TSource>>().As<TAs>();
-				setupMock?.Invoke(mock);
-				return mock;
-			});
-			Services.AddScoped(p => p.GetRequiredService<Mock<TAs>>().Object);
+			Services.CreateMockAs<TAs, TSource>(setupMock);
 		}
 
-		protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock) where T : class
+		protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
+			where T : class
 		{
-			Services.TryAddScoped(p =>
-			{
-				var mock = new Mock<T>();
-				setupMock(p, mock);
-				return mock;
-			});
-			Services.AddScoped(p => p.GetRequiredService<Mock<T>>().Object);
+			Services.CreateMock(setupMock);
 		}
 
-		protected Mock<T> RequireMock<T>() where T : class
+		protected Mock<T> RequireMock<T>()
+			where T : class
 		{
 			return ServiceProvider.GetRequiredService<Mock<T>>();
 		}
 
-		protected T Require<T>() where T : class
+		protected T Require<T>()
+			where T : class
 		{
 			return ServiceProvider.GetRequiredService<T>();
 		}
 
-		public T BuildTarget<T>(Func<IServiceProvider, T>? factory = null) where T : class
+		public T BuildTarget<T>(Func<IServiceProvider, T>? factory = null)
+			where T : class
 		{
 			if (factory is null)
 				_services.AddScoped<T>();
 			else
 				_services.AddScoped(factory);
-			
+
 			_rootProvider = _services.BuildServiceProvider();
 			_scopedProvider = _rootProvider.CreateScope();
 			_serviceProvider = _scopedProvider.ServiceProvider;
-			
+
 			return _serviceProvider.GetRequiredService<T>();
 		}
 
@@ -177,7 +167,7 @@ namespace GwtUnit.XUnit
 		{
 			return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 		}
-		
+
 		private IServiceProvider? _serviceProvider;
 		private ServiceProvider? _rootProvider;
 		private IServiceScope? _scopedProvider;
