@@ -14,12 +14,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+public interface IDynamicEntityConverter
 {
-	public interface IDynamicEntityConverter
-	{
-		int ConverterCount { get; }
-		bool HasConverters { get; }
-		bool TryConversion(Type type, Dictionary<string, object> data, out object? result);
-	}
+	int ConverterCount { get; }
+	bool HasConverters { get; }
+	bool TryConversion(Type type, Dictionary<string, object> data, out object? result);
 }

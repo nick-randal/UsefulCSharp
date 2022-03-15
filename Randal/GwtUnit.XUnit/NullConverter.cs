@@ -14,18 +14,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+public sealed class NullConverter : IDynamicEntityConverter
 {
-	public sealed class NullConverter : IDynamicEntityConverter
+	public int ConverterCount => 0;
+
+	public bool HasConverters => false;
+
+	public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
 	{
-		public int ConverterCount => 0;
-
-		public bool HasConverters => false;
-
-		public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
-		{
-			result = null;
-			return false;
-		}
+		result = null;
+		return false;
 	}
 }

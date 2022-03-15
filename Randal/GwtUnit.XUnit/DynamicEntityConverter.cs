@@ -14,60 +14,59 @@
 using System;
 using System.Collections.Generic;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+public class DynamicEntityConverter : IDynamicEntityConverter
 {
-	public class DynamicEntityConverter : IDynamicEntityConverter
+	private readonly Dictionary<Type, Func<Dictionary<string, object>, object>> _converters;
+
+	public DynamicEntityConverter()
 	{
-		private readonly Dictionary<Type, Func<Dictionary<string, object>, object>> _converters;
+		_converters = new Dictionary<Type, Func<Dictionary<string, object>, object>>();
+	}
 
-		public DynamicEntityConverter()
+	public int ConverterCount => _converters.Count;
+
+	public bool HasConverters => _converters.Count > 0;
+
+	protected Dictionary<Type, Func<Dictionary<string, object>, object>> Converters => _converters;
+
+	public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
+	{
+
+		if (Converters.TryGetValue(type, out var converter))
 		{
-			_converters = new Dictionary<Type, Func<Dictionary<string, object>, object>>();
+			result = converter(data);
+			return true;
 		}
 
-		public int ConverterCount => _converters.Count;
+		result = null;
+		return false;
+	}
 
-		public bool HasConverters => _converters.Count > 0;
+	public void AddTypeConverter<TConvertTo>(Func<Dictionary<string, object>, object> converter)
+	{
+		Converters.Add(typeof (TConvertTo), converter);
+	}
 
-		protected Dictionary<Type, Func<Dictionary<string, object>, object>> Converters => _converters;
+	public void AddTypeConverter(Type type, Func<Dictionary<string, object>, object> converter)
+	{
+		Converters.Add(type, converter);
+	}
 
-		public bool TryConversion(Type type, Dictionary<string, object> data, out object? result)
+	public Func<Dictionary<string, object>, object>? RemoveTypeConverter<TConvertTo>()
+	{
+		return RemoveTypeConverter(typeof (TConvertTo));
+	}
+
+	public Func<Dictionary<string, object>, object>? RemoveTypeConverter(Type type)
+	{
+		if (Converters.TryGetValue(type, out var converter))
 		{
-
-			if (Converters.TryGetValue(type, out var converter))
-			{
-				result = converter(data);
-				return true;
-			}
-
-			result = null;
-			return false;
+			Converters.Remove(type);
+			return converter;
 		}
 
-		public void AddTypeConverter<TConvertTo>(Func<Dictionary<string, object>, object> converter)
-		{
-			Converters.Add(typeof (TConvertTo), converter);
-		}
-
-		public void AddTypeConverter(Type type, Func<Dictionary<string, object>, object> converter)
-		{
-			Converters.Add(type, converter);
-		}
-
-		public Func<Dictionary<string, object>, object>? RemoveTypeConverter<TConvertTo>()
-		{
-			return RemoveTypeConverter(typeof (TConvertTo));
-		}
-
-		public Func<Dictionary<string, object>, object>? RemoveTypeConverter(Type type)
-		{
-			if (Converters.TryGetValue(type, out var converter))
-			{
-				Converters.Remove(type);
-				return converter;
-			}
-
-			return null;
-		}
+		return null;
 	}
 }

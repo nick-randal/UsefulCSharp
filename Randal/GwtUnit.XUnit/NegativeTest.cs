@@ -16,19 +16,18 @@ using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+[TraitDiscoverer("GwtUnit.XUnit.NegativeTestDiscoverer", "GwtUnit")]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+public class NegativeTestAttribute : Attribute, ITraitAttribute
 {
-	[TraitDiscoverer("GwtUnit.XUnit.NegativeTestDiscoverer", "GwtUnit")]
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-	public class NegativeTestAttribute : Attribute, ITraitAttribute
-	{
-	}
+}
 	
-	public class NegativeTestDiscoverer : ITraitDiscoverer
+public class NegativeTestDiscoverer : ITraitDiscoverer
+{
+	public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
 	{
-		public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
-		{
-			yield return new KeyValuePair<string, string>("Category", "Negative");
-		}
+		yield return new KeyValuePair<string, string>("Category", "Negative");
 	}
 }

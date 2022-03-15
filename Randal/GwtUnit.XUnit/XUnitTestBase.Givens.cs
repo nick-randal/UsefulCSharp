@@ -15,110 +15,110 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
+	where TThens : class, new()
+	where TGivens : class, new()
 {
-	public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
-		where TThens : class, new()
-		where TGivens : class, new()
+	protected XUnitTestBase()
 	{
-		protected XUnitTestBase()
+		Given = new TGivens();
+		Then = new TThens();
+	}
+
+	public virtual void Dispose()
+	{
+		var disposeMe = Given as IDisposable;
+		disposeMe?.Dispose();
+
+		disposeMe = Then as IDisposable;
+		disposeMe?.Dispose();
+	}
+
+	/// <summary>
+	/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
+	/// However, if a Creating is provided then it will not be called automatically and it is assumed that the caller wants full control of actions and the order.
+	/// </summary>
+	/// <param name="actions">A list of actions to be performed for the current test</param>
+	protected void When(params Action[] actions)
+	{
+		if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
+			Creating();
+
+		foreach (var action in actions)
+			action();
+	}
+
+	/// <summary>
+	/// Will execute each action provided, in order, except for the last one.  That action will be set as ThenLastAction and will not be executed.
+	/// This is done so that the action can be executed in conjunction with an assertion mechanism other than MSTest's ExpectedException attribute.
+	/// </summary>
+	/// <param name="actions"></param>
+	protected void WhenLastActionDeferred(params Action[] actions)
+	{
+		var listOfActions = actions.ToList();
+
+		if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
+			listOfActions.Insert(0, Creating);
+
+		for (var n = 0; n < listOfActions.Count - 1; n++)
+			listOfActions[n]();
+
+		ThenLastAction = listOfActions.Last();
+		DeferredAction = ThenLastAction;
+	}
+
+	protected Action Repeat(Action action, int repeatX)
+	{
+		if (repeatX < 1)
+			repeatX = 1;
+
+		return () =>
 		{
-			Given = new TGivens();
-			Then = new TThens();
-		}
-
-		public virtual void Dispose()
-		{
-			var disposeMe = Given as IDisposable;
-			disposeMe?.Dispose();
-
-			disposeMe = Then as IDisposable;
-			disposeMe?.Dispose();
-		}
-
-		/// <summary>
-		/// Will execute each action provided, in order.  If Creating was not provided as an action, Creating will be called automatically as the first action.
-		/// However, if a Creating is provided then it will not be called automatically and it is assumed that the caller wants full control of actions and the order.
-		/// </summary>
-		/// <param name="actions">A list of actions to be performed for the current test</param>
-		protected void When(params Action[] actions)
-		{
-			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
-				Creating();
-
-			foreach (var action in actions)
+			for (var n = 0; n < repeatX; n++)
 				action();
-		}
+		};
+	}
 
-		/// <summary>
-		/// Will execute each action provided, in order, except for the last one.  That action will be set as ThenLastAction and will not be executed.
-		/// This is done so that the action can be executed in conjunction with an assertion mechanism other than MSTest's ExpectedException attribute.
-		/// </summary>
-		/// <param name="actions"></param>
-		protected void WhenLastActionDeferred(params Action[] actions)
+	protected Action Await(Func<Task> asyncFunc)
+	{
+		return () =>
 		{
-			var listOfActions = actions.ToList();
-
-			if (actions.Any(a => a == Creating) == false && actions.Any(a => a == NotCreating) == false)
-				listOfActions.Insert(0, Creating);
-
-			for (var n = 0; n < listOfActions.Count - 1; n++)
-				listOfActions[n]();
-
-			ThenLastAction = listOfActions.Last();
-			DeferredAction = ThenLastAction;
-		}
-
-		protected Action Repeat(Action action, int repeatX)
-		{
-			if (repeatX < 1)
-				repeatX = 1;
-
-			return () =>
+			using (ThenLastTask = Task.Run(async () => await asyncFunc()))
 			{
-				for (var n = 0; n < repeatX; n++)
-					action();
-			};
-		}
+				ThenLastTask.Wait();
+			}
+		};
+	}
 
-		protected Action Await(Func<Task> asyncFunc)
-		{
-			return () =>
-			{
-				using (ThenLastTask = Task.Run(async () => await asyncFunc()))
-				{
-					ThenLastTask.Wait();
-				}
-			};
-		}
-
-		protected Action Defer(Action action)
-		{
-			ThenLastAction = action;
-			DeferredAction = action;
+	protected Action Defer(Action action)
+	{
+		ThenLastAction = action;
+		DeferredAction = action;
 			
-			return NoOp;
-		}
+		return NoOp;
+	}
 
-		protected abstract void Creating();
+	protected abstract void Creating();
 		
-		protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
+	protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
 
-		protected readonly TGivens Given;
+	protected readonly TGivens Given;
 
-		protected TThens Then;
+	protected TThens Then;
 
-		protected Action? ThenLastAction;
+	[Obsolete("Use DeferredAction")]
+	protected Action? ThenLastAction;
 
-		protected Action? DeferredAction;
+	protected Action? DeferredAction;
 
-		protected Task? ThenLastTask;
+	protected Task? ThenLastTask;
 		
-		protected static readonly Action NoOp;
+	protected static readonly Action NoOp;
 
-		static XUnitTestBase()
-		{
-			NoOp = () => { };
-		}
+	static XUnitTestBase()
+	{
+		NoOp = () => { };
 	}
 }

@@ -15,72 +15,71 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace GwtUnit.XUnit
+namespace GwtUnit.XUnit;
+
+public sealed class DynamicEntity : DynamicObject
 {
-	public sealed class DynamicEntity : DynamicObject
+	private readonly Dictionary<string, object> _dataDictionary;
+	private readonly IDynamicEntityConverter _converter;
+	private readonly MissingMemberBehavior _missingMemberBehavior;
+
+	public DynamicEntity() : this(MissingMemberBehavior.ThrowException)
 	{
-		private readonly Dictionary<string, object> _dataDictionary;
-		private readonly IDynamicEntityConverter _converter;
-		private readonly MissingMemberBehavior _missingMemberBehavior;
+	}
 
-		public DynamicEntity() : this(MissingMemberBehavior.ThrowException)
-		{
-		}
+	public DynamicEntity(MissingMemberBehavior missingMemberBehavior,
+		IDynamicEntityConverter? converter = null, IEqualityComparer<string>? comparer = null)
+	{
+		_missingMemberBehavior = missingMemberBehavior;
+		_dataDictionary = new Dictionary<string, object>(comparer ?? StringComparer.InvariantCultureIgnoreCase);
+		_converter = converter ?? new NullConverter();
+	}
 
-		public DynamicEntity(MissingMemberBehavior missingMemberBehavior,
-			IDynamicEntityConverter? converter = null, IEqualityComparer<string>? comparer = null)
-		{
-			_missingMemberBehavior = missingMemberBehavior;
-			_dataDictionary = new Dictionary<string, object>(comparer ?? StringComparer.InvariantCultureIgnoreCase);
-			_converter = converter ?? new NullConverter();
-		}
+	public bool TestForMember(string name)
+	{
+		return _dataDictionary.ContainsKey(name);
+	}
 
-		public bool TestForMember(string name)
-		{
-			return _dataDictionary.ContainsKey(name);
-		}
+	public int Count() =>  _dataDictionary.Count;
 
-		public int Count() =>  _dataDictionary.Count;
+	public object this[string member]
+	{
+		get => _dataDictionary[member];
+		set => _dataDictionary[member] = value;
+	}
 
-		public object this[string member]
-		{
-			get => _dataDictionary[member];
-			set => _dataDictionary[member] = value;
-		}
+	public override bool TryGetMember(GetMemberBinder binder, out object result)
+	{
+		var valueFound = _dataDictionary.TryGetValue(binder.Name, out result);
 
-		public override bool TryGetMember(GetMemberBinder binder, out object result)
-		{
-			var valueFound = _dataDictionary.TryGetValue(binder.Name, out result);
-
-			if (valueFound)
-				return true;
-
-			switch (_missingMemberBehavior)
-			{
-				case MissingMemberBehavior.ReturnsNull:
-					return true;
-				default:
-					return false;
-			}
-		}
-
-		public override bool TrySetMember(SetMemberBinder binder, object value)
-		{
-			_dataDictionary[binder.Name] = value;
+		if (valueFound)
 			return true;
-		}
 
-		public override bool TryConvert(ConvertBinder binder, out object? result)
+		switch (_missingMemberBehavior)
 		{
-			if (_converter.HasConverters && _converter.TryConversion(binder.Type, _dataDictionary, out result))
+			case MissingMemberBehavior.ReturnsNull:
 				return true;
-
-			return base.TryConvert(binder, out result);
+			default:
+				return false;
 		}
+	}
 
-		public void Clear()
-		{
-			_dataDictionary.Clear();
-		}
+	public override bool TrySetMember(SetMemberBinder binder, object value)
+	{
+		_dataDictionary[binder.Name] = value;
+		return true;
+	}
+
+	public override bool TryConvert(ConvertBinder binder, out object? result)
+	{
+		if (_converter.HasConverters && _converter.TryConversion(binder.Type, _dataDictionary, out result))
+			return true;
+
+		return base.TryConvert(binder, out result);
+	}
+
+	public void Clear()
+	{
+		_dataDictionary.Clear();
 	}
 }

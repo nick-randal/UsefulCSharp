@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;net6</TargetFrameworks>
-        <LangVersion>9</LangVersion>
+        <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>1.5.1</Version>
+        <Version>1.5.2</Version>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
