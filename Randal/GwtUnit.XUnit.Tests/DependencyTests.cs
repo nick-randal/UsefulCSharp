@@ -32,6 +32,14 @@ namespace GwtUnit.XUnit.Tests
 			_didSomething.CallMe();
 		}
 	}
+
+	public class C
+	{
+		public C(A a)
+		{
+			
+		}
+	}
 	
 	public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 	{
@@ -42,6 +50,17 @@ namespace GwtUnit.XUnit.Tests
 
 			Then.Target.Should().NotBeNull();
 			Then.Target.A.Should().NotBeNull();
+		}
+		
+		[Fact]
+		public void ShouldThrowException_WhenCreatingUsingDependencyInjection_GivenBadScopeDependency()
+		{
+			Given.BadScopeDependency = true;
+			
+			WhenLastActionDeferred(Creating);
+
+			DeferredAction.Should().Throw<InvalidOperationException>()
+				.WithMessage("Error while validating the service descriptor 'ServiceType: GwtUnit.XUnit.Tests.C Lifetime: Singleton ImplementationType: GwtUnit.XUnit.Tests.C': Cannot consume scoped service 'GwtUnit.XUnit.Tests.A' from singleton 'GwtUnit.XUnit.Tests.C'.");
 		}
 
 		[Fact]
@@ -68,6 +87,9 @@ namespace GwtUnit.XUnit.Tests
 		protected override void Creating()
 		{
 			AddDependency<A>();
+			if(GivenOrDefault("BadScopeDependency", false))
+				Services.AddSingleton<C>();
+			
 			CreateMock<IDidSomething>(mock =>
 			{
 				if (TryGiven("ThrowException", out bool throwEx))

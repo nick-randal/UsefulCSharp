@@ -73,7 +73,32 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 		
+	protected void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
+		where T : class
+	{
+		Services.CreateMockSingleton(setupMock);
+	}
+	
+	protected void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
+		where T : class
+	{
+		Services.CreateMockSingleton(setupMock);
+	}
+	
+	protected void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+		where TAs : class
+		where TSource : class
+	{
+		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
+	}
+	
 	protected void CreateMock<T>(Action<Mock<T>>? setupMock = null)
+		where T : class
+	{
+		Services.CreateMock(setupMock);
+	}
+
+	protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
 		Services.CreateMock(setupMock);
@@ -84,12 +109,6 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(setupMock);
-	}
-
-	protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
-		where T : class
-	{
-		Services.CreateMock(setupMock);
 	}
 
 	protected Mock<T> RequireMock<T>()
@@ -112,7 +131,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		else
 			_services.AddScoped(factory);
 
-		_rootProvider = _services.BuildServiceProvider();
+		_rootProvider = _services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
 		_scopedProvider = _rootProvider.CreateScope();
 		_serviceProvider = _scopedProvider.ServiceProvider;
 

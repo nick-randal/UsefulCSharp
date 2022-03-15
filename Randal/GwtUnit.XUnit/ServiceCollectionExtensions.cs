@@ -44,4 +44,42 @@ public static class ServiceCollectionExtensions
 
 		services.AddScoped(p => p.GetRequiredService<Mock<TAs>>().Object);
 	}
+	
+	public static void CreateMockSingleton<T>(this IServiceCollection services, Action<Mock<T>>? setupMock = null)
+		where T : class
+	{
+		services.TryAddSingleton(_ =>
+		{
+			var mock = new Mock<T>();
+			setupMock?.Invoke(mock);
+			return mock;
+		});
+		services.AddSingleton(p => p.GetRequiredService<Mock<T>>().Object);
+	}
+
+	public static void CreateMockSingleton<T>(this IServiceCollection services, Action<IServiceProvider, Mock<T>> setupMock)
+		where T : class
+	{
+		services.TryAddSingleton(p =>
+		{
+			var mock = new Mock<T>();
+			setupMock(p, mock);
+			return mock;
+		});
+		services.AddSingleton(p => p.GetRequiredService<Mock<T>>().Object);
+	}
+
+	public static void CreateMockSingletonAs<TAs, TSource>(this IServiceCollection services, Action<Mock<TAs>>? setupMock = null)
+		where TAs : class
+		where TSource : class
+	{
+		services.AddSingleton(p =>
+		{
+			var mock = p.GetRequiredService<Mock<TSource>>().As<TAs>();
+			setupMock?.Invoke(mock);
+			return mock;
+		});
+
+		services.AddSingleton(p => p.GetRequiredService<Mock<TAs>>().Object);
+	}
 }
