@@ -40,16 +40,16 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		? _services
 		: throw new InvalidOperationException("Cannot add to service collection after target is built.");
 
-	protected IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
+	public IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
 
-	protected XUnitTestBase<TThens> AddDependency<TService>()
+	public XUnitTestBase<TThens> AddDependency<TService>()
 		where TService : class
 	{
 		Services.AddScoped<TService>();
 		return this;
 	}
 
-	protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
 		where TImplementation : class, TService
 		where TService : class
 	{
@@ -57,14 +57,14 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 
-	protected XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
+	public XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
 		where TService : class
 	{
 		Services.AddScoped(factory);
 		return this;
 	}
 
-	protected XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
 		where TImplementation : class, TService
 		where TService : class
 	{
@@ -73,51 +73,51 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 		
-	protected void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
+	public void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
 		where T : class
 	{
 		Services.CreateMockSingleton(setupMock);
 	}
 	
-	protected void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
+	public void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
 		Services.CreateMockSingleton(setupMock);
 	}
 	
-	protected void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
 	}
 	
-	protected void CreateMock<T>(Action<Mock<T>>? setupMock = null)
+	public void CreateMock<T>(Action<Mock<T>>? setupMock = null)
 		where T : class
 	{
 		Services.CreateMock(setupMock);
 	}
 
-	protected void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
+	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
 		Services.CreateMock(setupMock);
 	}
 
-	protected void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+	public void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(setupMock);
 	}
 
-	protected Mock<T> RequireMock<T>()
+	public Mock<T> RequireMock<T>()
 		where T : class
 	{
 		return ServiceProvider.GetRequiredService<Mock<T>>();
 	}
 
-	protected T Require<T>()
+	public T Require<T>()
 		where T : class
 	{
 		return ServiceProvider.GetRequiredService<T>();
@@ -151,7 +151,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// </summary>
 	/// <param name="members">A list of property names</param>
 	/// <returns>True if all properties specified are defined, otherwise False.</returns>
-	protected bool GivensDefined(params string[] members)
+	public bool GivensDefined(params string[] members)
 	{
 		return members.Length == 0 || members.All(member => Given.TestForMember(member));
 	}
@@ -163,7 +163,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <param name="value"></param>
 	/// <typeparam name="T"></typeparam>
 	/// <returns>True - if the Given is defined, False - not defined.</returns>
-	protected bool TryGiven<T>(string member, out T? value)
+	public bool TryGiven<T>(string member, out T? value)
 	{
 		if (Given.TestForMember(member))
 		{
@@ -182,7 +182,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <param name="member"></param>
 	/// <param name="defaultValue"></param>
 	/// <returns></returns>
-	protected T? GivenOrDefault<T>(string member, T? defaultValue = default)
+	public T? GivenOrDefault<T>(string member, T? defaultValue = default)
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 	}
