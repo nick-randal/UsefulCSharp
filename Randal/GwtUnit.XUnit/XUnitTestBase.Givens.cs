@@ -14,10 +14,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace GwtUnit.XUnit;
 
-public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
+public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifetime 
 	where TThens : class, new()
 	where TGivens : class, new()
 {
@@ -34,6 +35,17 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 
 		disposeMe = Then as IDisposable;
 		disposeMe?.Dispose();
+	}
+
+	public virtual Task InitializeAsync()
+	{
+		return Task.CompletedTask;
+	}
+
+	public virtual async Task DisposeAsync()
+	{
+		if (Then is IAsyncDisposable disposeMe)
+			await disposeMe.DisposeAsync();
 	}
 
 	/// <summary>
@@ -69,7 +81,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		DeferredAction = ThenLastAction;
 	}
 
-	protected Action Repeat(Action action, int repeatX)
+	protected virtual Action Repeat(Action action, int repeatX)
 	{
 		if (repeatX < 1)
 			repeatX = 1;
@@ -81,7 +93,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		};
 	}
 
-	protected Action Await(Func<Task> asyncFunc)
+	protected virtual Action Await(Func<Task> asyncFunc)
 	{
 		return () =>
 		{
@@ -92,7 +104,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 		};
 	}
 
-	protected Action Defer(Action action)
+	protected virtual Action Defer(Action action)
 	{
 		ThenLastAction = action;
 		DeferredAction = action;
@@ -101,7 +113,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 	}
 
 	protected abstract void Creating();
-		
+
 	protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
 
 	protected readonly TGivens Given;
@@ -114,7 +126,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable
 	protected Action? DeferredAction;
 
 	protected Task? ThenLastTask;
-		
+
 	protected static readonly Action NoOp;
 
 	static XUnitTestBase()
