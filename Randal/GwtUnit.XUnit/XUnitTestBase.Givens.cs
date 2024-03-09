@@ -22,12 +22,6 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 	where TThens : class, new()
 	where TGivens : class, new()
 {
-	protected XUnitTestBase()
-	{
-		Given = new TGivens();
-		Then = new TThens();
-	}
-
 	public virtual void Dispose()
 	{
 		var disposeMe = Given as IDisposable;
@@ -76,9 +70,8 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 
 		for (var n = 0; n < listOfActions.Count - 1; n++)
 			listOfActions[n]();
-
-		ThenLastAction = listOfActions.Last();
-		DeferredAction = ThenLastAction;
+		
+		DeferredAction = listOfActions.Last();
 	}
 
 	protected virtual Action Repeat(Action action, int repeatX)
@@ -106,7 +99,6 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 
 	protected virtual Action Defer(Action action)
 	{
-		ThenLastAction = action;
 		DeferredAction = action;
 			
 		return NoOp;
@@ -116,12 +108,12 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 
 	protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
 
-	protected readonly TGivens Given;
+	protected readonly TGivens Given = new();
 
-	protected TThens Then;
+	protected TThens Then = new();
 
 	[Obsolete("Use DeferredAction")]
-	protected Action? ThenLastAction;
+	protected Action? ThenLastAction => DeferredAction;
 
 	protected Action? DeferredAction;
 
