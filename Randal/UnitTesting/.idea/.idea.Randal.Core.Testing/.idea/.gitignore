@@ -2,9 +2,9 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
-/projectSettingsUpdater.xml
-/contentModel.xml
 /.idea.Randal.Core.Testing.iml
+/contentModel.xml
+/projectSettingsUpdater.xml
 /modules.xml
 # Editor-based HTTP Client requests
 /httpRequests/
