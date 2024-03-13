@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        
+        <PackageReadmeFile>Readme.md</PackageReadmeFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
@@ -15,9 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Readme.md">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <None Include="Readme.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
