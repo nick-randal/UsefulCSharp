@@ -8,6 +8,7 @@ The dynamic typing allows properties to be created on the the fly without having
 GWT derives from AAA (Arrange Act Assert) but strives to provide organization and readability in the tests.
 
 #### Given (Arrange)
+
 Setup the data and context for the test.
 
 #### When (Act)
@@ -15,16 +16,19 @@ Setup the data and context for the test.
 Make the When actions composable.  The **When** method takes params array of Action methods.
 
 #### Then (Assert)
+
 A class where all result context can be stored during a test and can be asserted on.  I prefer using FluentAssertions from NuGet.  These extension methods provide cleaner test failure messages and make the code more readable.
 
 #### Features
+
 - Exception assertions closer to the origin of the thrown exception
 - Given and Then automatically cleaned up before each test
 - When assumes the *Creating* action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically.
 - XUnitTestBase is purpose built to accomodate the XUnit framework.
 - Use Dependency Injection through IServiceCollection and IServiceProvider.
 
-#### XUnit suppport
+#### XUnit support
+
 ```csharp
 using FluentAssertions;
 using Randal.Core.Testing.XUnit;
@@ -135,7 +139,7 @@ public class MyTest : XUnitTestBase<MyTest.Thens>
 		
     protected override void Creating()
     {
-        AddDependency<A>();
+        Services.AddScoped<A>();
         CreateMock<IDidSomething>(mock =>
         {
             if (TryGiven("ThrowException", out bool throwEx))

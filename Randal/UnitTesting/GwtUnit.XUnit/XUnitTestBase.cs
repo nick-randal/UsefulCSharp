@@ -40,8 +40,17 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		? _services
 		: throw new InvalidOperationException("Cannot add to service collection after target is built.");
 
+	/// <summary>
+	/// ServiceProvider will be available after BuildTarget&lt;T>() is called.
+	/// </summary>
+	/// <exception cref="InvalidOperationException"></exception>
 	public IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
 
+	/// <summary>
+	/// Add scoped service to the service collection.
+	/// </summary>
+	/// <typeparam name="TService"></typeparam>
+	/// <returns></returns>
 	public XUnitTestBase<TThens> AddDependency<TService>()
 		where TService : class
 	{
@@ -49,6 +58,12 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 
+	/// <summary>
+	/// Add scoped service to the service collection.
+	/// </summary>
+	/// <typeparam name="TService"></typeparam>
+	/// <typeparam name="TImplementation"></typeparam>
+	/// <returns></returns>
 	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
 		where TImplementation : class, TService
 		where TService : class
@@ -57,6 +72,12 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 
+	/// <summary>
+	/// Add scoped service to the service collection.
+	/// </summary>
+	/// <param name="factory"></param>
+	/// <typeparam name="TService"></typeparam>
+	/// <returns></returns>
 	public XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
 		where TService : class
 	{
@@ -64,6 +85,13 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return this;
 	}
 
+	/// <summary>
+	/// Add scoped service to the service collection.
+	/// </summary>
+	/// <param name="factory"></param>
+	/// <typeparam name="TService"></typeparam>
+	/// <typeparam name="TImplementation"></typeparam>
+	/// <returns></returns>
 	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
 		where TImplementation : class, TService
 		where TService : class
@@ -72,13 +100,23 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		Services.AddScoped(factory);
 		return this;
 	}
-		
+	
+	/// <summary>
+	/// Add singleton mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <typeparam name="T"></typeparam>
 	public void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
 		where T : class
 	{
 		Services.CreateMockSingleton(setupMock);
 	}
 	
+	/// <summary>
+	/// Add singleton mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <typeparam name="T"></typeparam>
 	public void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
@@ -92,12 +130,22 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
 	}
 	
+	/// <summary>
+	/// Add scoped mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <typeparam name="T"></typeparam>
 	public void CreateMock<T>(Action<Mock<T>>? setupMock = null)
 		where T : class
 	{
 		Services.CreateMock(setupMock);
 	}
 
+	/// <summary>
+	/// Add scoped mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <typeparam name="T"></typeparam>
 	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
