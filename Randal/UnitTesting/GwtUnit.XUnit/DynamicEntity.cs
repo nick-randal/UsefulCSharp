@@ -19,9 +19,7 @@ namespace GwtUnit.XUnit;
 
 public sealed class DynamicEntity : DynamicObject
 {
-	private readonly Dictionary<string, object> _dataDictionary;
-	private readonly IDynamicEntityConverter _converter;
-	private readonly MissingMemberBehavior _missingMemberBehavior;
+	
 
 	public DynamicEntity() : this(MissingMemberBehavior.ThrowException)
 	{
@@ -42,31 +40,29 @@ public sealed class DynamicEntity : DynamicObject
 
 	public int Count() =>  _dataDictionary.Count;
 
-	public object this[string member]
+	public object? this[string member]
 	{
 		get => _dataDictionary[member];
-		set => _dataDictionary[member] = value;
+		set => _dataDictionary[member] = value!;
 	}
 
-	public override bool TryGetMember(GetMemberBinder binder, out object result)
+	public override bool TryGetMember(GetMemberBinder binder, out object? result)
 	{
 		var valueFound = _dataDictionary.TryGetValue(binder.Name, out result);
 
 		if (valueFound)
 			return true;
 
-		switch (_missingMemberBehavior)
+		return _missingMemberBehavior switch
 		{
-			case MissingMemberBehavior.ReturnsNull:
-				return true;
-			default:
-				return false;
-		}
+			MissingMemberBehavior.ReturnsNull => true,
+			_ => false
+		};
 	}
 
-	public override bool TrySetMember(SetMemberBinder binder, object value)
+	public override bool TrySetMember(SetMemberBinder binder, object? value)
 	{
-		_dataDictionary[binder.Name] = value;
+		_dataDictionary[binder.Name] = value!;
 		return true;
 	}
 
@@ -82,4 +78,8 @@ public sealed class DynamicEntity : DynamicObject
 	{
 		_dataDictionary.Clear();
 	}
+	
+	private readonly Dictionary<string, object> _dataDictionary;
+	private readonly IDynamicEntityConverter _converter;
+	private readonly MissingMemberBehavior _missingMemberBehavior;
 }

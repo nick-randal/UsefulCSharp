@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.CSharp.RuntimeBinder;
 using Xunit;
 
@@ -21,11 +22,6 @@ namespace GwtUnit.XUnit.Tests
 {
 	public sealed class DynamicEntityTests
 	{
-		public DynamicEntityTests()
-		{
-			Then = new Thens();
-		}
-		
 		[Fact, PositiveTest]
 		public void ShouldHaveValidObjectWhenCreating()
 		{
@@ -56,7 +52,7 @@ namespace GwtUnit.XUnit.Tests
 		[Fact, NegativeTest]
 		public void ShouldThrowExceptionWhenAccessingNonExistentProperty()
 		{
-			Action f = () =>
+			var f = () =>
 			{
 				dynamic entity = new DynamicEntity();
 				Then.String = entity.Name;
@@ -74,6 +70,19 @@ namespace GwtUnit.XUnit.Tests
 			Then.String = entity.Name;
 			
 			Then.String.Should().BeNull();
+		}
+		
+		[Fact, PositiveTest]
+		public void ShouldReturnNull_WhenAccessingProperty_GivenReassignedToNull()
+		{
+			var dynamicEntity = new DynamicEntity(MissingMemberBehavior.ReturnsNull);
+			dynamic entity = dynamicEntity; 
+			
+			entity.Name = "Jane Doe";
+			entity.Name = (string?)null!;
+			
+			(entity.Name as string).Should().BeNull();
+			dynamicEntity.TestForMember("Name").Should().BeTrue();
 		}
 
 		[Fact, PositiveTest]
@@ -96,7 +105,7 @@ namespace GwtUnit.XUnit.Tests
 		[Fact, NegativeTest]
 		public void ShouldThrowExceptionWhenConvertingToUnexpectedType()
 		{
-			Action f = () =>
+			var f = () =>
 			{
 				dynamic entity = new DynamicEntity();
 				Then.String = entity;
@@ -116,9 +125,9 @@ namespace GwtUnit.XUnit.Tests
 			Then.Dictionary.Should().NotBeNull().And.HaveCount(1);
 		}
 
-		private Thens Then { get; set; }
+		private Thens Then { get; set; } = new();
 
-		public class Thens
+		private sealed class Thens
 		{
 			public object Entity;
 			public IDictionary<string, object> Dictionary;
