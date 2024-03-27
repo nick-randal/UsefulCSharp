@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
-        <License>LICENSE</License>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
