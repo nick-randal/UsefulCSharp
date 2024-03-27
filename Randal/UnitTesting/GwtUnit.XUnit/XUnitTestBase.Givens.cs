@@ -15,10 +15,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace GwtUnit.XUnit;
 
-public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifetime 
+public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifetime
 	where TThens : class, new()
 	where TGivens : class, new()
 {
@@ -70,7 +71,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 
 		for (var n = 0; n < listOfActions.Count - 1; n++)
 			listOfActions[n]();
-		
+
 		DeferredAction = listOfActions.Last();
 	}
 
@@ -97,16 +98,30 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 		};
 	}
 
+	protected void UnAsync(Func<Task> asyncFunc)
+	{
+		using var task = Task.Run(async () => await asyncFunc());
+		task.ConfigureAwait(false).GetAwaiter().GetResult();
+	}
+	
+	protected T UnAsync<T>(Func<Task<T>> asyncFunc)
+	{
+		using var task = Task.Run(async () => await asyncFunc());
+		return task.ConfigureAwait(false).GetAwaiter().GetResult();
+	}
+
 	protected virtual Action Defer(Action action)
 	{
 		DeferredAction = action;
-			
+
 		return NoOp;
 	}
 
 	protected abstract void Creating();
 
-	protected readonly Action NotCreating = () => { };	// do not assign as NoOp, must have a unique value
+	protected readonly Action NotCreating = () =>
+	{
+	}; // do not assign as NoOp, must have a unique value
 
 	protected readonly TGivens Given = new();
 
@@ -123,6 +138,8 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 
 	static XUnitTestBase()
 	{
-		NoOp = () => { };
+		NoOp = () =>
+		{
+		};
 	}
 }
