@@ -22,12 +22,6 @@ namespace GwtUnit.XUnit.Tests;
 
 public sealed class DynamicEntityConverterTests
 {
-	public DynamicEntityConverterTests()
-	{
-		GivenConverter = null!;
-		ThenConverter = new DynamicEntityConverter();
-	}
-
 	[Fact, PositiveTest]
 	public void ShouldHaveNoConverterWhenCreating()
 	{
@@ -153,8 +147,8 @@ public sealed class DynamicEntityConverterTests
 
 	private Type GivenConversionTo;
 	private Dictionary<string, object> GivenDataDictionary;
-	private Func<Dictionary<string, object>, object>? GivenConverter;
-	private readonly DynamicEntityConverter ThenConverter;
+	private Func<Dictionary<string, object>, object>? GivenConverter = null!;
+	private readonly DynamicEntityConverter ThenConverter = new();
 	private Func<Dictionary<string, object>, object> ThenRemovedConverter;
 	private object ThenResult;
 	private bool ThenSuccess;

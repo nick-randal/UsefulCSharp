@@ -21,12 +21,6 @@ namespace GwtUnit.XUnit.Tests;
 
 public sealed class DictionaryConverterTests
 {
-	public DictionaryConverterTests()
-	{
-		Given = new Givens();
-		Then = new Thens();
-	}
-
 	[Fact, PositiveTest]
 	public void ShouldHaveConvertersForDictionaryTypesWhenCreating()
 	{
@@ -113,19 +107,20 @@ public sealed class DictionaryConverterTests
 		Then.Success = Then.Converter.TryConversion(Given.ConversionTo, Given.DataDictionary, out Then.Result);
 	}
 
-	private Givens Given { get; set; }
-	private Thens Then { get; set; }
+	private Givens Given { get; } = new();
+	
+	private Thens Then { get; } = new();
 
 	private class Thens
 	{
-		public DictionaryConverter Converter;
-		public object Result;
+		public DictionaryConverter Converter = null!;
+		public object Result = null!;
 		public bool Success;
 	}
 
 	private class Givens
 	{
-		public Type ConversionTo;
-		public Dictionary<string, object> DataDictionary;
+		public Type ConversionTo = null!;
+		public Dictionary<string, object> DataDictionary = null!;
 	}
 }

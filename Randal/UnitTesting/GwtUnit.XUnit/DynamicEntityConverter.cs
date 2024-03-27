@@ -61,12 +61,7 @@ public class DynamicEntityConverter : IDynamicEntityConverter
 
 	public Func<Dictionary<string, object>, object>? RemoveTypeConverter(Type type)
 	{
-		if (Converters.TryGetValue(type, out var converter))
-		{
-			Converters.Remove(type);
-			return converter;
-		}
+		return Converters.Remove(type, out var converter) ? converter : null;
 
-		return null;
 	}
 }
