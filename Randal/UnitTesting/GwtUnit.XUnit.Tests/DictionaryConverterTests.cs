@@ -17,116 +17,115 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 
-namespace GwtUnit.XUnit.Tests
+namespace GwtUnit.XUnit.Tests;
+
+public sealed class DictionaryConverterTests
 {
-	public sealed class DictionaryConverterTests
+	public DictionaryConverterTests()
 	{
-		public DictionaryConverterTests()
-		{
-			Given = new Givens();
-			Then = new Thens();
-		}
+		Given = new Givens();
+		Then = new Thens();
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveConvertersForDictionaryTypesWhenCreating()
-		{
-			WhenCreating();
+	[Fact, PositiveTest]
+	public void ShouldHaveConvertersForDictionaryTypesWhenCreating()
+	{
+		WhenCreating();
 
-			Then.Converter.Should().BeAssignableTo<IDynamicEntityConverter>();
-			Then.Converter.HasConverters.Should().BeTrue();
-			Then.Converter.ConverterCount.Should().Be(5);
-		}
+		Then.Converter.Should().BeAssignableTo<IDynamicEntityConverter>();
+		Then.Converter.HasConverters.Should().BeTrue();
+		Then.Converter.ConverterCount.Should().Be(5);
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveValidInstanceWhenConvertingToDictionary()
-		{
-			Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			Given.ConversionTo = typeof(Dictionary<string, object>);
+	[Fact, PositiveTest]
+	public void ShouldHaveValidInstanceWhenConvertingToDictionary()
+	{
+		Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+		Given.ConversionTo = typeof(Dictionary<string, object>);
 
-			WhenConverting();
+		WhenConverting();
 
-			Then.Result.Should().NotBeNull();
-			Then.Success.Should().BeTrue();
-			Then.Result.As<Dictionary<string, object>>().Should().ContainKey("Name");
-		}
+		Then.Result.Should().NotBeNull();
+		Then.Success.Should().BeTrue();
+		Then.Result.As<Dictionary<string, object>>().Should().ContainKey("Name");
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveValidInstanceWhenConvertingToIDictionary()
-		{
-			Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			Given.ConversionTo = typeof(IDictionary<string, object>);
+	[Fact, PositiveTest]
+	public void ShouldHaveValidInstanceWhenConvertingToIDictionary()
+	{
+		Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+		Given.ConversionTo = typeof(IDictionary<string, object>);
 
-			WhenConverting();
+		WhenConverting();
 
-			Then.Result.Should().NotBeNull();
-			Then.Success.Should().BeTrue();
-			Then.Result.As<IDictionary<string, object>>().Should().ContainKey("Name");
-		}
+		Then.Result.Should().NotBeNull();
+		Then.Success.Should().BeTrue();
+		Then.Result.As<IDictionary<string, object>>().Should().ContainKey("Name");
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveValidInstanceWhenConvertingToIReadOnlyDictionary()
-		{
-			Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			Given.ConversionTo = typeof(IReadOnlyDictionary<string, object>);
+	[Fact, PositiveTest]
+	public void ShouldHaveValidInstanceWhenConvertingToIReadOnlyDictionary()
+	{
+		Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+		Given.ConversionTo = typeof(IReadOnlyDictionary<string, object>);
 
-			WhenConverting();
+		WhenConverting();
 
-			Then.Result.Should().NotBeNull();
-			Then.Success.Should().BeTrue();
-			Then.Result.As<IReadOnlyDictionary<string, object>>().Keys.Should().Contain("Name");
-		}
+		Then.Result.Should().NotBeNull();
+		Then.Success.Should().BeTrue();
+		Then.Result.As<IReadOnlyDictionary<string, object>>().Keys.Should().Contain("Name");
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveValidInstanceWhenConvertingToICollection()
-		{
-			Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			Given.ConversionTo = typeof(ICollection<KeyValuePair<string, object>>);
+	[Fact, PositiveTest]
+	public void ShouldHaveValidInstanceWhenConvertingToICollection()
+	{
+		Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+		Given.ConversionTo = typeof(ICollection<KeyValuePair<string, object>>);
 
-			WhenConverting();
+		WhenConverting();
 
-			Then.Result.Should().NotBeNull();
-			Then.Success.Should().BeTrue();
-			Then.Result.As<ICollection<KeyValuePair<string, object>>>().First().Key.Should().Be("Name");
-		}
+		Then.Result.Should().NotBeNull();
+		Then.Success.Should().BeTrue();
+		Then.Result.As<ICollection<KeyValuePair<string, object>>>().First().Key.Should().Be("Name");
+	}
 
-		[Fact, PositiveTest]
-		public void ShouldHaveValidInstanceWhenConvertingToIEnumerable()
-		{
-			Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
-			Given.ConversionTo = typeof(IEnumerable<KeyValuePair<string, object>>);
+	[Fact, PositiveTest]
+	public void ShouldHaveValidInstanceWhenConvertingToIEnumerable()
+	{
+		Given.DataDictionary = new Dictionary<string, object> { { "Name", "Jane Doe" } };
+		Given.ConversionTo = typeof(IEnumerable<KeyValuePair<string, object>>);
 
-			WhenConverting();
+		WhenConverting();
 
-			Then.Result.Should().NotBeNull();
-			Then.Success.Should().BeTrue();
-			Then.Result.As<IEnumerable<KeyValuePair<string, object>>>().First().Key.Should().Be("Name");
-		}
+		Then.Result.Should().NotBeNull();
+		Then.Success.Should().BeTrue();
+		Then.Result.As<IEnumerable<KeyValuePair<string, object>>>().First().Key.Should().Be("Name");
+	}
 
-		private void WhenCreating()
-		{
-			Then.Converter = new DictionaryConverter();
-		}
+	private void WhenCreating()
+	{
+		Then.Converter = new DictionaryConverter();
+	}
 
-		private void WhenConverting()
-		{
-			WhenCreating();
-			Then.Success = Then.Converter.TryConversion(Given.ConversionTo, Given.DataDictionary, out Then.Result);
-		}
+	private void WhenConverting()
+	{
+		WhenCreating();
+		Then.Success = Then.Converter.TryConversion(Given.ConversionTo, Given.DataDictionary, out Then.Result);
+	}
 
-		private Givens Given { get; set; }
-		private Thens Then { get; set; }
+	private Givens Given { get; set; }
+	private Thens Then { get; set; }
 
-		private class Thens
-		{
-			public DictionaryConverter Converter;
-			public object Result;
-			public bool Success;
-		}
+	private class Thens
+	{
+		public DictionaryConverter Converter;
+		public object Result;
+		public bool Success;
+	}
 
-		private class Givens
-		{
-			public Type ConversionTo;
-			public Dictionary<string, object> DataDictionary;
-		}
+	private class Givens
+	{
+		public Type ConversionTo;
+		public Dictionary<string, object> DataDictionary;
 	}
 }

@@ -15,29 +15,27 @@ using System;
 using FluentAssertions;
 using Xunit;
 
-namespace GwtUnit.XUnit.Tests
+namespace GwtUnit.XUnit.Tests;
+
+public sealed class PositiveTestTests : XUnitTestBase<PositiveTestThens>
 {
-	public sealed class PositiveTestTests : XUnitTestBase<PositiveTestThens>
+	[Fact]
+	public void ShouldHaveAttributeWithCorrectTraits_WhenCreating()
 	{
-		[Fact]
-		public void ShouldHaveAttributeWithCorrectTraits_WhenCreating()
-		{
-			When(Creating);
+		When(Creating);
 
-			Then
-				.Attribute.Should().NotBeNull()
-				.And
-				.BeAssignableTo<Attribute>();
-		}
-
-		protected override void Creating()
-		{
-			Then.Attribute = new PositiveTestAttribute();
-		}
+		Then
+			.Target.Should().NotBeNull()
+			.And
+			.BeAssignableTo<Attribute>();
 	}
 
-	public sealed class PositiveTestThens
+	protected override void Creating()
 	{
-		public PositiveTestAttribute Attribute;
+		Then.Target = new PositiveTestAttribute();
 	}
+}
+
+public sealed class PositiveTestThens :Thens<PositiveTestAttribute>
+{
 }

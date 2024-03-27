@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;net6;net7;net8</TargetFrameworks>
-        <Version>1.8.0</Version>
+        <Version>1.9.0</Version>
         
         <Title>Given-When-Then Unit Testing</Title>
         <LangVersion>10</LangVersion>

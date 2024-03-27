@@ -228,9 +228,21 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="member"></param>
-	/// <param name="defaultValue"></param>
 	/// <returns></returns>
-	public T? GivenOrDefault<T>(string member, T? defaultValue = default)
+	public T? GivenOrDefault<T>(string member)
+	{
+		return Given.TestForMember(member) ? (T)Given[member] : default;
+	}
+	
+	/// <summary>
+	/// Return the Given value if defined or provided default value.
+	/// </summary>
+	/// <param name="member"></param>
+	/// <param name="defaultValue"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public T GivenOrDefault<T>(string member, T defaultValue)
+		where T: notnull
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 	}
