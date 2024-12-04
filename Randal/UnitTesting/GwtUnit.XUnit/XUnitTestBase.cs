@@ -1,11 +1,11 @@
 ﻿// Useful C#
 // Copyright (C) 2014-2022 Nicholas Randal
-// 
+//
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -100,7 +100,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		Services.AddScoped(factory);
 		return this;
 	}
-	
+
 	/// <summary>
 	/// Add singleton mock to the service collection.
 	/// </summary>
@@ -111,7 +111,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	{
 		Services.CreateMockSingleton(setupMock);
 	}
-	
+
 	/// <summary>
 	/// Add singleton mock to the service collection.
 	/// </summary>
@@ -122,14 +122,14 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	{
 		Services.CreateMockSingleton(setupMock);
 	}
-	
+
 	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
 	}
-	
+
 	/// <summary>
 	/// Add scoped mock to the service collection.
 	/// </summary>
@@ -171,27 +171,32 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return ServiceProvider.GetRequiredService<T>();
 	}
 
-	public T BuildTarget<T>(Func<IServiceProvider, T>? factory = null)
+	public T? Optional<T>()
 		where T : class
 	{
-		if (factory is null)
-			_services.TryAddScoped<T>();
-		else
-			_services.AddScoped(factory);
-
-		_rootProvider = _services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
-		_scopedProvider = _rootProvider.CreateScope();
-		_serviceProvider = _scopedProvider.ServiceProvider;
-
-		return _serviceProvider.GetRequiredService<T>();
+		return ServiceProvider.GetService<T>();
 	}
 
-	public override void Dispose()
+	public void Build()
 	{
-		_scopedProvider?.Dispose();
-		_rootProvider?.Dispose();
+		BuildProvider();
+	}
 
-		base.Dispose();
+	public TService BuildTarget<TService>(Func<IServiceProvider, TService> factory)
+		where TService : class
+	{
+
+		_services.AddScoped(factory);
+		BuildProvider();
+		return _serviceProvider!.GetRequiredService<TService>();
+	}
+
+	public TService BuildTarget<TService>()
+		where TService : class
+	{
+		_services.TryAddScoped<TService>();
+		BuildProvider();
+		return _serviceProvider!.GetRequiredService<TService>();
 	}
 
 	/// <summary>
@@ -233,7 +238,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : default;
 	}
-	
+
 	/// <summary>
 	/// Return the Given value if defined or provided default value.
 	/// </summary>
@@ -245,6 +250,24 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where T: notnull
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
+	}
+
+	public override void Dispose()
+	{
+		_scopedProvider?.Dispose();
+		_rootProvider?.Dispose();
+
+		base.Dispose();
+	}
+
+	private void BuildProvider()
+	{
+		if(_rootProvider is not null)
+			throw new InvalidOperationException($"ServiceProvider already built. {nameof(Build)} or {nameof(BuildTarget)} can only be called once.");
+
+		_rootProvider = _services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
+		_scopedProvider = _rootProvider.CreateScope();
+		_serviceProvider = _scopedProvider.ServiceProvider;
 	}
 
 	private IServiceProvider? _serviceProvider;
