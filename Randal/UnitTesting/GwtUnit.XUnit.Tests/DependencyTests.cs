@@ -7,17 +7,14 @@ using Xunit;
 
 namespace GwtUnit.XUnit.Tests;
 
-[ExcludeFromCodeCoverage]
-public class A { }
+public interface IOther
+{
+	SingletonClass TestMe();
+}
 
 public interface IDidSomething : IDidSomethingElse
 {
 	void CallMe();
-}
-
-public interface IOther
-{
-	A Get();
 }
 
 public interface IDidSomethingElse
@@ -26,14 +23,20 @@ public interface IDidSomethingElse
 }
 
 [ExcludeFromCodeCoverage]
-public class B
-{
-	public A A { get; }
+public sealed class TransientClass { }
 
-	public B(A a, IDidSomething didSomething)
+[ExcludeFromCodeCoverage]
+public sealed class SingletonClass { }
+
+[ExcludeFromCodeCoverage]
+public sealed class ScopedClass
+{
+	public TransientClass TransientClass { get; }
+
+	public ScopedClass(TransientClass transientClass, IDidSomething didSomething)
 	{
 		_didSomething = didSomething;
-		A = a;
+		TransientClass = transientClass;
 	}
 
 	public void TakeAction()
@@ -46,9 +49,9 @@ public class B
 }
 
 [ExcludeFromCodeCoverage]
-public class C
+public class AnotherSingletonClass
 {
-	public C(A a)
+	public AnotherSingletonClass(TransientClass transientClass)
 	{
 
 	}
@@ -62,7 +65,7 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		When(Creating);
 
 		Then.Target.Should().NotBeNull();
-		Then.Target.A.Should().NotBeNull();
+		Then.Target.TransientClass.Should().NotBeNull();
 	}
 
 	[Fact]
@@ -73,7 +76,9 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		WhenLastActionDeferred(Creating);
 
 		DeferredAction.Should().Throw<InvalidOperationException>()
-			.WithMessage("Error while validating the service descriptor 'ServiceType: GwtUnit.XUnit.Tests.C Lifetime: Singleton ImplementationType: GwtUnit.XUnit.Tests.C': Cannot consume scoped service 'GwtUnit.XUnit.Tests.A' from singleton 'GwtUnit.XUnit.Tests.C'.");
+			.WithMessage($"Error while validating the service descriptor " +
+				$"'ServiceType: GwtUnit.XUnit.Tests.{nameof(AnotherSingletonClass)} Lifetime: Singleton ImplementationType: GwtUnit.XUnit.Tests.{nameof(AnotherSingletonClass)}': " +
+				$"Cannot consume scoped service 'GwtUnit.XUnit.Tests.{nameof(TransientClass)}' from singleton 'GwtUnit.XUnit.Tests.{nameof(AnotherSingletonClass)}'.");
 	}
 
 	[Fact]
@@ -101,17 +106,30 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 	[Fact]
 	public void ShouldNotThrow_WhenResolvingInterface()
 	{
-		When(Creating, Defer(() => {Require<IOther>();}));
+		When(Creating, Defer(RequiringOtherInterface));
 
 		DeferredAction.Should().NotThrow();
 	}
 
+	[Theory, InlineData(2), InlineData(5)]
+	public void CountsShouldBeUnaffected_GivenSingletonMocks(int count)
+	{
+		When(Creating, Repeat(
+			() =>
+			{
+				Require<IOther>().TestMe();
+			}, count));
+
+		RequireMock<IOther>().Verify(x => x.TestMe(), Times.Exactly(count));
+	}
+
 	protected override void Creating()
 	{
-		Services.AddScoped<A>();
+		Services.AddScoped<TransientClass>();
+		Services.AddSingleton<SingletonClass>();
 
 		if(GivenOrDefault("BadScopeDependency", false))
-			Services.AddSingleton<C>();
+			Services.AddSingleton<AnotherSingletonClass>();
 
 		CreateMock<IDidSomething>(mock =>
 		{
@@ -122,12 +140,17 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		CreateMock<IOther>(
 			(p, m) =>
 			{
-				m.Setup(x => x.Get()).Returns(p.GetRequiredService<A>());
-			});
+				m.Setup(x => x.TestMe()).Returns(p.GetRequiredService<SingletonClass>());
+			}, ServiceLifetime.Singleton);
 
 		MockAs<IDidSomethingElse, IDidSomething>();
 
-		Then.Target = BuildTarget<B>();
+		Then.Target = BuildTarget<ScopedClass>();
+	}
+
+	private void RequiringOtherInterface()
+	{
+		Require<IOther>();
 	}
 
 	private void TakingAction()
@@ -137,6 +160,6 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 
 	public sealed class Thens
 	{
-		public B Target = null!;
+		public ScopedClass Target = null!;
 	}
 }
