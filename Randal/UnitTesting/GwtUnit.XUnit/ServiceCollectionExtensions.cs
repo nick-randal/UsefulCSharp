@@ -22,13 +22,17 @@ public static class ServiceCollectionExtensions
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		services.TryAddScoped(
-			p =>
-			{
-				var mock = new Mock<T>();
-				setupMock(p, mock);
-				return mock;
-			}
+		services.TryAdd(
+			ServiceDescriptor.Describe(
+				typeof(Mock<T>),
+				p =>
+				{
+					var mock = new Mock<T>();
+					setupMock.Invoke(p, mock);
+					return mock;
+				},
+				ServiceLifetime.Singleton
+			)
 		);
 
 		services.TryAdd(
@@ -48,13 +52,17 @@ public static class ServiceCollectionExtensions
 		where TAs : class
 		where TSource : class
 	{
-		services.TryAddScoped(
-			p =>
-			{
-				var mock = p.GetRequiredService<Mock<TSource>>().As<TAs>();
-				setupMock.Invoke(mock);
-				return mock;
-			}
+		services.TryAdd(
+			ServiceDescriptor.Describe(
+				typeof(Mock<TAs>),
+				p =>
+				{
+					var mock = p.GetRequiredService<Mock<TSource>>().As<TAs>();
+					setupMock.Invoke(mock);
+					return mock;
+				},
+				ServiceLifetime.Singleton
+			)
 		);
 
 		services.TryAdd(
