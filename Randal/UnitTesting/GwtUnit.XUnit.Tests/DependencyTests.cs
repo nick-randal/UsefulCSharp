@@ -15,6 +15,11 @@ public interface IDidSomething : IDidSomethingElse
 	void CallMe();
 }
 
+public interface IOther
+{
+	A Get();
+}
+
 public interface IDidSomethingElse
 {
 	void CallMeAgain();
@@ -93,9 +98,18 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		DeferredAction.Should().Throw<InvalidOperationException>();
 	}
 
+	[Fact]
+	public void ShouldNotThrow_WhenResolvingInterface()
+	{
+		When(Creating, Defer(() => {Require<IOther>();}));
+
+		DeferredAction.Should().NotThrow();
+	}
+
 	protected override void Creating()
 	{
-		AddDependency<A>();
+		Services.AddScoped<A>();
+
 		if(GivenOrDefault("BadScopeDependency", false))
 			Services.AddSingleton<C>();
 
@@ -104,6 +118,12 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 			if (TryGiven("ThrowException", out bool _))
 				mock.Setup(x => x.CallMe()).Throws<InvalidOperationException>();
 		});
+
+		CreateMock<IOther>(
+			(p, m) =>
+			{
+				m.Setup(x => x.Get()).Returns(p.GetRequiredService<A>());
+			});
 
 		MockAs<IDidSomethingElse, IDidSomething>();
 

@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;net6;net7;net8</TargetFrameworks>
-        <Version>1.10.0</Version>
+        <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0;</TargetFrameworks>
+        <Version>1.10.1</Version>
 
         <Title>Given-When-Then Unit Testing</Title>
         <LangVersion>10</LangVersion>
@@ -9,7 +9,7 @@
         <Authors>Nick Randal</Authors>
         <Company>Nick Randal</Company>
         <Product>Given-When-Then Unit Testing</Product>
-        <Copyright>Copyright © 2014-2024 Nicholas Randal, All Rights Reserved</Copyright>
+        <Copyright>Copyright © 2014-2025 Nicholas Randal, All Rights Reserved</Copyright>
         <PackageProjectUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnit.XUnit</PackageProjectUrl>
         <PackageTags>UnitTest GWT XUnit</PackageTags>
     </PropertyGroup>

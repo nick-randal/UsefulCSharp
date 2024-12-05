@@ -21,13 +21,25 @@ public static class ServiceCollectionExtensions
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		services.TryAddSingleton(
-			p =>
-			{
-				var mock = new Mock<T>();
-				setupMock(p, mock);
-				return mock;
-			}
+		// services.TryAddSingleton(
+		// 	p =>
+		// 	{
+		// 		var mock = new Mock<T>();
+		// 		setupMock(p, mock);
+		// 		return mock;
+		// 	}
+		// );
+		services.TryAdd(
+			ServiceDescriptor.Describe(
+				typeof(Mock<T>),
+				p =>
+				{
+					var mock = new Mock<T>();
+					setupMock(p, mock);
+					return mock;
+				},
+				lifetime
+			)
 		);
 		services.TryAdd(
 			ServiceDescriptor.Describe(typeof(T), p => p.GetRequiredService<Mock<T>>().Object, lifetime)
