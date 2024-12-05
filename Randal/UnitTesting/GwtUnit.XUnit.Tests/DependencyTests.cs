@@ -10,14 +10,19 @@ namespace GwtUnit.XUnit.Tests;
 [ExcludeFromCodeCoverage]
 public class A { }
 
-public interface IDidSomething
+public interface IDidSomething : IDidSomethingElse
 {
 	void CallMe();
 }
 
+public interface IDidSomethingElse
+{
+	void CallMeAgain();
+}
+
+[ExcludeFromCodeCoverage]
 public class B
 {
-	private readonly IDidSomething _didSomething;
 	public A A { get; }
 
 	public B(A a, IDidSomething didSomething)
@@ -29,9 +34,13 @@ public class B
 	public void TakeAction()
 	{
 		_didSomething.CallMe();
+		_didSomething.CallMeAgain();
 	}
+
+	private readonly IDidSomething _didSomething;
 }
 
+[ExcludeFromCodeCoverage]
 public class C
 {
 	public C(A a)
@@ -68,6 +77,7 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		When(TakingAction);
 
 		RequireMock<IDidSomething>().Verify(x => x.CallMe());
+		RequireMock<IDidSomething>().Verify(x => x.CallMeAgain());
 		Require<IDidSomething>().Should().NotBeNull();
 	}
 
@@ -94,6 +104,8 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 			if (TryGiven("ThrowException", out bool _))
 				mock.Setup(x => x.CallMe()).Throws<InvalidOperationException>();
 		});
+
+		MockAs<IDidSomethingElse, IDidSomething>();
 
 		Then.Target = BuildTarget<B>();
 	}
