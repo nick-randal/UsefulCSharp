@@ -4,7 +4,7 @@
         <Version>1.11.0</Version>
 
         <Title>Given-When-Then Unit Testing</Title>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <Authors>Nick Randal</Authors>
         <Company>Nick Randal</Company>
