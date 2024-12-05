@@ -44,7 +44,8 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// ServiceProvider will be available after BuildTarget&lt;T>() is called.
 	/// </summary>
 	/// <exception cref="InvalidOperationException"></exception>
-	public IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
+	public IServiceProvider ServiceProvider => _serviceProvider ??
+		throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T> or Build.");
 
 	/// <summary>
 	/// Add scoped service to the service collection.
@@ -92,7 +93,8 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <typeparam name="TService"></typeparam>
 	/// <typeparam name="TImplementation"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(
+		Func<IServiceProvider, TImplementation> factory)
 		where TImplementation : class, TService
 		where TService : class
 	{
@@ -106,10 +108,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// </summary>
 	/// <param name="setupMock"></param>
 	/// <typeparam name="T"></typeparam>
-	public void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
+	[Obsolete("Use CreateMock<T>(... ServiceLifetime) instead.")]
+	public void CreateMockSingleton<T>(Action<Mock<T>> setupMock)
 		where T : class
 	{
-		Services.CreateMockSingleton(setupMock);
+		Services.CreateMock(setupMock, ServiceLifetime.Singleton);
 	}
 
 	/// <summary>
@@ -117,46 +120,92 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// </summary>
 	/// <param name="setupMock"></param>
 	/// <typeparam name="T"></typeparam>
+	[Obsolete("Use CreateMock<T>(... ServiceLifetime) instead.")]
 	public void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
-		Services.CreateMockSingleton(setupMock);
+		Services.CreateMock(setupMock, ServiceLifetime.Singleton);
 	}
 
+	[Obsolete("Use CreateMockAs<T>(... ServiceLifetime) instead.")]
 	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
 		where TAs : class
 		where TSource : class
 	{
-		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
+		Services.CreateMockAs<TAs, TSource>(setupMock, ServiceLifetime.Singleton);
 	}
 
 	/// <summary>
-	/// Add scoped mock to the service collection.
+	/// Add mock to the service collection.
 	/// </summary>
-	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
-	public void CreateMock<T>(Action<Mock<T>>? setupMock = null)
+	/// <returns></returns>
+	public IServiceCollection CreateMock<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		Services.CreateMock(setupMock);
+		Services.CreateMock<T>(lifetime);
+		return Services;
 	}
 
 	/// <summary>
-	/// Add scoped mock to the service collection.
+	/// Add mock to the service collection.
 	/// </summary>
 	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
-	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
+	public IServiceCollection CreateMock<T>(Action<Mock<T>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		Services.CreateMock(setupMock);
+		Services.CreateMock(setupMock, lifetime);
+		return Services;
 	}
 
-	public void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+	/// <summary>
+	/// Add mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="T"></typeparam>
+	public IServiceCollection CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where T : class
+	{
+		Services.CreateMock(setupMock, lifetime);
+		return Services;
+	}
+
+	/// <summary>
+	/// Adds an interface implementation to the mock.
+	/// </summary>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="TAs"></typeparam>
+	/// <typeparam name="TSource"></typeparam>
+	/// <returns></returns>
+	public IServiceCollection MockAs<TAs, TSource>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where TAs : class
+		where TSource : class
+	{
+		Services.CreateMockAs<TAs, TSource>(lifetime);
+		return Services;
+	}
+
+	/// <summary>
+	/// Adds an interface implementation to the mock.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="TAs"></typeparam>
+	/// <typeparam name="TSource"></typeparam>
+	/// <returns></returns>
+	public IServiceCollection MockAs<TAs, TSource>(Action<Mock<TAs>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(setupMock);
+		return Services;
 	}
 
 	public Mock<T> RequireMock<T>()
@@ -185,7 +234,6 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	public TService BuildTarget<TService>(Func<IServiceProvider, TService> factory)
 		where TService : class
 	{
-
 		_services.AddScoped(factory);
 		BuildProvider();
 		return _serviceProvider!.GetRequiredService<TService>();
@@ -247,7 +295,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
 	public T GivenOrDefault<T>(string member, T defaultValue)
-		where T: notnull
+		where T : notnull
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 	}
@@ -262,10 +310,14 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 
 	private void BuildProvider()
 	{
-		if(_rootProvider is not null)
-			throw new InvalidOperationException($"ServiceProvider already built. {nameof(Build)} or {nameof(BuildTarget)} can only be called once.");
+		if (_rootProvider is not null)
+			throw new InvalidOperationException(
+				$"ServiceProvider already built. {nameof(Build)} or {nameof(BuildTarget)} can only be called once."
+			);
 
-		_rootProvider = _services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
+		_rootProvider = _services.BuildServiceProvider(
+			new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true }
+		);
 		_scopedProvider = _rootProvider.CreateScope();
 		_serviceProvider = _scopedProvider.ServiceProvider;
 	}
