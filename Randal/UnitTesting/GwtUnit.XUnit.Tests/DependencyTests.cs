@@ -10,14 +10,24 @@ namespace GwtUnit.XUnit.Tests;
 [ExcludeFromCodeCoverage]
 public class A { }
 
-public interface IDidSomething
+public interface IDidSomething : IDidSomethingElse
 {
 	void CallMe();
 }
 
+public interface IOther
+{
+	A Get();
+}
+
+public interface IDidSomethingElse
+{
+	void CallMeAgain();
+}
+
+[ExcludeFromCodeCoverage]
 public class B
 {
-	private readonly IDidSomething _didSomething;
 	public A A { get; }
 
 	public B(A a, IDidSomething didSomething)
@@ -29,17 +39,21 @@ public class B
 	public void TakeAction()
 	{
 		_didSomething.CallMe();
+		_didSomething.CallMeAgain();
 	}
+
+	private readonly IDidSomething _didSomething;
 }
 
+[ExcludeFromCodeCoverage]
 public class C
 {
 	public C(A a)
 	{
-			
+
 	}
 }
-	
+
 public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 {
 	[Fact]
@@ -50,12 +64,12 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 		Then.Target.Should().NotBeNull();
 		Then.Target.A.Should().NotBeNull();
 	}
-		
+
 	[Fact]
 	public void ShouldThrowException_WhenCreatingUsingDependencyInjection_GivenBadScopeDependency()
 	{
 		Given.BadScopeDependency = true;
-			
+
 		WhenLastActionDeferred(Creating);
 
 		DeferredAction.Should().Throw<InvalidOperationException>()
@@ -66,45 +80,63 @@ public sealed class DependencyTests : XUnitTestBase<DependencyTests.Thens>
 	public void ShouldHaveMockEngaged_WhenTakingAction()
 	{
 		When(TakingAction);
-			
+
 		RequireMock<IDidSomething>().Verify(x => x.CallMe());
+		RequireMock<IDidSomething>().Verify(x => x.CallMeAgain());
 		Require<IDidSomething>().Should().NotBeNull();
 	}
-		
+
 	[Fact]
 	public void ShouldHaveMockSetup_WhenTakingAction()
 	{
 		Given.ThrowException = true;
-			
+
 		When(Defer(TakingAction));
-			
+
 		RequireMock<IDidSomething>().Verify(x => x.CallMe(), Times.Never);
 		Require<IDidSomething>().Should().NotBeNull();
 		DeferredAction.Should().Throw<InvalidOperationException>();
 	}
-		
+
+	[Fact]
+	public void ShouldNotThrow_WhenResolvingInterface()
+	{
+		When(Creating, Defer(() => {Require<IOther>();}));
+
+		DeferredAction.Should().NotThrow();
+	}
+
 	protected override void Creating()
 	{
-		AddDependency<A>();
+		Services.AddScoped<A>();
+
 		if(GivenOrDefault("BadScopeDependency", false))
 			Services.AddSingleton<C>();
-			
+
 		CreateMock<IDidSomething>(mock =>
 		{
-			if (TryGiven("ThrowException", out bool throwEx))
+			if (TryGiven("ThrowException", out bool _))
 				mock.Setup(x => x.CallMe()).Throws<InvalidOperationException>();
 		});
+
+		CreateMock<IOther>(
+			(p, m) =>
+			{
+				m.Setup(x => x.Get()).Returns(p.GetRequiredService<A>());
+			});
+
+		MockAs<IDidSomethingElse, IDidSomething>();
 
 		Then.Target = BuildTarget<B>();
 	}
 
-	public void TakingAction()
+	private void TakingAction()
 	{
 		Then.Target.TakeAction();
 	}
-		
+
 	public sealed class Thens
 	{
-		public B Target;
+		public B Target = null!;
 	}
 }

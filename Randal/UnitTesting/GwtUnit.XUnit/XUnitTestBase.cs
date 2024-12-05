@@ -1,11 +1,11 @@
 ﻿// Useful C#
 // Copyright (C) 2014-2022 Nicholas Randal
-// 
+//
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -44,115 +44,172 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// ServiceProvider will be available after BuildTarget&lt;T>() is called.
 	/// </summary>
 	/// <exception cref="InvalidOperationException"></exception>
-	public IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T>()");
+	public IServiceProvider ServiceProvider => _serviceProvider ??
+		throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T> or Build.");
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService>()
+	public XUnitTestBase<TThens> AddDependency<TService>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TService : class
 	{
-		Services.AddScoped<TService>();
+		Services.Add(new ServiceDescriptor(typeof(TService), typeof(TService), lifetime));
 		return this;
 	}
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
+	/// <param name="factory"></param>
+	/// <param name="lifetime">Default is Scoped</param>
+	/// <typeparam name="TService"></typeparam>
+	/// <returns></returns>
+	public XUnitTestBase<TThens> AddDependency<TService>(
+		Func<IServiceProvider, TService> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where TService : class
+	{
+		Services.Add(new ServiceDescriptor(typeof(TService), factory, lifetime));
+		return this;
+	}
+
+	/// <summary>
+	/// Add service to the service collection.
+	/// </summary>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <typeparam name="TImplementation"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TImplementation : class, TService
 		where TService : class
 	{
-		Services.AddScoped<TService, TImplementation>();
+		Services.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
 		return this;
 	}
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
 	/// <param name="factory"></param>
-	/// <typeparam name="TService"></typeparam>
-	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
-		where TService : class
-	{
-		Services.AddScoped(factory);
-		return this;
-	}
-
-	/// <summary>
-	/// Add scoped service to the service collection.
-	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <typeparam name="TImplementation"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(Func<IServiceProvider, TImplementation> factory)
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(
+		Func<IServiceProvider, TImplementation> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TImplementation : class, TService
 		where TService : class
 	{
-		Services.AddScoped<TService, TImplementation>(factory);
-		Services.AddScoped(factory);
+		Services.Add(new ServiceDescriptor(typeof(TService), factory, lifetime));
+		Services.Add(new ServiceDescriptor(typeof(TImplementation), factory, lifetime));
 		return this;
 	}
-	
+
 	/// <summary>
 	/// Add singleton mock to the service collection.
 	/// </summary>
 	/// <param name="setupMock"></param>
 	/// <typeparam name="T"></typeparam>
-	public void CreateMockSingleton<T>(Action<Mock<T>>? setupMock = null)
+	[Obsolete("Use CreateMock<T>(... ServiceLifetime) instead.")]
+	public void CreateMockSingleton<T>(Action<Mock<T>> setupMock)
 		where T : class
 	{
-		Services.CreateMockSingleton(setupMock);
+		Services.CreateMock(setupMock, ServiceLifetime.Singleton);
 	}
-	
+
 	/// <summary>
 	/// Add singleton mock to the service collection.
 	/// </summary>
 	/// <param name="setupMock"></param>
 	/// <typeparam name="T"></typeparam>
+	[Obsolete("Use CreateMock<T>(... ServiceLifetime) instead.")]
 	public void CreateMockSingleton<T>(Action<IServiceProvider, Mock<T>> setupMock)
 		where T : class
 	{
-		Services.CreateMockSingleton(setupMock);
+		Services.CreateMock(setupMock, ServiceLifetime.Singleton);
 	}
-	
-	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+
+	[Obsolete("Use CreateMockAs<T>(... ServiceLifetime) instead.")]
+	public void MockSingletonAs<TAs, TSource>()
 		where TAs : class
 		where TSource : class
 	{
-		Services.CreateMockSingletonAs<TAs, TSource>(setupMock);
+		Services.CreateMockAs<TAs, TSource>(_ => { }, ServiceLifetime.Singleton);
 	}
-	
-	/// <summary>
-	/// Add scoped mock to the service collection.
-	/// </summary>
-	/// <param name="setupMock"></param>
-	/// <typeparam name="T"></typeparam>
-	public void CreateMock<T>(Action<Mock<T>>? setupMock = null)
-		where T : class
+
+	[Obsolete("Use CreateMockAs<T>(... ServiceLifetime) instead.")]
+	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>> setupMock)
+		where TAs : class
+		where TSource : class
 	{
-		Services.CreateMock(setupMock);
+		Services.CreateMockAs<TAs, TSource>(setupMock, ServiceLifetime.Singleton);
 	}
 
 	/// <summary>
-	/// Add scoped mock to the service collection.
+	/// Add mock to the service collection.
 	/// </summary>
-	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
-	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock)
+	/// <returns></returns>
+	public void CreateMock<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		Services.CreateMock(setupMock);
+		Services.CreateMock<T>(lifetime);
 	}
 
-	public void MockAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+	/// <summary>
+	/// Add mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="T"></typeparam>
+	public void CreateMock<T>(Action<Mock<T>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where T : class
+	{
+		Services.CreateMock(setupMock, lifetime);
+	}
+
+	/// <summary>
+	/// Add mock to the service collection.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="T"></typeparam>
+	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where T : class
+	{
+		Services.CreateMock(setupMock, lifetime);
+	}
+
+	/// <summary>
+	/// Adds an interface implementation to the mock.
+	/// </summary>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="TAs"></typeparam>
+	/// <typeparam name="TSource"></typeparam>
+	/// <returns></returns>
+	public void MockAs<TAs, TSource>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where TAs : class
+		where TSource : class
+	{
+		Services.CreateMockAs<TAs, TSource>(lifetime);
+	}
+
+	/// <summary>
+	/// Adds an interface implementation to the mock.
+	/// </summary>
+	/// <param name="setupMock"></param>
+	/// <param name="lifetime"></param>
+	/// <typeparam name="TAs"></typeparam>
+	/// <typeparam name="TSource"></typeparam>
+	/// <returns></returns>
+	public void MockAs<TAs, TSource>(Action<Mock<TAs>> setupMock,
+		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TAs : class
 		where TSource : class
 	{
@@ -171,27 +228,31 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return ServiceProvider.GetRequiredService<T>();
 	}
 
-	public T BuildTarget<T>(Func<IServiceProvider, T>? factory = null)
+	public T? Optional<T>()
 		where T : class
 	{
-		if (factory is null)
-			_services.TryAddScoped<T>();
-		else
-			_services.AddScoped(factory);
-
-		_rootProvider = _services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
-		_scopedProvider = _rootProvider.CreateScope();
-		_serviceProvider = _scopedProvider.ServiceProvider;
-
-		return _serviceProvider.GetRequiredService<T>();
+		return ServiceProvider.GetService<T>();
 	}
 
-	public override void Dispose()
+	public void Build()
 	{
-		_scopedProvider?.Dispose();
-		_rootProvider?.Dispose();
+		BuildProvider();
+	}
 
-		base.Dispose();
+	public TService BuildTarget<TService>(Func<IServiceProvider, TService> factory)
+		where TService : class
+	{
+		_services.AddScoped(factory);
+		BuildProvider();
+		return _serviceProvider!.GetRequiredService<TService>();
+	}
+
+	public TService BuildTarget<TService>()
+		where TService : class
+	{
+		_services.TryAddScoped<TService>();
+		BuildProvider();
+		return _serviceProvider!.GetRequiredService<TService>();
 	}
 
 	/// <summary>
@@ -233,7 +294,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : default;
 	}
-	
+
 	/// <summary>
 	/// Return the Given value if defined or provided default value.
 	/// </summary>
@@ -242,9 +303,31 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
 	public T GivenOrDefault<T>(string member, T defaultValue)
-		where T: notnull
+		where T : notnull
 	{
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
+	}
+
+	public override void Dispose()
+	{
+		_scopedProvider?.Dispose();
+		_rootProvider?.Dispose();
+
+		base.Dispose();
+	}
+
+	private void BuildProvider()
+	{
+		if (_rootProvider is not null)
+			throw new InvalidOperationException(
+				$"ServiceProvider already built. {nameof(Build)} or {nameof(BuildTarget)} can only be called once."
+			);
+
+		_rootProvider = _services.BuildServiceProvider(
+			new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true }
+		);
+		_scopedProvider = _rootProvider.CreateScope();
+		_serviceProvider = _scopedProvider.ServiceProvider;
 	}
 
 	private IServiceProvider? _serviceProvider;
