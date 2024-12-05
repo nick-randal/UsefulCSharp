@@ -48,58 +48,63 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		throw new InvalidOperationException("ServiceProvider used before calling BuildTarget<T> or Build.");
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService>()
+	public XUnitTestBase<TThens> AddDependency<TService>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TService : class
 	{
-		Services.AddScoped<TService>();
+		Services.Add(new ServiceDescriptor(typeof(TService), typeof(TService), lifetime));
 		return this;
 	}
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
+	/// <param name="factory"></param>
+	/// <param name="lifetime">Default is Scoped</param>
+	/// <typeparam name="TService"></typeparam>
+	/// <returns></returns>
+	public XUnitTestBase<TThens> AddDependency<TService>(
+		Func<IServiceProvider, TService> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+		where TService : class
+	{
+		Services.Add(new ServiceDescriptor(typeof(TService), factory, lifetime));
+		return this;
+	}
+
+	/// <summary>
+	/// Add service to the service collection.
+	/// </summary>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <typeparam name="TImplementation"></typeparam>
 	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>()
+	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TImplementation : class, TService
 		where TService : class
 	{
-		Services.AddScoped<TService, TImplementation>();
+		Services.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
 		return this;
 	}
 
 	/// <summary>
-	/// Add scoped service to the service collection.
+	/// Add service to the service collection.
 	/// </summary>
 	/// <param name="factory"></param>
-	/// <typeparam name="TService"></typeparam>
-	/// <returns></returns>
-	public XUnitTestBase<TThens> AddDependency<TService>(Func<IServiceProvider, TService> factory)
-		where TService : class
-	{
-		Services.AddScoped(factory);
-		return this;
-	}
-
-	/// <summary>
-	/// Add scoped service to the service collection.
-	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="lifetime">Default is Scoped</param>
 	/// <typeparam name="TService"></typeparam>
 	/// <typeparam name="TImplementation"></typeparam>
 	/// <returns></returns>
 	public XUnitTestBase<TThens> AddDependency<TService, TImplementation>(
-		Func<IServiceProvider, TImplementation> factory)
+		Func<IServiceProvider, TImplementation> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TImplementation : class, TService
 		where TService : class
 	{
-		Services.AddScoped<TService, TImplementation>(factory);
-		Services.AddScoped(factory);
+		Services.Add(new ServiceDescriptor(typeof(TService), factory, lifetime));
+		Services.Add(new ServiceDescriptor(typeof(TImplementation), factory, lifetime));
 		return this;
 	}
 
@@ -128,7 +133,15 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	}
 
 	[Obsolete("Use CreateMockAs<T>(... ServiceLifetime) instead.")]
-	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>>? setupMock = null)
+	public void MockSingletonAs<TAs, TSource>()
+		where TAs : class
+		where TSource : class
+	{
+		Services.CreateMockAs<TAs, TSource>(_ => { }, ServiceLifetime.Singleton);
+	}
+
+	[Obsolete("Use CreateMockAs<T>(... ServiceLifetime) instead.")]
+	public void MockSingletonAs<TAs, TSource>(Action<Mock<TAs>> setupMock)
 		where TAs : class
 		where TSource : class
 	{
@@ -141,11 +154,10 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
-	public IServiceCollection CreateMock<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
+	public void CreateMock<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
 		Services.CreateMock<T>(lifetime);
-		return Services;
 	}
 
 	/// <summary>
@@ -154,12 +166,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <param name="setupMock"></param>
 	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
-	public IServiceCollection CreateMock<T>(Action<Mock<T>> setupMock,
+	public void CreateMock<T>(Action<Mock<T>> setupMock,
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
 		Services.CreateMock(setupMock, lifetime);
-		return Services;
 	}
 
 	/// <summary>
@@ -168,12 +179,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <param name="setupMock"></param>
 	/// <param name="lifetime"></param>
 	/// <typeparam name="T"></typeparam>
-	public IServiceCollection CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock,
+	public void CreateMock<T>(Action<IServiceProvider, Mock<T>> setupMock,
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
 		Services.CreateMock(setupMock, lifetime);
-		return Services;
 	}
 
 	/// <summary>
@@ -183,12 +193,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <typeparam name="TAs"></typeparam>
 	/// <typeparam name="TSource"></typeparam>
 	/// <returns></returns>
-	public IServiceCollection MockAs<TAs, TSource>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
+	public void MockAs<TAs, TSource>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(lifetime);
-		return Services;
 	}
 
 	/// <summary>
@@ -199,13 +208,12 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	/// <typeparam name="TAs"></typeparam>
 	/// <typeparam name="TSource"></typeparam>
 	/// <returns></returns>
-	public IServiceCollection MockAs<TAs, TSource>(Action<Mock<TAs>> setupMock,
+	public void MockAs<TAs, TSource>(Action<Mock<TAs>> setupMock,
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where TAs : class
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(setupMock);
-		return Services;
 	}
 
 	public Mock<T> RequireMock<T>()
