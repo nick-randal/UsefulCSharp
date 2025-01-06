@@ -1,11 +1,11 @@
 ﻿// Useful C#
 // Copyright (C) 2014-2022 Nicholas Randal
-// 
+//
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,28 +19,45 @@ using Xunit;
 
 namespace GwtUnit.XUnit;
 
-public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifetime
+public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDisposable, IAsyncLifetime
 	where TThens : class, new()
 	where TGivens : class, new()
 {
 	public virtual void Dispose()
 	{
-		var disposeMe = Given as IDisposable;
-		disposeMe?.Dispose();
+	}
 
-		disposeMe = Then as IDisposable;
-		disposeMe?.Dispose();
+	public virtual async ValueTask DisposeAsync()
+	{
+		switch (Given)
+		{
+			case IAsyncDisposable disposeMeAsync:
+				await disposeMeAsync.DisposeAsync();
+				break;
+			case IDisposable disposeMe:
+				disposeMe.Dispose();
+				break;
+		}
+
+		switch (Then)
+		{
+			case IAsyncDisposable disposeMeAsync:
+				await disposeMeAsync.DisposeAsync();
+				break;
+			case IDisposable disposeMe:
+				disposeMe.Dispose();
+				break;
+		}
+	}
+
+	async Task IAsyncLifetime.DisposeAsync()
+	{
+		await DisposeAsync();
 	}
 
 	public virtual Task InitializeAsync()
 	{
 		return Task.CompletedTask;
-	}
-
-	public virtual async Task DisposeAsync()
-	{
-		if (Then is IAsyncDisposable disposeMe)
-			await disposeMe.DisposeAsync();
 	}
 
 	/// <summary>
@@ -103,7 +120,7 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncLifeti
 		using var task = Task.Run(async () => await asyncFunc());
 		task.ConfigureAwait(false).GetAwaiter().GetResult();
 	}
-	
+
 	protected T UnAsync<T>(Func<Task<T>> asyncFunc)
 	{
 		using var task = Task.Run(async () => await asyncFunc());
