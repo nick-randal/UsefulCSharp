@@ -1,11 +1,11 @@
 ﻿// Useful C#
 // Copyright (C) 2014-2022 Nicholas Randal
-// 
+//
 // Useful C# is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,6 +14,7 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace GwtUnit.XUnit.Tests;
@@ -67,7 +68,7 @@ public sealed class XUnitTestBaseTests : XUnitTestBase<XUnitTestBaseTests.Thens>
 #pragma warning restore CS0618 // Type or member is obsolete
 		DeferredAction.Should().Throw<Exception>("Did I do that?");
 	}
-		
+
 	[Fact, NegativeTest]
 	public void ShouldHaveGivensDefined_GivenValues()
 	{
@@ -81,10 +82,31 @@ public sealed class XUnitTestBaseTests : XUnitTestBase<XUnitTestBaseTests.Thens>
 		Then.FirstNameDefined.Should().BeTrue();
 	}
 
+	[Fact]
+	public void ShouldNotThrow_WhenCreating_GivenRegisteredServiceIsOnlyIAsyncDisposable()
+	{
+		When(Creating);
+
+		var disposable = Require<OnlyAsyncDisposable>();
+		disposable.Should().NotBeNull();
+		disposable.Disposed.Should().BeFalse();
+	}
+
+	public override async ValueTask DisposeAsync()
+	{
+		var disposable = Require<OnlyAsyncDisposable>();
+		await base.DisposeAsync();
+		disposable.Disposed.Should().BeTrue();
+	}
+
 	protected override void Creating()
 	{
 		Then.FirstNameDefined = GivensDefined("FirstName");
 		Then.FirstName = GivenOrDefault<string>("FirstName", "Bob");
+
+		Services.AddScoped<OnlyAsyncDisposable>();
+
+		Build();
 	}
 
 	private void Incrementing()

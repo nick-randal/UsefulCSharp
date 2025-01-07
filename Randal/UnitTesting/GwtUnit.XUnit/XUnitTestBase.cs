@@ -13,6 +13,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
@@ -308,12 +309,24 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		return Given.TestForMember(member) ? (T)Given[member] : defaultValue;
 	}
 
-	public override void Dispose()
+	public override async ValueTask DisposeAsync()
 	{
-		_scopedProvider?.Dispose();
-		_rootProvider?.Dispose();
+		if(_rootProvider is not null)
+		{
+			switch (_scopedProvider)
+			{
+				case IAsyncDisposable ad:
+					await ad.DisposeAsync();
+					break;
+				case IDisposable d:
+					d.Dispose();
+					break;
+			}
 
-		base.Dispose();
+			await _rootProvider.DisposeAsync();
+		}
+
+		await base.DisposeAsync();
 	}
 
 	private void BuildProvider()
@@ -326,7 +339,7 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		_rootProvider = _services.BuildServiceProvider(
 			new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true }
 		);
-		_scopedProvider = _rootProvider.CreateScope();
+		_scopedProvider = _rootProvider.CreateAsyncScope();
 		_serviceProvider = _scopedProvider.ServiceProvider;
 	}
 
