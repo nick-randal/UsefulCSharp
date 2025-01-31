@@ -148,5 +148,9 @@ public class MyTest : XUnitTestBase<MyTest.Thens>
 
         Then.Target = BuildTarget<B>();
     }
+    
+    public sealed class Thens : Thens<B>
+    {
+    }
 }
 ```
