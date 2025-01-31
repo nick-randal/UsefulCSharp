@@ -3,6 +3,7 @@
     <PropertyGroup>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageProjectUrl>https://github.com/nick-randal/UsefulCSharp/tree/master/Randal/UnitTesting/GwtUnit.XUnit</PackageProjectUrl>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
