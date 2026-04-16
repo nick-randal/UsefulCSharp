@@ -50,14 +50,9 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDispos
 		}
 	}
 
-	async Task IAsyncLifetime.DisposeAsync()
+	public virtual ValueTask InitializeAsync()
 	{
-		await DisposeAsync();
-	}
-
-	public virtual Task InitializeAsync()
-	{
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 
 	/// <summary>
@@ -72,6 +67,20 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDispos
 
 		foreach (var action in actions)
 			action();
+	}
+
+	/// <summary>
+	/// Async-native version of When. Executes each async func in order.
+	/// If Creating was not provided, it is called automatically first.
+	/// Use in async Task test methods.
+	/// </summary>
+	/// <param name="asyncFuncs">A list of async funcs to be performed for the current test</param>
+	protected async Task WhenAsync(params Func<Task>[] asyncFuncs)
+	{
+		Creating();
+
+		foreach (var func in asyncFuncs)
+			await func();
 	}
 
 	/// <summary>
@@ -90,6 +99,32 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDispos
 			listOfActions[n]();
 
 		DeferredAction = listOfActions.Last();
+	}
+
+	/// <summary>
+	/// Async version of WhenLastActionDeferred. Executes all async funcs except the last,
+	/// which is stored as DeferredAsyncAction for exception assertion.
+	/// </summary>
+	/// <param name="asyncFuncs"></param>
+	protected async Task WhenLastAsyncActionDeferred(params Func<Task>[] asyncFuncs)
+	{
+		var list = asyncFuncs.ToList();
+		Creating();
+
+		for (var n = 0; n < list.Count - 1; n++)
+			await list[n]();
+
+		DeferredAsyncAction = list.Last();
+	}
+
+	/// <summary>
+	/// Defers an async action for later exception assertion without executing it.
+	/// Returns a no-op sync action so it can be composed inside When().
+	/// </summary>
+	protected virtual Action DeferAsync(Func<Task> asyncAction)
+	{
+		DeferredAsyncAction = asyncAction;
+		return NoOp;
 	}
 
 	protected virtual Action Repeat(Action action, int repeatX)
@@ -148,6 +183,8 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDispos
 	protected Action? ThenLastAction => DeferredAction;
 
 	protected Action? DeferredAction;
+
+	protected Func<Task>? DeferredAsyncAction;
 
 	protected Task? ThenLastTask;
 

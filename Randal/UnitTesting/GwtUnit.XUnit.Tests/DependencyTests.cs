@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
 using Moq;
-using Xunit;
 
 namespace GwtUnit.XUnit.Tests;
 

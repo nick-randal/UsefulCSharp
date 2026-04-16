@@ -13,21 +13,13 @@
 
 using System;
 using System.Collections.Generic;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using Xunit.v3;
 
 namespace GwtUnit.XUnit;
 
-[TraitDiscoverer("GwtUnit.XUnit.NegativeTestDiscoverer", "GwtUnit")]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-public class NegativeTestAttribute : Attribute, ITraitAttribute
+public sealed class NegativeTestAttribute : Attribute, ITraitAttribute
 {
-}
-	
-public class NegativeTestDiscoverer : ITraitDiscoverer
-{
-	public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
-	{
-		yield return new KeyValuePair<string, string>("Category", "Negative");
-	}
+	public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits()
+		=> [new KeyValuePair<string, string>("Category", "Negative")];
 }
