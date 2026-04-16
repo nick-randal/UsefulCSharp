@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +59,19 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where TService : class
 	{
 		Services.Add(new ServiceDescriptor(typeof(TService), typeof(TService), lifetime));
+		return this;
+	}
+
+	/// <summary>
+	/// Add a pre-built instance to the service collection as a singleton.
+	/// </summary>
+	/// <param name="instance">The instance to register</param>
+	/// <typeparam name="TService"></typeparam>
+	/// <returns></returns>
+	public XUnitTestBase<TThens> AddDependency<TService>(TService instance)
+		where TService : class
+	{
+		Services.Add(new ServiceDescriptor(typeof(TService), instance));
 		return this;
 	}
 
@@ -158,7 +172,10 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	public void CreateMock<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		Services.CreateMock<T>(lifetime);
+		var mock = new Mock<T>();
+		_mockRegistry[typeof(T)] = mock;
+		Services.AddSingleton(mock);
+		Services.TryAdd(ServiceDescriptor.Describe(typeof(T), p => p.GetRequiredService<Mock<T>>().Object, lifetime));
 	}
 
 	/// <summary>
@@ -171,7 +188,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		ServiceLifetime lifetime = ServiceLifetime.Scoped)
 		where T : class
 	{
-		Services.CreateMock(setupMock, lifetime);
+		var mock = new Mock<T>();
+		setupMock(mock);
+		_mockRegistry[typeof(T)] = mock;
+		Services.AddSingleton(mock);
+		Services.TryAdd(ServiceDescriptor.Describe(typeof(T), p => p.GetRequiredService<Mock<T>>().Object, lifetime));
 	}
 
 	/// <summary>
@@ -215,6 +236,24 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 		where TSource : class
 	{
 		Services.CreateMockAs<TAs, TSource>(setupMock);
+	}
+
+	/// <summary>
+	/// Get a mock that was registered via CreateMock. Available before and after Build().
+	/// Useful when you need to further configure a mock inside Creating() after registration.
+	/// Note: Mock&lt;T&gt; is always registered as a singleton regardless of the service lifetime.
+	/// </summary>
+	public Mock<T> GetMock<T>()
+		where T : class
+	{
+		if (_serviceProvider is not null)
+			return _serviceProvider.GetRequiredService<Mock<T>>();
+
+		if (_mockRegistry.TryGetValue(typeof(T), out var cached))
+			return (Mock<T>)cached;
+
+		throw new InvalidOperationException(
+			$"No mock registered for {typeof(T).Name}. Call CreateMock<{typeof(T).Name}>() before GetMock<{typeof(T).Name}>().");
 	}
 
 	public Mock<T> RequireMock<T>()
@@ -265,6 +304,11 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	{
 		return members.Length == 0 || members.All(member => Given.TestForMember(member));
 	}
+
+	/// <summary>
+	/// Returns true if no Given values have been defined.
+	/// </summary>
+	public bool GivensNone() => Given.Count() == 0;
 
 	/// <summary>
 	/// Get the value for a Given.
@@ -347,4 +391,5 @@ public abstract class XUnitTestBase<TThens> : XUnitTestBase<TThens, dynamic>
 	private ServiceProvider? _rootProvider;
 	private IServiceScope? _scopedProvider;
 	private readonly ServiceCollection _services;
+	private readonly Dictionary<Type, object> _mockRegistry = new();
 }

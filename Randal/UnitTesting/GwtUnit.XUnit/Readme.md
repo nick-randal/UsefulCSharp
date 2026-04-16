@@ -15,17 +15,18 @@ Setup the data and context for the test. By default `Given` is a dynamic object 
 
 #### When (Act)
 
-Make the When actions composable. The **When** method takes a params array of Action methods. `Creating` is automatically called first unless explicitly provided or `NotCreating` is used.
+Make the When actions composable. `When` takes a params array of `Action` methods and calls `Creating` automatically first unless explicitly provided or `NotCreating` is used. For async tests, use `WhenAsync` instead (see [Async tests](#async-tests)).
 
 #### Then (Assert)
 
-A class where all result context can be stored during a test and asserted on. I prefer using FluentAssertions from NuGet. These extension methods provide cleaner test failure messages and make the code more readable.
+A class where all result context can be stored during a test and asserted on. I prefer using AwesomeAssertions from NuGet. These extension methods provide cleaner test failure messages and make the code more readable.
 
 #### Features
 
 - Exception assertions closer to the origin of the thrown exception
 - Given and Then automatically cleaned up after each test
 - `When` assumes the `Creating` action will be done first and can be omitted. If `Creating` is provided as an argument it will not be called automatically. Use the `NotCreating` sentinel to skip `Creating` entirely.
+- `WhenAsync` for naturally async xUnit v3 test methods
 - `XUnitTestBase` is purpose built to accommodate the XUnit framework.
 - Dependency Injection through `IServiceCollection` and `IServiceProvider`.
 - `[PositiveTest]` and `[NegativeTest]` xUnit trait attributes that tag tests with `Category=Positive` or `Category=Negative` for filtering.
@@ -35,7 +36,7 @@ A class where all result context can be stored during a test and asserted on. I 
 ### XUnit support
 
 ```csharp
-using FluentAssertions;
+using AwesomeAssertions;
 using GwtUnit.XUnit;
 
 namespace Someplace
@@ -146,6 +147,71 @@ namespace Someplace
 
 ---
 
+### Async tests
+
+xUnit v3 supports `async Task` test methods natively. Use `WhenAsync` to write async-first tests without bridging back to sync:
+
+```csharp
+[Fact, PositiveTest]
+public async Task ShouldReturnResult_WhenProcessingAsync()
+{
+    Given.Input = "hello";
+
+    await WhenAsync(ProcessingAsync);
+
+    Then.Result.Should().Be("HELLO");
+}
+
+[Fact, NegativeTest]
+public async Task ShouldThrow_WhenProcessingAsyncFails()
+{
+    // WhenLastAsyncActionDeferred stores the last func as DeferredAsyncAction
+    await WhenLastAsyncActionDeferred(SetupAsync, FailingAsync);
+
+    await DeferredAsyncAction!.Invoking(f => f())
+        .Should().ThrowAsync<InvalidOperationException>();
+}
+
+[Fact, NegativeTest]
+public async Task ShouldThrow_WhenUsingDeferAsync()
+{
+    // DeferAsync stores the async action for later assertion
+    When(DeferAsync(FailingAsync));
+
+    await DeferredAsyncAction!.Invoking(f => f())
+        .Should().ThrowAsync<InvalidOperationException>();
+}
+
+protected override void Creating() { }
+
+private async Task ProcessingAsync()
+{
+    await Task.Yield();
+    Then.Result = GivenOrDefault<string>("Input")!.ToUpper();
+}
+
+private async Task SetupAsync()
+{
+    await Task.Yield();
+    Then.SetupRan = true;
+}
+
+private static async Task FailingAsync()
+{
+    await Task.Yield();
+    throw new InvalidOperationException("Boom");
+}
+```
+
+| Method | Use when |
+|--------|----------|
+| `WhenAsync(params Func<Task>[])` | Async equivalent of `When` — use in `async Task` tests |
+| `WhenLastAsyncActionDeferred(params Func<Task>[])` | Async equivalent of `WhenLastActionDeferred` |
+| `DeferAsync(Func<Task>)` | Stores an async action as `DeferredAsyncAction` without executing it |
+| `Await(Func<Task>)` | Wraps async in a sync `Action` for use inside `When` — prefer `WhenAsync` for new tests |
+
+---
+
 ### Dependency injection
 
 `XUnitTestBase<TThens>` exposes an `IServiceCollection` via `Services` for registration and builds the container via `Build()` or `BuildTarget<T>()`.
@@ -182,15 +248,23 @@ public sealed class MyTest : XUnitTestBase<MyTest.Thens>
 }
 ```
 
-#### `Thens<T>` base class
+#### `Thens<T>` and `Thens<TTarget, TResult>` base classes
 
-`Thens<T>` is a convenience base that gives the nested Thens class a `Target` property typed as `T` — the idiomatic way to hold the system under test:
+`Thens<T>` gives the nested Thens class a typed `Target` property for the system under test. `Thens<TTarget, TResult>` adds a typed `Result` property for when the test also produces a distinct output value:
 
 ```csharp
+// Single type parameter — Target only
 public sealed class Thens : Thens<MyService>
 {
     // inherits: public MyService Target { get; set; }
-    public string Result = null!;
+    public string Output = null!;
+}
+
+// Two type parameters — Target + Result
+public sealed class Thens : Thens<MyService, string>
+{
+    // inherits: public MyService Target { get; set; }
+    // inherits: public string? Result { get; set; }
 }
 ```
 
@@ -215,6 +289,8 @@ Then.Target = BuildTarget<MyService>(p => new MyService(p.GetRequiredService<IDe
 
 #### `CreateMock<T>` overloads
 
+`Mock<T>` is always registered as a singleton regardless of the service lifetime. This ensures `RequireMock<T>()` and `GetMock<T>()` always return the same instance you configured.
+
 ```csharp
 // No setup — just register the mock at the given lifetime
 CreateMock<IMyService>(ServiceLifetime.Singleton);
@@ -233,6 +309,26 @@ CreateMock<IMyService>((provider, mock) =>
 });
 ```
 
+#### `GetMock<T>` — pre-build mock access
+
+`GetMock<T>()` returns the mock before or after `Build()` is called. Use it when you need to inspect or further configure a mock inside `Creating()` after initial registration:
+
+```csharp
+protected override void Creating()
+{
+    CreateMock<IMyService>(mock =>
+    {
+        mock.Setup(x => x.GetName()).Returns("default");
+    });
+
+    // Further configure the same mock instance before the container is built
+    if (GivenOrDefault("UseSpecialName", false))
+        GetMock<IMyService>().Setup(x => x.GetName()).Returns("special");
+
+    Then.Target = BuildTarget<MyComponent>();
+}
+```
+
 #### `AddDependency` overloads
 
 ```csharp
@@ -246,6 +342,10 @@ AddDependency<IMyService, MyService>();
 // Factory registration
 AddDependency<IMyService>(p => new MyService(p.GetRequiredService<IConfig>()));
 AddDependency<IMyService>(p => new MyService("config"), ServiceLifetime.Singleton);
+
+// Pre-built instance — registered as singleton
+var instance = new MyService("specific-config");
+AddDependency<IMyService>(instance);
 ```
 
 #### `MockAs<TAs, TSource>`
@@ -268,6 +368,9 @@ Require<IDisposable>();
 ```csharp
 // Check if one or more Given values are defined
 bool allDefined = GivensDefined("Name", "Age");
+
+// Check if no Given values have been defined at all
+bool empty = GivensNone();
 
 // Get a value if defined, otherwise return default(T)
 string? name = GivenOrDefault<string>("Name");
@@ -329,14 +432,14 @@ When(NotCreating, SomeOtherAction);
 // Resolve an optional service — returns null if not registered
 var optional = Optional<IMyOptionalService>();
 
-// Run async code synchronously inside a test action (alternative to Await)
+// Run async code synchronously inside a test action (alternative to WhenAsync)
 private void PerformingAsync() => UnAsync(async () =>
 {
     Then.Result = await Then.Target.DoWorkAsync();
 });
 
 // UnAsync with a return value
-private void PerformingAsync() => UnAsync(async () =>
+private void FetchingResult() => UnAsync(async () =>
 {
     Then.Result = await Then.Target.FetchAsync();
 });

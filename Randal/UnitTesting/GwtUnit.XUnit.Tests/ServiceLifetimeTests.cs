@@ -1,8 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Xunit;
 
 namespace GwtUnit.XUnit.Tests;
 

@@ -11,12 +11,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-using System;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
-
 namespace GwtUnit.XUnit.Tests;
 
 public sealed class XUnitTestBaseTests : XUnitTestBase<XUnitTestBaseTests.Thens>
