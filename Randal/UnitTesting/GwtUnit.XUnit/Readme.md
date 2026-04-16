@@ -4,6 +4,11 @@ This library provides base classes for unit testing. Using a DSL called Given Wh
 
 GWT derives from AAA (Arrange Act Assert) but strives to provide organization and readability in the tests.
 
+#### Requirements
+
+- **.NET 8.0, 9.0, or 10.0**
+- **xUnit v3** (`xunit.v3`) — this library is not compatible with xUnit v2. The trait system, `IAsyncLifetime`, and test runner model differ between the two versions.
+
 #### Given (Arrange)
 
 Setup the data and context for the test. By default `Given` is a dynamic object — properties are created on the fly without pre-defining them. The only downside is lack of intellisense in Visual Studio©. For full intellisense support, use the two-parameter base class with a strongly-typed Givens class (see [Strongly-typed Given](#strongly-typed-given)).
