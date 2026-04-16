@@ -1,9 +1,9 @@
 ## GWT Unit - Given When Then unit testing.
 
-This library provides a base classes for unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
+This library provides base classes for unit testing. Using a DSL called Given When Then to facilitate and structure tests for readability and TDD.
 
 The difference of base classes resides with the Given property.  One class uses a dynamic type and the other uses a class you specify.  In both cases the Thens class is specified using generic syntax.  
-The dynamic typing allows properties to be created on the the fly without having previously defined it.  The only downside is lack of intellisense in VisualStduio(c).
+The dynamic typing allows properties to be created on the fly without having previously defined them.  The only downside is lack of intellisense in Visual Studio©.
 
 GWT derives from AAA (Arrange Act Assert) but strives to provide organization and readability in the tests.
 
@@ -13,7 +13,7 @@ Setup the data and context for the test.
 
 #### When (Act)
 
-Make the When actions composable.  The **When** method takes params array of Action methods.
+Make the When actions composable.  The **When** method takes a params array of Action methods.
 
 #### Then (Assert)
 
@@ -22,16 +22,16 @@ A class where all result context can be stored during a test and can be asserted
 #### Features
 
 - Exception assertions closer to the origin of the thrown exception
-- Given and Then automatically cleaned up before each test
-- When assumes the *Creating* action will be done first and can be ommitted, however if Creating is provided then it will not be called automatically.
-- XUnitTestBase is purpose built to accomodate the XUnit framework.
+- Given and Then automatically cleaned up after each test
+- When assumes the *Creating* action will be done first and can be omitted, however if Creating is provided as an argument then it will not be called automatically.  Use the `NotCreating` sentinel action to skip Creating entirely without executing it as an action.
+- XUnitTestBase is purpose built to accommodate the XUnit framework.
 - Use Dependency Injection through IServiceCollection and IServiceProvider.
 
 #### XUnit support
 
 ```csharp
 using FluentAssertions;
-using Randal.Core.Testing.XUnit;
+using GwtUnit.XUnit;
 
 namespace Someplace
 {
@@ -58,7 +58,7 @@ namespace Someplace
 		}
 		
 		[Fact, NegativeTest]
-		public void ShouldThrowFormatExcpetion_WhenFormatting_GivenUnescapedOpeningBrace()
+		public void ShouldThrowFormatException_WhenFormatting_GivenUnescapedOpeningBrace()
 		{
 			Given.Text = "Hey {name,";
 
@@ -83,11 +83,20 @@ namespace Someplace
 			Then.DelayedValue.Should().Be(4567);
 		}
 
-		protected override Creating()
+		[Fact, NegativeTest]
+		public void ShouldThrowException_WhenFormattingFails()
 		{
-			// can check if a dynamic value is defined through  GivensDefined("NeededValue",...)
+			WhenLastActionDeferred(Formatting);
 
-			Then.Target = new TestObject(Given.NeededValue);
+			DeferredAction.Should().Throw<FormatException>();
+		}
+
+		protected override void Creating()
+		{
+			// check if a dynamic value is defined via GivensDefined("NeededValue")
+			// or retrieve it with GivenOrDefault<int>("NeededValue", defaultValue: 0)
+
+			Then.Target = new TestObject(GivenOrDefault<int>("NeededValue"));
 		}
 		
 		private void Formatting()
@@ -107,16 +116,17 @@ namespace Someplace
 			Then.DelayedValue = 4567;
 		}
 
-		public sealed class Thens : IDisposable // optionally define as IDisposable to have automatic disposal after each test
+		public sealed class Thens : IAsyncDisposable // optionally implement IDisposable or IAsyncDisposable for automatic disposal after each test
 		{
 			public TestObject Target;
 			public string Text;
 			public int Repetitions;
 			public int DelayedValue;
 
-			public void Dispose()
+			public ValueTask DisposeAsync()
 			{
-				// optionally define as IDisposable to have automatic disposal after each test
+				// cleanup resources here
+				return ValueTask.CompletedTask;
 			}
 		}
 	}
@@ -125,7 +135,7 @@ namespace Someplace
 
 ### Make use of dependency injection and helper methods
 
-```c#
+```csharp
 public class MyTest : XUnitTestBase<MyTest.Thens>
 {
     [Fact]
@@ -142,7 +152,7 @@ public class MyTest : XUnitTestBase<MyTest.Thens>
         Services.AddScoped<A>();
         CreateMock<IDidSomething>(mock =>
         {
-            if (TryGiven("ThrowException", out bool throwEx))
+            if (TryGiven("ThrowException", out bool _))
                 mock.Setup(x => x.CallMe()).Throws<InvalidOperationException>();
         });
 
@@ -153,4 +163,44 @@ public class MyTest : XUnitTestBase<MyTest.Thens>
     {
     }
 }
+```
+
+### Given helper methods
+
+```csharp
+// Check if one or more Given values are defined
+bool allDefined = GivensDefined("Name", "Age");
+
+// Get a value if defined, otherwise return default(T)
+string? name = GivenOrDefault<string>("Name");
+
+// Get a value if defined, otherwise return the provided fallback
+int age = GivenOrDefault("Age", defaultValue: 18);
+
+// Try-pattern access
+if (TryGiven("Name", out string? value))
+    Console.WriteLine(value);
+```
+
+### Additional helpers
+
+```csharp
+// Skip Creating entirely — useful when testing infrastructure that does not need a target
+When(NotCreating, SomeOtherAction);
+
+// Add an extra interface to an existing mock
+CreateMock<IMyService>();
+MockAs<IDisposable, IMyService>();
+
+// Register a service via factory
+AddDependency<IMyService>(_ => new MyService("config"), ServiceLifetime.Singleton);
+
+// Resolve an optional service (returns null if not registered)
+var optional = Optional<IMyOptionalService>();
+
+// Run async code synchronously inside a test action
+private void PerformingAsync() => UnAsync(async () =>
+{
+    Then.Result = await Then.Target.DoWorkAsync();
+});
 ```
