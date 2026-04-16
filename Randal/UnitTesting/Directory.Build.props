@@ -4,12 +4,12 @@
         <Version>1.13.1</Version>
 
         <Title>Given-When-Then Unit Testing</Title>
-        <LangVersion>11</LangVersion>
+        <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
         <Authors>Nick Randal</Authors>
         <Company>Nick Randal</Company>
         <Product>Given-When-Then Unit Testing</Product>
-        <Copyright>Copyright © 2014-2025 Nicholas Randal, All Rights Reserved</Copyright>
+        <Copyright>Copyright © 2014-2026 Nicholas Randal, All Rights Reserved</Copyright>
         <PackageProjectUrl>https://github.com/nick-randal/UsefulCSharp/blob/master/Randal/GwtUnit.XUnit</PackageProjectUrl>
         <PackageTags>UnitTest GWT XUnit</PackageTags>
     </PropertyGroup>
