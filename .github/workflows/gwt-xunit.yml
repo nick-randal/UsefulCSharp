@@ -1,0 +1,88 @@
+name: GwtUnit.XUnit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'Randal/UnitTesting/**'
+      - '.github/workflows/gwt-xunit.yml'
+    tags:
+      - 'gwt-v*'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'Randal/UnitTesting/**'
+      - '.github/workflows/gwt-xunit.yml'
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Randal/UnitTesting
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.x
+            9.x
+            10.x
+
+      - name: Restore
+        run: dotnet restore Randal.Core.Testing.sln
+
+      - name: Build
+        run: dotnet build Randal.Core.Testing.sln --no-restore -c Release
+
+      - name: Test (net8.0)
+        run: dotnet run --project GwtUnit.XUnit.Tests/GwtUnit.XUnit.Tests.csproj --framework net8.0 --no-build -c Release
+
+      - name: Test (net9.0)
+        run: dotnet run --project GwtUnit.XUnit.Tests/GwtUnit.XUnit.Tests.csproj --framework net9.0 --no-build -c Release
+
+      - name: Test (net10.0)
+        run: dotnet run --project GwtUnit.XUnit.Tests/GwtUnit.XUnit.Tests.csproj --framework net10.0 --no-build -c Release
+
+      - name: Pack
+        if: startsWith(github.ref, 'refs/tags/gwt-v')
+        run: dotnet pack GwtUnit.XUnit/GwtUnit.XUnit.csproj --no-build -c Release -o ./nupkg
+
+      - name: Upload package artifact
+        if: startsWith(github.ref, 'refs/tags/gwt-v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: Randal/UnitTesting/nupkg/*.nupkg
+
+  publish:
+    name: Publish to NuGet.org
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/gwt-v')
+    environment: nuget
+
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nupkg
+          path: nupkg
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push nupkg/*.nupkg
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
