@@ -50,14 +50,9 @@ public abstract class XUnitTestBase<TThens, TGivens> : IDisposable, IAsyncDispos
 		}
 	}
 
-	async Task IAsyncLifetime.DisposeAsync()
+	public virtual ValueTask InitializeAsync()
 	{
-		await DisposeAsync();
-	}
-
-	public virtual Task InitializeAsync()
-	{
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 
 	/// <summary>
